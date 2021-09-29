@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "775612240518",
+    "project_id": "formapp-83c57",
+    "storage_bucket": "formapp-83c57.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775612240518:android:6c075c53b5f10ba8dd3707",
+        "android_client_info": {
+          "package_name": "com.example.formapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "775612240518-8sjphtqlic9g4tfm6eaa7ocbcjq49peu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb-WAIfYM9vlaUQTlF9vfer-CYIc7z8EU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "775612240518-8sjphtqlic9g4tfm6eaa7ocbcjq49peu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
