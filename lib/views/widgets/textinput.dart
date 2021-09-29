@@ -24,13 +24,13 @@ class _InputformState extends State<Inputform> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(8.0, 5, 0, 8),
+          padding: const EdgeInsets.all(8),
           child: Text(widget.title),
         ),
         Container(
           width: SizeConfig.width * 100,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 2, 8),
+            padding: const EdgeInsets.all(8),
             child: TextFormField(
               validator: widget.validator,
               controller: widget._controller,
@@ -48,9 +48,6 @@ class _InputformState extends State<Inputform> {
               ),
             ),
           ),
-        ),
-        SizedBox(
-          height: SizeConfig.height * 2,
         ),
       ],
     );

@@ -141,16 +141,19 @@ class _FormpartState extends State<Formpart> {
                           return "* Required";
                         }
                       }),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 5, 2, 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Image"),
-                            SizedBox(
-                              height: SizeConfig.height * 2,
-                            ),
-                            InkWell(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Image"),
+                          ),
+                          SizedBox(
+                            height: SizeConfig.height * 2,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                            child: InkWell(
                               onTap: () => _showstoragechoice(context),
                               child: Container(
                                 decoration: BoxDecoration(
@@ -163,10 +166,11 @@ class _FormpartState extends State<Formpart> {
                                     ? Icon(Icons.camera_alt)
                                     : Image.file(_image),
                               ),
-                            )
-                          ],
-                        ),
+                            ),
+                          )
+                        ],
                       ),
+                   
                       Inputform(
                           "Contact Number", "Enter your number", mobilenumber,
                           (value) {
