@@ -23,37 +23,34 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _initialRoute = Routes.splashScreen;
+  String _initialRoute = Routes.addProfilePicPage;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (context) =>HomeProvider()),
-        ChangeNotifierProvider(
-            create: (context) =>MatchProvider()),
-        ChangeNotifierProvider(
-            create: (context) =>BlindProvider()),
-      ],
-      child:ScreenUtilInit(
-          designSize: Size(1000, 690),
-          builder: () => MaterialApp(
-            debugShowCheckedModeBanner: false,
-                title: 'Sparks',
-                builder: BotToastInit(),
-                navigatorObservers: [BotToastNavigatorObserver()],
-                navigatorKey: Routes.sailor.navigatorKey,
-                onGenerateRoute: Routes.sailor.generator(),
-                initialRoute: _initialRoute,
-                theme: ThemeData(
-                    scaffoldBackgroundColor: Colors.white,
-                    fontFamily: 'Nunito',
-                    appBarTheme: AppBarTheme(
-                      elevation: 2,
-                      iconTheme: IconThemeData(color: Colors.white, size: 100),
-                    )),
-              ))
-    );
+        providers: [
+          ChangeNotifierProvider(create: (context) => HomeProvider()),
+          ChangeNotifierProvider(create: (context) => MatchProvider()),
+          ChangeNotifierProvider(create: (context) => BlindProvider()),
+        ],
+        child: ScreenUtilInit(
+            designSize: Size(1000, 690),
+            builder: () => MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'Sparks',
+                  builder: BotToastInit(),
+                  navigatorObservers: [BotToastNavigatorObserver()],
+                  navigatorKey: Routes.sailor.navigatorKey,
+                  onGenerateRoute: Routes.sailor.generator(),
+                  initialRoute: _initialRoute,
+                  theme: ThemeData(
+                      scaffoldBackgroundColor: Colors.white,
+                      fontFamily: 'Nunito',
+                      appBarTheme: AppBarTheme(
+                        elevation: 2,
+                        iconTheme:
+                            IconThemeData(color: Colors.white, size: 100),
+                      )),
+                )));
   }
 }
