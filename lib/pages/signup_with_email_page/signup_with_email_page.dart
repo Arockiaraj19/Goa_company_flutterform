@@ -90,7 +90,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
     // });
     var network = EmailSignUpNetwork();
     ResponseData result = await network.verifyEmailForSignup(_emailCtrl.text);
-    // showtoast(result.msg.toString());
+    showtoast(result.msg.toString());
     OtpModel data = OtpModel.fromJson(
         {"value": _emailCtrl.text, "isMob": false, "isSignUp": true});
     result.statusDetails == 1

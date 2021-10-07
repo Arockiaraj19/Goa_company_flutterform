@@ -88,6 +88,7 @@ Future<Dio> authClient() async {
       .add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
     // Do something before request is sent
     // var accessToken = getAccessToken();
+
     options.headers['content-Type'] = 'application/json';
     // options.headers["Authorization"] = "Bearer" + accessToken;
     // options.headers["Accept-Language"] = "en";
