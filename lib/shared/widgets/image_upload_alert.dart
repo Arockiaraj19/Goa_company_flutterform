@@ -4,6 +4,7 @@ import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ImageUploadAlert extends StatefulWidget {
   const ImageUploadAlert({
@@ -17,7 +18,6 @@ class ImageUploadAlert extends StatefulWidget {
 }
 
 class _ImageUploadAlertState extends State<ImageUploadAlert> {
-
   final ImagePicker _picker = ImagePicker();
 
   XFile _imageData;
@@ -35,7 +35,7 @@ class _ImageUploadAlertState extends State<ImageUploadAlert> {
         children: [
           ListTile(
             onTap: () {
-             _displayImagePicker(ImageSource.camera);
+              _displayImagePicker(ImageSource.camera);
             },
             leading: Icon(
               Icons.camera_alt,
@@ -80,29 +80,41 @@ class _ImageUploadAlertState extends State<ImageUploadAlert> {
 
   void _displayImagePicker(ImageSource source) async {
     var pickedFile;
-    try{
-        Navigator.of(context).pop();
-        if (source == ImageSource.camera) {
-             pickedFile = await _picker.pickImage(
-              source: ImageSource.gallery,
-              imageQuality: 10,
-              // preferredCameraDevice: CameraDevice.rear
-            );
+    // Map<Permission, PermissionStatus> statuses = await [
+    //   Permission.storage,
+    //   Permission.camera,
+    // ].request();
+
+    try {
+      Navigator.of(context).pop();
+      if (source == ImageSource.camera) {
+        if (await Permission.camera.request().isGranted) {
+          pickedFile = await _picker.pickImage(
+            source: ImageSource.camera,
+            imageQuality: 10,
+            // preferredCameraDevice: CameraDevice.rear
+          );
           _imageData = pickedFile;
         } else {
-          print("dasd");
+          openAppSettings();
+        }
+      } else {
+        if (await Permission.storage.request().isGranted) {
           final pickedFile = await _picker.pickImage(
-              source: ImageSource.gallery,imageQuality: 10,
+            source: ImageSource.gallery,
+            imageQuality: 10,
           );
 
           print("dasds");
           _imageData = pickedFile;
+        } else {
+          openAppSettings();
         }
-        widget.onImagePicked(_imageData);
-    } catch(e){
+      }
+      widget.onImagePicked(_imageData);
+    } catch (e) {
       print(e.toString());
       showtoast(source.toString());
     }
   }
-
 }

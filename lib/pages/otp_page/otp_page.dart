@@ -28,18 +28,20 @@ class _OtpPageState extends State<OtpPage> {
   Timer _resendOTPTimer;
   int _resendTimerString = 300;
   bool _enableResendBtn = false;
-  bool loading=false,err=false;
+  bool loading = false, err = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-   timerFunction();
+    timerFunction();
   }
-timerFunction(){
-  _resendOTPTimer =
-      Timer.periodic(Duration(seconds: 1), _updateResendOTPString);
-}
+
+  timerFunction() {
+    _resendOTPTimer =
+        Timer.periodic(Duration(seconds: 1), _updateResendOTPString);
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -124,7 +126,7 @@ timerFunction(){
                       ))
                 ],
               ),
-              _commonBuild(context )
+              _commonBuild(context)
             ]))));
   }
   //
@@ -135,25 +137,26 @@ timerFunction(){
 
   goToAddingPasswordPage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
-    if(widget.otpData.isMob==false) {
+    if (widget.otpData.isMob == false) {
       var network = EmailSignUpNetwork();
       ResponseData result = await network.verifyOtpForSignup(
           widget.otpData.value, _otpController.text);
       showtoast(result.msg.toString());
-      result.statusDetails == 2 ? Routes.sailor(
-          Routes.addingPasswordPage, params: {"email": widget.otpData.value}) :
-      Routes.sailor(Routes.loginPage);
-    }else {
+      result.statusDetails == 2
+          ? Routes.sailor(Routes.addingPasswordPage,
+              params: {"email": widget.otpData.value})
+          : Routes.sailor(Routes.loginPage);
+    } else {
       var _credential = PhoneAuthProvider.credential(
-          verificationId: widget.otpData.id,
-          smsCode:_otpController.text);
-      Master_function(context, _credential,widget.otpData.value,widget.otpData.isSignUp);
+          verificationId: widget.otpData.id, smsCode: _otpController.text);
+      Master_function(
+          context, _credential, widget.otpData.value, widget.otpData.isSignUp);
     }
   }
 
-  Widget _commonBuild(BuildContext context, {bool onWeb = false} ) {
+  Widget _commonBuild(BuildContext context, {bool onWeb = false}) {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width / 2;
 
@@ -233,20 +236,29 @@ timerFunction(){
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               )),
           onWeb
-              ? Container(child: err?Text("Please enter 6 digit OTP number",style: TextStyle(color: Colors.red),):
-                SizedBox())
+              ? Container(
+                  child: err
+                      ? Text(
+                          "Please enter 6 digit OTP number",
+                          style: TextStyle(color: Colors.red),
+                        )
+                      : SizedBox())
               : SizedBox(
                   height: ScreenUtil().setHeight(50),
-            child: err?Text("Please enter 6 digit OTP number",style: TextStyle(color: Colors.red),):
-            SizedBox(),
+                  child: err
+                      ? Text(
+                          "Please enter 6 digit OTP number",
+                          style: TextStyle(color: Colors.red),
+                        )
+                      : SizedBox(),
                 ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GradientButton(
                 height: 40,
-                name: loading?"Logging In..":"Log In",
-                gradient:MainTheme.loginBtnGradient,
+                name: loading ? "Logging In.." : "Log In",
+                gradient: MainTheme.loginBtnGradient,
                 active: true,
                 color: Colors.white,
                 width: onWeb ? _width / 6 : ScreenUtil().setWidth(480),
@@ -254,11 +266,11 @@ timerFunction(){
                 fontSize: 14,
                 isLoading: loading,
                 onPressed: () {
-                  if(_otpController.text.length==6){
+                  if (_otpController.text.length == 6) {
                     goToAddingPasswordPage();
-                  }else{
+                  } else {
                     setState(() {
-                      err=true;
+                      err = true;
                     });
                   }
                 },
@@ -269,26 +281,30 @@ timerFunction(){
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () async {
-                  if(_enableResendBtn==true){
-                  setState(() {
-                    _enableResendBtn=false;
-                    _resendTimerString=300;
-                  });
-                  timerFunction();
-                  var network = EmailSignUpNetwork();
-                  bool result =await network.resendOtpForEmail(widget.otpData.value);}
-                },
+                  onTap: () async {
+                    if (_enableResendBtn == true) {
+                      setState(() {
+                        _enableResendBtn = false;
+                        _resendTimerString = 300;
+                      });
+                      timerFunction();
+                      var network = EmailSignUpNetwork();
+                      bool result =
+                          await network.resendOtpForEmail(widget.otpData.value);
+                    }
+                  },
                   child: Text(
-                "Resend Code ",
-                style: TextStyle(
-                    color:_enableResendBtn ? MainTheme.primaryColor :  Colors.black,
-                    fontSize: onWeb ? 13 : ScreenUtil().setSp(40),
-                    fontFamily: "Inter"),
-              )),
+                    "Resend Code ",
+                    style: TextStyle(
+                        color: _enableResendBtn
+                            ? MainTheme.primaryColor
+                            : Colors.black,
+                        fontSize: onWeb ? 13 : ScreenUtil().setSp(40),
+                        fontFamily: "Inter"),
+                  )),
               Container(
-                  child: Text(_resendTimerString==0?"":
-                ": ${_resendTimerString}",
+                  child: Text(
+                _resendTimerString == 0 ? "" : ": ${_resendTimerString}",
                 style: TextStyle(
                     color: MainTheme.primaryColor,
                     fontWeight: FontWeight.bold,
@@ -466,4 +482,3 @@ timerFunction(){
     ));
   }
 }
-

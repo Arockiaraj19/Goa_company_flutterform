@@ -29,7 +29,7 @@ class _LoginWithState extends State<LoginWith> {
   TextEditingController _emailCtrl = TextEditingController();
   TextEditingController _passCtrl = TextEditingController();
   bool obscureText = true;
-  bool loading =false;
+  bool loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -113,7 +113,9 @@ class _LoginWithState extends State<LoginWith> {
                                   style: _goodToSeeTextColor),
                             )
                           ])),
-                      SizedBox(height: 110,),
+                      SizedBox(
+                        height: 110,
+                      ),
                       loginItem(widget.name),
                     ])))));
   }
@@ -143,7 +145,9 @@ class _LoginWithState extends State<LoginWith> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                  margin: EdgeInsetsDirectional.only(start: 20,),
+                  margin: EdgeInsetsDirectional.only(
+                    start: 20,
+                  ),
                   child: Text(
                     "Enter your email",
                     style: TextStyle(
@@ -254,7 +258,7 @@ class _LoginWithState extends State<LoginWith> {
               GradientButton(
                 height: 40,
                 fontSize: 14,
-                name:loading?"Logging In..":"log In",
+                name: loading ? "Logging In.." : "log In",
                 gradient: MainTheme.loginwithBtnGradient,
                 active: true,
                 color: Colors.white,
@@ -262,7 +266,9 @@ class _LoginWithState extends State<LoginWith> {
                 width: btnWidth ?? ScreenUtil().setWidth(480),
                 fontWeight: FontWeight.w500,
                 onPressed: () async {
-                  if(_formKey.currentState.validate()){
+                  if (_formKey.currentState.validate()) {
+                    print(_emailCtrl.text.trim());
+                    print(_passCtrl.text.trim());
                     goToFindMatchPage();
                   }
                   // var dto = {"password": "123456", "email": "asd@mail.com"};
@@ -279,27 +285,31 @@ class _LoginWithState extends State<LoginWith> {
 
   goToFindMatchPage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
     var network = SignInNetwork();
     var network1 = UserNetwork();
-    Timer(Duration(seconds: 3), ()=>offLoading());
-    bool result =await network.signInWithEmail(_emailCtrl.text,_passCtrl.text);
-    UserModel userData= result? await network1.getUserData():null;
-    userData != null? onboardingCheck(userData):null;
+    Timer(Duration(seconds: 3), () => offLoading());
+    print("before login");
+    bool result = await network.signInWithEmail(
+        _emailCtrl.text.trim(), _passCtrl.text.trim());
+    print("after login login");
+    UserModel userData = result ? await network1.getUserData() : null;
+    userData != null ? onboardingCheck(userData) : null;
   }
 
-  offLoading(){
+  offLoading() {
     setState(() {
-      loading=false;
+      loading = false;
     });
   }
-  goToLoginOtpPage() async{
+
+  goToLoginOtpPage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
     var network1 = UserNetwork();
-    await registerUser(_numberCtrl.text,context,false);
+    await registerUser(_numberCtrl.text, context, false);
     //Timer(Duration(seconds: 8), ()=>offLoading());
   }
 
@@ -345,14 +355,16 @@ class _LoginWithState extends State<LoginWith> {
             },
             hintText: 'mobile number',
           ),
-          SizedBox(height: 100,),
+          SizedBox(
+            height: 100,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GradientButton(
                 height: 40,
                 fontSize: 14,
-                name: loading?"Loading..":"Login",
+                name: loading ? "Loading.." : "Login",
                 gradient: MainTheme.loginwithBtnGradient,
                 active: true,
                 isLoading: loading,
@@ -360,7 +372,7 @@ class _LoginWithState extends State<LoginWith> {
                 width: btnWidth ?? ScreenUtil().setWidth(480),
                 fontWeight: FontWeight.w500,
                 onPressed: () {
-                  if(_formKey.currentState.validate()){
+                  if (_formKey.currentState.validate()) {
                     goToLoginOtpPage();
                   }
                 },

@@ -11,14 +11,14 @@ saveAccessToken(String accessToken) async {
   prefs.setString('access_token', accessToken);
 }
 
-getAccessToken()async{
+getAccessToken() async {
   String accessToken;
   final prefs = await SharedPreferences.getInstance();
-  accessToken = prefs.getString('access_token') ?? null;
+  accessToken = prefs.getString('access_token') ?? "null";
   return accessToken;
 }
 
-getRefreshToken()async{
+getRefreshToken() async {
   String refreshToken;
   final prefs = await SharedPreferences.getInstance();
   refreshToken = prefs.getString('refresh_token') ?? null;
@@ -30,7 +30,7 @@ saveLoginStatus(int status) async {
   prefs.setInt('loginStatus', status);
 }
 
-getLoginStatus()async{
+getLoginStatus() async {
   int loginStatus;
   final prefs = await SharedPreferences.getInstance();
   loginStatus = prefs.getInt('loginStatus') ?? 0;
@@ -42,7 +42,7 @@ saveUser(String id) async {
   prefs.setString('userId', id);
 }
 
-getUserId()async{
+getUserId() async {
   String userId;
   final prefs = await SharedPreferences.getInstance();
   userId = prefs.getString('userId') ?? null;
@@ -56,18 +56,17 @@ saveLoc(double lat, lng) async {
   prefs.setDouble('Longitude', lng);
 }
 
-getLat()async{
+getLat() async {
   double lattt;
   final prefs = await SharedPreferences.getInstance();
   lattt = prefs.getDouble('Latitude') ?? 8.48560258;
   return lattt;
 }
 
-
-getLng()async{
+getLng() async {
   double lnggg;
   final prefs = await SharedPreferences.getInstance();
-  lnggg = prefs.getDouble('Longitude') ?? 76.92097149 ;
+  lnggg = prefs.getDouble('Longitude') ?? 76.92097149;
   return lnggg;
 }
 
@@ -76,9 +75,9 @@ saveAddress(List<String> address) async {
   prefs.setStringList('address', address);
 }
 
-getAddress()async{
+getAddress() async {
   List<String> address;
   final prefs = await SharedPreferences.getInstance();
-  address = prefs.getStringList('address') ?? ["Select","","",""];
+  address = prefs.getStringList('address') ?? ["Select", "", "", ""];
   return address;
 }

@@ -19,6 +19,7 @@ import 'package:dating_app/pages/matches_page/matches_page.dart';
 import 'package:dating_app/pages/onboarding_page/onboarding_page.dart';
 import 'package:dating_app/pages/otp_page/otp_page.dart';
 import 'package:dating_app/pages/partner_type_page.dart/partner_type_page.dart';
+import 'package:dating_app/pages/payment_page/payment_page.dart';
 import 'package:dating_app/pages/perfect_match_page/perfect_match_page.dart';
 import 'package:dating_app/pages/quiz_game_page/quiz_game_page.dart';
 import 'package:dating_app/pages/quiz_sucess_page/quiz_sucess_page.dart';
@@ -33,6 +34,8 @@ import 'package:sailor/sailor.dart';
 
 import 'models/user_suggestion.dart';
 import 'pages/add_album_page/add_album_page.dart';
+import 'pages/meet_page/meetup_page.dart';
+import 'pages/subscriptions/subscription_page.dart';
 
 class Routes {
   // RouteNames
@@ -66,6 +69,9 @@ class Routes {
   static String partnerTypePage = 'partner_type_page';
   static String locationPage = 'location_page';
   static String likeMatchListPage = 'like_match_list_page';
+  static String meetuppage = 'meet_up_page';
+  static String subscription = "subscription";
+  static String payment = "payment";
 
   static final sailor = Sailor();
 
@@ -155,14 +161,15 @@ class Routes {
             return SignUpWithMobilePage();
           }),
 
-
       SailorRoute(
           name: otpPage,
           defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<OtpModel>(name:"otpData")],
+          params: [SailorParam<OtpModel>(name: "otpData")],
           builder: (context, args, params) {
-            OtpModel otpData = Sailor.param<OtpModel>(context,"otpData");
-            return OtpPage(otpData: otpData,);
+            OtpModel otpData = Sailor.param<OtpModel>(context, "otpData");
+            return OtpPage(
+              otpData: otpData,
+            );
           }),
 
       SailorRoute(
@@ -170,8 +177,10 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           params: [SailorParam<String>(name: 'email')],
           builder: (context, args, params) {
-            String email= Sailor.param<String>(context, "email");
-            return AddingPasswordForSignUp(email: email,);
+            String email = Sailor.param<String>(context, "email");
+            return AddingPasswordForSignUp(
+              email: email,
+            );
           }),
 
       SailorRoute(
@@ -179,7 +188,7 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           params: [SailorParam<UserModel>(name: 'userData')],
           builder: (context, args, params) {
-            UserModel userData= Sailor.param<UserModel>(context, "userData");
+            UserModel userData = Sailor.param<UserModel>(context, "userData");
             return CreateProfilePage(userData: userData);
           }),
 
@@ -282,7 +291,7 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             UserModel userDetail =
-            Sailor.param<UserModel>(context, "userDetails");
+                Sailor.param<UserModel>(context, "userDetails");
             return EditProfilePage(userdata: userDetail);
           }),
 
@@ -298,6 +307,24 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             return LikeMatchListPage();
+          }),
+      SailorRoute(
+          name: meetuppage,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return MeetupPage();
+          }),
+      SailorRoute(
+          name: subscription,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return Subscription();
+          }),
+      SailorRoute(
+          name: payment,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return PaymentPage();
           }),
     ]);
   }
