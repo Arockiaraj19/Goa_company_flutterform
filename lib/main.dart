@@ -23,7 +23,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _initialRoute = Routes.addProfilePicPage;
+  String _initialRoute = Routes.meetuppage;
 
   @override
   Widget build(BuildContext context) {

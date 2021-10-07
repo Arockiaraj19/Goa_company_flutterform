@@ -80,10 +80,10 @@ class _ImageUploadAlertState extends State<ImageUploadAlert> {
 
   void _displayImagePicker(ImageSource source) async {
     var pickedFile;
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-      Permission.camera,
-    ].request();
+    // Map<Permission, PermissionStatus> statuses = await [
+    //   Permission.storage,
+    //   Permission.camera,
+    // ].request();
 
     try {
       Navigator.of(context).pop();

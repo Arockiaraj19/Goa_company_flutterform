@@ -1,3 +1,4 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
@@ -24,84 +25,48 @@ class _BottomTabBar extends State<BottomTabBar> {
     _currentTabIndex = widget.currentIndex;
   }
 
+  final iconList = <IconData>[
+    FeatherIcons.home,
+    FeatherIcons.messageCircle,
+    FeatherIcons.calendar,
+    FeatherIcons.user,
+  ];
+
+  List<String> bottomnavheading = ['Home', 'Chat', 'Dating', 'Profile'];
   @override
   Widget build(BuildContext context) {
-    return
-      Container(padding: EdgeInsets.only(top: 8,bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.grey.shade200,offset: Offset(0.0,-1.0),blurRadius:5,spreadRadius:3)],
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(18),topRight: Radius.circular(18)),
-      ),
-      child:
-          GNav(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              rippleColor: Colors.grey[800], // tab button ripple color when pressed
-            hoverColor: Colors.grey[700], // tab button hover color
-            haptic: true, // haptic feedback
-            // tabBorderRadius: 15,
-            // tabActiveBorder: Border.all(color: Colors.black, width: 1), // tab button border
-            // tabBorder: Border.all(color: Colors.grey, width: 1), // tab button border
-            // tabShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 8)], // tab button shadow
-            curve: Curves.easeOutExpo, // tab animation curves
-            duration: Duration(milliseconds: 300), // tab animation duration
-            gap: 8, // the tab button gap between icon and text
-            color: Colors.grey, // unselected icon color
-            activeColor: Colors.white, // selected icon and text color
-                  tabBackgroundGradient: MainTheme.loginwithBtnGradient,
-            iconSize: 25, // tab button icon size
-            // tabBackgroundColor: Colors.purple.withOpacity(0.1), // selected tab background color
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // navigat// ion bar padding
-            onTabChange: _onTapped,
-            selectedIndex: _currentTabIndex,
-            tabs: [
-            GButton(
-            icon: FeatherIcons.home,
-            text: 'Home',
+    return AnimatedBottomNavigationBar.builder(
+      height: 70.h,
+      itemCount: iconList.length,
+      tabBuilder: (int index, bool isActive) {
+        final iconcolor = isActive ? Colors.pink : Color(0xff99A3B0);
+        final textcolor = isActive ? Colors.pink : Colors.transparent;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 5.h),
+            Icon(
+              iconList[index],
+              size: 24,
+              color: iconcolor,
             ),
-            GButton(
-            icon: FeatherIcons.messageCircle,
-            text: 'Chat',
-            ),
-            GButton(
-            icon: FeatherIcons.calendar,
-            text: 'Dating',
-            ),
-            GButton(
-            icon: FeatherIcons.user,
-            text: 'Profile',
+            SizedBox(height: 1.h),
+            Text(
+              bottomnavheading[index],
+              maxLines: 1,
+              style: TextStyle(color: textcolor, fontSize: 40.sp),
             )
-        ])
-      // BottomNavigationBar(
-      //   elevation: 12,
-      //   backgroundColor: Colors.grey.shade100,
-      //   showSelectedLabels: false,
-      //   showUnselectedLabels: false,
-      //
-      //   type: BottomNavigationBarType.fixed,
-      //   onTap: _onTapped,
-      //   items: [
-      // BottomNavigationBarItem(
-      //     icon: _currentTabIndex == 0
-      //         ? Icon(Icons.home_outlined,color: MainTheme.bottomBarBtnColor,size: 30,):
-      //            Icon(Icons.home_outlined,color: Colors.grey,size: 25),
-      //     label: "Home"),
-      //     BottomNavigationBarItem(
-      //         icon: _currentTabIndex == 1
-      //             ? Icon(Icons.chat_bubble_outline_outlined,color: MainTheme.bottomBarBtnColor,size: 30,):
-      //         Icon(Icons.chat_bubble_outline_outlined,color: Colors.grey,size: 25),
-      //         label: "Chat"),
-      //     BottomNavigationBarItem(
-      //         icon: _currentTabIndex == 2
-      //             ? Icon(Icons.description_outlined,color: MainTheme.bottomBarBtnColor,size: 30,):
-      //         Icon(Icons.description_outlined,color: Colors.grey,size: 25),
-      //         label: "Bookings"),
-      //     BottomNavigationBarItem(
-      //         icon: _currentTabIndex == 3
-      //             ? Icon(Icons.account_circle_outlined,color: MainTheme.bottomBarBtnColor,size: 30,):
-      //         Icon(Icons.account_circle_outlined,color: Colors.grey,size: 25,),
-      //         label: "Profile"),
-      //   ],
-      // ),
+          ],
+        );
+      },
+      backgroundColor: Colors.white,
+      activeIndex: _currentTabIndex,
+      splashColor: Colors.white,
+      splashSpeedInMilliseconds: 300,
+      notchSmoothness: NotchSmoothness.softEdge,
+      gapLocation: GapLocation.center,
+      onTap: _onTapped,
     );
   }
 

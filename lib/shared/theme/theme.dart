@@ -148,6 +148,10 @@ class MainTheme {
     fontSize: 12,
   );
 
+  
+
+
+
   static const LinearGradient buttonGradient = LinearGradient(
       colors: <Color>[
         Color.fromRGBO(255, 103, 155, 1),
