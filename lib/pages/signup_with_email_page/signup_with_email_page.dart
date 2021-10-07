@@ -20,7 +20,7 @@ class SignUpWithEmailPage extends StatefulWidget {
 
 class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
   TextEditingController _emailCtrl = TextEditingController();
-  bool loading =false;
+  bool loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
             SizedBox(
               height: ScreenUtil().setHeight(70),
             ),
-            commonPart(context,onWeb: false)
+            commonPart(context, onWeb: false)
           ],
         )),
       ),
@@ -85,32 +85,35 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
   }
 
   goToOtpPage() async {
-    setState(() {
-      loading=true;
-    });
+    // setState(() {
+    //   loading=true;
+    // });
     var network = EmailSignUpNetwork();
-    ResponseData result =await network.verifyEmailForSignup(_emailCtrl.text);
+    ResponseData result = await network.verifyEmailForSignup(_emailCtrl.text);
     showtoast(result.msg.toString());
-    OtpModel data=OtpModel.fromJson({"value":_emailCtrl.text,"isMob":false,"isSignUp":true});
-    result.statusDetails==1?Routes.sailor(Routes.otpPage,params: {"otpData":data}):
-    result.statusDetails==2?Routes.sailor(Routes.addingPasswordPage,params: {"email": _emailCtrl.text}):
-    Routes.sailor(Routes.loginPage);
+    OtpModel data = OtpModel.fromJson(
+        {"value": _emailCtrl.text, "isMob": false, "isSignUp": true});
+    result.statusDetails == 1
+        ? Routes.sailor(Routes.otpPage, params: {"otpData": data})
+        : result.statusDetails == 2
+            ? Routes.sailor(Routes.addingPasswordPage,
+                params: {"email": _emailCtrl.text})
+            : Routes.sailor(Routes.loginPage);
   }
 
-  Widget commonPart(BuildContext context,{bool onWeb = false}){
-
+  Widget commonPart(BuildContext context, {bool onWeb = false}) {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width / 2;
 
     var _textStyleforEnterNo =
-    TextStyle(color: Colors.black, fontSize: 16, fontFamily: "lato");
+        TextStyle(color: Colors.black, fontSize: 16, fontFamily: "lato");
     var _textForEnterMobile = TextStyle(
         color: MainTheme.enterTextColor,
         fontWeight: FontWeight.w400,
         fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
         fontFamily: "lato");
     var _textStyleforAlreadyHave =
-    TextStyle(color: Colors.black, fontSize: 14, fontFamily: "lato");
+        TextStyle(color: Colors.black, fontSize: 14, fontFamily: "lato");
 
     var _textStyleforLogin = TextStyle(
         color: Colors.black,
@@ -120,26 +123,27 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
 
     return Form(
       key: _formKey,
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-                padding: EdgeInsetsDirectional.only(
-                  top: _height / 18,
-                  bottom: _height / 50,
-                  // end: _width * 0.19,
-                  start: _width * 0.12,
-                ),
-                child: Text(
-                  "Enter your Email id",
-                  style:  onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                )),
-          ],
-        ),
-        Container(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                  padding: EdgeInsetsDirectional.only(
+                    top: _height / 18,
+                    bottom: _height / 50,
+                    // end: _width * 0.19,
+                    start: _width * 0.12,
+                  ),
+                  child: Text(
+                    "Enter your Email id",
+                    style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+            ],
+          ),
+          Container(
             child: InputField(
               labelBehavior: FloatingLabelBehavior.never,
               gradient: MainTheme.loginwithBtnGradient,
@@ -153,60 +157,58 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
               // inputType: TextInputType.number,
               padding: onWeb
                   ? EdgeInsetsDirectional.only(
-                end: _width * 0.19,
-                start: _width * 0.19,
-              )
+                      end: _width * 0.19,
+                      start: _width * 0.19,
+                    )
                   : EdgeInsetsDirectional.only(bottom: 10, end: 20, start: 20),
               validators: (String value) {
                 if (value.isEmpty) return 'Required field';
                 return null;
               },
               hintText: 'Enter your email',
-            ),),
-        Container(
-          padding: EdgeInsetsDirectional.only(
-            top: _height / 18,
-            end: _width * 0.12,
-            start: _width * 0.12,
-          ),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    child: Text(
-                      "Once you hit continue, you’ll receive a verification code. The verified email can be used to log in",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontFamily: "lato"),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )),
-              ]),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GradientButton(
-              name: loading?"Loading..":"Next",
-              gradient: MainTheme.loginBtnGradient,
-              height: 35,
-              fontSize: 14,
-              width: 150,
-              active: true,
-              isLoading: loading,
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-              onPressed: () {
-                if(_formKey.currentState.validate()){
-                  goToOtpPage();
-                }
-              },
             ),
-          ],
-        ),
-      ],),
+          ),
+          Container(
+            padding: EdgeInsetsDirectional.only(
+              top: _height / 18,
+              end: _width * 0.12,
+              start: _width * 0.12,
+            ),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Expanded(
+                  child: Text(
+                "Once you hit continue, you’ll receive a verification code. The verified email can be used to log in",
+                style: TextStyle(
+                    color: Colors.grey, fontSize: 14, fontFamily: "lato"),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              )),
+            ]),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GradientButton(
+                name: loading ? "Loading.." : "Next",
+                gradient: MainTheme.loginBtnGradient,
+                height: 35,
+                fontSize: 14,
+                width: 150,
+                active: true,
+                isLoading: loading,
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    goToOtpPage();
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -329,7 +331,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                             )
                           ])),
                     ]),
-                commonPart(context,onWeb: true),
+                commonPart(context, onWeb: true),
                 Container(
                   height: 110,
                   width: _width,

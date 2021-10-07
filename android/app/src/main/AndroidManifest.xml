@@ -9,7 +9,9 @@
    <application
         android:label="Sparks"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
+        
 
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyAVJ2MU4IKey0sXdKG3VvBmn1Tf9p7Hbe0"/>
