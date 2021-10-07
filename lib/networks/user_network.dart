@@ -46,8 +46,6 @@ class UserNetwork{
       String id=await getUserId();
       var data=await _dio.then((value) async {
         response =await value.get(userDetailsEndpoint+"/"+id);
-        print("oops");
-        print(response.data);
         print(response.data[0]["interests_detail"]);
 
         if (response.statusCode == 200) {
