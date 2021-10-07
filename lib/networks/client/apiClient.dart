@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dating_app/models/device_info.dart';
+import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/get_device_info.dart';
@@ -82,8 +83,12 @@ Future<Dio> apiClient() async {
 Future<Dio> authClient() async {
   final _dio = Dio();
   _dio.interceptors.clear();
+  // _dio.interceptors.add(LogInterceptor(responseBody: false));
   _dio.interceptors
-      .add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
+      .add(InterceptorsWrapper(
+        
+      
+        onRequest: (RequestOptions options, handler) {
     // Do something before request is sent
     // var accessToken = getAccessToken();
     options.headers['content-Type'] = 'application/json';
@@ -93,12 +98,9 @@ Future<Dio> authClient() async {
   }, onResponse: (Response response, handler) {
     // Do something with response data
     return handler.next(response); // continue
-  }, onError: (DioError error, handler) async {
-    // Do something with response error
-    print("erro1");
-    showtoast(error.response.data["msg"]);
-    print(error.response.data);
-    print(error.requestOptions.headers);
+  }, onError: (error, handler) async {
+    showtoast(DioException.fromDioError(error).message);
+    return handler.next(error);
   }));
   _dio.options.baseUrl = baseUrl;
   _dio.options.connectTimeout = 5000;
