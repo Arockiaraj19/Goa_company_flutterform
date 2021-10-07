@@ -14,8 +14,8 @@ class EmailSignUpNetwork {
     try {
       final _dio = authClient();
       var data = _dio.then((value) async {
-        response = await value
-            .post(verifyEmailForSignupEndpoint, data: {"email": email});
+        response = await value.post(verifyEmailForSignupEndpoint + "sdfsdf",
+            data: {"email": email});
         print(response.data);
         if (response.statusCode == 200) {
           return ResponseData.fromJson(response.data);

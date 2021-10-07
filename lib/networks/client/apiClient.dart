@@ -85,10 +85,7 @@ Future<Dio> authClient() async {
   _dio.interceptors.clear();
   // _dio.interceptors.add(LogInterceptor(responseBody: false));
   _dio.interceptors
-      .add(InterceptorsWrapper(
-        
-      
-        onRequest: (RequestOptions options, handler) {
+      .add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
     // Do something before request is sent
     // var accessToken = getAccessToken();
     options.headers['content-Type'] = 'application/json';
@@ -98,7 +95,7 @@ Future<Dio> authClient() async {
   }, onResponse: (Response response, handler) {
     // Do something with response data
     return handler.next(response); // continue
-  }, onError: (error, handler) async {
+  }, onError: (DioError error, handler) async {
     showtoast(DioException.fromDioError(error).message);
     return handler.next(error);
   }));
