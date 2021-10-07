@@ -26,7 +26,6 @@ Future registerUser(String mobile, BuildContext context,bool isSignUp) async{
       codeSent: (String verificationId, [int forceResendingToken]){
         // var dataa=jsonEncode({"value":"+91$mobile","id":verificationId,
         //   "isMob":true,"isSignUp":true });
-        print("sss");
         OtpModel data=OtpModel.fromJson({"value":"+91$mobile","id":verificationId,
           "isMob":true,"isSignUp":isSignUp});
         Routes.sailor(Routes.otpPage,params: {"otpData":data});

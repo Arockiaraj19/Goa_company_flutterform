@@ -49,12 +49,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var val=1;
   Future<bool> val1;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     context.read<HomeProvider>().getData();
   }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
