@@ -1,20 +1,16 @@
 import 'dart:async';
-
-import 'package:dating_app/models/device_info.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signin_network.dart';
 import 'package:dating_app/networks/user_network.dart';
-import 'package:dating_app/shared/helpers/get_device_info.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../routes.dart';
 
 class LoginWith extends StatefulWidget {
   final String name;
@@ -37,7 +33,7 @@ class _LoginWithState extends State<LoginWith> {
     print(widget.name);
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1000) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -69,55 +65,42 @@ class _LoginWithState extends State<LoginWith> {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.black,
-            body: SingleChildScrollView(
-                child: Container(
-                    padding: EdgeInsets.all(20),
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(
-                              "assets/images/login pic.png",
-                            ))),
-                    child: Column(children: [
-                      Row(
-                        children: [
-                          Container(
-                              margin: EdgeInsetsDirectional.only(
-                                  start: 10, top: 20),
-                              child: Text("Sparks", style: _textStyleforSpark)),
-                        ],
-                      ),
-                      Container(
-                          margin: EdgeInsetsDirectional.only(
-                              start: 5, top: 50, bottom: 10),
-                          child: Row(
-                            children: [
-                              Container(
-                                child: Text(
-                                  "Welcome Back !!",
-                                  style: _textStyleforWelcomBack,
-                                ),
-                              ),
-                            ],
-                          )),
-                      Container(
-                          margin: EdgeInsetsDirectional.only(
-                            bottom: 10,
-                            start: 5,
-                          ),
-                          child: Row(children: [
-                            Expanded(
-                              child: Text("Hey! Good to see you again",
-                                  style: _goodToSeeTextColor),
-                            )
-                          ])),
-                      SizedBox(
-                        height: 110,
-                      ),
-                      loginItem(widget.name),
-                    ])))));
+            body: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage(
+                          "assets/images/login pic.png",
+                        ))),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 35.h,
+                        ),
+                        Text("Sparks", style: _textStyleforSpark),
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Text(
+                          "Welcome Back !!",
+                          style: _textStyleforWelcomBack,
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Text("Hey! Good to see you again",
+                            style: _goodToSeeTextColor),
+                        SizedBox(
+                          height: 110.h,
+                        ),
+                        loginItem(widget.name),
+                      ]),
+                ))));
   }
 
   Widget loginItem(String item, {double btnWidth}) {
@@ -140,142 +123,167 @@ class _LoginWithState extends State<LoginWith> {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  margin: EdgeInsetsDirectional.only(
-                    start: 20,
-                  ),
-                  child: Text(
-                    "Enter your email",
-                    style: TextStyle(
-                        color: MainTheme.enterTextColor,
-                        fontSize: 14,
-                        fontFamily: "lato",
-                        fontWeight: FontWeight.w400),
-                  )),
-            ],
+          Text(
+            "Enter your email",
+            style: TextStyle(
+                color: MainTheme.enterTextColor,
+                fontSize: 40.sp,
+                fontFamily: "lato",
+                fontWeight: FontWeight.w400),
           ),
-          InputField(
-            labelBehavior: FloatingLabelBehavior.never,
-            gradient: MainTheme.loginwithBtnGradient,
-            inputBoxBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(10)),
-            onTap: () {},
-            controller: _emailCtrl,
-            // inputType: TextInputType.number,
-            padding: EdgeInsetsDirectional.only(
-                top: 10, bottom: 10, end: 20, start: 20),
-            validators: (String value) {
-              if (value.isEmpty) return 'Required field';
-              return null;
+          SizedBox(
+            height: 8.h,
+          ),
+          Forminput(
+            emailController: _emailCtrl,
+            placeholder: "Enter your email",
+            validation: (val) {
+              if (val.isEmpty) {
+                return "Please enter email id";
+              }
+              RegExp regex = new RegExp(emailpatttern.toString());
+              if (!regex.hasMatch(val)) {
+                return 'Please enter valid email id';
+              }
+              if (val.length > 50) {
+                return "Please enter less than 50 letters";
+              }
+              // return null;
             },
-            hintText: 'Enter your email',
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  margin: EdgeInsetsDirectional.only(start: 20, top: 20),
-                  child: Text(
-                    "Enter your password",
-                    style: TextStyle(
-                        color: MainTheme.enterTextColor,
-                        fontSize: 14,
-                        fontFamily: "lato",
-                        fontWeight: FontWeight.w400),
-                  )),
-            ],
+
+          SizedBox(
+            height: 20.h,
           ),
-          InputField(
-            labelBehavior: FloatingLabelBehavior.never,
-            gradient: MainTheme.loginwithBtnGradient,
-            inputBoxBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(10)),
-            onTap: () {},
+
+          Text(
+            "Enter your password",
+            style: TextStyle(
+                color: MainTheme.enterTextColor,
+                fontSize: 40.sp,
+                fontFamily: "lato",
+                fontWeight: FontWeight.w400),
+          ),
+          SizedBox(
+            height: 8.h,
+          ),
+          TextFormField(
             controller: _passCtrl,
-            suffixIcon: InkWell(
-                onTap: () {
-                  setState(() {
-                    if (obscureText == false) {
-                      obscureText = true;
-                    } else {
-                      obscureText = false;
-                    }
-                  });
-                },
-                child: Container(
-                    margin: EdgeInsetsDirectional.only(end: 10),
-                    child: !obscureText
-                        ? Icon(
-                            Icons.remove_red_eye_outlined,
-                            color: MainTheme.primaryColor,
-                            size: 18,
-                          )
-                        : Icon(
-                            Icons.visibility_off_outlined,
-                            color: MainTheme.primaryColor,
-                            size: 18,
-                          ))),
-            // inputType: TextInputType.,
+            cursorColor: Colors.pink,
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.emailAddress,
             obscureText: obscureText,
-            padding: EdgeInsetsDirectional.only(
-                top: 10, bottom: 10, end: 20, start: 20),
-            validators: (String value) {
-              if (value.isEmpty) return 'Required field';
-              return null;
-            },
-            hintText: 'password',
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                  padding: EdgeInsetsDirectional.only(end: 20),
-                  child: Text("Forgot password ?",
-                      style: TextStyle(
-                          color: MainTheme.forgotPassTextColor,
-                          fontWeight: FontWeight.w400,
-                          height: 2,
-                          fontSize: 13,
-                          fontFamily: "lato")
-                      // TextStyle(
-                      //     color: Colors.black, fontSize: 14, fontFamily: "lato"),
-                      )),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                height: 40,
-                fontSize: 14,
-                name: loading ? "Logging In.." : "log In",
-                gradient: MainTheme.loginwithBtnGradient,
-                active: true,
-                color: Colors.white,
-                isLoading: loading,
-                width: btnWidth ?? ScreenUtil().setWidth(480),
-                fontWeight: FontWeight.w500,
-                onPressed: () async {
-                  if (_formKey.currentState.validate()) {
-                    print(_emailCtrl.text.trim());
-                    print(_passCtrl.text.trim());
-                    goToFindMatchPage();
-                  }
-                  // var dto = {"password": "123456", "email": "asd@mail.com"};
-                  // _authStore.onLogin(dto);
-                },
+            decoration: InputDecoration(
+              suffixIcon: InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (obscureText == false) {
+                        obscureText = true;
+                      } else {
+                        obscureText = false;
+                      }
+                    });
+                  },
+                  child: Container(
+                      margin: EdgeInsetsDirectional.only(end: 10),
+                      child: !obscureText
+                          ? Icon(
+                              Icons.remove_red_eye_outlined,
+                              color: Color(0xffC4C4C4),
+                              size: 18,
+                            )
+                          : Icon(
+                              Icons.visibility_off_outlined,
+                              color: Color(0xffC4C4C4),
+                              size: 18,
+                            ))),
+              contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+              hintText: "password",
+              hintStyle: TextStyle(
+                  fontSize: 40.sp,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffC4C4C4)),
+              errorStyle: TextStyle(
+                fontSize: 40.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.pink,
               ),
-            ],
+              errorBorder: OutlineInputBorder(
+                gapPadding: 0,
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Color(0xffC4C4C4),
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+            ),
+            validator: (val) {
+              // if (val.isEmpty) {
+              //   return "Please enter password";
+              // }
+              // RegExp regex = new RegExp(passwordpattern.toString());
+              // if (!regex.hasMatch(val)) {
+              //   return 'Please enter valid password';
+              // }
+              // return null;
+            },
+          ),
+          SizedBox(
+            height: 3.h,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              "Forgot password ?",
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                  fontSize: 40.sp,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffC4C4C4)),
+              // TextStyle(
+              //     color: Colors.black, fontSize: 14, fontFamily: "lato"),
+            ),
+          ),
+
+          SizedBox(
+            height: 30.h,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: GradientButton(
+              height: 40.h,
+              fontSize: 45.sp,
+              name: loading ? "Logging In.." : "Log In",
+              gradient: MainTheme.loginwithBtnGradient,
+              active: true,
+              color: Colors.white,
+              isLoading: loading,
+              width: 500.w,
+              borderRadius: BorderRadius.circular(20.sp),
+              fontWeight: FontWeight.w500,
+              onPressed: () async {
+                if (_formKey.currentState.validate()) {
+                  goToFindMatchPage();
+                }
+                // var dto = {"password": "123456", "email": "asd@mail.com"};
+                // _authStore.onLogin(dto);
+              },
+            ),
           ),
           // SizedBox(height: ScreenUtil().setHeight(200)),
         ],
@@ -317,69 +325,106 @@ class _LoginWithState extends State<LoginWith> {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  margin: EdgeInsetsDirectional.only(start: 20, top: 60),
-                  child: Text(
-                    "Enter your mobile number",
-                    style: TextStyle(
-                        color: Colors.black, fontSize: 14, fontFamily: "lato"),
-                  )),
-            ],
+          SizedBox(
+            height: 80.h,
           ),
-          InputField(
-            labelBehavior: FloatingLabelBehavior.never,
-            gradient: MainTheme.loginwithBtnGradient,
-            inputBoxBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(10)),
-            onTap: () {},
-            controller: _numberCtrl,
-            inputType: TextInputType.number,
-            padding: EdgeInsetsDirectional.only(
-                top: 10, bottom: 10, end: 20, start: 20),
-            prefix: Text(
-              '+91  ',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            validators: (String value) {
-              if (value.isEmpty) return 'Required field';
-              return null;
-            },
-            hintText: 'mobile number',
+          Text(
+            "Enter your mobile number",
+            style: TextStyle(
+                color: MainTheme.enterTextColor,
+                fontSize: 40.sp,
+                fontFamily: "lato",
+                fontWeight: FontWeight.w400),
           ),
           SizedBox(
-            height: 100,
+            height: 10.h,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                height: 40,
-                fontSize: 14,
-                name: loading ? "Loading.." : "Login",
-                gradient: MainTheme.loginwithBtnGradient,
-                active: true,
-                isLoading: loading,
-                color: Colors.white,
-                width: btnWidth ?? ScreenUtil().setWidth(480),
-                fontWeight: FontWeight.w500,
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    goToLoginOtpPage();
-                  }
-                },
+          TextFormField(
+            controller: _numberCtrl,
+            cursorColor: Colors.pink,
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              prefixText: "+91",
+              prefixStyle: TextStyle(
+                  color: MainTheme.enterTextColor,
+                  fontSize: 45.sp,
+                  fontFamily: "lato",
+                  fontWeight: FontWeight.w400),
+              contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+              hintText: 'mobile number',
+              hintStyle: TextStyle(
+                  fontSize: 40.sp,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffC4C4C4)),
+              errorStyle: TextStyle(
+                fontSize: 40.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.pink,
               ),
-            ],
+              errorBorder: OutlineInputBorder(
+                gapPadding: 0,
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Color(0xffC4C4C4),
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return "* Required";
+              }
+              RegExp regex = new RegExp(numberpattern);
+              if (!regex.hasMatch(value)) {
+                return 'Please enter only number';
+              }
+              if (value.length > 10 || value.length < 10) {
+                return "Please enter only 10 numbers";
+              }
+
+              return null;
+            },
           ),
-          // SizedBox(height: ScreenUtil().setHeight(400)),
+          SizedBox(
+            height: 50.h,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: GradientButton(
+              height: 40.h,
+              fontSize: 45.sp,
+              name: "Log In",
+              gradient: MainTheme.loginwithBtnGradient,
+              active: true,
+              color: Colors.white,
+              isLoading: loading,
+              width: 500.w,
+              borderRadius: BorderRadius.circular(20.sp),
+              fontWeight: FontWeight.w500,
+              onPressed: () async {
+                if (_formKey.currentState.validate()) {
+                  goToLoginOtpPage();
+                }
+                // var dto = {"password": "123456", "email": "asd@mail.com"};
+                // _authStore.onLogin(dto);
+              },
+            ),
+          ),
         ],
       ),
     );

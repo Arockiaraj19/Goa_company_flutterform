@@ -49,7 +49,6 @@ class _GradientButtonState extends State<GradientButton> {
     return Container(
         height: widget.height,
         width: widget.width,
-        margin: widget.margin ?? EdgeInsets.all(20),
         decoration: BoxDecoration(
           border: widget.border ?? null,
           boxShadow: widget.boxShadow ??
@@ -62,7 +61,7 @@ class _GradientButtonState extends State<GradientButton> {
         ),
         child: MaterialButton(
             highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
+            splashColor: Colors.white,
             focusColor: Colors.transparent,
             hoverColor: Colors.transparent,
             height: widget.height,

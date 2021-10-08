@@ -12,7 +12,7 @@ class SignInNetwork {
     try {
       final _dio = apiClient();
       var data = _dio.then((value) async {
-        Response response = await value.post(signInEmailEndpoint,
+        Response response = await value.post(signInEmailEndpoint+"dsfsfd",
             data: {"email": email, "password": password});
         print("before responce");
         print(response.data);

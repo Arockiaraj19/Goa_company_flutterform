@@ -3,9 +3,7 @@ import 'dart:io';
 
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/user_network.dart';
-import 'package:dating_app/pages/detail_page/detail_page.dart';
-import 'package:dating_app/pages/home_page/widget/album_card.dart';
-import 'package:dating_app/pages/home_page/widget/imageCard.dart';
+
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
 import 'package:dating_app/pages/profile_page/widgets/percentage_bar.dart';
 import 'package:dating_app/pages/profile_page/widgets/scores.dart';

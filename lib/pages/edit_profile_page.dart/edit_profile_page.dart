@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dating_app/models/hobby.dart';
 import 'package:dating_app/models/interest.dart';
@@ -741,10 +742,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   uploadImage() async {
-    List<int> imageBytes = File(selectedUserPic.path).readAsBytesSync();
-    String imageString = base64Encode(imageBytes);
+    Uint8List imageString = await File(selectedUserPic.path).readAsBytes();
+    // List<int> imageBytes = File(selectedUserPic.path).readAsBytesSync();
+    // String imageString = base64Encode(imageBytes);
     var network = UploadImage();
-    String result = await network.uploadImage(imageString, 1);
+    String result = await network.uploadImage(imageString);
     return [result];
   }
 

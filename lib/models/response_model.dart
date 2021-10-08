@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 class ResponseData {
   String msg;
   String id;
   String date;
   int statusDetails;
-
 
   ResponseData({this.msg, this.id, this.date, this.statusDetails});
 
@@ -41,4 +42,33 @@ class ResponseData2 {
     data['path'] = this.path;
     return data;
   }
+}
+
+class Responsestorageimage {
+  String uploadUrl;
+  String downloadUrl;
+  Responsestorageimage({
+    this.uploadUrl,
+     this.downloadUrl,
+  });
+
+  
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uploadUrl': uploadUrl,
+      'downloadUrl': downloadUrl,
+    };
+  }
+
+  factory Responsestorageimage.fromMap(Map<String, dynamic> map) {
+    return Responsestorageimage(
+      uploadUrl: map['uploadUrl'],
+      downloadUrl: map['downloadUrl'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Responsestorageimage.fromJson(String source) => Responsestorageimage.fromMap(json.decode(source));
 }

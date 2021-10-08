@@ -93,34 +93,24 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
                 ? Positioned(
                     bottom: 0,
                     right: 10,
-                    child: Container(
-                        height: 32,
-                        width: 118,
-                        decoration: BoxDecoration(
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color: Colors.grey.shade300, blurRadius: 1.0)
-                          ],
-                          gradient: MainTheme.getStartedBtnGradient,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: MaterialButton(
-                          padding: EdgeInsets.all(0),
-                          onPressed: () {
-                            Routes.sailor(
-                              Routes.signUpPage,
-                            );
-                          },
-                          child: Text('Get Started',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: "Inter",
-                                  fontSize: ScreenUtil().setSp(30),
-                                  fontWeight: FontWeight.w500)),
-                        )))
+                    child: GradientButton(
+                      height: 40.h,
+                      fontSize: 45.sp,
+                      name: 'Get Started',
+                      gradient: MainTheme.loginwithBtnGradient,
+                      active: true,
+                      color: Colors.white,
+                      width: 400.w,
+                      borderRadius: BorderRadius.circular(20.sp),
+                      fontWeight: FontWeight.w500,
+                      onPressed: () async {
+                        Routes.sailor(
+                          Routes.signUpPage,
+                        );
+                        // var dto = {"password": "123456", "email": "asd@mail.com"};
+                        // _authStore.onLogin(dto);
+                      },
+                    ))
                 : Positioned(
                     bottom: 10,
                     right: 20,

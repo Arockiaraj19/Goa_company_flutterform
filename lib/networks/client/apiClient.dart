@@ -83,7 +83,13 @@ Future<Dio> apiClient() async {
 Future<Dio> authClient() async {
   final _dio = Dio();
   _dio.interceptors.clear();
-  // _dio.interceptors.add(LogInterceptor(responseBody: false));
+  _dio.interceptors.add(LogInterceptor(
+      responseBody: true,
+      error: false,
+      requestHeader: false,
+      responseHeader: false,
+      request: false,
+      requestBody: false));
   _dio.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
     // Do something before request is sent

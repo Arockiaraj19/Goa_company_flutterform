@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
@@ -24,9 +25,9 @@ class AddAlbumPicPage extends StatefulWidget {
 }
 
 class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
-  List<XFile> selectedUserAvatar = [null,null,null,null,null,null];
-  List<String> uploadedImages=[];
-  bool loading=false;
+  List<XFile> selectedUserAvatar = [null, null, null, null, null, null];
+  List<String> uploadedImages = [];
+  bool loading = false;
   // Uint8List  selectedUser = null;
   @override
   Widget build(BuildContext context) {
@@ -151,7 +152,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                     itemCount: 6,
                     itemBuilder: (BuildContext context, int index) {
                       return AlbumImageCard(
-                        onTap: ()async {
+                        onTap: () async {
                           selectUserImage(index);
                         },
                         selectedUserAvatar: selectedUserAvatar[index],
@@ -174,7 +175,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                 children: [
                   GradientButton(
                     height: 40,
-                    name: loading?"Loading..":"Continue",
+                    name: loading ? "Loading.." : "Continue",
                     gradient: MainTheme.loginBtnGradient,
                     active: true,
                     isLoading: loading,
@@ -190,19 +191,19 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
             ]))));
   }
 
-  goToLookingForPagePage() async{
+  goToLookingForPagePage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
     var network = UploadImage();
     print("kl1");
-    for(int i=0;i<6;i++){
-      if(selectedUserAvatar[i]!=null){
+    for (int i = 0; i < 6; i++) {
+      if (selectedUserAvatar[i] != null) {
         print("kl2");
-        List<int> imageBytes = File(selectedUserAvatar[i].path).readAsBytesSync();
-        String imageString = base64Encode(imageBytes);
 
-        String result =await network.uploadImage(imageString,1);
+        Uint8List imageString =
+            await File(selectedUserAvatar[i].path).readAsBytes();
+        String result = await network.uploadImage(imageString);
         print("kl3");
         print(result);
         uploadedImages.add(result);
@@ -210,16 +211,16 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
       }
     }
     print("op");
-    var network1 = UserNetwork();
-    var userData={"profile_image":uploadedImages};
-    UserModel result1 =await network1.patchUserData(userData);
-    Timer(Duration(seconds: 2), ()=>offLoading());
-    result1 != null? onboardingCheck(result1):null;
+    // var network1 = UserNetwork();
+    // var userData = {"profile_image": uploadedImages};
+    // UserModel result1 = await network1.patchUserData(userData);
+    // Timer(Duration(seconds: 2), () => offLoading());
+    // result1 != null ? onboardingCheck(result1) : null;
   }
 
-  offLoading(){
+  offLoading() {
     setState(() {
-      loading=false;
+      loading = false;
     });
   }
 
@@ -434,9 +435,10 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                               itemBuilder: (BuildContext context, int index) {
                                 return AlbumImageCard(
                                     onTap: () async {
-                                       selectUserImage(index);
+                                      selectUserImage(index);
                                     },
-                                    selectedUserAvatar: selectedUserAvatar[index],
+                                    selectedUserAvatar:
+                                        selectedUserAvatar[index],
                                     onTapClose: () {
                                       setState(() {
                                         selectedUserAvatar[index] = null;
@@ -456,7 +458,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GradientButton(
-                              name: loading?"Loading..":"Continue",
+                              name: loading ? "Loading.." : "Continue",
                               gradient: MainTheme.loginBtnGradient,
                               height: 35,
                               fontSize: 14,
