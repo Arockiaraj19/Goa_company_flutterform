@@ -214,7 +214,6 @@ class _LoginWithState extends State<LoginWith> {
                 color: Colors.pink,
               ),
               errorBorder: OutlineInputBorder(
-                gapPadding: 0,
                 borderSide: BorderSide(
                     color: Colors.pink, width: 1, style: BorderStyle.solid),
               ),
@@ -234,14 +233,14 @@ class _LoginWithState extends State<LoginWith> {
               ),
             ),
             validator: (val) {
-              if (val.isEmpty) {
-                return "Please enter password";
-              }
-              RegExp regex = new RegExp(passwordpattern.toString());
-              if (!regex.hasMatch(val)) {
-                return 'Please enter valid password';
-              }
-              return null;
+              // if (val.isEmpty) {
+              //   return "Please enter password";
+              // }
+              // RegExp regex = new RegExp(passwordpattern.toString());
+              // if (!regex.hasMatch(val)) {
+              //   return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
+              // }
+              // return null;
             },
           ),
           SizedBox(
@@ -417,7 +416,7 @@ class _LoginWithState extends State<LoginWith> {
             child: GradientButton(
               height: 110.w,
               fontSize: 40.sp,
-              name: "Log In",
+              name: loading ? "Logging In.." : "Log In",
               gradient: MainTheme.loginwithBtnGradient,
               active: true,
               color: Colors.white,

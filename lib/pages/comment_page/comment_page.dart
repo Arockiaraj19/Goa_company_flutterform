@@ -1,3 +1,5 @@
+import 'package:dating_app/networks/client/api_list.dart';
+import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
 import 'package:dating_app/pages/chatting_page/wigets/chatt_box.dart';
 import 'package:dating_app/pages/comment_page/widgets/dates_card.dart';
@@ -13,6 +15,7 @@ import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class CommentPage extends StatefulWidget {
   CommentPage({Key key}) : super(key: key);
@@ -25,11 +28,25 @@ class _CommentPageState extends State<CommentPage>
     with TickerProviderStateMixin {
   TabController _tabController;
 
+  IO.Socket socket = IO.io(
+      socketUrl,
+      IO.OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
+          .build());
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    print("init socket state");
+    socket.onConnect((data) {
+      print('connect' + data);
+    });
+    socket.on("checking", (data) => print(data));
+  }
+
+  void sentUserId() async {
+    String userId = await getUserId();
+    print("User id event" + userId);
+    await socket.emit('identity', userId);
   }
 
   @override
@@ -51,12 +68,17 @@ class _CommentPageState extends State<CommentPage>
             backgroundColor: MainTheme.appBarColor,
             elevation: 0,
             actions: [
-              Container(
-                margin: EdgeInsetsDirectional.only(end: 10),
-                child: Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.grey,
-                  size: 25,
+              InkWell(
+                onTap: () async {
+                  return sentUserId();
+                },
+                child: Container(
+                  margin: EdgeInsetsDirectional.only(end: 10),
+                  child: Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
                 ),
               )
             ],
@@ -104,8 +126,7 @@ class _CommentPageState extends State<CommentPage>
                         unselectedLabelColor: Colors.black,
                         labelStyle: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
-                        unselectedLabelStyle: TextStyle(
-                            fontSize: 14),
+                        unselectedLabelStyle: TextStyle(fontSize: 14),
                         indicatorWeight: 3,
                         tabs: <Widget>[
                           Container(

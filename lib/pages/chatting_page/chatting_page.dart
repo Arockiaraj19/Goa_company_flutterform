@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:web_socket_channel/status.dart' as status;
 
-
 class ChattingPage extends StatefulWidget {
   final String image;
   final String name;
@@ -40,31 +39,7 @@ class _ChattingPageState extends State<ChattingPage> {
     "Meetup",
     "Expert support"
   ];
-
-  IO.Socket socket;
-
-
-  void connect(){
-    try {
-      socket = IO.io("ws://65.1.148.147:3007");
-      socket.connect();
-      print("connect");
-      socket.onConnect((data) => print("connected"));
-      socket.emit("Start_Chat", "Client Messagess");
-      socket.onError((data) => print("error"));
-    } catch(e){
-      print("err");
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    connect();
-
-  }
+ 
   @override
   Widget build(BuildContext context) {
     return SafeArea(

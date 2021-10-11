@@ -63,7 +63,7 @@ class _BottomTabBar extends State<BottomTabBar> {
       backgroundColor: Colors.white,
       activeIndex: _currentTabIndex,
       splashColor: Colors.white,
-      splashSpeedInMilliseconds: 300,
+      splashSpeedInMilliseconds: 100,
       notchSmoothness: NotchSmoothness.softEdge,
       gapLocation: GapLocation.center,
       onTap: _onTapped,

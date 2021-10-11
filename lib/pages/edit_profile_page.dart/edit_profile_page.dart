@@ -116,7 +116,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _weightCtrl.text =
         widget.userdata.weight == null ? "" : widget.userdata.weight.toString();
     dropdownProfessionValue = widget.userdata.profession.first;
-    selectedMenuIndex = widget.userdata.gender;
+    // selectedMenuIndex = widget.userdata.gender;
     selectedDate = DateTime.parse(widget.userdata.dob);
     _dobInputCtrl.value =
         TextEditingValue(text: DateFormat.yMMMd().format(selectedDate));
@@ -742,12 +742,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   uploadImage() async {
-    Uint8List imageString = await File(selectedUserPic.path).readAsBytes();
-    // List<int> imageBytes = File(selectedUserPic.path).readAsBytesSync();
-    // String imageString = base64Encode(imageBytes);
-    var network = UploadImage();
-    String result = await network.uploadImage(imageString);
-    return [result];
+    // Uint8List imageString = await File(selectedUserPic.path).readAsBytes();
+    // // List<int> imageBytes = File(selectedUserPic.path).readAsBytesSync();
+    // // String imageString = base64Encode(imageBytes);
+    // var network = UploadImage();
+    // // String result = await network.uploadImage(imageString);
+    // return [result];
   }
 
   void selectUserImage() {

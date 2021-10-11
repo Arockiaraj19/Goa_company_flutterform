@@ -24,7 +24,7 @@ class _MainAppBarState extends State<MainAppBar> {
         fontSize: ScreenUtil().setSp(MainTheme.mSecondaryHeadingfontSize),
         fontFamily: "lato");
     return AppBar(
-        backgroundColor:Colors.grey.shade50,// MainTheme.appBarColor,
+        backgroundColor: Colors.grey.shade50, // MainTheme.appBarColor,
         elevation: 0,
         actions: [
           Container(
@@ -39,7 +39,7 @@ class _MainAppBarState extends State<MainAppBar> {
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(kToolbarHeight - 100),
             child: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight),
+                preferredSize: const Size.fromHeight(kToolbarHeight - 50),
                 child: Column(children: [
                   Container(
                       padding: EdgeInsetsDirectional.only(start: 30, end: 5),
@@ -75,8 +75,8 @@ class _MainAppBarState extends State<MainAppBar> {
         // enableDrag: false,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         builder: (BuildContext context) {
-          return Column(mainAxisSize: MainAxisSize.min,
-              children:[ FilterBottomSheet()]);
+          return Column(
+              mainAxisSize: MainAxisSize.min, children: [FilterBottomSheet()]);
         });
   }
 }

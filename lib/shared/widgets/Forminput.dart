@@ -36,15 +36,15 @@ class Forminput extends StatelessWidget {
                 letterSpacing: 1.0,
                 fontWeight: FontWeight.w400,
                 color: Color(0xffC4C4C4)),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Colors.pink, width: 1, style: BorderStyle.solid),
-            ),
             errorStyle: TextStyle(
               fontSize: 40.sp,
-              letterSpacing: 1.0,
               fontWeight: FontWeight.w400,
               color: Colors.pink,
+            ),
+            errorBorder: OutlineInputBorder(
+              gapPadding: 0,
+              borderSide: BorderSide(
+                  color: Colors.pink, width: 1, style: BorderStyle.solid),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
@@ -59,7 +59,6 @@ class Forminput extends StatelessWidget {
                   color: Colors.pink, width: 1, style: BorderStyle.solid),
             ),
           ),
-          enableInteractiveSelection: true,
           validator: validation),
     );
   }

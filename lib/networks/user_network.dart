@@ -11,21 +11,17 @@ import 'package:dio/dio.dart';
 import 'client/apiClient.dart';
 import 'client/api_list.dart';
 
-
-class UserNetwork{
-
-
-  Future <UserModel> patchUserData(var userData) async {
-
+class UserNetwork {
+  Future<UserModel> patchUserData(var userData) async {
     Response response;
     try {
       final _dio = apiClient();
-      var id=await getUserId();
+      var id = await getUserId();
       print(userData);
-      var data=await _dio.then((value) async {
-        response =await value.patch(userDetailsEndpoint+"/"+id,data: userData);
-        print(response.data);
-        print(id);
+      var data = await _dio.then((value) async {
+        response =
+            await value.patch(userDetailsEndpoint + "/" + id, data: userData);
+
         if (response.statusCode == 200) {
           return (response.data as List)
               .map((x) => UserModel.fromJson(x))
@@ -34,7 +30,6 @@ class UserNetwork{
       });
       return data[0];
     } catch (e) {
-
       print(e);
     }
   }
@@ -43,17 +38,17 @@ class UserNetwork{
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data=await _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id);
+      String id = await getUserId();
+      var data = await _dio.then((value) async {
+        response = await value.get(userDetailsEndpoint + "/" + id);
         print("oops");
         print(response.data);
         print(response.data[0]["interests_detail"]);
 
         if (response.statusCode == 200) {
-           return (response.data as List)
-               .map((x) => UserModel.fromJson(x))
-               .toList();
+          return (response.data as List)
+              .map((x) => UserModel.fromJson(x))
+              .toList();
         }
       });
       return data[0];
@@ -61,22 +56,33 @@ class UserNetwork{
       print(e);
     }
   }
-  Future<UsersSuggestionModel> getUserSuggestionsData(bool apply,String age,distance,type,lat,lng,int skip) async {
+
+  Future<UsersSuggestionModel> getUserSuggestionsData(
+      bool apply, String age, distance, type, lat, lng, int skip) async {
     Response response;
     try {
       var query;
-      if(apply==true) {print("ll888888");
-        query={"age":age, "distance":distance,"longitude":lng,"latitude":lat,"type":type,"skip":skip};}
+      if (apply == true) {
+        print("ll888888");
+        query = {
+          "age": age,
+          "distance": distance,
+          "longitude": lng,
+          "latitude": lat,
+          "type": type,
+          "skip": skip
+        };
+      }
       final _dio = apiClient();
-      String id=await getUserId();
-      var data= _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id+userSuggestionsEndpoint,
-        queryParameters:query );
+      String id = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.get(
+            userDetailsEndpoint + "/" + id + userSuggestionsEndpoint,
+            queryParameters: query);
         print(response.requestOptions.queryParameters);
         print(response.data);
         print("ll88");
         if (response.statusCode == 200) {
-
           return UsersSuggestionModel.fromJson(response.data);
         }
       });
@@ -90,8 +96,8 @@ class UserNetwork{
     Response response;
     try {
       final _dio = apiClient();
-      var data= _dio.then((value) async {
-        response =await value.get(userInterestEndpoint);
+      var data = _dio.then((value) async {
+        response = await value.get(userInterestEndpoint);
         print(response.data);
         if (response.statusCode == 200) {
           return (response.data as List)
@@ -109,8 +115,8 @@ class UserNetwork{
     Response response;
     try {
       final _dio = apiClient();
-      var data= _dio.then((value) async {
-        response =await value.get(userHobbiesEndpoint);
+      var data = _dio.then((value) async {
+        response = await value.get(userHobbiesEndpoint);
         print(response.data);
         if (response.statusCode == 200) {
           return (response.data as List)
@@ -128,9 +134,10 @@ class UserNetwork{
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data= _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id+userLikeCountEndpoint);
+      String id = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value
+            .get(userDetailsEndpoint + "/" + id + userLikeCountEndpoint);
         print(response.data);
         if (response.statusCode == 200) {
           return response.data;
@@ -146,9 +153,10 @@ class UserNetwork{
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data= _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id+userLikeListEndpoint);
+      String id = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value
+            .get(userDetailsEndpoint + "/" + id + userLikeListEndpoint);
         print("oop1");
         print(response.data);
         if (response.statusCode == 200) {
@@ -167,9 +175,10 @@ class UserNetwork{
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data= _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id+userMatchCountEndpoint);
+      String id = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value
+            .get(userDetailsEndpoint + "/" + id + userMatchCountEndpoint);
         print(response.data);
         if (response.statusCode == 200) {
           return response.data;
@@ -185,9 +194,9 @@ class UserNetwork{
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data= _dio.then((value) async {
-        response =await value.get(userMatchListEndpoint+"/"+id);
+      String id = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.get(userMatchListEndpoint + "/" + id);
         print(response.data);
         if (response.statusCode == 200) {
           return (response.data as List)
@@ -201,5 +210,4 @@ class UserNetwork{
       print(e);
     }
   }
-
 }

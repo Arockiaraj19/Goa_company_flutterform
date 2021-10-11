@@ -9,6 +9,7 @@ import 'package:dating_app/models/user_suggestion.dart';
 // import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'client/apiClient.dart';
 import 'client/api_list.dart';
@@ -42,16 +43,20 @@ class UploadImage {
           }
         }
       });
+      return data;
     } catch (e) {
       print(e);
     }
   }
 
-  Future uploadaws(String uploadUrl, Uint8List image) async {
+  Future uploadaws(String uploadUrl, image) async {
     print("uploadaws");
     print(uploadUrl);
     try {
-      Response result = await Dio().put(uploadUrl, data: image);
+      Response result = await Dio().put(uploadUrl,
+          data: image,
+          options: Options(
+              headers: {'content-Type': "image/jpeg", "ACL": 'public-read'}));
       print("image result");
       print(result.data);
       return result;

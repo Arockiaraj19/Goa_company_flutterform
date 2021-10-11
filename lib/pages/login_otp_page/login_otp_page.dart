@@ -204,7 +204,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
                         bottom: _height / 40,
                       )
                     : null,
-                child: Text("code is sent to +91 9880400324",
+                child: Text("code is sent to ${widget.otpData.value}",
                     style: onWeb ? _textStyleContent : _codeIsTextColor)),
           ],
         ),

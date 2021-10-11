@@ -201,8 +201,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
       if (selectedUserAvatar[i] != null) {
         print("kl2");
 
-        Uint8List imageString =
-            await File(selectedUserAvatar[i].path).readAsBytes();
+        Uint8List imageString = await selectedUserAvatar[i].readAsBytes();
         String result = await network.uploadImage(imageString);
         print("kl3");
         print(result);

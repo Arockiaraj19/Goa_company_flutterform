@@ -66,7 +66,7 @@ class _GradientButtonState extends State<GradientButton> {
             hoverColor: Colors.transparent,
             height: widget.height,
             minWidth: widget.width ?? MediaQuery.of(context).size.width,
-            onPressed: widget.onPressed,
+            onPressed: !widget.isLoading ? widget.onPressed : () {},
             child: Row(children: [
               Expanded(
                 child:

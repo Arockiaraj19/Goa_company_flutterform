@@ -1,6 +1,9 @@
 //Main URL_0
 const String baseUrl = "http://65.2.144.252:3000";
 
+//Socket Url
+const String socketUrl = "http://13.126.21.212:3008";
+
 //authentication_email
 const String verifyEmailForSignupEndpoint = "/user/verifyemail"; //1
 const String signUpEmailEndpoint = "/user/emailsignup"; //1
@@ -41,3 +44,7 @@ const String matchRequestEndpoint = "/user/requestmatch";
 
 //notification_3
 const String url_get_notification = "";
+
+//get gender api
+
+const String url_get_gender = "/user/utils/genders";

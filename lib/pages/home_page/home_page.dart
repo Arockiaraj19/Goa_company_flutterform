@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                                   height: _height / 1.20,
                                   width: double.infinity,
                                   child: ImageSwiper(
-                                    itemheight: _height / 1.32,
+                                    itemheight: 460.h,
                                     itemwidth: double.infinity,
                                     userSuggestionData:
                                         data.usersSuggestionData,

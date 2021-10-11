@@ -39,15 +39,16 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
   TabController _tabController;
-  var val=1;
+  var val = 1;
   Future<bool> val1;
-  int likeCount=-1,matchCount=-1;
+  int likeCount = -1, matchCount = -1;
 
-  getData() async{
-    likeCount =await UserNetwork().getUserLikeCount();
-    matchCount =await UserNetwork().getUserMatchCount();
+  getData() async {
+    likeCount = await UserNetwork().getUserLikeCount();
+    matchCount = await UserNetwork().getUserMatchCount();
     setState(() {});
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -118,9 +119,9 @@ class _ProfilePageState extends State<ProfilePage>
         fontFamily: "lato");
 
     return SafeArea(
-        child:Consumer<HomeProvider>(builder: (context, data, child) {
-          return Scaffold(
-      appBar: AppBar(
+        child: Consumer<HomeProvider>(builder: (context, data, child) {
+      return Scaffold(
+        appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           titleSpacing: 0,
@@ -148,25 +149,26 @@ class _ProfilePageState extends State<ProfilePage>
                       ],
                     ))),
           ],
-      ),
-      body: WillPopScope(
-        onWillPop: (){
-          if(val==2){
-            if (Platform.isAndroid) {
-              SystemNavigator.pop();
-            } else if (Platform.isIOS) {
-              exit(0);
+        ),
+        body: WillPopScope(
+          onWillPop: () {
+            if (val == 2) {
+              if (Platform.isAndroid) {
+                SystemNavigator.pop();
+              } else if (Platform.isIOS) {
+                exit(0);
+              }
             }
-          }
-          Fluttertoast.showToast(
-              msg: "Press the back button again to exit", timeInSecForIosWeb: 4);
-          val=2;
-          Timer(Duration(seconds:2),(){
-            val=1;
-          });
-          return val1;
-        },
-        child: SingleChildScrollView(
+            Fluttertoast.showToast(
+                msg: "Press the back button again to exit",
+                timeInSecForIosWeb: 4);
+            val = 2;
+            Timer(Duration(seconds: 2), () {
+              val = 1;
+            });
+            return val1;
+          },
+          child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Column(
               children: [
@@ -207,12 +209,14 @@ class _ProfilePageState extends State<ProfilePage>
                                       percentage: 0.8,
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          margin:
-                                              EdgeInsetsDirectional.only(top: 5),
-                                          child: Text("${data.userData.firstName} ${data.userData.lastName}, 22",
+                                          margin: EdgeInsetsDirectional.only(
+                                              top: 5),
+                                          child: Text(
+                                              "${data.userData.firstName} ${data.userData.lastName}, 22",
                                               style: _textStyleforName
 
                                               // TextStyle(
@@ -242,7 +246,8 @@ class _ProfilePageState extends State<ProfilePage>
                                       child: ClipRRect(
                                           borderRadius: const BorderRadius.only(
                                             topLeft: const Radius.circular(5),
-                                            bottomLeft: const Radius.circular(5),
+                                            bottomLeft:
+                                                const Radius.circular(5),
                                           ),
                                           child: Container(
                                               padding: EdgeInsets.all(2),
@@ -250,7 +255,8 @@ class _ProfilePageState extends State<ProfilePage>
                                               child: Row(children: [
                                                 Container(
                                                     padding:
-                                                        EdgeInsetsDirectional.only(
+                                                        EdgeInsetsDirectional
+                                                            .only(
                                                       end: 2,
                                                       start: 2,
                                                     ),
@@ -266,23 +272,31 @@ class _ProfilePageState extends State<ProfilePage>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          GestureDetector(onTap: (){ Routes.sailor(Routes.likeMatchListPage);},
+                          GestureDetector(
+                            onTap: () {
+                              Routes.sailor(Routes.likeMatchListPage);
+                            },
                             child: Scores(
-                              name: likeCount==-1?"":likeCount.toString(),
+                              name: likeCount == -1 ? "" : likeCount.toString(),
                               scores: "Like",
                               nameFont: profileScoreName,
                               valuefont: profileValue,
                             ),
                           ),
-                          GestureDetector(onTap: (){Routes.sailor(Routes.likeMatchListPage);},
+                          GestureDetector(
+                            onTap: () {
+                              Routes.sailor(Routes.likeMatchListPage);
+                            },
                             child: Scores(
-                              name: matchCount==-1?"":matchCount.toString(),
+                              name:
+                                  matchCount == -1 ? "" : matchCount.toString(),
                               scores: "Heart",
                               nameFont: profileScoreName,
                               valuefont: profileValue,
                             ),
                           ),
-                          GestureDetector(onTap: (){},
+                          GestureDetector(
+                            onTap: () {},
                             child: Scores(
                               name: "89",
                               scores: "Score",
@@ -293,23 +307,25 @@ class _ProfilePageState extends State<ProfilePage>
                         ],
                       ),
                     ])),
-                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                  SocialMediaBox(
-                    name: "Add Instagram",
-                    image: "assets/images/Instagram_icon.png",
-                    style: socialMediaText,
-                  ),
-                  SocialMediaBox(
-                    name: "andrina_rico",
-                    image: "assets/images/Facebook_icon.png",
-                    style: socialMediaTextBold,
-                  ),
-                  SocialMediaBox(
-                    name: "Add Linkedin",
-                    image: "assets/images/LinkedIn_icons.png",
-                    style: socialMediaText,
-                  ),
-                ]),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SocialMediaBox(
+                        name: "Add Instagram",
+                        image: "assets/images/Instagram_icon.png",
+                        style: socialMediaText,
+                      ),
+                      SocialMediaBox(
+                        name: "andrina_rico",
+                        image: "assets/images/Facebook_icon.png",
+                        style: socialMediaTextBold,
+                      ),
+                      SocialMediaBox(
+                        name: "Add Linkedin",
+                        image: "assets/images/LinkedIn_icons.png",
+                        style: socialMediaText,
+                      ),
+                    ]),
                 Container(
                   margin: EdgeInsetsDirectional.only(top: 10),
                   padding: EdgeInsetsDirectional.only(start: 20, end: 20),
@@ -358,8 +374,8 @@ class _ProfilePageState extends State<ProfilePage>
                 Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height - 178,
-                    child:
-                        TabBarView(controller: _tabController, children: <Widget>[
+                    child: TabBarView(controller: _tabController, children: <
+                        Widget>[
                       SingleChildScrollView(
                           physics: NeverScrollableScrollPhysics(),
                           padding: EdgeInsetsDirectional.only(
@@ -372,7 +388,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 //     fontSize: 14,
                                 //     fontFamily: "Inter")),
                                 Expanded(
-                                  child: Text(data.userData.bio??"",
+                                  child: Text(data.userData.bio ?? "",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       style: TextStyle(
@@ -386,27 +402,30 @@ class _ProfilePageState extends State<ProfilePage>
                                   Container(
                                       margin: EdgeInsetsDirectional.only(
                                           top: 25, bottom: 10),
-                                      child: Text("Interest", style: subHeading))
+                                      child:
+                                          Text("Interest", style: subHeading))
                                 ],
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisSpacing: 0.0,
-                                    mainAxisSpacing: 0.0,
-                                    crossAxisCount: 3,
-                                    childAspectRatio: 2.8),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisSpacing: 0.0,
+                                        mainAxisSpacing: 0.0,
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.8),
                                 itemCount: data.userData.interestDetails.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,
-                                    fontSize: ScreenUtil().setSp(MainTheme.mSecondaryContentfontSize),
+                                    fontSize: ScreenUtil().setSp(
+                                        MainTheme.mSecondaryContentfontSize),
                                     color: MainTheme.primaryColor,
-                                    title: data.userData.interestDetails[index].title??"",
-                                    onTap: () {
-
-                                    },
+                                    title: data.userData.interestDetails[index]
+                                            .title ??
+                                        "",
+                                    onTap: () {},
                                   );
                                 },
                               ),
@@ -421,21 +440,23 @@ class _ProfilePageState extends State<ProfilePage>
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisSpacing: 0.0,
-                                    mainAxisSpacing: 0.0,
-                                    crossAxisCount: 3,
-                                    childAspectRatio: 2.8),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisSpacing: 0.0,
+                                        mainAxisSpacing: 0.0,
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.8),
                                 itemCount: data.userData.hobbyDetails.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,
-                                    fontSize: ScreenUtil().setSp(MainTheme.mSecondaryContentfontSize),
+                                    fontSize: ScreenUtil().setSp(
+                                        MainTheme.mSecondaryContentfontSize),
                                     color: MainTheme.primaryColor,
-                                    title: data.userData.hobbyDetails[index].title??"",
-                                    onTap: () {
-
-                                    },
+                                    title: data.userData.hobbyDetails[index]
+                                            .title ??
+                                        "",
+                                    onTap: () {},
                                   );
                                 },
                               ),
@@ -458,15 +479,21 @@ class _ProfilePageState extends State<ProfilePage>
                           )),
                       SingleChildScrollView(
                         physics: NeverScrollableScrollPhysics(),
-                        padding:
-                            EdgeInsetsDirectional.only(start: 20, end: 20, top: 30),
+                        padding: EdgeInsetsDirectional.only(
+                            start: 20, end: 20, top: 30),
                         child: Column(children: [
-                          SettingBox(name: "Booking"),
+                          InkWell(
+                              onTap: () {
+                                Routes.sailor(Routes.meetuppage);
+                              },
+                              child: SettingBox(name: "Booking")),
                           SettingBox(name: "Order history"),
                           SettingBox(name: "About"),
-                          GestureDetector(onTap: (){
-                            Routes.sailor.navigate((Routes.loginPage),navigationType: NavigationType.pushReplace);
-                          },
+                          GestureDetector(
+                            onTap: () {
+                              Routes.sailor.navigate((Routes.loginPage),
+                                  navigationType: NavigationType.pushReplace);
+                            },
                             child: SettingBox(
                               name: "Log out",
                               activeIcon: true,
@@ -477,19 +504,17 @@ class _ProfilePageState extends State<ProfilePage>
                     ]))
               ],
             ),
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomTabBar(
+        bottomNavigationBar: BottomTabBar(
           currentIndex: 3,
-      ),
-    );}
-        ));
+        ),
+      );
+    }));
   }
 
   goToEditProfilePagePage(UserModel userData) {
-    Routes.sailor(
-      Routes.editProfilePage,
-        params: {"userDetails":userData});
+    Routes.sailor(Routes.editProfilePage, params: {"userDetails": userData});
   }
 
   Widget _buildWeb() {
@@ -792,21 +817,25 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                         GridView.builder(
                                           shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisSpacing: 0.0,
-                                              mainAxisSpacing: 0.0,
-                                              crossAxisCount: 3,
-                                              childAspectRatio: 2.8),
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisSpacing: 0.0,
+                                                  mainAxisSpacing: 0.0,
+                                                  crossAxisCount: 3,
+                                                  childAspectRatio: 2.8),
                                           itemCount: 8,
-                                          itemBuilder: (BuildContext context, int index) {
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
                                             return InterestBox(
-                                              fontSize: ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
+                                              fontSize: ScreenUtil().setSp(
+                                                  MainTheme
+                                                      .mPrimaryContentfontSize),
                                               color: MainTheme.primaryColor,
-                                              title: "snapshot.data[index].title",
-                                              onTap: () {
-
-                                              },
+                                              title:
+                                                  "snapshot.data[index].title",
+                                              onTap: () {},
                                             );
                                           },
                                         ),
@@ -822,21 +851,24 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                         GridView.builder(
                                           shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisSpacing: 0.0,
-                                              mainAxisSpacing: 0.0,
-                                              crossAxisCount: 3,
-                                              childAspectRatio: 2.8),
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisSpacing: 0.0,
+                                                  mainAxisSpacing: 0.0,
+                                                  crossAxisCount: 3,
+                                                  childAspectRatio: 2.8),
                                           itemCount: 8,
-                                          itemBuilder: (BuildContext context, int index) {
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
                                             return InterestBox(
-                                              fontSize: ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
+                                              fontSize: ScreenUtil().setSp(
+                                                  MainTheme
+                                                      .mPrimaryContentfontSize),
                                               color: MainTheme.primaryColor,
                                               title: "Cycling",
-                                              onTap: () {
-
-                                              },
+                                              onTap: () {},
                                             );
                                           },
                                         )

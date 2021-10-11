@@ -8,6 +8,7 @@ import 'package:dating_app/pages/create_profile_page/Create_profile_page.dart';
 import 'package:dating_app/pages/detail_page/detail_page.dart';
 import 'package:dating_app/pages/edit_profile_page.dart/edit_profile_page.dart';
 import 'package:dating_app/pages/find_match_page/find_match_page.dart';
+import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/pages/home_page/home_page.dart';
 import 'package:dating_app/pages/home_page_grid_view_page/home_page_grid_view_page.dart';
 import 'package:dating_app/pages/like_match_list_page/like_match_list.dart';
@@ -34,6 +35,7 @@ import 'package:sailor/sailor.dart';
 
 import 'models/user_suggestion.dart';
 import 'pages/add_album_page/add_album_page.dart';
+import 'pages/imagecheck.dart';
 import 'pages/meet_page/meetup_page.dart';
 import 'pages/subscriptions/subscription_page.dart';
 
@@ -72,6 +74,7 @@ class Routes {
   static String meetuppage = 'meet_up_page';
   static String subscription = "subscription";
   static String payment = "payment";
+  static String imagecheck = "imagecheck";
 
   static final sailor = Sailor();
 
@@ -98,9 +101,12 @@ class Routes {
       SailorRoute(
           name: loginOtpPage,
           defaultTransitions: [SailorTransition.fade_in],
+          params: [SailorParam<OtpModel>(name: "otpData")],
           builder: (context, args, params) {
-              OtpModel otpData = Sailor.param<OtpModel>(context, "otpData");
-            return LoginOtpPage( otpData: otpData,);
+            OtpModel otpData = Sailor.param<OtpModel>(context, "otpData");
+            return LoginOtpPage(
+              otpData: otpData,
+            );
           }),
 
       //login
@@ -326,6 +332,13 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             return PaymentPage();
+          }),
+
+      SailorRoute(
+          name: imagecheck,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return Imagecheck();
           }),
     ]);
   }
