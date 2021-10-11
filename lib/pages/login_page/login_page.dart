@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1000) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -81,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                     "assets/images/loginImage.png",
                   ))),
           child: SingleChildScrollView(
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -102,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: _textStyleforSentence),
                     SizedBox(height: 230.h),
                     GradientButton(
-                      height: 45.h,
+                        height: 125.w,
                       name: "Login with Mobile",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
@@ -133,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 15.h,
                     ),
                     GradientButton(
-                      height: 45.h,
+                      height: 125.w,
                       name: "Login with email",
                       borderRadius: BorderRadius.circular(40.r),
                       color: Colors.white,
@@ -142,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                         goToLoginWithMobile(name: "EMAIL");
                       },
                     ),
-                    SizedBox(height: 45.h),
+                    SizedBox(height: 40.h),
                     Container(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -158,7 +159,9 @@ class _LoginPageState extends State<LoginPage> {
                               child:
                                   Text("Sign up", style: _textStyleforLogin)),
                         ])),
-                  ]))),
+                  ]),
+            ),
+          )),
       // bottomSheet: Container(
       //     color: Colors.black,
       //     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

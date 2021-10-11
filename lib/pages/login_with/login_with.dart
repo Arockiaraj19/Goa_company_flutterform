@@ -7,7 +7,7 @@ import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
-import 'package:dating_app/shared/widgets/input_field.dart';
+
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,7 +33,7 @@ class _LoginWithState extends State<LoginWith> {
     print(widget.name);
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1000) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -64,6 +64,7 @@ class _LoginWithState extends State<LoginWith> {
 
     return SafeArea(
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.black,
             body: Container(
                 height: MediaQuery.of(context).size.height,
@@ -91,7 +92,7 @@ class _LoginWithState extends State<LoginWith> {
                           style: _textStyleforWelcomBack,
                         ),
                         SizedBox(
-                          height: 10.h,
+                          height: 4.h,
                         ),
                         Text("Hey! Good to see you again",
                             style: _goodToSeeTextColor),
@@ -138,7 +139,7 @@ class _LoginWithState extends State<LoginWith> {
           ),
           Forminput(
             emailController: _emailCtrl,
-            placeholder: "Enter your email",
+            placeholder: "Email",
             validation: (val) {
               if (val.isEmpty) {
                 return "Please enter email id";
@@ -192,15 +193,16 @@ class _LoginWithState extends State<LoginWith> {
                           ? Icon(
                               Icons.remove_red_eye_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 18,
+                              size: 45.sp,
                             )
                           : Icon(
                               Icons.visibility_off_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 18,
+                              size: 45.sp,
                             ))),
-              contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-              hintText: "password",
+              contentPadding: EdgeInsets.only(
+                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              hintText: "Password",
               hintStyle: TextStyle(
                   fontSize: 40.sp,
                   letterSpacing: 1.0,
@@ -232,14 +234,14 @@ class _LoginWithState extends State<LoginWith> {
               ),
             ),
             validator: (val) {
-              // if (val.isEmpty) {
-              //   return "Please enter password";
-              // }
-              // RegExp regex = new RegExp(passwordpattern.toString());
-              // if (!regex.hasMatch(val)) {
-              //   return 'Please enter valid password';
-              // }
-              // return null;
+              if (val.isEmpty) {
+                return "Please enter password";
+              }
+              RegExp regex = new RegExp(passwordpattern.toString());
+              if (!regex.hasMatch(val)) {
+                return 'Please enter valid password';
+              }
+              return null;
             },
           ),
           SizedBox(
@@ -266,8 +268,8 @@ class _LoginWithState extends State<LoginWith> {
           Align(
             alignment: Alignment.center,
             child: GradientButton(
-              height: 40.h,
-              fontSize: 45.sp,
+              height: 110.w,
+              fontSize: 40.sp,
               name: loading ? "Logging In.." : "Log In",
               gradient: MainTheme.loginwithBtnGradient,
               active: true,
@@ -346,15 +348,22 @@ class _LoginWithState extends State<LoginWith> {
             cursorColor: Colors.pink,
             textAlign: TextAlign.left,
             keyboardType: TextInputType.number,
+            style: TextStyle(
+                fontSize: 40.sp,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.w400,
+                color: MainTheme.enterTextColor),
             decoration: InputDecoration(
+              isDense: true,
               prefixText: "+91",
               prefixStyle: TextStyle(
                   color: MainTheme.enterTextColor,
-                  fontSize: 45.sp,
+                  fontSize: 40.sp,
                   fontFamily: "lato",
                   fontWeight: FontWeight.w400),
-              contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-              hintText: 'mobile number',
+              contentPadding: EdgeInsets.only(
+                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              hintText: 'Mobile number',
               hintStyle: TextStyle(
                   fontSize: 40.sp,
                   letterSpacing: 1.0,
@@ -406,8 +415,8 @@ class _LoginWithState extends State<LoginWith> {
           Align(
             alignment: Alignment.center,
             child: GradientButton(
-              height: 40.h,
-              fontSize: 45.sp,
+              height: 110.w,
+              fontSize: 40.sp,
               name: "Log In",
               gradient: MainTheme.loginwithBtnGradient,
               active: true,

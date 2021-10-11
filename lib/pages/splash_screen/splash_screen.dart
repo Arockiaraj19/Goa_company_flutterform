@@ -47,6 +47,8 @@ class _SplashScreenState extends State<SplashScreen> {
             child: SizedBox(
       width: double.infinity,
       child: TextLiquidFill(
+        boxHeight: 200.h,
+        boxWidth: double.infinity,
         text: 'SPARKS', loadDuration: Duration(seconds: 8),
         textAlign: TextAlign.center,
         waveColor: Color.fromRGBO(237, 107, 192, 1),

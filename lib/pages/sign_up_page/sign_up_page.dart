@@ -18,7 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1000) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -102,7 +102,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         style: _textStyleforSentence),
                     SizedBox(height: 230.h),
                     GradientButton(
-                      height: 45.h,
+                      height: 125.w,
                       name: "Sign up with Mobile",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
@@ -133,7 +133,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 15.h,
                     ),
                     GradientButton(
-                      height: 45.h,
+                      height: 125.w,
                       name: "Sign up with email",
                       borderRadius: BorderRadius.circular(30.r),
                       color: Colors.white,
@@ -142,7 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         goToSignUpWithEmail();
                       },
                     ),
-                    SizedBox(height: 45.h),
+                    SizedBox(height: 40.h),
                     Container(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

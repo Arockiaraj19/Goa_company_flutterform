@@ -44,55 +44,59 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
           return Stack(children: [
             Container(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: 60.h,
+                  ),
                   Container(
+                      height: 300.h,
+                      width: double.infinity,
                       child: Image.asset(
-                    _trens["image"],
-                    fit: BoxFit.fitWidth,
-                  )),
+                        _trens["image"],
+                        fit: BoxFit.fitWidth,
+                      )),
                   Container(
-                      padding: EdgeInsetsDirectional.only(start: 20),
-                      child: Column(children: [
-                        SizedBox(
-                          height: ScreenUtil().setHeight(100),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                                child: Text(
-                              _trens["firstHeading"],
-                              style: _textStyleHeading,
-                            )),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                                child: Text(
-                              _trens["secondHeading"],
-                              style: _textStyleHeading,
-                            )),
-                          ],
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(60),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Text(_trens["subHeading"],
-                                    style: _textStyleContent)),
-                          ],
-                        ),
-                      ]))
+                      child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: ScreenUtil().setHeight(60),
+                          ),
+                          Container(
+                              child: Text(
+                            _trens["firstHeading"] +
+                                "\n" +
+                                _trens["secondHeading"],
+                            style: _textStyleHeading,
+                          )),
+                          // Container(
+                          //     child: Text(
+                          //   _trens["secondHeading"],
+                          //   style: _textStyleHeading,
+                          // )),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(60),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: Text(_trens["subHeading"],
+                                      style: _textStyleContent)),
+                            ],
+                          ),
+                        ]),
+                  ))
                 ],
               ),
             ),
             index == 2
                 ? Positioned(
-                    bottom: 0,
-                    right: 10,
+                    bottom: 10.w,
+                    right: 20.w,
                     child: GradientButton(
                       height: 40.h,
                       fontSize: 45.sp,
@@ -112,8 +116,8 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
                       },
                     ))
                 : Positioned(
-                    bottom: 10,
-                    right: 20,
+                    bottom: 30.w,
+                    right: 40.w,
                     child: InkWell(
                         onTap: () {
                           Routes.sailor(Routes.signUpPage);
@@ -126,6 +130,7 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
         autoplay: false,
         fade: 0.0,
         pagination: SwiperPagination(
+          
             alignment: Alignment.bottomLeft,
             builder: DotSwiperPaginationBuilder(
                 color: Colors.grey[300], activeColor: MainTheme.primaryColor)),

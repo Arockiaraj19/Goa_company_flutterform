@@ -65,7 +65,7 @@ class _OtpPageState extends State<OtpPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -151,8 +151,8 @@ class _OtpPageState extends State<OtpPage> {
     } else {
       var _credential = PhoneAuthProvider.credential(
           verificationId: widget.otpData.id, smsCode: _otpController.text);
-      Master_function(
-          context, _credential, widget.otpData.value, widget.otpData.isSignUp);
+      // Master_function(
+      //     context, _credential, widget.otpData.value, widget.otpData.isSignUp);
     }
   }
 

@@ -1,15 +1,20 @@
 import 'dart:async';
 
+import 'package:dating_app/models/otp_model.dart';
+import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/otp_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pinput/pin_put/pin_put.dart';
 
 import '../../routes.dart';
 
 class LoginOtpPage extends StatefulWidget {
-  LoginOtpPage({Key key}) : super(key: key);
+  OtpModel otpData;
+
+  LoginOtpPage({this.otpData});
 
   @override
   _LoginOtpPageState createState() => _LoginOtpPageState();
@@ -52,7 +57,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -95,54 +100,44 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
 
     return SafeArea(
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.black,
-            body: SingleChildScrollView(
-                child: Container(
-                    padding: EdgeInsets.all(20),
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(
-                              "assets/images/login pic.png",
-                            ))),
-                    child: Column(children: [
-                      Row(
-                        children: [
-                          Container(
-                              margin: EdgeInsetsDirectional.only(
-                                  start: 10, top: 20),
-                              child: Text("Sparks", style: _textStyleforSpark)),
-                        ],
-                      ),
-                      Container(
-                          margin: EdgeInsetsDirectional.only(
-                              start: 5, top: 50, bottom: 10),
-                          child: Row(
-                            children: [
-                              Container(
-                                child: Text(
-                                  "Welcome Back !!",
-                                  style: _textStyleforWelcomBack,
-                                ),
-                              ),
-                            ],
-                          )),
-                      Container(
-                          margin: EdgeInsetsDirectional.only(
-                            bottom: 10,
-                            start: 5,
-                          ),
-                          child: Row(children: [
-                            Expanded(
-                              child: Text("Hey! Good to see you again",
-                                  style: _goodToSeeTextColor),
-                            )
-                          ])),
-                      SizedBox(height: ScreenUtil().setHeight(50)),
-                      _commonBuild(context)
-                    ])))));
+            body: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage(
+                          "assets/images/login pic.png",
+                        ))),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 35.h,
+                        ),
+                        Text("Sparks", style: _textStyleforSpark),
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Text(
+                          "Welcome Back !!",
+                          style: _textStyleforWelcomBack,
+                        ),
+                        SizedBox(
+                          height: 4.h,
+                        ),
+                        Text("Hey! Good to see you again",
+                            style: _goodToSeeTextColor),
+                        SizedBox(
+                          height: 80.h,
+                        ),
+                        _commonBuild(context)
+                      ]),
+                ))));
   }
 
   goVerify(String otp) {}
@@ -153,6 +148,18 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
     );
   }
 
+  final TextEditingController _pinPutController = TextEditingController();
+  final FocusNode _pinPutFocusNode = FocusNode();
+
+  BoxDecoration get _pinPutDecoration {
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        border: Border.all(
+          color: Colors.pink,
+        ));
+  }
+
+  bool isloading = false;
   Widget _commonBuild(BuildContext context, {bool onWeb = false}) {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width / 2;
@@ -182,7 +189,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           children: [
             Container(
                 margin: onWeb ? null : EdgeInsetsDirectional.only(top: 50),
-                child: Text("Enter your 4-digit code",
+                child: Text("Enter your 6-digit code",
                     style: onWeb ? _textStyleSubHeading : _enterTextColor)),
           ],
         ),
@@ -206,54 +213,83 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
             : SizedBox(
                 height: ScreenUtil().setHeight(30),
               ),
-        Container(
-            padding: onWeb
-                ? EdgeInsetsDirectional.only(
-                    end: _width * 0.19,
-                    start: _width * 0.19,
-                  )
-                : EdgeInsetsDirectional.only(
-                    end: 50,
-                    start: 50,
-                  ),
-            child: OtpTextField(
-              textStyle: TextStyle(fontWeight: FontWeight.bold),
-              numberOfFields: 4,
-              autoFocus: false,
-              controller: _otpController,
+        Center(
+          child: Container(
+            width: 780.w,
+            alignment: Alignment.center,
+            child: PinPut(
+              withCursor: true,
+              eachFieldPadding: EdgeInsets.all(20.r),
+              eachFieldMargin: EdgeInsets.all(5.r),
+              enabled: true,
+              textStyle: _enterTextColor,
+              pinAnimationType: PinAnimationType.fade,
+              fieldsCount: 6,
               onSubmit: goVerify,
-              showFieldAsBox: true,
-              fieldWidth: onWeb ? _width / 18 : ScreenUtil().setWidth(100),
-              fieldHeight: onWeb ? 36 : ScreenUtil().setWidth(98),
-              focusedBorderColor: MainTheme.primaryColor,
-              enabledBorderColor: Colors.black,
-              borderRadius: BorderRadius.circular(10),
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            )),
+              focusNode: _pinPutFocusNode,
+              controller: _pinPutController,
+              submittedFieldDecoration: _pinPutDecoration.copyWith(
+                  borderRadius: BorderRadius.circular(5.0),
+                  border: Border.all(color: Color(0xff6E6B7B))),
+              selectedFieldDecoration: _pinPutDecoration,
+              followingFieldDecoration: _pinPutDecoration.copyWith(
+                  borderRadius: BorderRadius.circular(5.0),
+                  border: Border.all(color: Color(0xff6E6B7B))),
+            ),
+          ),
+        ),
+        // Container(
+        //     padding: onWeb
+        //         ? EdgeInsetsDirectional.only(
+        //             end: _width * 0.19,
+        //             start: _width * 0.19,
+        //           )
+        //         : EdgeInsetsDirectional.only(
+        //             end: 50,
+        //             start: 50,
+        //           ),
+        //     child: OtpTextField(
+        //       textStyle: TextStyle(fontWeight: FontWeight.bold),
+        //       numberOfFields: 4,
+        //       autoFocus: false,
+        //       controller: _otpController,
+        //       onSubmit: goVerify,
+        //       showFieldAsBox: true,
+        //       fieldWidth: onWeb ? _width / 18 : ScreenUtil().setWidth(100),
+        //       fieldHeight: onWeb ? 36 : ScreenUtil().setWidth(98),
+        //       focusedBorderColor: MainTheme.primaryColor,
+        //       enabledBorderColor: Colors.black,
+        //       borderRadius: BorderRadius.circular(10),
+        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //     )),
         onWeb
             ? Container()
             : SizedBox(
-                height: ScreenUtil().setHeight(20),
+                height: ScreenUtil().setHeight(40),
               ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GradientButton(
-              height: 40,
-              name: "Login",
-              gradient: _enableResendBtn
-                  ? MainTheme.loginBtnGradientGrey
-                  : MainTheme.loginBtnGradient,
-              active: true,
-              color: _enableResendBtn ? Colors.black : Colors.white,
-              width: onWeb ? _width / 6 : ScreenUtil().setWidth(480),
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              onPressed: () {
-                goToFindMatchPagePage();
-              },
-            ),
-          ],
+
+        isloading
+            ? CircularProgressIndicator()
+            : GradientButton(
+                height: 110.w,
+                fontSize: 40.sp,
+                name: "Verify",
+                gradient: MainTheme.loginwithBtnGradient,
+                active: true,
+                color: Colors.white,
+                width: 500.w,
+                borderRadius: BorderRadius.circular(20.sp),
+                fontWeight: FontWeight.w500,
+                onPressed: () async {
+                  setState(() {
+                    isloading = !isloading;
+                  });
+                  Master_function(widget.otpData.value, widget.otpData.value,
+                      false, _pinPutController.text);
+                },
+              ),
+        SizedBox(
+          height: 10.h,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

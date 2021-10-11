@@ -1,3 +1,4 @@
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,43 +15,53 @@ class Forminput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-        controller: emailController,
-        cursorColor: Colors.pink,
-        textAlign: TextAlign.left,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-          hintText: (placeholder),
-          hintStyle: TextStyle(
+    return Container(
+      height: 50.h,
+      width: double.infinity,
+      child: TextFormField(
+          controller: emailController,
+          cursorColor: Colors.pink,
+          textAlign: TextAlign.left,
+          style: TextStyle(
               fontSize: 40.sp,
               letterSpacing: 1.0,
               fontWeight: FontWeight.w400,
-              color: Color(0xffC4C4C4)),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.pink, width: 1, style: BorderStyle.solid),
+              color: MainTheme.enterTextColor),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(
+                left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+            hintText: (placeholder),
+            hintStyle: TextStyle(
+                fontSize: 40.sp,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.w400,
+                color: Color(0xffC4C4C4)),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Colors.pink, width: 1, style: BorderStyle.solid),
+            ),
+            errorStyle: TextStyle(
+              fontSize: 40.sp,
+              letterSpacing: 1.0,
+              fontWeight: FontWeight.w400,
+              color: Colors.pink,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Colors.pink, width: 1, style: BorderStyle.solid),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Color(0xffC4C4C4), width: 1, style: BorderStyle.solid),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Colors.pink, width: 1, style: BorderStyle.solid),
+            ),
           ),
-          errorStyle: TextStyle(
-            fontSize: 40.sp,
-            letterSpacing: 1.0,
-            fontWeight: FontWeight.w400,
-            color: Colors.pink,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.pink, width: 1, style: BorderStyle.solid),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Color(0xffC4C4C4), width: 1, style: BorderStyle.solid),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.pink, width: 1, style: BorderStyle.solid),
-          ),
-        ),
-        enableInteractiveSelection: true,
-        validator: validation);
+          enableInteractiveSelection: true,
+          validator: validation),
+    );
   }
 }
 

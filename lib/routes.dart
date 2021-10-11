@@ -99,7 +99,8 @@ class Routes {
           name: loginOtpPage,
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
-            return LoginOtpPage();
+              OtpModel otpData = Sailor.param<OtpModel>(context, "otpData");
+            return LoginOtpPage( otpData: otpData,);
           }),
 
       //login

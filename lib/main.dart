@@ -29,7 +29,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _initialRoute = Routes.addAlbumPage;
+  String _initialRoute = Routes.splashScreen;
 
   @override
   Widget build(BuildContext context) {
