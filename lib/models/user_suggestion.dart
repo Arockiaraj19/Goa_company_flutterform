@@ -28,7 +28,7 @@ class UsersSuggestionModel {
 class Responses {
   String id;
   Location location;
-  int gender;
+  String gender;
   List<dynamic> profileImage;
   List<dynamic> profession;
   List<InterestModel> interests;
@@ -52,33 +52,35 @@ class Responses {
 
   Responses(
       {this.id,
-        this.location,
-        this.gender,
-        this.profileImage,
-        this.profession,
-        this.interests,
-        this.hobbies,
-        this.isMobileVerified,
-        this.isEmailVerified,
-        this.relationshipStatus,
-        this.religion,
-        this.isBlocked,
-        this.bio,
-        this.age,
-        this.isDeleted,
-        this.isDeactivated,
-        this.matchCount,
-        this.badCount,
-        this.partnerType,
-        this.sexualOrientation,
-        this.email,this.firstName,this.lastName});
+      this.location,
+      this.gender,
+      this.profileImage,
+      this.profession,
+      this.interests,
+      this.hobbies,
+      this.isMobileVerified,
+      this.isEmailVerified,
+      this.relationshipStatus,
+      this.religion,
+      this.isBlocked,
+      this.bio,
+      this.age,
+      this.isDeleted,
+      this.isDeactivated,
+      this.matchCount,
+      this.badCount,
+      this.partnerType,
+      this.sexualOrientation,
+      this.email,
+      this.firstName,
+      this.lastName});
 
   Responses.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
     location = json['location'] != null
         ? new Location.fromJson(json['location'])
         : null;
-    gender = json['gender'];
+    gender = json['gender'].toString();
     profileImage = json['profile_image'];
     profession = json['profession'];
     if (json['interests'] != null) {
@@ -107,8 +109,8 @@ class Responses {
     partnerType = json['partner_type'];
     sexualOrientation = json['sexual_orientation'];
     email = json['email'];
-    firstName=json['first_name'];
-    lastName=json['last_name'];
+    firstName = json['first_name'];
+    lastName = json['last_name'];
   }
 
   Map<String, dynamic> toJson() {
