@@ -25,6 +25,7 @@ class HomeProvider extends ChangeNotifier{
   UserModel get userData=>_userData;
 
 
+
   getData() async {
     _usersSuggestionData=null;_currentpage=0;
     _homeState=HomeState.Loading;
