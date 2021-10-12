@@ -19,25 +19,12 @@ import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:dating_app/shared/widgets/subheading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animator/animation/animation_preferences.dart';
-import 'package:flutter_animator/animation/animator_play_states.dart';
-import 'package:flutter_animator/widgets/animator_widget.dart';
-import 'package:flutter_animator/widgets/attention_seekers/flash.dart';
-import 'package:flutter_animator/widgets/attention_seekers/heart_beat.dart';
-import 'package:flutter_animator/widgets/attention_seekers/jello.dart';
-import 'package:flutter_animator/widgets/attention_seekers/rubber_band.dart';
-import 'package:flutter_animator/widgets/attention_seekers/shake.dart';
-import 'package:flutter_animator/widgets/bouncing_entrances/bounce_in.dart';
-import 'package:flutter_animator/widgets/fading_exits/fade_out.dart';
-import 'package:flutter_animator/widgets/flippers/flip.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
-import '../../routes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -104,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                                   height: _height / 1.20,
                                   width: double.infinity,
                                   child: ImageSwiper(
-                                    itemheight: _height / 1.32,
+                                    itemheight: 460.h,
                                     itemwidth: double.infinity,
                                     userSuggestionData:
                                         data.usersSuggestionData,
@@ -133,14 +120,28 @@ class _HomePageState extends State<HomePage> {
                 );
         }),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        child: Icon(
-          Icons.format_list_bulleted_rounded,
-          color: Colors.pink,
-        ),
-        onPressed: () => print("hello"),
-      ),
+      floatingActionButton:
+          Consumer<HomeProvider>(builder: (context, data, child) {
+        return FloatingActionButton(
+          backgroundColor: Colors.white,
+          child: data.view == 2
+              ? Icon(
+                  Icons.grid_view_outlined,
+                  color: Colors.pink,
+                )
+              : Icon(
+                  Icons.list,
+                  color: Colors.pink,
+                ),
+          onPressed: () {
+            if (data.view == 1) {
+              data.changeView(2);
+            } else {
+              data.changeView(1);
+            }
+          },
+        );
+      }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomTabBar(
         currentIndex: 0,

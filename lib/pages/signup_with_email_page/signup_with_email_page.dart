@@ -2,7 +2,9 @@ import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/pages/otp_page/otp_page.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
@@ -48,40 +50,39 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
         fontFamily: "lato");
 
     return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-            child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    margin: EdgeInsetsDirectional.only(top: 40),
-                    child: Text("Continue with Email",
-                        style: _textStyleforHeading)),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    margin: EdgeInsetsDirectional.only(top: 20),
-                    height: ScreenUtil().setHeight(100),
-                    width: ScreenUtil().setWidth(180),
-                    child: Image.asset(
-                      "assets/images/mobileImage.png",
-                      fit: BoxFit.fill,
-                    ))
-              ],
-            ),
-            SizedBox(
-              height: ScreenUtil().setHeight(70),
-            ),
-            commonPart(context, onWeb: false)
-          ],
-        )),
+        child: Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 20.h,
+              ),
+              Text("Continue with Email", style: _textStyleforHeading),
+              SizedBox(
+                height: 20.h,
+              ),
+              Container(
+                  height: 600.r,
+                  width: 450.r,
+                  child: Image.asset(
+                    "assets/images/mobileImage.png",
+                    fit: BoxFit.fill,
+                  )),
+              SizedBox(
+                height: ScreenUtil().setHeight(70),
+              ),
+              commonPart(context, onWeb: false)
+            ],
+          ),
+        ),
       ),
-    );
+    ));
   }
 
   goToOtpPage() async {
@@ -124,88 +125,62 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  padding: EdgeInsetsDirectional.only(
-                    top: _height / 18,
-                    bottom: _height / 50,
-                    // end: _width * 0.19,
-                    start: _width * 0.12,
-                  ),
-                  child: Text(
-                    "Enter your Email id",
-                    style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  )),
-            ],
+          Text(
+            "Enter your email",
+            style: TextStyle(
+                color: MainTheme.enterTextColor,
+                fontSize: 40.sp,
+                fontFamily: "lato",
+                fontWeight: FontWeight.w400),
           ),
-          Container(
-            child: InputField(
-              labelBehavior: FloatingLabelBehavior.never,
-              gradient: MainTheme.loginwithBtnGradient,
-              inputBoxBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
+          SizedBox(
+            height: 8.h,
+          ),
+          Forminput(
+            emailController: _emailCtrl,
+            placeholder: "Email",
+            validation: (val) {
+              if (val.isEmpty) {
+                return "Please enter email id";
+              }
+              RegExp regex = new RegExp(emailpatttern.toString());
+              if (!regex.hasMatch(val)) {
+                return 'Please enter valid email id';
+              }
+              if (val.length > 50) {
+                return "Please enter less than 50 letters";
+              }
+              // return null;
+            },
+          ),
+          SizedBox(
+            height: 50.h,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: loading
+                ? CircularProgressIndicator()
+                : GradientButton(
+                    height: 110.w,
+                    fontSize: 40.sp,
+                    name: "Next",
+                    gradient: MainTheme.loginwithBtnGradient,
+                    active: true,
                     color: Colors.white,
+                    isLoading: loading,
+                    width: 500.w,
+                    borderRadius: BorderRadius.circular(20.sp),
+                    fontWeight: FontWeight.w500,
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        goToOtpPage();
+                      }
+                      // var dto = {"password": "123456", "email": "asd@mail.com"};
+                      // _authStore.onLogin(dto);
+                    },
                   ),
-                  borderRadius: BorderRadius.circular(10)),
-              onTap: () {},
-              controller: _emailCtrl,
-              // inputType: TextInputType.number,
-              padding: onWeb
-                  ? EdgeInsetsDirectional.only(
-                      end: _width * 0.19,
-                      start: _width * 0.19,
-                    )
-                  : EdgeInsetsDirectional.only(bottom: 10, end: 20, start: 20),
-              validators: (String value) {
-                if (value.isEmpty) return 'Required field';
-                return null;
-              },
-              hintText: 'Enter your email',
-            ),
-          ),
-          Container(
-            padding: EdgeInsetsDirectional.only(
-              top: _height / 18,
-              end: _width * 0.12,
-              start: _width * 0.12,
-            ),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Expanded(
-                  child: Text(
-                "Once you hit continue, you’ll receive a verification code. The verified email can be used to log in",
-                style: TextStyle(
-                    color: Colors.grey, fontSize: 14, fontFamily: "lato"),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              )),
-            ]),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                name: loading ? "Loading.." : "Next",
-                gradient: MainTheme.loginBtnGradient,
-                height: 35,
-                fontSize: 14,
-                width: 150,
-                active: true,
-                isLoading: loading,
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.white,
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    goToOtpPage();
-                  }
-                },
-              ),
-            ],
           ),
         ],
       ),

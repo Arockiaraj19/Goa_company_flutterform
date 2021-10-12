@@ -4,6 +4,7 @@ import 'package:dating_app/providers/blind_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +14,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Routes.createRoutes();
+  // runApp(
+  //   DevicePreview(
+  //     enabled: true,
+  //     builder: (context) => MyApp(), // Wrap your app
+  //   ),
+  // );
+
   runApp(MyApp());
 }
 
@@ -38,6 +46,8 @@ class _MyAppState extends State<MyApp> {
             builder: () => MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: 'Sparks',
+                  // locale: DevicePreview.locale(context), // Add the locale here
+                  // builder: DevicePreview.appBuilder, // Add the builder here
                   builder: BotToastInit(),
                   navigatorObservers: [BotToastNavigatorObserver()],
                   navigatorKey: Routes.sailor.navigatorKey,

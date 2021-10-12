@@ -37,18 +37,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     return SafeArea(
         child: Scaffold(
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height - kToolbarHeight,
-            width: MediaQuery.of(context).size.width,
-            child: OnboardingSwiper(
-              promos: item,
-            ),
-          )
-        ],
-      )),
+      body: Container(
+        height:double.infinity,
+        width: double.infinity,
+        child: OnboardingSwiper(
+          promos: item,
+        ),
+      ),
     ));
   }
 }

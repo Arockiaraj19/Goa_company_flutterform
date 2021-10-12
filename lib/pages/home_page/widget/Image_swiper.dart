@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
+import 'package:lottie/lottie.dart';
 
 class ImageSwiper extends StatefulWidget {
   ImageSwiper(
@@ -18,7 +19,8 @@ class ImageSwiper extends StatefulWidget {
       this.height,
       this.itemheight,
       this.itemwidth,
-      this.width, this.userSuggestionData})
+      this.width,
+      this.userSuggestionData})
       : super(key: key);
   final Function(dynamic) onTap;
   final List<dynamic> promos;
@@ -33,18 +35,16 @@ class ImageSwiper extends StatefulWidget {
 }
 
 class _ImageSwiperState extends State<ImageSwiper> {
-
-  int currentIndex=0;
+  int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children:[
-        Container(
+    return Column(children: [
+      Container(
         // height: widget.height ?? 250,
         width: widget.width ?? MediaQuery.of(context).size.width,
         child: Swiper(
-          onIndexChanged: (int ind){
-            currentIndex=ind;
+          onIndexChanged: (int ind) {
+            currentIndex = ind;
           },
           layout: SwiperLayout.TINDER,
           itemWidth: widget.itemwidth ?? 300,
@@ -62,37 +62,47 @@ class _ImageSwiperState extends State<ImageSwiper> {
                 child: ImageCard(
                   cardHeight: widget.itemheight ?? 300,
                   cardWidth: widget.itemwidth ?? 400,
-                  name: widget.userSuggestionData.response[index].firstName??"https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-                  image:widget.userSuggestionData.response[index].profileImage.length==0?""
-                      :widget.userSuggestionData.response[index].profileImage.first??"",
+                  name: widget.userSuggestionData.response[index].firstName ??
+                      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                  image: widget.userSuggestionData.response[index].profileImage
+                              .length ==
+                          0
+                      ? ""
+                      : widget.userSuggestionData.response[index].profileImage
+                              .first ??
+                          "",
                 ));
           },
           itemCount: widget.userSuggestionData.response.length,
         ),
       ),
-        SizedBox(height: 10,),
-         Consumer<HomeProvider>(builder: (context, data, child) {
-           return Container(
-             // width: 300,
-               padding: EdgeInsetsDirectional.only(start: 20, end: 20),
-               child: AnimationButton(
-                 onTapHeart: () {
-                   String confirmedUser = widget.userSuggestionData.response[currentIndex].id;
-                   UserModel userData = data.userData;
-                   HomeButtonNetwork().postMatchRequest(confirmedUser, userData);
-                 },
-                 onTapFlash: () {
-                   print(currentIndex);
-                   String likedUser = widget.userSuggestionData
-                       .response[currentIndex].id;
-                   HomeButtonNetwork().postLikeUnlike(likedUser, "1");
-                 },));
-         })
+      SizedBox(
+        height: 10,
+      ),
+    
+      Consumer<HomeProvider>(builder: (context, data, child) {
+        return Container(
+            // width: 300,
+            padding: EdgeInsetsDirectional.only(start: 20, end: 20),
+            child: AnimationButton(
+              onTapHeart: () {
+                String confirmedUser =
+                    widget.userSuggestionData.response[currentIndex].id;
+                UserModel userData = data.userData;
+                HomeButtonNetwork().postMatchRequest(confirmedUser, userData);
+              },
+              onTapFlash: () {
+                print(currentIndex);
+                String likedUser =
+                    widget.userSuggestionData.response[currentIndex].id;
+                HomeButtonNetwork().postLikeUnlike(likedUser, "1");
+              },
+            ));
+      })
     ]);
   }
 
   goToDetailPage(Responses userDetails) {
-    Routes.sailor(Routes.detailPage,
-        params: {"userDetails":userDetails});
+    Routes.sailor(Routes.detailPage, params: {"userDetails": userDetails});
   }
 }

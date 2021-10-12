@@ -25,7 +25,7 @@ class UserModel {
   String dob;
   String bio;
   String firstName;
-  int gender;
+  String gender;
   String lastName;
   int sexualOrientation;
   String partnerType;
@@ -39,38 +39,38 @@ class UserModel {
 
   UserModel(
       {this.id,
-        this.location,
-        this.profileImage,
-        this.profession,
-        this.interestDetails,
-        this.hobbyDetails,
-        this.hobbies,
-        this.interests,
-        this.isMobileVerified,
-        this.isEmailVerified,
-        this.religion,
-        this.isBlocked,
-        this.isDeleted,
-        this.isDeactivated,
-        this.matchCount,
-        this.height,
-        this.weight,
-        this.badCount,
-        this.email,
-        this.dob,
-        this.bio,
-        this.firstName,
-        this.gender,
-        this.lastName,
-        this.sexualOrientation,
-        this.partnerType,
-        this.identificationImage,
-        this.onboardDetailsStatus,
-        this.userReferralCode,
-        this.ageInMillis,
-        this.age,
-        this.likeCount,
-        this.score});
+      this.location,
+      this.profileImage,
+      this.profession,
+      this.interestDetails,
+      this.hobbyDetails,
+      this.hobbies,
+      this.interests,
+      this.isMobileVerified,
+      this.isEmailVerified,
+      this.religion,
+      this.isBlocked,
+      this.isDeleted,
+      this.isDeactivated,
+      this.matchCount,
+      this.height,
+      this.weight,
+      this.badCount,
+      this.email,
+      this.dob,
+      this.bio,
+      this.firstName,
+      this.gender,
+      this.lastName,
+      this.sexualOrientation,
+      this.partnerType,
+      this.identificationImage,
+      this.onboardDetailsStatus,
+      this.userReferralCode,
+      this.ageInMillis,
+      this.age,
+      this.likeCount,
+      this.score});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -101,13 +101,13 @@ class UserModel {
     isDeactivated = json['is_deactivated'];
     matchCount = json['match_count'];
     height = json['height'];
-    weight= json['weight'];
+    weight = json['weight'];
     badCount = json['bad_count'];
     email = json['email'];
     dob = json['dob'];
     bio = json['bio'];
     firstName = json['first_name'];
-    gender = json['gender'];
+    gender = json['gender'].toString();
     lastName = json['last_name'];
     sexualOrientation = json['sexual_orientation'];
     partnerType = json['partner_type'];
@@ -131,10 +131,12 @@ class UserModel {
     data['interests'] = this.interests;
     data['hobbies'] = this.hobbies;
     if (this.interestDetails != null) {
-      data['interests_details'] = this.interestDetails.map((v) => v.toJson()).toList();
+      data['interests_details'] =
+          this.interestDetails.map((v) => v.toJson()).toList();
     }
     if (this.hobbyDetails != null) {
-      data['hobbies_details'] = this.hobbyDetails.map((v) => v.toJson()).toList();
+      data['hobbies_details'] =
+          this.hobbyDetails.map((v) => v.toJson()).toList();
     }
     data['is_mobile_verified'] = this.isMobileVerified;
     data['is_email_verified'] = this.isEmailVerified;
@@ -145,7 +147,7 @@ class UserModel {
     data['match_count'] = this.matchCount;
     data['bad_count'] = this.badCount;
     data['email'] = this.email;
-    data['height'] =this.height;
+    data['height'] = this.height;
     data['weight'] = this.weight;
     data['dob'] = this.dob;
     data['bio'] = this.bio;

@@ -1,7 +1,6 @@
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/networks/user_network.dart';
-import 'package:dating_app/pages/otp_page/otp_page.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
@@ -9,20 +8,20 @@ import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../routes.dart';
 
 class AddingPasswordForSignUp extends StatefulWidget {
   final String email;
   AddingPasswordForSignUp({Key key, this.email}) : super(key: key);
 
   @override
-  _AddingPasswordForSignUpState createState() => _AddingPasswordForSignUpState();
+  _AddingPasswordForSignUpState createState() =>
+      _AddingPasswordForSignUpState();
 }
 
 class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
   TextEditingController _password1Ctrl = TextEditingController();
   TextEditingController _password2Ctrl = TextEditingController();
-  bool loading =false;
+  bool loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -65,8 +64,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
           elevation: 0,
           centerTitle: true,
           title: Container(
-              child:
-              Text("Create the password", style: _textStyleforHeading)),
+              child: Text("Create the password", style: _textStyleforHeading)),
         ),
         body: SingleChildScrollView(
             child: Column(
@@ -74,7 +72,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
             SizedBox(
               height: ScreenUtil().setHeight(70),
             ),
-            commonPart(context,onWeb: false)
+            commonPart(context, onWeb: false)
           ],
         )),
       ),
@@ -83,30 +81,29 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
 
   goToCreateProfilePage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
     var network = EmailSignUpNetwork();
-    bool result =await network.signUpWithEmail(widget.email,_password1Ctrl.text);
+    bool result =
+        await network.signUpWithEmail(widget.email, _password1Ctrl.text);
     var network1 = UserNetwork();
-    UserModel userData=result?await network1.getUserData():null;
-    userData != null? onboardingCheck(userData):null;
+    UserModel userData = result ? await network1.getUserData() : null;
+    userData != null ? onboardingCheck(userData) : null;
   }
 
-  Widget commonPart(BuildContext context,{bool onWeb = false}){
-
-
+  Widget commonPart(BuildContext context, {bool onWeb = false}) {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width / 2;
 
     var _textStyleforEnterNo =
-    TextStyle(color: Colors.black, fontSize: 16, fontFamily: "lato");
+        TextStyle(color: Colors.black, fontSize: 16, fontFamily: "lato");
     var _textForEnterMobile = TextStyle(
         color: MainTheme.enterTextColor,
         fontWeight: FontWeight.w400,
         fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
         fontFamily: "lato");
     var _textStyleforAlreadyHave =
-    TextStyle(color: Colors.black, fontSize: 14, fontFamily: "lato");
+        TextStyle(color: Colors.black, fontSize: 14, fontFamily: "lato");
 
     var _textStyleforLogin = TextStyle(
         color: Colors.black,
@@ -116,136 +113,148 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
 
     return Form(
       key: _formKey,
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-                padding: onWeb
-                    ? EdgeInsetsDirectional.only(
-                  end: _width * 0.19,
-                  start: _width * 0.19,top: _height / 18,
-                )
-                    : EdgeInsetsDirectional.only(bottom: 10, end: 20, start: 20,top: 50
-                  ,),
-                child: Text(
-                  "Enter your New Password",
-                  style:  onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                )),
-          ],
-        ),
-        Container(
-            child: InputField(
-              onTap: () {},
-              controller: _password1Ctrl,
-              labelBehavior: FloatingLabelBehavior.never,
-              inputType: TextInputType.text,
-              inputBoxBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.white,
-                  ),
-                  borderRadius: BorderRadius.circular(10)),
-              // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              padding: onWeb
-                  ? EdgeInsetsDirectional.only(
-                end: _width * 0.19,
-                start: _width * 0.19,top: 20
-              )
-                  : EdgeInsetsDirectional.only(bottom: 10, end: 20, start: 20,top: 10),
-              validators: (String value) {
-                if (value.isEmpty) return 'Required field';
-                return null;
-              },
-              hintText: 'New password',
-            )),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-                padding: onWeb
-                    ? EdgeInsetsDirectional.only(
-                  end: _width * 0.19,
-                  start: _width * 0.19,top: _height / 18,
-                )
-                    : EdgeInsetsDirectional.only(bottom: 10, end: 20, start: 20,top: 50,),
-                child: Text(
-                  "Re-enter your New Password",
-                  style:  onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                )),
-          ],
-        ),
-        Container(
-            child: InputField(
-              onTap: () {},
-              controller: _password2Ctrl,
-              labelBehavior: FloatingLabelBehavior.never,
-              inputType: TextInputType.text,
-              inputBoxBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.white,
-                  ),
-                  borderRadius: BorderRadius.circular(10)),
-              // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              padding: onWeb
-                  ? EdgeInsetsDirectional.only(
-                end: _width * 0.19,
-                start: _width * 0.19,top: 20
-              )
-                  : EdgeInsetsDirectional.only(bottom: 10, end: 20, start: 20,top: 10),
-              validators: (String value) {
-                if (value != _password1Ctrl.text) return 'Password does not match';
-                return null;
-              },
-              hintText: 'Re-enter the new password',
-            )),
-        // Container(
-        //   padding: EdgeInsetsDirectional.only(
-        //     top: _height / 18,
-        //     end: _width * 0.12,
-        //     start: _width * 0.12,
-        //   ),
-        //   child: Row(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: [
-        //         Expanded(
-        //             child: Text(
-        //               "Once you hit continue, you’ll receive a verification code. The verified email can be used to log in",
-        //               style: TextStyle(
-        //                   color: Colors.grey,
-        //                   fontSize: 14,
-        //                   fontFamily: "lato"),
-        //               textAlign: TextAlign.center,
-        //               maxLines: 2,
-        //               overflow: TextOverflow.ellipsis,
-        //             )),
-        //       ]),
-        // ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GradientButton(
-              name: loading?"Loading..":"Next",
-              gradient: MainTheme.loginBtnGradient,
-              height: 35,
-              fontSize: 14,
-              width: 150,
-              active: true,
-              isLoading: loading,
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-              onPressed: () {
-                if(_formKey.currentState.validate()){
-                  loading?null:goToCreateProfilePage();
-                }
-              },
-            ),
-          ],
-        ),
-      ],),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                  padding: onWeb
+                      ? EdgeInsetsDirectional.only(
+                          end: _width * 0.19,
+                          start: _width * 0.19,
+                          top: _height / 18,
+                        )
+                      : EdgeInsetsDirectional.only(
+                          bottom: 10,
+                          end: 20,
+                          start: 20,
+                          top: 50,
+                        ),
+                  child: Text(
+                    "Enter your New Password",
+                    style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+            ],
+          ),
+          Container(
+              child: InputField(
+            onTap: () {},
+            controller: _password1Ctrl,
+            labelBehavior: FloatingLabelBehavior.never,
+            inputType: TextInputType.text,
+            inputBoxBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.white,
+                ),
+                borderRadius: BorderRadius.circular(10)),
+            // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            padding: onWeb
+                ? EdgeInsetsDirectional.only(
+                    end: _width * 0.19, start: _width * 0.19, top: 20)
+                : EdgeInsetsDirectional.only(
+                    bottom: 10, end: 20, start: 20, top: 10),
+            validators: (String value) {
+              if (value.isEmpty) return 'Required field';
+              return null;
+            },
+            hintText: 'New password',
+          )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                  padding: onWeb
+                      ? EdgeInsetsDirectional.only(
+                          end: _width * 0.19,
+                          start: _width * 0.19,
+                          top: _height / 18,
+                        )
+                      : EdgeInsetsDirectional.only(
+                          bottom: 10,
+                          end: 20,
+                          start: 20,
+                          top: 50,
+                        ),
+                  child: Text(
+                    "Re-enter your New Password",
+                    style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+            ],
+          ),
+          Container(
+              child: InputField(
+            onTap: () {},
+            controller: _password2Ctrl,
+            labelBehavior: FloatingLabelBehavior.never,
+            inputType: TextInputType.text,
+            inputBoxBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.white,
+                ),
+                borderRadius: BorderRadius.circular(10)),
+            // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            padding: onWeb
+                ? EdgeInsetsDirectional.only(
+                    end: _width * 0.19, start: _width * 0.19, top: 20)
+                : EdgeInsetsDirectional.only(
+                    bottom: 10, end: 20, start: 20, top: 10),
+            validators: (String value) {
+              if (value != _password1Ctrl.text)
+                return 'Password does not match';
+              return null;
+            },
+            hintText: 'Re-enter the new password',
+          )),
+          // Container(
+          //   padding: EdgeInsetsDirectional.only(
+          //     top: _height / 18,
+          //     end: _width * 0.12,
+          //     start: _width * 0.12,
+          //   ),
+          //   child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         Expanded(
+          //             child: Text(
+          //               "Once you hit continue, you’ll receive a verification code. The verified email can be used to log in",
+          //               style: TextStyle(
+          //                   color: Colors.grey,
+          //                   fontSize: 14,
+          //                   fontFamily: "lato"),
+          //               textAlign: TextAlign.center,
+          //               maxLines: 2,
+          //               overflow: TextOverflow.ellipsis,
+          //             )),
+          //       ]),
+          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GradientButton(
+                name: loading ? "Loading.." : "Next",
+                gradient: MainTheme.loginBtnGradient,
+                height: 35,
+                fontSize: 14,
+                width: 150,
+                active: true,
+                isLoading: loading,
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    loading ? null : goToCreateProfilePage();
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -368,7 +377,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                       //       )
                       //     ])),
                     ]),
-                commonPart(context,onWeb: true),
+                commonPart(context, onWeb: true),
                 Container(
                   height: 110,
                   width: _width,

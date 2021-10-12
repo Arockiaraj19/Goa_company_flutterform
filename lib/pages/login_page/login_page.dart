@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -76,92 +76,92 @@ class _LoginPageState extends State<LoginPage> {
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
               image: DecorationImage(
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   image: AssetImage(
                     "assets/images/loginImage.png",
                   ))),
           child: SingleChildScrollView(
-              padding: EdgeInsets.all(20),
-              child: Column(children: [
-                Row(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(
+                      height: 35.h,
+                    ),
+                    Text("Sparks", style: _textStyleforSpark),
+                    SizedBox(
+                      height: 50.h,
+                    ),
+                    Text("Match. Chat. Date.", style: _textStyleforMatchText),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Text(
+                        "Spark is the only dating app that connects people based on interests, beliefs and profession.",
+                        style: _textStyleforSentence),
+                    SizedBox(height: 230.h),
+                    GradientButton(
+                        height: 125.w,
+                      name: "Login with Mobile",
+                      gradient: MainTheme.loginBtnGradient,
+                      active: true,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40.r),
+                      onPressed: () {
+                        goToLoginWithMobile(name: "MOBILE");
+                      },
+                    ),
+                    SizedBox(
+                      height: 15.h,
+                    ),
                     Container(
-                        margin: EdgeInsetsDirectional.only(start: 10, top: 20),
-                        child: Text("Sparks", style: _textStyleforSpark)),
-                  ],
-                ),
-                Container(
-                    margin: EdgeInsetsDirectional.only(
-                        top: 50, bottom: 10, start: 10),
-                    child: Row(
-                      children: [
-                        Container(
-                          child: Text("Match. Chat. Date.",
-                              style: _textStyleforMatchText),
-                        ),
-                      ],
-                    )),
-                Container(
-                    margin: EdgeInsetsDirectional.only(bottom: 10, start: 10),
-                    child: Row(children: [
-                      Expanded(
-                        child: Text(
-                            "Spark is the only dating app that connects people based on interests, beliefs and profession.",
-                            style: _textStyleforSentence),
-                      )
-                    ])),
-                SizedBox(height: ScreenUtil().setHeight(150)),
-                GradientButton(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width / 1.4,
-                  name: "Login with Mobile",
-                  gradient: MainTheme.loginBtnGradient,
-                  active: true,
-                  color: Colors.white,
-                  onPressed: () {
-                    goToLoginWithMobile(name: "MOBILE");
-                  },
-                ),
-                Container(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                      Text(
-                        "___    OR   ___",
-                        style: TextStyle(
-                            color: Color.fromRGBO(190, 190, 190, 1),
-                            fontWeight: FontWeight.bold,
-                            fontSize: ScreenUtil()
-                                .setSp(MainTheme.mPrimaryContentfontSize),
-                            fontFamily: "lato"),
-                      ),
-                    ])),
-                GradientButton(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width / 1.4,
-                  name: "Login with email",
-                  color: Colors.white,
-                  buttonColor: Colors.black,
-                  onPressed: () {
-                    goToLoginWithMobile(name: "EMAIL");
-                  },
-                ),
-                SizedBox(height: ScreenUtil().setHeight(100)),
-                Container(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                      Container(
-                          margin: EdgeInsetsDirectional.only(end: 5),
-                          child: Text("Don’t have an account?",
-                              style: _textStyleforAlreadyHave)),
-                      InkWell(
-                          onTap: () {
-                            goToSignUpPage();
-                          },
-                          child: Text("Sign up", style: _textStyleforLogin)),
-                    ])),
-              ]))),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                          Text(
+                            "___    OR   ___",
+                            style: TextStyle(
+                                color: Color.fromRGBO(190, 190, 190, 1),
+                                fontWeight: FontWeight.bold,
+                                fontSize: ScreenUtil()
+                                    .setSp(MainTheme.mPrimaryContentfontSize),
+                                fontFamily: "lato"),
+                          ),
+                        ])),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    GradientButton(
+                      height: 125.w,
+                      name: "Login with email",
+                      borderRadius: BorderRadius.circular(40.r),
+                      color: Colors.white,
+                      buttonColor: Colors.black,
+                      onPressed: () {
+                        goToLoginWithMobile(name: "EMAIL");
+                      },
+                    ),
+                    SizedBox(height: 40.h),
+                    Container(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                          Container(
+                              margin: EdgeInsetsDirectional.only(end: 5),
+                              child: Text("Don’t have an account?",
+                                  style: _textStyleforAlreadyHave)),
+                          InkWell(
+                              onTap: () {
+                                goToSignUpPage();
+                              },
+                              child:
+                                  Text("Sign up", style: _textStyleforLogin)),
+                        ])),
+                  ]),
+            ),
+          )),
       // bottomSheet: Container(
       //     color: Colors.black,
       //     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

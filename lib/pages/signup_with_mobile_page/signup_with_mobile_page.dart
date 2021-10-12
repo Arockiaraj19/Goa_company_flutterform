@@ -1,5 +1,6 @@
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signup_network.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
@@ -18,13 +19,13 @@ class SignUpWithMobilePage extends StatefulWidget {
 
 class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
   TextEditingController _numberCtrl = TextEditingController();
-  bool loading =false;
+  bool loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -35,8 +36,8 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
   Widget _buildPhone() {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
-        fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontWeight: FontWeight.w700,
+        fontSize: 45.sp,
         fontFamily: "lato");
 
     var _textForEnterMobile = TextStyle(
@@ -47,37 +48,37 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
 
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
             child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 20.h,
+                ),
+                Text("Continue with Phone", style: _textStyleforHeading),
+                SizedBox(
+                  height: 20.h,
+                ),
                 Container(
-                    margin: EdgeInsetsDirectional.only(top: 40),
-                    child: Text("Continue with Phone",
-                        style: _textStyleforHeading)),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    margin: EdgeInsetsDirectional.only(top: 20),
-                    height: ScreenUtil().setHeight(100),
-                    width: ScreenUtil().setWidth(180),
+                    height: 600.r,
+                    width: 450.r,
                     child: Image.asset(
                       "assets/images/mobileImage.png",
                       fit: BoxFit.fill,
-                    ))
+                    )),
+                SizedBox(
+                  height: ScreenUtil().setHeight(70),
+                ),
+                _commonBuild(context)
               ],
             ),
-            SizedBox(
-              height: ScreenUtil().setHeight(70),
-            ),
-            _commonBuild(context)
-          ],
-        )),
+          ),
+        ),
       ),
     );
   }
@@ -89,7 +90,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
     var _textForEnterMobile = TextStyle(
         color: MainTheme.enterTextColor,
         fontWeight: FontWeight.w400,
-        fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
+        fontSize: 40.sp,
         fontFamily: "lato");
     var _textStyleforEnterNo =
         TextStyle(color: Colors.black, fontSize: 16, fontFamily: "lato");
@@ -97,113 +98,150 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  padding: onWeb
-                      ? EdgeInsetsDirectional.only(
-                          top: _height / 18,
-                          bottom: _height / 25,
-                          start: _width * 0.19,
-                        )
-                      : null,
-                  margin: onWeb
-                      ? null
-                      : EdgeInsetsDirectional.only(
-                          start: 20, top: 80, bottom: 10),
-                  child: Text(
-                    "Enter your mobile number",
-                    style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-                  )),
-            ],
+          Container(
+              padding: onWeb
+                  ? EdgeInsetsDirectional.only(
+                      top: _height / 18,
+                      bottom: _height / 25,
+                      start: _width * 0.19,
+                    )
+                  : null,
+              child: Text(
+                "Enter your mobile number",
+                style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
+              )),
+          SizedBox(
+            height: 10.h,
           ),
-          InputField(
-            labelBehavior: FloatingLabelBehavior.never,
-            onTap: () {},
-            gradient: MainTheme.loginwithBtnGradient,
-            inputBoxBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(10)),
+          TextFormField(
             controller: _numberCtrl,
-            inputType: TextInputType.number,
-            padding: onWeb
-                ? EdgeInsetsDirectional.only(
-                    end: _width * 0.19,
-                    start: _width * 0.19,
-                  )
-                : EdgeInsetsDirectional.only(
-                    top: 10, bottom: 10, end: 20, start: 20),
-            prefix: Text(
-              '+91  ',
-              style: TextStyle(
-                fontSize: onWeb ? 15 : 16,
+            cursorColor: Colors.pink,
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.number,
+            style: TextStyle(
+                fontSize: 40.sp,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.w400,
+                color: MainTheme.enterTextColor),
+            decoration: InputDecoration(
+              isDense: true,
+              prefixText: "+91",
+              prefixStyle: TextStyle(
+                  color: MainTheme.enterTextColor,
+                  fontSize: 40.sp,
+                  fontFamily: "lato",
+                  fontWeight: FontWeight.w400),
+              contentPadding: EdgeInsets.only(
+                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              hintText: 'Mobile number',
+              hintStyle: TextStyle(
+                  fontSize: 40.sp,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffC4C4C4)),
+              errorStyle: TextStyle(
+                fontSize: 40.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.pink,
+              ),
+              errorBorder: OutlineInputBorder(
+                gapPadding: 0,
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Color(0xffC4C4C4),
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
               ),
             ),
-            validators: (String value) {
-              if (value.isEmpty) return 'Required field';
+            validator: (value) {
+              if (value.isEmpty) {
+                return "* Required";
+              }
+              RegExp regex = new RegExp(numberpattern);
+              if (!regex.hasMatch(value)) {
+                return 'Please enter only number';
+              }
+              if (value.length > 10 || value.length < 10) {
+                return "Please enter only 10 numbers";
+              }
+
               return null;
             },
-            hintText: 'mobile number',
           ),
-          onWeb
-              ? Container(
-                  padding: EdgeInsetsDirectional.only(
-                    top: _height / 18,
-                    end: _width * 0.19,
-                    start: _width * 0.19,
+          SizedBox(
+            height: 50.h,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: loading
+                ? CircularProgressIndicator()
+                : GradientButton(
+                    height: 110.w,
+                    fontSize: 40.sp,
+                    name: "Next",
+                    gradient: MainTheme.loginwithBtnGradient,
+                    active: true,
+                    color: Colors.white,
+                    isLoading: loading,
+                    width: 500.w,
+                    borderRadius: BorderRadius.circular(20.sp),
+                    fontWeight: FontWeight.w500,
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        goToOtpPage();
+                      }
+                      // var dto = {"password": "123456", "email": "asd@mail.com"};
+                      // _authStore.onLogin(dto);
+                    },
                   ),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Expanded(
-                        child: Text(
-                      "Once you hit continue, you’ll receive a verification code. The verified number can be used to log in",
-                      style: TextStyle(
-                          color: Colors.grey, fontSize: 14, fontFamily: "lato"),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )),
-                  ]),
-                )
-              : Container(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                height: onWeb ? 35 : 40,
-                name: loading?"Loading..":"Next",
-                gradient: MainTheme.loginBtnGradient,
-                active: true,
-                color: Colors.white,
-                isLoading: loading,
-                width: onWeb ? _width / 6 : ScreenUtil().setWidth(400),
-                fontWeight: FontWeight.bold,
-                borderRadius: BorderRadius.circular(5),
-                fontSize: 14,
-                onPressed: () {
-                 if(_formKey.currentState.validate()){
-                   goToOtpPage();
-                 }
-                },
-              ),
-            ],
-          )
+          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     GradientButton(
+          //       height: onWeb ? 35 : 40,
+          //       name: loading ? "Loading.." : "Next",
+          //       gradient: MainTheme.loginBtnGradient,
+          //       active: true,
+          //       color: Colors.white,
+          //       isLoading: loading,
+          //       width: onWeb ? _width / 6 : ScreenUtil().setWidth(400),
+          //       fontWeight: FontWeight.bold,
+          //       borderRadius: BorderRadius.circular(5),
+          //       fontSize: 14,
+          //       onPressed: () {
+          //         if (_formKey.currentState.validate()) {
+
+          //         }
+          //       },
+          //     ),
+          //   ],
+          // )
         ],
       ),
     );
   }
 
-  goToOtpPage() async{
+  goToOtpPage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
     var network = MobileSignUpNetwork();
-    var result =await network.verifyMobileNoForSignup(_numberCtrl.text);
-    result? registerUser(_numberCtrl.text,context,true):null;
+    var result = await network.verifyMobileNoForSignup(_numberCtrl.text);
+    result ? registerUser(_numberCtrl.text, context, true) : null;
   }
 
   Widget _buildWeb() {
