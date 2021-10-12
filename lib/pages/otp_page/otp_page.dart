@@ -151,8 +151,8 @@ class _OtpPageState extends State<OtpPage> {
     } else {
       var _credential = PhoneAuthProvider.credential(
           verificationId: widget.otpData.id, smsCode: _otpController.text);
-      // Master_function(
-      //     context, _credential, widget.otpData.value, widget.otpData.isSignUp);
+      Master_function(
+          context, _credential, widget.otpData.value, widget.otpData.isSignUp);
     }
   }
 
@@ -255,26 +255,30 @@ class _OtpPageState extends State<OtpPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GradientButton(
-                height: 40,
-                name: loading ? "Logging In.." : "Log In",
-                gradient: MainTheme.loginBtnGradient,
-                active: true,
-                color: Colors.white,
-                width: onWeb ? _width / 6 : ScreenUtil().setWidth(480),
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-                isLoading: loading,
-                onPressed: () {
-                  if (_otpController.text.length == 6) {
-                    goToAddingPasswordPage();
-                  } else {
-                    setState(() {
-                      err = true;
-                    });
-                  }
-                },
-              ),
+              loading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : GradientButton(
+                      height: 40,
+                      name: loading ? "Logging In.." : "Log In",
+                      gradient: MainTheme.loginBtnGradient,
+                      active: true,
+                      color: Colors.white,
+                      width: onWeb ? _width / 6 : ScreenUtil().setWidth(480),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      isLoading: loading,
+                      onPressed: () {
+                        if (_otpController.text.length == 6) {
+                          goToAddingPasswordPage();
+                        } else {
+                          setState(() {
+                            err = true;
+                          });
+                        }
+                      },
+                    ),
             ],
           ),
           Row(

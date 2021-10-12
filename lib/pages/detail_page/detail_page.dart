@@ -1,5 +1,7 @@
+import 'package:dating_app/models/creategroup_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
+import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/home_button_network.dart';
 import 'package:dating_app/pages/detail_page/widgets/detail_slider.dart';
 import 'package:dating_app/pages/detail_page/widgets/percentage_matching_box.dart';
@@ -104,7 +106,7 @@ class _DetailPageState extends State<DetailPage> {
                     children: [
                       Container(
                         child: Text(
-                          "${widget.userDetails.firstName??""} ${widget.userDetails.lastName??""}, ${widget.userDetails.age==null?"":widget.userDetails.age.toString()}",
+                          "${widget.userDetails.firstName ?? ""} ${widget.userDetails.lastName ?? ""}, ${widget.userDetails.age == null ? "" : widget.userDetails.age.toString()}",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -133,22 +135,36 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Consumer<HomeProvider>(builder: (context, data, child) {
                     return Container(
-                      // width: 300,
+                        // width: 300,
                         padding: EdgeInsetsDirectional.only(start: 20, end: 20),
                         child: AnimationButton(
+                          goChatPage: () async {
+                            print("hello");
+
+                            String groupid = await ChatNetwork()
+                                .createGroup(widget.userDetails.id);
+                            print("front la data varuthaa");
+                            print(groupid);
+                            print(widget.userDetails.id);
+                            goToChatPage(groupid, widget.userDetails.id);
+                          },
                           isDetail: true,
                           onTapHeart: () {
                             String confirmedUser = widget.userDetails.id;
                             UserModel userData = data.userData;
-                            HomeButtonNetwork().postMatchRequest(confirmedUser, userData);
+                            HomeButtonNetwork()
+                                .postMatchRequest(confirmedUser, userData);
                           },
                           onTapFlash: () {
                             String likedUser = widget.userDetails.id;
                             HomeButtonNetwork().postLikeUnlike(likedUser, "1");
-                          },));
+                          },
+                        ));
                   }),
                   Row(
                     children: [
@@ -172,10 +188,11 @@ class _DetailPageState extends State<DetailPage> {
                           : ScreenUtil().setHeight(50),
                       duration: const Duration(seconds: 2),
                       curve: Curves.fastOutSlowIn,
-                      child: Text(widget.userDetails.bio??"",
+                      child: Text(
+                        widget.userDetails.bio ?? "",
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
-                        maxLines: selected?10:2,
+                        maxLines: selected ? 10 : 2,
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 12,
@@ -208,7 +225,9 @@ class _DetailPageState extends State<DetailPage> {
                     ],
                   ),
 
-                  PercentageMatchingBox(userSuggestionData: widget.userDetails,),
+                  PercentageMatchingBox(
+                    userSuggestionData: widget.userDetails,
+                  ),
 
                   // Stack(
                   //   children: [
@@ -377,3 +396,7 @@ class _DetailPageState extends State<DetailPage> {
 }
 
 class Conatiner {}
+
+goToChatPage(groupid, id) {
+  Routes.sailor(Routes.chattingPage, params: {"groupid": groupid, "id": id});
+}

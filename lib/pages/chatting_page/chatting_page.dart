@@ -1,3 +1,6 @@
+import 'package:dating_app/networks/chat_network.dart';
+import 'package:dating_app/networks/client/api_list.dart';
+import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/chatting_page/wigets/chatt_box.dart';
 import 'package:dating_app/pages/detail_page/detail_page.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -9,6 +12,8 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:web_socket_channel/status.dart' as status;
 
 class ChattingPage extends StatefulWidget {
+  final String groupid;
+  final String id;
   final String image;
   final String name;
   final bool onWeb;
@@ -16,6 +21,8 @@ class ChattingPage extends StatefulWidget {
   final double floatingActionButtonWidth;
   ChattingPage(
       {Key key,
+      this.groupid,
+      this.id,
       this.image,
       this.name,
       this.onWeb = false,
@@ -39,7 +46,47 @@ class _ChattingPageState extends State<ChattingPage> {
     "Meetup",
     "Expert support"
   ];
- 
+
+  IO.Socket socket = IO.io(
+      socketUrl,
+      IO.OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
+          .build());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("chatting page kku id varutha");
+    print("ithu user id");
+    print(widget.id);
+    print("ithu group id");
+    print(widget.groupid);
+    // socket.onConnect((_) {
+    //   print("chat room connected");
+    // });
+    print("subscribe varuthaa");
+
+    createGroupEmit();
+    socket.on("group_${widget.groupid}", (data) => print(data));
+  }
+
+  createGroupEmit() async {
+    String userid = await getUserId();
+    socket.emit("subscribe", {
+      "user_1": userid,
+      "user_2": widget.id,
+      "group": widget.groupid,
+    });
+  }
+
+  _sentmessage() {
+    
+    ChatNetwork()
+        .createMessage(widget.id, _message.text.toString(), widget.groupid);
+    _message.text = "";
+  }
+
+  TextEditingController _message = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -169,6 +216,7 @@ class _ChattingPageState extends State<ChattingPage> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         child: TextField(
+                          controller: _message,
                           decoration: InputDecoration(
                               suffixIcon: RotationTransition(
                                   turns: new AlwaysStoppedAnimation(30 / 360),
@@ -179,16 +227,19 @@ class _ChattingPageState extends State<ChattingPage> {
                               border: InputBorder.none,
                               hintText: 'Type a message...'),
                         ))),
-                Container(
-                    child: CircleAvatar(
-                  backgroundColor: MainTheme.primaryColor,
-                  radius: 22,
-                  child: Icon(
-                    FontAwesomeIcons.solidPaperPlane,
-                    color: Colors.white,
-                    size: 17,
-                  ),
-                ))
+                InkWell(
+                  onTap: () => _sentmessage(),
+                  child: Container(
+                      child: CircleAvatar(
+                    backgroundColor: MainTheme.primaryColor,
+                    radius: 22,
+                    child: Icon(
+                      FontAwesomeIcons.solidPaperPlane,
+                      color: Colors.white,
+                      size: 17,
+                    ),
+                  )),
+                )
               ],
             )));
   }

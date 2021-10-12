@@ -186,25 +186,27 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
           ),
           Align(
             alignment: Alignment.center,
-            child: GradientButton(
-              height: 110.w,
-              fontSize: 40.sp,
-              name: "Next",
-              gradient: MainTheme.loginwithBtnGradient,
-              active: true,
-              color: Colors.white,
-              isLoading: loading,
-              width: 500.w,
-              borderRadius: BorderRadius.circular(20.sp),
-              fontWeight: FontWeight.w500,
-              onPressed: () async {
-                if (_formKey.currentState.validate()) {
-                  goToOtpPage();
-                }
-                // var dto = {"password": "123456", "email": "asd@mail.com"};
-                // _authStore.onLogin(dto);
-              },
-            ),
+            child: loading
+                ? CircularProgressIndicator()
+                : GradientButton(
+                    height: 110.w,
+                    fontSize: 40.sp,
+                    name: "Next",
+                    gradient: MainTheme.loginwithBtnGradient,
+                    active: true,
+                    color: Colors.white,
+                    isLoading: loading,
+                    width: 500.w,
+                    borderRadius: BorderRadius.circular(20.sp),
+                    fontWeight: FontWeight.w500,
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        goToOtpPage();
+                      }
+                      // var dto = {"password": "123456", "email": "asd@mail.com"};
+                      // _authStore.onLogin(dto);
+                    },
+                  ),
           ),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.center,

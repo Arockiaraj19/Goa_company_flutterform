@@ -98,17 +98,6 @@ class Routes {
             return HomePage();
           }),
 
-      SailorRoute(
-          name: loginOtpPage,
-          defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<OtpModel>(name: "otpData")],
-          builder: (context, args, params) {
-            OtpModel otpData = Sailor.param<OtpModel>(context, "otpData");
-            return LoginOtpPage(
-              otpData: otpData,
-            );
-          }),
-
       //login
 
       SailorRoute(
@@ -260,8 +249,21 @@ class Routes {
       SailorRoute(
           name: chattingPage,
           defaultTransitions: [SailorTransition.fade_in],
+          params: [
+            SailorParam<String>(
+              name: 'groupid',
+            ),
+            SailorParam<String>(
+              name: 'id',
+            ),
+          ],
           builder: (context, args, params) {
-            return ChattingPage();
+            String groupid = Sailor.param<String>(context, "groupid");
+            String id = Sailor.param<String>(context, "id");
+            return ChattingPage(
+              groupid: groupid,
+              id: id,
+            );
           }),
 
       SailorRoute(

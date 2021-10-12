@@ -13,6 +13,7 @@ import 'package:provider/src/provider.dart';
 import 'package:lottie/lottie.dart';
 
 class AnimationButton extends StatefulWidget {
+  final Function goChatPage;
   final Function onTapFlip;
   final Function onTapHeart;
   final Function onTapFlash;
@@ -22,6 +23,7 @@ class AnimationButton extends StatefulWidget {
   final bool isDetail;
   AnimationButton(
       {Key key,
+      this.goChatPage,
       this.onTapFlash,
       this.onTapFlip,
       this.onTapHeart,
@@ -63,10 +65,7 @@ class _AnimationButtonState extends State<AnimationButton> {
                   child: CircularBtn(
                     icon: FontAwesomeIcons.solidPaperPlane,
                     btnColor: Color(0xffF85565),
-                    ontap: () {
-                      shake.currentState.forward();
-                      goToChatPage();
-                    },
+                    ontap: widget.goChatPage
                   )),
               SizedBox(
                 width: 15,

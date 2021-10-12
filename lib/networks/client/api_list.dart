@@ -48,3 +48,7 @@ const String url_get_notification = "";
 //get gender api
 
 const String url_get_gender = "/user/utils/genders";
+
+//chat create group
+const String create_group = "/chats/group";
+const String new_message = "/chats/entry";
