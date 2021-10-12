@@ -79,7 +79,6 @@ class _ChattingPageState extends State<ChattingPage> {
   }
 
   _sentmessage() {
-    
     ChatNetwork()
         .createMessage(widget.id, _message.text.toString(), widget.groupid);
     _message.text = "";
