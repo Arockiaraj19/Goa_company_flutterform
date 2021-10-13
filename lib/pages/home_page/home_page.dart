@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dating_app/models/firebase_messing.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/detail_page/widgets/percentage_matching_box.dart';
 import 'package:dating_app/pages/home_page/widget/Image_swiper.dart';
@@ -42,7 +43,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   
+    FCM().initPushNotification();
     context.read<HomeProvider>().getData();
   }
 
@@ -57,8 +58,6 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
-
-  
 
   Widget _buildPhone() {
     var _height = MediaQuery.of(context).size.height - kToolbarHeight;
