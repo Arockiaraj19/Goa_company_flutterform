@@ -1,3 +1,4 @@
+import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
@@ -8,6 +9,7 @@ import 'package:dating_app/pages/comment_page/widgets/massage_card.dart';
 import 'package:dating_app/pages/comment_page/widgets/massage_card_list.dart';
 import 'package:dating_app/pages/comment_page/widgets/request_card.dart';
 import 'package:dating_app/pages/comment_page/widgets/request_card_list.dart';
+import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -15,6 +17,7 @@ import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/src/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class CommentPage extends StatefulWidget {
@@ -37,6 +40,7 @@ class _CommentPageState extends State<CommentPage>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     print("init socket state");
+    
     socket.onConnect((data) {
       print('connect' + data);
     });

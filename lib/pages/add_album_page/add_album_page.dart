@@ -1,15 +1,11 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:dating_app/models/user.dart';
+import 'dart:typed_data';
 import 'package:dating_app/networks/image_upload_network.dart';
-import 'package:dating_app/networks/user_network.dart';
+
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
-import 'package:dating_app/shared/widgets/onboarding_check.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -202,7 +198,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
         print("kl2");
 
         Uint8List imageString = await selectedUserAvatar[i].readAsBytes();
-        String result = await network.uploadImage(imageString);
+        String result = await network.uploadImage(selectedUserAvatar[i].path);
         print("kl3");
         print(result);
         uploadedImages.add(result);

@@ -15,7 +15,7 @@ import 'client/apiClient.dart';
 import 'client/api_list.dart';
 
 class UploadImage {
-  Future uploadImage(Uint8List img64) async {
+  Future uploadImage(img64) async {
     Response response;
     try {
       final _dio = apiClient();
@@ -52,13 +52,18 @@ class UploadImage {
   Future uploadaws(String uploadUrl, image) async {
     print("uploadaws");
     print(uploadUrl);
+    print("image path");
+    print(image);
     try {
-      Response result = await Dio().put(uploadUrl,
-          data: image,
-          options: Options(
-              headers: {'content-Type': "image/jpeg", "ACL": 'public-read'}));
-      print("image result");
-      print(result.data);
+      Response result = await Dio().put(
+        uploadUrl,
+        data: File(image),
+      );
+      if (result.statusCode == 200) {
+        print("image result");
+        print(result.data);
+      }
+
       return result;
     } catch (e) {
       print(e);

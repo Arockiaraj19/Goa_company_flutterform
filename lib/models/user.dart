@@ -77,7 +77,9 @@ class UserModel {
     location = json['location'] != null
         ? new Location.fromJson(json['location'])
         : null;
-    profileImage = json['profile_image'].cast<String>();
+    profileImage = json['profile_image'] != null
+        ? json['profile_image'].cast<String>()
+        : null;
     profession = json['profession'].cast<String>();
     hobbies = json['hobbies'].cast<String>();
     interests = json['interests'].cast<String>();

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/detail_page/widgets/percentage_matching_box.dart';
 import 'package:dating_app/pages/home_page/widget/Image_swiper.dart';
 import 'package:dating_app/pages/home_page/widget/bio.dart';
@@ -25,6 +26,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -41,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+   
     context.read<HomeProvider>().getData();
   }
 
@@ -55,6 +58,8 @@ class _HomePageState extends State<HomePage> {
       }
     });
   }
+
+  
 
   Widget _buildPhone() {
     var _height = MediaQuery.of(context).size.height - kToolbarHeight;

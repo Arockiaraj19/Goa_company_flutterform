@@ -1,15 +1,36 @@
+import 'dart:async';
+
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/chatting_page/wigets/chatt_box.dart';
 import 'package:dating_app/pages/detail_page/detail_page.dart';
+import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
+import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/src/provider.dart';
 // import 'package:web_socket_channel/io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:web_socket_channel/status.dart' as status;
+
+class StreamSocket {
+  final _socketResponse = StreamController<Map<String, dynamic>>();
+
+  void Function(Map<String, dynamic>) get addResponse =>
+      _socketResponse.sink.add;
+
+  Stream<Map<String, dynamic>> get getResponse => _socketResponse.stream;
+
+  void dispose() {
+    _socketResponse.close();
+  }
+}
+
+StreamSocket streamSocket = StreamSocket();
 
 class ChattingPage extends StatefulWidget {
   final String groupid;
@@ -64,9 +85,13 @@ class _ChattingPageState extends State<ChattingPage> {
     //   print("chat room connected");
     // });
     print("subscribe varuthaa");
+    context.read<ChatProvider>().getMessageData(widget.groupid);
 
     createGroupEmit();
-    socket.on("group_${widget.groupid}", (data) => print(data));
+    socket.on("group_${widget.groupid}", (data) {
+      print(data);
+      return streamSocket.addResponse;
+    });
   }
 
   createGroupEmit() async {
@@ -85,6 +110,12 @@ class _ChattingPageState extends State<ChattingPage> {
   }
 
   TextEditingController _message = TextEditingController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    streamSocket.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,17 +208,26 @@ class _ChattingPageState extends State<ChattingPage> {
                           )),
                     ],
                   ),
-            body: SingleChildScrollView(
-              child: ListView(
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                children: [
-                  ChattBox(width: widget.chatBoxWidth),
-                  ChattBox(
-                    width: widget.chatBoxWidth,
-                    sendMsg: true,
-                  ),
-                ],
+            body: Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Consumer<ChatProvider>(
+                builder: (context, data, child) {
+                  return data.chatState == ChatState.Loaded
+                      ? data.chatMessageData.length == 0
+                          ? noResult()
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => Container(
+                                child:
+                                    Text(data.chatMessageData[index].message),
+                              ),
+                              itemCount: data.chatMessageData.length,
+                            )
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        );
+                },
               ),
             ),
             floatingActionButtonLocation:
@@ -243,3 +283,18 @@ class _ChattingPageState extends State<ChattingPage> {
             )));
   }
 }
+
+
+// StreamBuilder(
+//                 stream: streamSocket.getResponse,
+//                 builder: (BuildContext context,
+//                     AsyncSnapshot<Map<String, dynamic>> snapshot) {
+//                   print("stream builder");
+//                   print(snapshot.data);
+//                   return Center(
+//                     child: Container(
+//                       child: Text("hello"),
+//                     ),
+//                   );
+//                 },
+//               ),
