@@ -1,10 +1,13 @@
+import 'package:dating_app/models/chatgroup_model.dart';
 import 'package:flutter/material.dart';
 
 class MassageCard extends StatefulWidget {
   final double height;
   final double width;
   final Function onTap;
-  MassageCard({Key key, this.height, this.width, this.onTap}) : super(key: key);
+  final ChatGroup data;
+  MassageCard({Key key, this.height, this.width, this.onTap, this.data})
+      : super(key: key);
 
   @override
   _MassageCardState createState() => _MassageCardState();
@@ -38,7 +41,7 @@ class _MassageCardState extends State<MassageCard> {
                       children: [
                         Container(
                           child: Text(
-                            "Matches",
+                            widget.data.id.toString(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
