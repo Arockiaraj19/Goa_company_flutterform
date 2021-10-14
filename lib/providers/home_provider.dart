@@ -24,6 +24,7 @@ class HomeProvider extends ChangeNotifier {
   bool get showstar => _showstar;
   bool get showheart => _showheart;
 
+
   getData() async {
     _usersSuggestionData = null;
     _currentpage = 0;

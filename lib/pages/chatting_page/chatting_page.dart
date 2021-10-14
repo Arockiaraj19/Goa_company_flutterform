@@ -1,11 +1,9 @@
-import 'dart:async';
 
 import 'package:dating_app/models/chatmessage_model.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
-import 'package:dating_app/pages/chatting_page/wigets/chatt_box.dart';
-import 'package:dating_app/pages/detail_page/detail_page.dart';
+
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
@@ -74,11 +72,10 @@ class _ChattingPageState extends State<ChattingPage> {
     });
     print("subscribe varuthaa");
     context.read<ChatProvider>().getMessageData(widget.groupid);
-
     get();
   }
 
-  get() async {
+  get()async{
     await createGroupEmit();
     socket.on("group_${widget.groupid}", (data) {
       print(data);
@@ -88,7 +85,6 @@ class _ChattingPageState extends State<ChattingPage> {
       return context.read<ChatProvider>().addsocketmessage(chatdata);
     });
   }
-
   createGroupEmit() async {
     String userid = await getUserId();
     socket.emit("subscribe", {

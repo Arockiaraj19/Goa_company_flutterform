@@ -232,16 +232,16 @@ class _LoginWithState extends State<LoginWith> {
                     color: Colors.pink, width: 1, style: BorderStyle.solid),
               ),
             ),
-            validator: (val) {
-              if (val.isEmpty) {
-                return "Please enter password";
-              }
-              RegExp regex = new RegExp(passwordpattern.toString());
-              if (!regex.hasMatch(val)) {
-                return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
-              }
-              return null;
-            },
+            // validator: (val) {
+            //   if (val.isEmpty) {
+            //     return "Please enter password";
+            //   }
+            //   RegExp regex = new RegExp(passwordpattern.toString());
+            //   if (!regex.hasMatch(val)) {
+            //     return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
+            //   }
+            //   return null;
+            // },
           ),
           SizedBox(
             height: 3.h,
