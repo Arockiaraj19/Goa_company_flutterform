@@ -25,7 +25,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('A bg message just showed up :  ${message.messageId}');
+  print("a push notification data");
+  print('A bg message just showed up :  ${message}');
 }
 
 Future<void> main() async {
@@ -44,11 +45,9 @@ Future<void> main() async {
     badge: true,
     sound: true,
   );
- 
+
   runApp(MyApp());
 }
-
-
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.

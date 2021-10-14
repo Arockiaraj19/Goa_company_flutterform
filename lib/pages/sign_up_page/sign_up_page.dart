@@ -133,6 +133,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 15.h,
                     ),
                     GradientButton(
+                    
                       height: 125.w,
                       name: "Sign up with email",
                       borderRadius: BorderRadius.circular(30.r),

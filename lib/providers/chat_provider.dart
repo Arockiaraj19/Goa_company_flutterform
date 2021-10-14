@@ -22,6 +22,9 @@ class ChatProvider extends ChangeNotifier {
   List<ChatMessage> _chatMessageData;
   List<ChatMessage> get chatMessageData => _chatMessageData;
 
+
+
+
   getGroupData() async {
     _chatState = ChatState.Loading;
     _chatGroupData = await ChatNetwork().getGrouplist();
@@ -31,7 +34,7 @@ class ChatProvider extends ChangeNotifier {
 
   getMessageData(id) async {
     _chatState = ChatState.Loading;
-  _chatMessageData = await ChatNetwork().getMessagelist(id);
+    _chatMessageData = await ChatNetwork().getMessagelist(id);
     loaded();
   }
 
@@ -42,6 +45,11 @@ class ChatProvider extends ChangeNotifier {
 
   error() {
     _chatState = ChatState.Error;
+    notifyListeners();
+  }
+
+  addsocketmessage(ChatMessage data) {
+    _chatMessageData = [..._chatMessageData, data];
     notifyListeners();
   }
 }

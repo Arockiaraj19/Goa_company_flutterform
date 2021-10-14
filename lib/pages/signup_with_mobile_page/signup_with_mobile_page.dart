@@ -65,8 +65,8 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                   height: 20.h,
                 ),
                 Container(
-                    height: 600.r,
-                    width: 450.r,
+                    height: 500.r,
+                    width: 300.r,
                     child: Image.asset(
                       "assets/images/mobileImage.png",
                       fit: BoxFit.fill,

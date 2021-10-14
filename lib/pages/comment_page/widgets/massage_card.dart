@@ -1,4 +1,5 @@
 import 'package:dating_app/models/chatgroup_model.dart';
+import 'package:dating_app/routes.dart';
 import 'package:flutter/material.dart';
 
 class MassageCard extends StatefulWidget {
@@ -14,11 +15,15 @@ class MassageCard extends StatefulWidget {
 }
 
 class _MassageCardState extends State<MassageCard> {
+  goToChatPage(groupid, id) {
+    Routes.sailor(Routes.chattingPage, params: {"groupid": groupid, "id": id});
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          widget.onTap();
+          goToChatPage(widget.data.id, widget.data.user_id_2);
         },
         child: Container(
             margin: EdgeInsets.all(7),
@@ -41,7 +46,9 @@ class _MassageCardState extends State<MassageCard> {
                       children: [
                         Container(
                           child: Text(
-                            widget.data.id.toString(),
+                            widget.data.user_id_2_details.length == 0
+                                ? "unknown"
+                                : widget.data.user_id_2_details[0].firstName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

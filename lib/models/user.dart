@@ -83,15 +83,15 @@ class UserModel {
     profession = json['profession'].cast<String>();
     hobbies = json['hobbies'].cast<String>();
     interests = json['interests'].cast<String>();
-    if (json['interests_details'] != null) {
+    if (json['interest_details'] != null) {
       interestDetails = new List<InterestModel>();
-      json['interests_details'].forEach((v) {
+      json['interest_details'].forEach((v) {
         interestDetails.add(new InterestModel.fromJson(v));
       });
     }
-    if (json['hobbies_details'] != null) {
+    if (json['hobby_details'] != null) {
       hobbyDetails = new List<HobbyModel>();
-      json['hobbies_details'].forEach((v) {
+      json['hobby_details'].forEach((v) {
         hobbyDetails.add(new HobbyModel.fromJson(v));
       });
     }
@@ -111,7 +111,8 @@ class UserModel {
     firstName = json['first_name'];
     gender = json['gender'].toString();
     lastName = json['last_name'];
-    sexualOrientation = json['sexual_orientation'];
+    sexualOrientation =
+        json['sexual_orientation'] != null ? json['sexual_orientation'] : null;
     partnerType = json['partner_type'];
     identificationImage = json['identification_image'];
     onboardDetailsStatus = json['onboard_details_status'];
