@@ -39,11 +39,10 @@ class UserNetwork {
     Response response;
     try {
       final _dio = apiClient();
-      String id = await getUserId();
-      var data = await _dio.then((value) async {
-        response = await value.get(userDetailsEndpoint + "/" + id);
-        print("oops");
-        print(response.data);
+      String id=await getUserId();
+      var data=await _dio.then((value) async {
+        response =await value.get(userDetailsEndpoint+"/"+id);
+        print(response.data[0]["interests_detail"]);
 
         print("hobbie details");
         if (response.statusCode == 200) {
