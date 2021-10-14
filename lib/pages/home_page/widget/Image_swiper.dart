@@ -37,27 +37,6 @@ class ImageSwiper extends StatefulWidget {
 
 class _ImageSwiperState extends State<ImageSwiper> {
   int currentIndex = 0;
-  bool loadingheart = true;
-  bool loadingstar = true;
-  changeheart() {
-    setState(() {
-      loadingheart = false;
-    });
-    Future.delayed(Duration(seconds: 2));
-    setState(() {
-      loadingheart = true;
-    });
-  }
-
-  changestar() {
-    setState(() {
-      loadingstar = false;
-    });
-    Future.delayed(Duration(seconds: 2));
-    setState(() {
-      loadingstar = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +86,8 @@ class _ImageSwiperState extends State<ImageSwiper> {
             // width: 300,
             padding: EdgeInsetsDirectional.only(start: 20, end: 20),
             child: AnimationButton(
-              loadingstar: loadingstar,
-              loadingheart: loadingheart,
+              loadingstar: data.showstar,
+              loadingheart: data.showheart,
               goChatPage: () async {
                 print("message");
                 String groupid = await ChatNetwork().createGroup(
@@ -118,15 +97,15 @@ class _ImageSwiperState extends State<ImageSwiper> {
                     widget.userSuggestionData.response[currentIndex].id);
               },
               onTapHeart: () {
-                changestar();
+                 context.read<HomeProvider>().changeheart();
                 String confirmedUser =
                     widget.userSuggestionData.response[currentIndex].id;
                 UserModel userData = data.userData;
                 HomeButtonNetwork().postMatchRequest(confirmedUser, userData);
               },
               onTapFlash: () {
-                changeheart();
                 print("you click star");
+                 context.read<HomeProvider>().changestar();
                 print(currentIndex);
                 String likedUser =
                     widget.userSuggestionData.response[currentIndex].id;

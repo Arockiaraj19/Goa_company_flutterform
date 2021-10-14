@@ -73,7 +73,7 @@ class ChatNetwork {
             .map((movieData) => ChatGroup.fromMap(movieData))
             .toList(growable: false);
         print("group list correct a varuthaa");
-        print(chatgroups[0].id);
+
         return chatgroups;
       });
       return data;
