@@ -31,26 +31,11 @@ class _CommentPageState extends State<CommentPage>
     with TickerProviderStateMixin {
   TabController _tabController;
 
-  IO.Socket socket = IO.io(
-      socketUrl,
-      IO.OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
-          .build());
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     print("init socket state");
-    
-    socket.onConnect((data) {
-      print('connect' + data);
-    });
-    socket.on("checking", (data) => print(data));
-  }
-
-  void sentUserId() async {
-    String userId = await getUserId();
-    print("User id event" + userId);
-    await socket.emit('identity', userId);
   }
 
   @override
@@ -73,9 +58,7 @@ class _CommentPageState extends State<CommentPage>
             elevation: 0,
             actions: [
               InkWell(
-                onTap: () async {
-                  return sentUserId();
-                },
+                onTap: () async {},
                 child: Container(
                   margin: EdgeInsetsDirectional.only(end: 10),
                   child: Icon(

@@ -66,14 +66,16 @@ class _ChattingPageState extends State<ChattingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("chatting page kku id varutha");
-    print("ithu user id");
+    print("sender id corect a varuthaa");
     print(widget.id);
-    print("ithu group id");
-    print(widget.groupid);
-    // socket.onConnect((_) {
-    //   print("chat room connected");
-    // });
+    IO.Socket socket = IO.io(
+        socketUrl,
+        IO.OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .build());
+    socket.onConnect((data) {
+      print('connect' + data);
+    });
     print("subscribe varuthaa");
     context.read<ChatProvider>().getMessageData(widget.groupid);
 
@@ -238,7 +240,8 @@ class _ChattingPageState extends State<ChattingPage> {
                                             vertical: 15.w,
                                           ),
                                           child: Text(
-                                            data.chatMessageData[index].message,
+                                            data.chatMessageData[index]
+                                                .receiverDetails[0].id,
                                             style: TextStyle(
                                               color: data
                                                           .chatMessageData[

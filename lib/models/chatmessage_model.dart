@@ -30,8 +30,8 @@ class ChatMessage {
 
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
-      id: map['id'],
-      groupid: map['groupid'],
+      id: map['_id'],
+      groupid: map['group_id'],
       message: map['message'],
       readByRecipients: List<String>.from(map['readByRecipients']),
       senderDetails: List<Details>.from(
