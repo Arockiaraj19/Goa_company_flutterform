@@ -91,7 +91,7 @@ class _ImageUploadAlertState extends State<ImageUploadAlert> {
         if (await Permission.camera.request().isGranted) {
           pickedFile = await _picker.pickImage(
             source: ImageSource.camera,
-            imageQuality: 10,
+            // imageQuality: 10,
             // preferredCameraDevice: CameraDevice.rear
           );
           _imageData = pickedFile;

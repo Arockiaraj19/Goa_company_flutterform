@@ -175,6 +175,9 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                     fontWeight: FontWeight.w500,
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
+                        setState(() {
+                          loading = !loading;
+                        });
                         goToOtpPage();
                       }
                       // var dto = {"password": "123456", "email": "asd@mail.com"};

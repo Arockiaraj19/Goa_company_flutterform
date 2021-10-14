@@ -80,21 +80,21 @@ class Responses {
     location = json['location'] != null
         ? new Location.fromJson(json['location'])
         : null;
-    gender = json['gender'].toString();
+    // gender = json['gender'].toString();
     profileImage = json['profile_image'];
     profession = json['profession'];
-    if (json['interests'] != null) {
-      interests = new List<InterestModel>();
-      json['interests'].forEach((v) {
-        interests.add(new InterestModel.fromJson(v));
-      });
-    }
-    if (json['hobbies'] != null) {
-      hobbies = new List<HobbyModel>();
-      json['hobbies'].forEach((v) {
-        hobbies.add(new HobbyModel.fromJson(v));
-      });
-    }
+    // if (json['interests'] != null) {
+    //   interests = new List<InterestModel>();
+    //   json['interests'].forEach((v) {
+    //     interests.add(new InterestModel.fromJson(v));
+    //   });
+    // }
+    // if (json['hobbies'] != null) {
+    //   hobbies = new List<HobbyModel>();
+    //   json['hobbies'].forEach((v) {
+    //     hobbies.add(new HobbyModel.fromJson(v));
+    //   });
+    // }
     isMobileVerified = json['is_mobile_verified'];
     isEmailVerified = json['is_email_verified'];
     relationshipStatus = json['relationship_status'];
@@ -119,15 +119,15 @@ class Responses {
     if (this.location != null) {
       data['location'] = this.location.toJson();
     }
-    data['gender'] = this.gender;
+    // data['gender'] = this.gender;
     data['profile_image'] = this.profileImage;
     data['profession'] = this.profession;
-    if (this.interests != null) {
-      data['interests'] = this.interests.map((v) => v.toJson()).toList();
-    }
-    if (this.hobbies != null) {
-      data['hobbies'] = this.hobbies.map((v) => v.toJson()).toList();
-    }
+    // if (this.interests != null) {
+    //   data['interests'] = this.interests.map((v) => v.toJson()).toList();
+    // }
+    // if (this.hobbies != null) {
+    //   data['hobbies'] = this.hobbies.map((v) => v.toJson()).toList();
+    // }
     data['is_mobile_verified'] = this.isMobileVerified;
     data['is_email_verified'] = this.isEmailVerified;
     data['relationship_status'] = this.relationshipStatus;

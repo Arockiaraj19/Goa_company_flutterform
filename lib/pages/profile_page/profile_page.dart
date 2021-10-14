@@ -204,10 +204,10 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   child: Column(children: [
-                                    PercentageBar(
-                                      image: data.userData.profileImage[0],
-                                      percentage: 0.8,
-                                    ),
+                                    // PercentageBar(
+                                    //   image: data.userData.profileImage[0],
+                                    //   percentage: 0.8,
+                                    // ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -216,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           margin: EdgeInsetsDirectional.only(
                                               top: 5),
                                           child: Text(
-                                              "${data.userData.firstName} ${data.userData.lastName}, 22",
+                                              "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""}, 22",
                                               style: _textStyleforName
 
                                               // TextStyle(
@@ -415,7 +415,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         mainAxisSpacing: 0.0,
                                         crossAxisCount: 3,
                                         childAspectRatio: 2.8),
-                                itemCount: data.userData.interestDetails.length,
+                                itemCount: 0,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,
@@ -446,7 +446,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         mainAxisSpacing: 0.0,
                                         crossAxisCount: 3,
                                         childAspectRatio: 2.8),
-                                itemCount: data.userData.hobbyDetails.length,
+                                itemCount: 0,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,
@@ -468,13 +468,13 @@ class _ProfilePageState extends State<ProfilePage>
                                       child: Text("Album", style: subHeading))
                                 ],
                               ),
-                              AlbumCardList(
-                                mainAxisSpacing: 10.0,
-                                crossAxisSpacing: 10.0,
-                                crossAxisCount: 3,
-                                images: data.userData.profileImage,
-                                itemCount: data.userData.profileImage.length,
-                              )
+                              // AlbumCardList(
+                              //   mainAxisSpacing: 10.0,
+                              //   crossAxisSpacing: 10.0,
+                              //   crossAxisCount: 3,
+                              //   images: data.userData.profileImage,
+                              //   itemCount: data.userData.profileImage.length,
+                              // )
                             ],
                           )),
                       SingleChildScrollView(

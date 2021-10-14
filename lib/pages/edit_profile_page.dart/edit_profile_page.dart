@@ -124,10 +124,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   fillHobbies() {
     for (int i = 0; i < hobbyData1.length; i++) {
-      if (widget.userdata.hobbies.contains(hobbyData1[i].id)) {
+      if (widget.userdata.hobbies.contains(hobbyData1[i].hobby_id)) {
         hobbieBool[i] = true;
-        hobbieSelected.add(hobbyData1[i].id);
-        var val = {"hobby_id": hobbyData1[i].id, "title": hobbyData1[i].title};
+        hobbieSelected.add(hobbyData1[i].hobby_id);
+        var val = {
+          "hobby_id": hobbyData1[i].hobby_id,
+          "title": hobbyData1[i].title
+        };
         hobbieSelected1.add(val);
       }
     }
@@ -151,7 +154,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fill();
+    // fill();
     if (interestData == null) {
       interestData = UserNetwork().getUserInterests();
       hobbyData = UserNetwork().getUserHobbies();
@@ -276,20 +279,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              PercentageBar(
-                percentage: 0.7,
-                onEditProfilePage: true,
-                onTap: () {
-                  selectUserPic();
-                },
-                image: widget.userdata.profileImage.first,
-                selectedUserPic: selectedUserPic,
-                onTapClose: () {
-                  setState(() {
-                    selectedUserPic = null;
-                  });
-                },
-              ),
+              // PercentageBar(
+              //   percentage: 0.7,
+              //   onEditProfilePage: true,
+              //   onTap: () {
+              //     selectUserPic();
+              //   },
+              //   image: widget.userdata.profileImage.first,
+              //   selectedUserPic: selectedUserPic,
+              //   onTapClose: () {
+              //     setState(() {
+              //       selectedUserPic = null;
+              //     });
+              //   },
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -588,10 +591,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       setState(() {
                                         hobbieBool[index] = false;
                                       });
-                                      hobbieSelected
-                                          .remove(snapshot.data[index].id);
+                                      hobbieSelected.remove(
+                                          snapshot.data[index].hobby_id);
                                       var val = {
-                                        "hobby_id": snapshot.data[index].id,
+                                        "hobby_id":
+                                            snapshot.data[index].hobby_id,
                                         "title": snapshot.data[index].title
                                       };
                                       hobbieSelected1.remove(val);
@@ -600,9 +604,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         hobbieBool[index] = true;
                                       });
                                       hobbieSelected
-                                          .add(snapshot.data[index].id);
+                                          .add(snapshot.data[index].hobby_id);
                                       var val = {
-                                        "hobby_id": snapshot.data[index].id,
+                                        "hobby_id":
+                                            snapshot.data[index].hobby_id,
                                         "title": snapshot.data[index].title
                                       };
                                       hobbieSelected1.add(val);
@@ -714,7 +719,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             _lastNameCtrl.text, //"email":_emailCtrl.text,
                         "profession": ["$dropdownProfessionValue"],
                         "dob": selectedDate.toString(),
-                        "gender": selectedMenuIndex,
+                        // "gender": [],
                         "height": int.parse(_heightCtrl.text),
                         "weight": int.parse(_weightCtrl.text),
                         "bio": _bioCtrl.text,

@@ -60,32 +60,10 @@ class Lottiebtn extends StatefulWidget {
 class _LottiebtnState extends State<Lottiebtn> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        onTap: widget.ontap,
-        child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 1.0,
-                  offset: Offset(1, 1),
-                )
-              ],
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Container(
-                    child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 22,
-                  child: Container(
-                      height: 300.w, width: 300.w, child: widget.icon),
-                )))));
+    return CircleAvatar(
+      backgroundColor: Colors.white,
+      radius: 22,
+      child: Container(height: 400.w, width: 400.w, child: widget.icon),
+    );
   }
 }
