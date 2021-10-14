@@ -1,5 +1,6 @@
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
+import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/home_button_network.dart';
 import 'package:dating_app/pages/home_page/widget/imageCard.dart';
 import 'package:dating_app/providers/home_provider.dart';
@@ -36,6 +37,7 @@ class ImageSwiper extends StatefulWidget {
 
 class _ImageSwiperState extends State<ImageSwiper> {
   int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -79,19 +81,31 @@ class _ImageSwiperState extends State<ImageSwiper> {
       SizedBox(
         height: 10,
       ),
-    
       Consumer<HomeProvider>(builder: (context, data, child) {
         return Container(
             // width: 300,
             padding: EdgeInsetsDirectional.only(start: 20, end: 20),
             child: AnimationButton(
+              loadingstar: data.showstar,
+              loadingheart: data.showheart,
+              goChatPage: () async {
+                print("message");
+                String groupid = await ChatNetwork().createGroup(
+                    widget.userSuggestionData.response[currentIndex].id);
+
+                goToChatPage(groupid,
+                    widget.userSuggestionData.response[currentIndex].id);
+              },
               onTapHeart: () {
+                 context.read<HomeProvider>().changeheart();
                 String confirmedUser =
                     widget.userSuggestionData.response[currentIndex].id;
                 UserModel userData = data.userData;
                 HomeButtonNetwork().postMatchRequest(confirmedUser, userData);
               },
               onTapFlash: () {
+                print("you click star");
+                 context.read<HomeProvider>().changestar();
                 print(currentIndex);
                 String likedUser =
                     widget.userSuggestionData.response[currentIndex].id;
@@ -104,5 +118,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
 
   goToDetailPage(Responses userDetails) {
     Routes.sailor(Routes.detailPage, params: {"userDetails": userDetails});
+  }
+
+  goToChatPage(groupid, id) {
+    Routes.sailor(Routes.chattingPage, params: {"groupid": groupid, "id": id});
   }
 }

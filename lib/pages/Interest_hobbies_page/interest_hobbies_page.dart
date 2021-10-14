@@ -23,32 +23,34 @@ class InterestHobbiesPage extends StatefulWidget {
 class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
   Future<List<InterestModel>> interestData;
   Future<List<HobbyModel>> hobbyData;
-  List<String>interestSelected=[];
-  List<String>hobbieSelected=[];
-  List<String>interestSelected1=[];
-  List<String>hobbieSelected1=[];
-  List<bool>interestBool=[];
-  List<bool>hobbieBool=[];
-  bool loading =false;
+  List<String> interestSelected = [];
+  List<String> hobbieSelected = [];
+  List<InterestModel> interestSelected1 = [];
+  List<HobbyModel> hobbieSelected1 = [];
+  List<bool> interestBool = [];
+  List<bool> hobbieBool = [];
+  bool loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  addInterestBool(int count){
-    for(int i=0;i<count;i++){
+  addInterestBool(int count) {
+    for (int i = 0; i < count; i++) {
       interestBool.add(false);
     }
   }
-  addHobbyBool(int count){
-    for(int i=0;i<count;i++){
+
+  addHobbyBool(int count) {
+    for (int i = 0; i < count; i++) {
       hobbieBool.add(false);
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(interestData==null){
-      interestData=UserNetwork().getUserInterests();
-      hobbyData=UserNetwork().getUserHobbies();
+    if (interestData == null) {
+      interestData = UserNetwork().getUserInterests();
+      hobbyData = UserNetwork().getUserHobbies();
     }
   }
 
@@ -77,32 +79,38 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
         fontFamily: "lato");
     return SafeArea(
         child: Scaffold(
-          bottomSheet: Container(height: 100,color:Colors.white,child:  Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                height: 40,
-                name: loading?"Saving..":"Continue",
-                gradient: MainTheme.loginBtnGradient,
-                active: true,
-                isLoading: loading,
-                color: Colors.white,
-                width: ScreenUtil().setWidth(400),
-                fontWeight: FontWeight.w600,
-                onPressed: () {
-                  if(hobbieSelected.length<2&&interestSelected.length<2){
-                    showtoast("Please choose minimum 2 interests & hobbies");
-                  }else if(hobbieSelected.length<2){
-                    showtoast("Please choose minimum 2 hobbies");
-                  }else if(interestSelected.length<2){
-                    showtoast("Please choose minimum 2 interests");
-                  }else{
-                  goToAddYourProfilePicPage();
-                  }
-                },
+            bottomSheet: Container(
+              height: 100,
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GradientButton(
+                    height: 40,
+                    name: loading ? "Saving.." : "Continue",
+                    gradient: MainTheme.loginBtnGradient,
+                    active: true,
+                    isLoading: loading,
+                    color: Colors.white,
+                    width: ScreenUtil().setWidth(400),
+                    fontWeight: FontWeight.w600,
+                    onPressed: () {
+                      if (hobbieSelected.length < 2 &&
+                          interestSelected.length < 2) {
+                        showtoast(
+                            "Please choose minimum 2 interests & hobbies");
+                      } else if (hobbieSelected.length < 2) {
+                        showtoast("Please choose minimum 2 hobbies");
+                      } else if (interestSelected.length < 2) {
+                        showtoast("Please choose minimum 2 interests");
+                      } else {
+                        goToAddYourProfilePicPage();
+                      }
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),),
+            ),
             appBar: AppBar(
               leading: InkWell(
                   onTap: () {
@@ -150,53 +158,64 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                 ],
               ),
               FutureBuilder(
-                future: interestData,
-                  builder: (context,AsyncSnapshot<List<InterestModel>> snapshot) {
-                  if(snapshot.hasData) {
-                    addInterestBool(snapshot.data.length);
-                    return Container(
-                        padding: EdgeInsetsDirectional.only(start: 20, end: 20),
-                        child: Column(children: [
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 0.0,
-                                mainAxisSpacing: 0.0,
-                                crossAxisCount: 3,
-                                childAspectRatio: 2.8),
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return InterestBox(
-                                fontSize: ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
-                                fillColor: interestBool[index]?MainTheme.primaryColor:
-                                Colors.white,
-                                color: MainTheme.primaryColor,
-                                title: snapshot.data[index].title,
-                                onTap: () {
-                                 if(interestBool[index]==true){
-                                   setState(() {
-                                     interestBool[index]=false;
-                                   });
-                                   interestSelected.remove(snapshot.data[index].id);
-                                   interestSelected1.remove(snapshot.data[index].toString());
-                                 }else {
-                                   setState(() {
-                                     interestBool[index]=true;
-                                   });
-                                   interestSelected.add(snapshot.data[index].id);
-                                   interestSelected1.add(snapshot.data[index].toString());
-                                 }
-                                },
-                              );
-                            },
-                          )
-                        ]));
-                  }
-                  else return Container(height: 500,alignment: Alignment.center,
-                    child: CircularProgressIndicator(),);
-                }
-              ),
+                  future: interestData,
+                  builder:
+                      (context, AsyncSnapshot<List<InterestModel>> snapshot) {
+                    if (snapshot.hasData) {
+                      addInterestBool(snapshot.data.length);
+                      return Container(
+                          padding:
+                              EdgeInsetsDirectional.only(start: 20, end: 20),
+                          child: Column(children: [
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 0.0,
+                                      mainAxisSpacing: 0.0,
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 2.8),
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return InterestBox(
+                                  fontSize: ScreenUtil()
+                                      .setSp(MainTheme.mPrimaryContentfontSize),
+                                  fillColor: interestBool[index]
+                                      ? MainTheme.primaryColor
+                                      : Colors.white,
+                                  color: MainTheme.primaryColor,
+                                  title: snapshot.data[index].title,
+                                  onTap: () {
+                                    if (interestBool[index] == true) {
+                                      setState(() {
+                                        interestBool[index] = false;
+                                      });
+                                      interestSelected
+                                          .remove(snapshot.data[index].id);
+                                      interestSelected1
+                                          .remove(snapshot.data[index]);
+                                    } else {
+                                      setState(() {
+                                        interestBool[index] = true;
+                                      });
+                                      interestSelected
+                                          .add(snapshot.data[index].id);
+                                      interestSelected1
+                                          .add(snapshot.data[index]);
+                                    }
+                                  },
+                                );
+                              },
+                            )
+                          ]));
+                    } else
+                      return Container(
+                        height: 500,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(),
+                      );
+                  }),
               Row(
                 children: [
                   Container(
@@ -205,72 +224,92 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                       child: Text("Hobbies", style: _textForsubHeading)),
                 ],
               ),
-                  FutureBuilder(
-                      future: hobbyData,
-                      builder: (context,AsyncSnapshot<List<HobbyModel>> snapshot) {
-                        if(snapshot.hasData){
-                          addHobbyBool(snapshot.data.length);
-                          return Container(
-                              padding: EdgeInsetsDirectional.only(start: 20, end: 20),
-                              child: Column(children: [
-                                GridView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisSpacing: 0.0,
-                                    mainAxisSpacing: 0.0,
-                                    crossAxisCount: 3,
-                                    childAspectRatio: 2.8),
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return InterestBox(
-                                    fontSize: ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
-                                    fillColor: hobbieBool[index]?MainTheme.primaryColor:
-                                    Colors.white,
-                                    color: MainTheme.primaryColor,
-                                    title: snapshot.data[index].title,
-                                    onTap: () {
-                                      if(hobbieBool[index]==true){
-                                        setState(() {
-                                          hobbieBool[index]=false;
-                                        });
-                                        hobbieSelected.remove(snapshot.data[index].id);
-                                        hobbieSelected1.remove(snapshot.data[index].toString());
-                                      }else {
-                                        setState(() {
-                                          hobbieBool[index]=true;
-                                        });
-                                        hobbieSelected.add(snapshot.data[index].id);
-                                        hobbieSelected1.add(snapshot.data[index].toString());
-                                      }
-                                    },
-                                  );
-                                },
-                              )
-                              ]));}
-                        else return Container(height: 500,alignment: Alignment.center,
-                          child: CircularProgressIndicator(),);
-                      }
-                  ),
+              FutureBuilder(
+                  future: hobbyData,
+                  builder: (context, AsyncSnapshot<List<HobbyModel>> snapshot) {
+                    if (snapshot.hasData) {
+                      addHobbyBool(snapshot.data.length);
+                      return Container(
+                          padding:
+                              EdgeInsetsDirectional.only(start: 20, end: 20),
+                          child: Column(children: [
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 0.0,
+                                      mainAxisSpacing: 0.0,
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 2.8),
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                HobbyModel hoppydata = snapshot.data[index];
+                                return InterestBox(
+                                  fontSize: ScreenUtil()
+                                      .setSp(MainTheme.mPrimaryContentfontSize),
+                                  fillColor: hobbieBool[index]
+                                      ? MainTheme.primaryColor
+                                      : Colors.white,
+                                  color: MainTheme.primaryColor,
+                                  title: snapshot.data[index].title,
+                                  onTap: () {
+                                    if (hobbieBool[index] == true) {
+                                      setState(() {
+                                        hobbieBool[index] = false;
+                                      });
+                                      hobbieSelected.remove(hoppydata.hobby_id);
+                                      hobbieSelected1.remove(hoppydata);
+                                    } else {
+                                      setState(() {
+                                        hobbieBool[index] = true;
+                                      });
+                                      hobbieSelected.add(hoppydata.hobby_id);
+                                      hobbieSelected1.add(hoppydata);
+                                    }
+                                  },
+                                );
+                              },
+                            )
+                          ]));
+                    } else
+                      return Container(
+                        height: 500,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(),
+                      );
+                  }),
             ]))));
   }
 
   goToAddYourProfilePicPage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
-    print(hobbieSelected1);
+    print("hobbie selected");
+    print(hobbieSelected1[0].title);
+    print("interest selected");
+    print(interestSelected1[0].id);
     var network = UserNetwork();
-    var userData={"interests":interestSelected,"hobbies":hobbieSelected,
-    "hobby_details":hobbieSelected1,"interest_details":interestSelected1};
-    Timer(Duration(seconds: 3), ()=>offLoading());
-    UserModel result =await network.patchUserData(userData);
-    result != null? onboardingCheck(result):null;
+    var userData = {
+      "interests": interestSelected,
+      "hobbies": hobbieSelected,
+      "hobby_details": hobbieSelected1,
+      "interest_details": interestSelected1
+    };
+    Timer(Duration(seconds: 3), () => offLoading());
+    print("userdata");
+    print(userData);
+    UserModel result = await network.patchUserData(userData);
+    print("result corect a varuthaa");
+    print(result);
+
+    result != null ? onboardingCheck(result) : null;
   }
 
-  offLoading(){
+  offLoading() {
     setState(() {
-      loading=false;
+      loading = false;
     });
   }
 
@@ -422,20 +461,20 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                         GridView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisSpacing: 0.0,
-                              mainAxisSpacing: 0.0,
-                              crossAxisCount: 3,
-                              childAspectRatio: 2.8),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 0.0,
+                                  mainAxisSpacing: 0.0,
+                                  crossAxisCount: 3,
+                                  childAspectRatio: 2.8),
                           itemCount: 5,
                           itemBuilder: (BuildContext context, int index) {
                             return InterestBox(
-                              fontSize: ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
+                              fontSize: ScreenUtil()
+                                  .setSp(MainTheme.mPrimaryContentfontSize),
                               color: MainTheme.primaryColor,
                               title: "snapshot.data[index].title",
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                             );
                           },
                         )
@@ -480,20 +519,20 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                         GridView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisSpacing: 0.0,
-                              mainAxisSpacing: 0.0,
-                              crossAxisCount: 3,
-                              childAspectRatio: 2.8),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 0.0,
+                                  mainAxisSpacing: 0.0,
+                                  crossAxisCount: 3,
+                                  childAspectRatio: 2.8),
                           itemCount: 10,
                           itemBuilder: (BuildContext context, int index) {
                             return InterestBox(
-                              fontSize: ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
+                              fontSize: ScreenUtil()
+                                  .setSp(MainTheme.mPrimaryContentfontSize),
                               color: MainTheme.primaryColor,
                               title: "snapshot.data[index].title",
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                             );
                           },
                         )
@@ -520,7 +559,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GradientButton(
-                              name: loading?"Saving..":"Continue",
+                              name: loading ? "Saving.." : "Continue",
                               gradient: MainTheme.loginBtnGradient,
                               height: 35,
                               fontSize: 14,
@@ -530,15 +569,17 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(5),
                               onPressed: () {
-                                if(hobbieSelected.length==0&&interestSelected.length==0){
-                                showtoast("Please choose your interests & hobbies");
-                              }else if(hobbieSelected.length==0){
-                                showtoast("Please choose your hobbies");
-                              }else if(interestSelected.length==0){
-                                showtoast("Please choose your interests");
-                              }else{
-                                goToAddYourProfilePicPage();
-                              }
+                                if (hobbieSelected.length == 0 &&
+                                    interestSelected.length == 0) {
+                                  showtoast(
+                                      "Please choose your interests & hobbies");
+                                } else if (hobbieSelected.length == 0) {
+                                  showtoast("Please choose your hobbies");
+                                } else if (interestSelected.length == 0) {
+                                  showtoast("Please choose your interests");
+                                } else {
+                                  goToAddYourProfilePicPage();
+                                }
                               },
                             ),
                           ],

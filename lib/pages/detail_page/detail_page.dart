@@ -36,6 +36,9 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
+  bool loadingstar = true;
+  bool loadingheart = true;
+
   Widget _buildPhone() {
     return Scaffold(
         appBar: AppBar(
@@ -143,14 +146,14 @@ class _DetailPageState extends State<DetailPage> {
                         // width: 300,
                         padding: EdgeInsetsDirectional.only(start: 20, end: 20),
                         child: AnimationButton(
+                          loadingstar: loadingstar,
+                          loadingheart: loadingheart,
                           goChatPage: () async {
                             print("hello");
 
                             String groupid = await ChatNetwork()
                                 .createGroup(widget.userDetails.id);
-                            print("front la data varuthaa");
-                            print(groupid);
-                            print(widget.userDetails.id);
+
                             goToChatPage(groupid, widget.userDetails.id);
                           },
                           isDetail: true,

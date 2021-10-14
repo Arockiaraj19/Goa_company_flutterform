@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "836397981022",
-    "project_id": "sparks-7d06a",
-    "storage_bucket": "sparks-7d06a.appspot.com"
+    "project_number": "338407139909",
+    "project_id": "sparks-35c8b",
+    "storage_bucket": "sparks-35c8b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:836397981022:android:ba8af806fbb83920d983cf",
+        "mobilesdk_app_id": "1:338407139909:android:52ca47242bfd94b3b7d12c",
         "android_client_info": {
           "package_name": "com.sparks"
         }
       },
       "oauth_client": [
         {
-          "client_id": "836397981022-n0ahud5asdng3vlaf3utlftbqustcqui.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.sparks",
-            "certificate_hash": "cd2b489d8104f07c9ddf1e6ad60666bc35de34d7"
-          }
-        },
-        {
-          "client_id": "836397981022-vf5vtia8ab01md7mhk6akes2suvtg5b6.apps.googleusercontent.com",
+          "client_id": "338407139909-5g9ftp5778h14asqlpo7o53ank9levm6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC2-RmBuMrjZohtFusvnRnE_Z8oZSryCTg"
+          "current_key": "AIzaSyC1V_1rQ8CdCJyUDNr0tCF2Hg9TQb6cO0s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "836397981022-vf5vtia8ab01md7mhk6akes2suvtg5b6.apps.googleusercontent.com",
+              "client_id": "338407139909-5g9ftp5778h14asqlpo7o53ank9levm6.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
