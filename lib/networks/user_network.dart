@@ -59,7 +59,7 @@ class UserNetwork {
   }
 
   Future<UsersSuggestionModel> getUserSuggestionsData(
-      bool apply, String age, distance, type, lat, lng, int skip) async {
+      bool apply, String age, distance, lat, lng, type, int skip) async {
     Response response;
     try {
       var query;
@@ -70,9 +70,10 @@ class UserNetwork {
           "distance": distance,
           "longitude": lng,
           "latitude": lat,
-          "type": type,
+          "type": 1,
           "skip": skip
         };
+        print(query);
       }
       final _dio = apiClient();
       String id = await getUserId();

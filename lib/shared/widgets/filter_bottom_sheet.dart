@@ -157,7 +157,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         var _lng = await getLng();
                         context.read<HomeProvider>().getFilteredData(
                             '${_currentRangeValues.start.toInt()}-${_currentRangeValues.end.toInt()}',
-                            _currentSliderValue.toInt().toString(),
+                            // _currentSliderValue.toInt().toString(),
+                            "200000000",
                             _lat.toString(),
                             _lng.toString());
 

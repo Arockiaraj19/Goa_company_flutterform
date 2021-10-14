@@ -91,7 +91,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
               goChatPage: () async {
                 print("message");
                 String groupid = await ChatNetwork().createGroup(
-                    widget.userSuggestionData.response[currentIndex].id);
+                    widget.userSuggestionData.response[currentIndex].id,data.userData);
 
                 goToChatPage(groupid,
                     widget.userSuggestionData.response[currentIndex].id);

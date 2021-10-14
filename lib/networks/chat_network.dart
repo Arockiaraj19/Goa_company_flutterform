@@ -1,13 +1,16 @@
 import 'package:dating_app/models/chatgroup_model.dart';
 import 'package:dating_app/models/chatmessage_model.dart';
 import 'package:dating_app/models/creategroup_model.dart';
+import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/client/apiClient.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dio/dio.dart';
 
 class ChatNetwork {
-  Future createGroup(String userid2) async {
+  Future createGroup(String userid2, UserModel userdata) async {
+    print("user data correct a varuthaa");
+    print(userdata);
     Response response;
     try {
       final _dio = apiClient();
@@ -17,7 +20,7 @@ class ChatNetwork {
           "user_id_1": id,
           "user_id_2": userid2,
           "type": "personal",
-          "user_details": "hello bro"
+          "user_details": userdata,
         });
         print("response create method");
         print(response.data["response"]);

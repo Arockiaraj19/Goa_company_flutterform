@@ -151,8 +151,8 @@ class _DetailPageState extends State<DetailPage> {
                           goChatPage: () async {
                             print("hello");
 
-                            String groupid = await ChatNetwork()
-                                .createGroup(widget.userDetails.id);
+                            String groupid = await ChatNetwork().createGroup(
+                                widget.userDetails.id, data.userData);
 
                             goToChatPage(groupid, widget.userDetails.id);
                           },
