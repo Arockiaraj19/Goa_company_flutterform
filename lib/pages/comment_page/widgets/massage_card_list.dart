@@ -33,13 +33,12 @@ class _MassageCardListState extends State<MassageCardList> {
       builder: (context, data, child) {
         return data.chatState == ChatState.Loaded
             ? data.chatGroupData.length == 0
-                ? noResult()
+                ? Container()
                 : ListView.builder(
                     itemBuilder: (context, index) => MassageCard(
-                      height: widget.mcardHeight,
-                      width: widget.mCardWidth,
-                      data:data.chatGroupData[index]
-                    ),
+                        height: widget.mcardHeight,
+                        width: widget.mCardWidth,
+                        data: data.chatGroupData[index]),
                     itemCount: data.chatGroupData.length,
                   )
             : Center(
@@ -47,9 +46,5 @@ class _MassageCardListState extends State<MassageCardList> {
               );
       },
     );
-  }
-
-  goToChattingPage() {
-    Routes.sailor(Routes.chattingPage);
   }
 }

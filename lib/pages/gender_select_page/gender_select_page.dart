@@ -53,10 +53,10 @@ class _GenderPageState extends State<GenderPage> {
                     child: Padding(
                       padding: EdgeInsets.all(20.0.w),
                       child: Card(
-                        elevation: 2,
+                        elevation: 1,
                         child: Container(
-                          height: 350.w,
-                          width: 500.w,
+                          height: 50.h,
+                          width: double.infinity,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10.w),
@@ -64,27 +64,15 @@ class _GenderPageState extends State<GenderPage> {
                               border: choosenvalue == index
                                   ? Border.all(width: 2, color: Colors.pink)
                                   : null),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.person,
-                                size: 200.r,
-                                color: Colors.pink,
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              Text(
-                                widget.data[index].title,
-                                style: TextStyle(
-                                  color: choosenvalue == index
-                                      ? Colors.pink
-                                      : Colors.grey[400],
-                                  fontSize: 45.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                          child: Text(
+                            widget.data[index].title,
+                            style: TextStyle(
+                              color: choosenvalue == index
+                                  ? Colors.pink
+                                  : Colors.grey[400],
+                              fontSize: 40.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),

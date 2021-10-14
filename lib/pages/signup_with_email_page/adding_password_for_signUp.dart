@@ -1,6 +1,7 @@
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
@@ -67,13 +68,16 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               child: Text("Create the password", style: _textStyleforHeading)),
         ),
         body: SingleChildScrollView(
-            child: Column(
-          children: [
-            SizedBox(
-              height: ScreenUtil().setHeight(70),
-            ),
-            commonPart(context, onWeb: false)
-          ],
+            child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: ScreenUtil().setHeight(150),
+              ),
+              commonPart(context, onWeb: false)
+            ],
+          ),
         )),
       ),
     );
@@ -110,106 +114,177 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
         fontWeight: FontWeight.w700,
         fontSize: 14,
         fontFamily: "lato");
-
+    bool obscureText = true;
+    bool obscureText1 = true;
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  padding: onWeb
-                      ? EdgeInsetsDirectional.only(
-                          end: _width * 0.19,
-                          start: _width * 0.19,
-                          top: _height / 18,
-                        )
-                      : EdgeInsetsDirectional.only(
-                          bottom: 10,
-                          end: 20,
-                          start: 20,
-                          top: 50,
-                        ),
-                  child: Text(
-                    "Enter your New Password",
-                    style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  )),
-            ],
+          Text(
+            "Enter your New Password",
+            style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
           ),
-          Container(
-              child: InputField(
-            onTap: () {},
+          SizedBox(height: 12.h),
+          TextFormField(
             controller: _password1Ctrl,
-            labelBehavior: FloatingLabelBehavior.never,
-            inputType: TextInputType.text,
-            inputBoxBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(10)),
-            // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            padding: onWeb
-                ? EdgeInsetsDirectional.only(
-                    end: _width * 0.19, start: _width * 0.19, top: 20)
-                : EdgeInsetsDirectional.only(
-                    bottom: 10, end: 20, start: 20, top: 10),
-            validators: (String value) {
-              if (value.isEmpty) return 'Required field';
+            cursorColor: Colors.pink,
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.emailAddress,
+            obscureText: obscureText,
+            decoration: InputDecoration(
+              suffixIcon: InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (obscureText == false) {
+                        obscureText = true;
+                      } else {
+                        obscureText = false;
+                      }
+                    });
+                  },
+                  child: Container(
+                      margin: EdgeInsetsDirectional.only(end: 10),
+                      child: !obscureText
+                          ? Icon(
+                              Icons.remove_red_eye_outlined,
+                              color: Color(0xffC4C4C4),
+                              size: 45.sp,
+                            )
+                          : Icon(
+                              Icons.visibility_off_outlined,
+                              color: Color(0xffC4C4C4),
+                              size: 45.sp,
+                            ))),
+              contentPadding: EdgeInsets.only(
+                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              hintText: 'New password',
+              hintStyle: TextStyle(
+                  fontSize: 40.sp,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffC4C4C4)),
+              errorStyle: TextStyle(
+                fontSize: 40.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.pink,
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Color(0xffC4C4C4),
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+            ),
+            validator: (val) {
+              if (val.isEmpty) {
+                return "Please enter password";
+              }
+              RegExp regex = new RegExp(passwordpattern.toString());
+              if (!regex.hasMatch(val)) {
+                return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
+              }
               return null;
             },
-            hintText: 'New password',
-          )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  padding: onWeb
-                      ? EdgeInsetsDirectional.only(
-                          end: _width * 0.19,
-                          start: _width * 0.19,
-                          top: _height / 18,
-                        )
-                      : EdgeInsetsDirectional.only(
-                          bottom: 10,
-                          end: 20,
-                          start: 20,
-                          top: 50,
-                        ),
-                  child: Text(
-                    "Re-enter your New Password",
-                    style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  )),
-            ],
           ),
-          Container(
-              child: InputField(
-            onTap: () {},
+          SizedBox(height: 25.h),
+
+          Text(
+            "Re-enter your New Password",
+            style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
+          ),
+          SizedBox(height: 12.h),
+          TextFormField(
             controller: _password2Ctrl,
-            labelBehavior: FloatingLabelBehavior.never,
-            inputType: TextInputType.text,
-            inputBoxBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(10)),
-            // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            padding: onWeb
-                ? EdgeInsetsDirectional.only(
-                    end: _width * 0.19, start: _width * 0.19, top: 20)
-                : EdgeInsetsDirectional.only(
-                    bottom: 10, end: 20, start: 20, top: 10),
-            validators: (String value) {
-              if (value != _password1Ctrl.text)
+            cursorColor: Colors.pink,
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.emailAddress,
+            obscureText: obscureText1,
+            decoration: InputDecoration(
+              suffixIcon: InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (obscureText1 == false) {
+                        obscureText1 = true;
+                      } else {
+                        obscureText1 = false;
+                      }
+                    });
+                  },
+                  child: Container(
+                      margin: EdgeInsetsDirectional.only(end: 10),
+                      child: !obscureText1
+                          ? Icon(
+                              Icons.remove_red_eye_outlined,
+                              color: Color(0xffC4C4C4),
+                              size: 45.sp,
+                            )
+                          : Icon(
+                              Icons.visibility_off_outlined,
+                              color: Color(0xffC4C4C4),
+                              size: 45.sp,
+                            ))),
+              contentPadding: EdgeInsets.only(
+                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              hintText: 'Re-enter the new password',
+              hintStyle: TextStyle(
+                  fontSize: 40.sp,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffC4C4C4)),
+              errorStyle: TextStyle(
+                fontSize: 40.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.pink,
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Color(0xffC4C4C4),
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+              ),
+            ),
+            validator: (val) {
+              if (val.isEmpty) {
+                return "Please enter password";
+              }
+              if (val != _password1Ctrl.text) {
                 return 'Password does not match';
+              }
+
+              RegExp regex = new RegExp(passwordpattern.toString());
+              if (!regex.hasMatch(val)) {
+                return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
+              }
               return null;
             },
-            hintText: 'Re-enter the new password',
-          )),
+          ),
+          SizedBox(height: 50.h),
+
           // Container(
           //   padding: EdgeInsetsDirectional.only(
           //     top: _height / 18,

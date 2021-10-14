@@ -25,7 +25,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('A bg message just showed up :  ${message.messageId}');
+  print("a push notification data");
+  print('A bg message just showed up :  ${message}');
 }
 
 Future<void> main() async {
@@ -44,29 +45,8 @@ Future<void> main() async {
     badge: true,
     sound: true,
   );
-  initPushNotification();
+
   runApp(MyApp());
-}
-
-initPushNotification() async {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-
-  print('User granted permission: ${settings.authorizationStatus}');
-
-  String id = await getUserId();
-  print("user id");
-  print(id);
-  await FirebaseMessaging.instance.subscribeToTopic(id);
 }
 
 class MyApp extends StatefulWidget {

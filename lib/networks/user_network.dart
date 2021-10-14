@@ -21,14 +21,15 @@ class UserNetwork {
       var data = await _dio.then((value) async {
         response =
             await value.patch(userDetailsEndpoint + "/" + id, data: userData);
-
+        print("response");
+        print(response.data);
         if (response.statusCode == 200) {
           return (response.data as List)
               .map((x) => UserModel.fromJson(x))
-              .toList();
+              .toList()[0];
         }
       });
-      return data[0];
+      return data;
     } catch (e) {
       print(e);
     }
@@ -38,11 +39,13 @@ class UserNetwork {
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data=await _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id);
-        print(response.data[0]["interests_detail"]);
+      String id = await getUserId();
+      var data = await _dio.then((value) async {
+        response = await value.get(userDetailsEndpoint + "/" + id);
+        print("oops");
+        print(response.data);
 
+        print("hobbie details");
         if (response.statusCode == 200) {
           return (response.data as List)
               .map((x) => UserModel.fromJson(x))
@@ -56,7 +59,7 @@ class UserNetwork {
   }
 
   Future<UsersSuggestionModel> getUserSuggestionsData(
-      bool apply, String age, distance, type, lat, lng, int skip) async {
+      bool apply, String age, distance, lat, lng, type, int skip) async {
     Response response;
     try {
       var query;
@@ -67,9 +70,10 @@ class UserNetwork {
           "distance": distance,
           "longitude": lng,
           "latitude": lat,
-          "type": type,
+          "type": 1,
           "skip": skip
         };
+        print(query);
       }
       final _dio = apiClient();
       String id = await getUserId();
@@ -96,6 +100,7 @@ class UserNetwork {
       final _dio = apiClient();
       var data = _dio.then((value) async {
         response = await value.get(userInterestEndpoint);
+        print("user interest response data");
         print(response.data);
         if (response.statusCode == 200) {
           return (response.data as List)
@@ -115,12 +120,15 @@ class UserNetwork {
       final _dio = apiClient();
       var data = _dio.then((value) async {
         response = await value.get(userHobbiesEndpoint);
+        print("user hobbies data");
         print(response.data);
-        if (response.statusCode == 200) {
-          return (response.data as List)
-              .map((x) => HobbyModel.fromJson(x))
-              .toList();
-        }
+        final results = List<Map<String, dynamic>>.from(response.data);
+
+        List<HobbyModel> hobbies = results
+            .map((hobbieData) => HobbyModel.fromMap(hobbieData))
+            .toList(growable: false);
+        print(hobbies);
+        return hobbies;
       });
       return data;
     } catch (e) {

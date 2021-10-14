@@ -7,6 +7,7 @@ class ChatMessage {
   List<String> readByRecipients;
   List<Details> senderDetails;
   List<Details> receiverDetails;
+
   ChatMessage({
     this.id,
     this.groupid,
@@ -34,9 +35,9 @@ class ChatMessage {
       message: map['message'],
       readByRecipients: List<String>.from(map['readByRecipients']),
       senderDetails: List<Details>.from(
-          map['sender_details']?.map((x) => Details.fromMap(x))),
+          map['sender_details'].map((x) => Details.fromMap(x))),
       receiverDetails: List<Details>.from(
-          map['receiver_details']?.map((x) => Details.fromMap(x))),
+          map['receiver_details'].map((x) => Details.fromMap(x))),
     );
   }
 
