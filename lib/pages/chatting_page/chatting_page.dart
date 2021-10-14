@@ -78,8 +78,11 @@ class _ChattingPageState extends State<ChattingPage> {
     });
     print("subscribe varuthaa");
     context.read<ChatProvider>().getMessageData(widget.groupid);
+    get();
+  }
 
-    createGroupEmit();
+  get()async{
+    await createGroupEmit();
     socket.on("group_${widget.groupid}", (data) {
       print(data);
       final result = new Map<String, dynamic>.from(data);
@@ -88,7 +91,6 @@ class _ChattingPageState extends State<ChattingPage> {
       return context.read<ChatProvider>().addsocketmessage(chatdata);
     });
   }
-
   createGroupEmit() async {
     String userid = await getUserId();
     socket.emit("subscribe", {
@@ -240,8 +242,7 @@ class _ChattingPageState extends State<ChattingPage> {
                                             vertical: 15.w,
                                           ),
                                           child: Text(
-                                            data.chatMessageData[index]
-                                                .receiverDetails[0].id,
+                                            data.chatMessageData[index].message,
                                             style: TextStyle(
                                               color: data
                                                           .chatMessageData[
