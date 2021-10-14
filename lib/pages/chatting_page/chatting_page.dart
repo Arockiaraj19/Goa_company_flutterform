@@ -68,18 +68,18 @@ class _ChattingPageState extends State<ChattingPage> {
     super.initState();
     print("sender id corect a varuthaa");
     print(widget.id);
-    IO.Socket socket = IO.io(
-        socketUrl,
-        IO.OptionBuilder()
-            .setTransports(['websocket']) // for Flutter or Dart VM
-            .build());
+
     socket.onConnect((data) {
       print('connect' + data);
     });
     print("subscribe varuthaa");
     context.read<ChatProvider>().getMessageData(widget.groupid);
 
-    createGroupEmit();
+    get();
+  }
+
+  get() async {
+    await createGroupEmit();
     socket.on("group_${widget.groupid}", (data) {
       print(data);
       final result = new Map<String, dynamic>.from(data);
@@ -216,42 +216,47 @@ class _ChattingPageState extends State<ChattingPage> {
                                   data.chatMessageData.length,
                                   (index) => Align(
                                     alignment: data.chatMessageData[index]
-                                                .receiverDetails[0].id ==
+                                                .receiverDetails[0].userId ==
                                             widget.id
-                                        ? Alignment.centerLeft
-                                        : Alignment.centerRight,
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 30.w, vertical: 30.w),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: data
-                                                        .chatMessageData[index]
-                                                        .receiverDetails[0]
-                                                        .id ==
-                                                    widget.id
-                                                ? Colors.white
-                                                : Color(0xffEB4DB5),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 50.w,
-                                            vertical: 15.w,
-                                          ),
-                                          child: Text(
-                                            data.chatMessageData[index]
-                                                .receiverDetails[0].id,
-                                            style: TextStyle(
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                               color: data
                                                           .chatMessageData[
                                                               index]
                                                           .receiverDetails[0]
-                                                          .id ==
+                                                          .userId ==
                                                       widget.id
-                                                  ? Color(0xff4A4A4A)
-                                                  : Colors.white,
-                                              fontSize: 40.sp,
+                                                  ? Color(0xffEB4DB5)
+                                                  : Colors.white),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 50.w,
+                                              vertical: 15.w,
+                                            ),
+                                            child: Text(
+                                              data.chatMessageData[index]
+                                                  .message,
+                                              style: TextStyle(
+                                                color: data
+                                                            .chatMessageData[
+                                                                index]
+                                                            .receiverDetails[0]
+                                                            .userId ==
+                                                        widget.id
+                                                    ? Colors.white
+                                                    : Color(0xff4A4A4A),
+                                                fontSize: 40.sp,
+                                              ),
                                             ),
                                           ),
                                         ),

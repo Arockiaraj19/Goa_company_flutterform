@@ -51,10 +51,12 @@ class Details {
   String id;
   String firstname;
   String lastname;
+  String userId;
   Details({
     this.id,
     this.firstname,
     this.lastname,
+    this.userId,
   });
 
   Map<String, dynamic> toMap() {
@@ -62,14 +64,16 @@ class Details {
       'id': id,
       'firstname': firstname,
       'lastname': lastname,
+      'userId': userId,
     };
   }
 
   factory Details.fromMap(Map<String, dynamic> map) {
     return Details(
-      id: map['_id'],
-      firstname: map['first_name'],
-      lastname: map['last_name'],
+      id: map['id'],
+      firstname: map['firstname'],
+      lastname: map['lastname'],
+      userId: map['user_id'],
     );
   }
 
