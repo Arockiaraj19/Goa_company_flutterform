@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (val == 1 || kIsWeb) {
       Routes.sailor(Routes.loginPage);
     } else if (val == 2) {
-      Routes.sailor(Routes.homePage);
+      Routes.sailor(Routes.findMatchPage);
     } else {
       Routes.sailor(Routes.onboardingPage);
     }

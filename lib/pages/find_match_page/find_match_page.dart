@@ -9,6 +9,7 @@ import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../routes.dart';
 
@@ -30,16 +31,18 @@ class _FindMatchPageState extends State<FindMatchPage> {
   }
 
   getLoc() async {
-    try {
-      location = await GoogleMapDisplay().createState().currentLocation();
-    } catch (e) {
-      print(e);
+    if (await Permission.location.request().isGranted) {
+      try {
+        location = await GoogleMapDisplay().createState().currentLocation();
+      } catch (e) {
+        print(e);
+      }
     }
 
     var network = UserNetwork();
     var userData = {
-      "latitude": location[0] == null ? 0.toString() : location[0].toString(),
-      "longitude": location[1] == null ? 0.toString() : location[1].toString(),
+      "latitude": location.length == 0 ? 0.toString() : location[0].toString(),
+      "longitude": location.length == 0 ? 0.toString() : location[1].toString(),
     };
     print("patch user data");
     print(userData);

@@ -103,7 +103,6 @@ Future<Dio> imageClient() async {
     options.headers['content-Type'] = 'image/jpeg';
     options.headers["Authorization"] = accessToken;
     options.headers["user_device"] = encodedData;
-    options.headers["ACL"] = 'public-read';
 
     return handler.next(options);
   }, onResponse: (Response response, handler) {

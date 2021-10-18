@@ -61,3 +61,35 @@ class MainCategory {
   factory MainCategory.fromJson(String source) =>
       MainCategory.fromMap(json.decode(source));
 }
+
+class HobbyUserModel {
+  String title;
+  String main_category_details;
+  String hobby_id;
+  HobbyUserModel({
+    this.title,
+    this.main_category_details,
+    this.hobby_id,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'main_category_details': main_category_details.toString(),
+      'hobby_id': hobby_id,
+    };
+  }
+
+  factory HobbyUserModel.fromMap(Map<String, dynamic> map) {
+    return HobbyUserModel(
+      title: map['title'],
+      main_category_details: map['main_category_details'].toString(),
+      hobby_id: map['hobby_id'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory HobbyUserModel.fromJson(String source) =>
+      HobbyUserModel.fromMap(json.decode(source));
+}

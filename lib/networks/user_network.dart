@@ -23,6 +23,8 @@ class UserNetwork {
             await value.patch(userDetailsEndpoint + "/" + id, data: userData);
         print("response");
         print(response.data);
+        print(response.data[0]["interests_details"]);
+        print(response.data[0]["hobbies_details"]);
         if (response.statusCode == 200) {
           return (response.data as List)
               .map((x) => UserModel.fromJson(x))

@@ -1,4 +1,3 @@
-
 import 'dart:typed_data';
 import 'package:dating_app/networks/image_upload_network.dart';
 
@@ -171,10 +170,10 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                 children: [
                   GradientButton(
                     height: 40,
-                    name: loading ? "Loading.." : "Continue",
+                    name: "Continue",
                     gradient: MainTheme.loginBtnGradient,
                     active: true,
-                    isLoading: loading,
+                    // isLoading: loading,
                     color: Colors.white,
                     width: ScreenUtil().setWidth(400),
                     fontWeight: FontWeight.w600,
@@ -197,7 +196,6 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
       if (selectedUserAvatar[i] != null) {
         print("kl2");
 
-        Uint8List imageString = await selectedUserAvatar[i].readAsBytes();
         String result = await network.uploadImage(selectedUserAvatar[i].path);
         print("kl3");
         print(result);

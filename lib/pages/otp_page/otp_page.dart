@@ -94,6 +94,7 @@ class _OtpPageState extends State<OtpPage> {
 
     return SafeArea(
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               leading: InkWell(
                   onTap: () {
@@ -111,23 +112,26 @@ class _OtpPageState extends State<OtpPage> {
                   child:
                       Text("Verify Phone Number", style: _textStyleforHeading)),
             ),
-            body: SingleChildScrollView(
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 60.r, vertical: 0),
                 child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                  SizedBox(
+                    height: 20.h,
+                  ),
                   Container(
-                      margin: EdgeInsetsDirectional.only(top: 20),
-                      height: ScreenUtil().setHeight(100),
-                      width: ScreenUtil().setWidth(180),
+                      height: ScreenUtil().setHeight(150),
+                      width: ScreenUtil().setWidth(300),
                       child: Image.asset(
                         "assets/images/mobileImageWithMsg.png",
                         fit: BoxFit.fill,
-                      ))
-                ],
+                      )),
+                  _commonBuild(context)
+                ]),
               ),
-              _commonBuild(context)
-            ]))));
+            )));
   }
   //
   // goVerify(String otp) {
@@ -181,16 +185,12 @@ class _OtpPageState extends State<OtpPage> {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  margin: onWeb ? null : EdgeInsetsDirectional.only(top: 50),
-                  child: Text("Enter your 6-digit code",
-                      style: onWeb ? _textStyleSubHeading : _enterTextColor)),
-            ],
-          ),
+          Container(
+              margin: onWeb ? null : EdgeInsetsDirectional.only(top: 50),
+              child: Text("Enter your 6-digit code",
+                  style: onWeb ? _textStyleSubHeading : _enterTextColor)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -244,7 +244,7 @@ class _OtpPageState extends State<OtpPage> {
                         )
                       : SizedBox())
               : SizedBox(
-                  height: ScreenUtil().setHeight(50),
+                  height: ScreenUtil().setHeight(60),
                   child: err
                       ? Text(
                           "Please enter 6 digit OTP number",
@@ -280,6 +280,9 @@ class _OtpPageState extends State<OtpPage> {
                       },
                     ),
             ],
+          ),
+          SizedBox(
+            height: 10.h,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
