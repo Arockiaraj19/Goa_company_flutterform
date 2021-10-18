@@ -26,10 +26,10 @@ class UserNetwork {
         if (response.statusCode == 200) {
           return (response.data as List)
               .map((x) => UserModel.fromJson(x))
-              .toList()[0];
+              .toList();
         }
       });
-      return data;
+      return data[0];
     } catch (e) {
       print(e);
     }
@@ -70,7 +70,7 @@ class UserNetwork {
           "distance": distance,
           "longitude": lng,
           "latitude": lat,
-          "type": 1,
+          "type": type,
           "skip": skip
         };
         print(query);

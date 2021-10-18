@@ -35,7 +35,7 @@ class Forminput extends StatelessWidget {
                 fontSize: 40.sp,
                 letterSpacing: 1.0,
                 fontWeight: FontWeight.w400,
-                color: Color(0xffC4C4C4)),
+                color: Color(0xff8F96AD)),
             errorStyle: TextStyle(
               fontSize: 40.sp,
               fontWeight: FontWeight.w400,
@@ -52,7 +52,7 @@ class Forminput extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                  color: Color(0xffC4C4C4), width: 1, style: BorderStyle.solid),
+                  color: Color(0xffEFEBEB), width: 1, style: BorderStyle.solid),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(

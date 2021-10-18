@@ -14,7 +14,7 @@ class HobbyModel {
     return {
       'title': title,
       'main_category_details':
-          main_category_details?.map((x) => x.toMap())?.toList(),
+          main_category_details?.map((x) => x.toMap())?.toList().toString(),
       'hobby_id': hobby_id,
     };
   }

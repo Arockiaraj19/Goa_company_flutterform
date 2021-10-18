@@ -31,6 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   setOnboarding() async {
     var val = await getLoginStatus();
+
     if (val == 1 || kIsWeb) {
       Routes.sailor(Routes.loginPage);
     } else if (val == 2) {

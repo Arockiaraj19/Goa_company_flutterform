@@ -68,14 +68,14 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                 height: 20.h,
               ),
               Container(
-                  height: 600.r,
-                  width: 450.r,
+                  height: 700.r,
+                  width: double.infinity,
                   child: Image.asset(
-                    "assets/images/mobileImage.png",
+                    "assets/images/signupWithEmail.png",
                     fit: BoxFit.fill,
                   )),
               SizedBox(
-                height: ScreenUtil().setHeight(70),
+                height: ScreenUtil().setHeight(30),
               ),
               commonPart(context, onWeb: false)
             ],

@@ -83,15 +83,15 @@ class UserModel {
     profession = json['profession'].cast<String>();
     hobbies = json['hobbies'].cast<String>();
     interests = json['interests'].cast<String>();
-    if (json['interest_details'] != null) {
+    if (json['interests_details'] != null) {
       interestDetails = new List<InterestModel>();
-      json['interest_details'].forEach((v) {
+      json['interests_details'].forEach((v) {
         interestDetails.add(new InterestModel.fromJson(v));
       });
     }
-    if (json['hobby_details'] != null) {
+    if (json['hobbies_details'] != null) {
       hobbyDetails = new List<HobbyModel>();
-      json['hobby_details'].forEach((v) {
+      json['hobbies_details'].forEach((v) {
         hobbyDetails.add(new HobbyModel.fromJson(v));
       });
     }

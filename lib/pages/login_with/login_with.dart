@@ -223,7 +223,7 @@ class _LoginWithState extends State<LoginWith> {
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Color(0xffC4C4C4),
+                    color: Color(0xffEFEBEB),
                     width: 1,
                     style: BorderStyle.solid),
               ),

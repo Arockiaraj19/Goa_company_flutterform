@@ -2,11 +2,10 @@ import 'package:dating_app/models/user.dart';
 import '../../routes.dart';
 
 onboardingCheck(UserModel userData) {
-  if (userData.dob == null || userData.location.coordinates.length == 0) {
+  if (userData.dob == null) {
     Routes.sailor(Routes.createProfilePage, params: {"userData": userData});
-    // } else if (userData.interestDetails == null ||
-    //     userData.hobbyDetails == null) {
-    //   Routes.sailor(Routes.interestHobbiesPage);
+  } else if (userData.interests.length == 0 || userData.hobbies.length == 0) {
+    Routes.sailor(Routes.interestHobbiesPage);
     // } else if (userData.identificationImage == null) {
     //   Routes.sailor(Routes.addProfilePicPage);
     // } else if (userData.profileImage.length == 0) {

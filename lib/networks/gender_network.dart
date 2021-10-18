@@ -19,6 +19,7 @@ class GenderNetwork {
           List<GenderModel> genders = results
               .map((genderData) => GenderModel.fromMap(genderData))
               .toList(growable: false);
+          print("genders");
           print(genders);
           return genders;
         }

@@ -26,7 +26,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
   List<String> interestSelected = [];
   List<String> hobbieSelected = [];
   List<InterestModel> interestSelected1 = [];
-  List<HobbyModel> hobbieSelected1 = [];
+  List<dynamic> hobbieSelected1 = [];
   List<bool> interestBool = [];
   List<bool> hobbieBool = [];
   bool loading = false;
@@ -259,13 +259,13 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                                         hobbieBool[index] = false;
                                       });
                                       hobbieSelected.remove(hoppydata.hobby_id);
-                                      hobbieSelected1.remove(hoppydata);
+                                      hobbieSelected1.remove(hoppydata.toMap());
                                     } else {
                                       setState(() {
                                         hobbieBool[index] = true;
                                       });
                                       hobbieSelected.add(hoppydata.hobby_id);
-                                      hobbieSelected1.add(hoppydata);
+                                      hobbieSelected1.add(hoppydata.toMap());
                                     }
                                   },
                                 );
@@ -287,7 +287,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
       loading = true;
     });
     print("hobbie selected");
-    print(hobbieSelected1[0].title);
+    print(hobbieSelected1[0]["title"]);
     print("interest selected");
     print(interestSelected1[0].id);
     var network = UserNetwork();

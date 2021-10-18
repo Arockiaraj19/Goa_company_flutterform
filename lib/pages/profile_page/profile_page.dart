@@ -415,7 +415,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         mainAxisSpacing: 0.0,
                                         crossAxisCount: 3,
                                         childAspectRatio: 2.8),
-                                itemCount: 0,
+                                itemCount: data.userData.interestDetails.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,
@@ -446,7 +446,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         mainAxisSpacing: 0.0,
                                         crossAxisCount: 3,
                                         childAspectRatio: 2.8),
-                                itemCount: 0,
+                                itemCount: data.userData.hobbyDetails.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,

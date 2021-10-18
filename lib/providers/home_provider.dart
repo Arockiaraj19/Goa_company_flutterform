@@ -24,7 +24,6 @@ class HomeProvider extends ChangeNotifier {
   bool get showstar => _showstar;
   bool get showheart => _showheart;
 
-
   getData() async {
     _usersSuggestionData = null;
     _currentpage = 0;
@@ -45,7 +44,7 @@ class HomeProvider extends ChangeNotifier {
     _apply = true;
     _homeState = HomeState.Loading;
     _usersSuggestionData = null;
-    _type = lat == "null" ? 2 : 1;
+    _type = lat == "0" ? 2 : 1;
     _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
         _apply, _age, _distance, _lat, _lng, _type, _currentpage);
     print("ll22");
@@ -103,6 +102,4 @@ class HomeProvider extends ChangeNotifier {
     _showstar = !_showstar;
     notifyListeners();
   }
-
-  
 }
