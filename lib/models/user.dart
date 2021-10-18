@@ -89,9 +89,9 @@ class UserModel {
         interestDetails.add(new InterestModel.fromJson(v));
       });
     }
-    if (json['hobbies_details'] != null) {
+    if (json['hobby_details'] != null) {
       hobbyDetails = new List<HobbyModel>();
-      json['hobbies_details'].forEach((v) {
+      json['hobby_details'].forEach((v) {
         hobbyDetails.add(new HobbyModel.fromJson(v));
       });
     }
