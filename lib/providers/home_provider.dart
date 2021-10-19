@@ -87,18 +87,19 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  changeheart() {
+  changeheart() async {
     _showheart = !_showheart;
     notifyListeners();
-    Future.delayed(Duration(seconds: 4));
+    await Future.delayed(Duration(seconds: 3));
     _showheart = !_showheart;
     notifyListeners();
   }
 
-  changestar() {
+  changestar() async {
+    print("star clicked");
     _showstar = !_showstar;
     notifyListeners();
-    Future.delayed(Duration(seconds: 4));
+    await Future.delayed(Duration(seconds: 3));
     _showstar = !_showstar;
     notifyListeners();
   }

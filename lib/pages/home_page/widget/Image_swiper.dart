@@ -91,25 +91,26 @@ class _ImageSwiperState extends State<ImageSwiper> {
               goChatPage: () async {
                 print("message");
                 String groupid = await ChatNetwork().createGroup(
-                    widget.userSuggestionData.response[currentIndex].id,data.userData);
+                    widget.userSuggestionData.response[currentIndex].id,
+                    data.userData);
 
                 goToChatPage(groupid,
                     widget.userSuggestionData.response[currentIndex].id);
               },
-              onTapHeart: () {
-                 context.read<HomeProvider>().changeheart();
+              onTapHeart: () async {
+                await context.read<HomeProvider>().changeheart();
                 String confirmedUser =
                     widget.userSuggestionData.response[currentIndex].id;
                 UserModel userData = data.userData;
                 HomeButtonNetwork().postMatchRequest(confirmedUser, userData);
               },
-              onTapFlash: () {
+              onTapFlash: () async {
                 print("you click star");
-                 context.read<HomeProvider>().changestar();
-                print(currentIndex);
+                await context.read<HomeProvider>().changestar();
                 String likedUser =
                     widget.userSuggestionData.response[currentIndex].id;
                 HomeButtonNetwork().postLikeUnlike(likedUser, "1");
+                print(currentIndex);
               },
             ));
       })

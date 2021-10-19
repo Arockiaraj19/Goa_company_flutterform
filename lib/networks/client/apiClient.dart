@@ -39,39 +39,42 @@ Future<Dio> apiClient() async {
     return handler.next(response); // continue
   }, onError: (DioError error, handler) async {
     // Do something with response error
-
-    // print(error.response);
-    showtoast(error.response.data["msg"]);
-    print(error.response.data);
-    print(error.requestOptions.data);
-    if (error.response.statusCode == 410) {
-      try {
-        print("refersh");
-        var refreshToken = await getRefreshToken();
-        print(refreshToken);
-        final response1 = await Dio().get(baseUrl + refreshTokenEndpoint,
-            options: Options(headers: {"Authorization": refreshToken}));
-        print(response1.data);
-        var accessToken;
-        if (response1.statusCode == 200) {
-          accessToken = response1.data['accessToken'];
-          await saveAccessToken(accessToken);
+    if (error.response != null) {
+      // print(error.response);
+      showtoast(error.response.data["msg"]);
+      print(error.response.data);
+      print(error.requestOptions.data);
+      if (error.response.statusCode == 410) {
+        try {
+          print("refersh");
+          var refreshToken = await getRefreshToken();
+          print(refreshToken);
+          final response1 = await Dio().get(baseUrl + refreshTokenEndpoint,
+              options: Options(headers: {"Authorization": refreshToken}));
+          print(response1.data);
+          var accessToken;
+          if (response1.statusCode == 200) {
+            accessToken = response1.data['accessToken'];
+            await saveAccessToken(accessToken);
+          }
+          error.requestOptions.headers["Authorization"] = accessToken;
+          final opts = new Options(
+              method: error.requestOptions.method,
+              headers: error.requestOptions.headers);
+          final cloneReq = await _dio.request(error.requestOptions.path,
+              options: opts,
+              data: error.requestOptions.data,
+              queryParameters: error.requestOptions.queryParameters);
+          return handler.resolve(cloneReq);
+        } catch (e) {
+          saveLoginStatus(0);
+          Routes.sailor(Routes.loginPage);
         }
-        error.requestOptions.headers["Authorization"] = accessToken;
-        final opts = new Options(
-            method: error.requestOptions.method,
-            headers: error.requestOptions.headers);
-        final cloneReq = await _dio.request(error.requestOptions.path,
-            options: opts,
-            data: error.requestOptions.data,
-            queryParameters: error.requestOptions.queryParameters);
-        return handler.resolve(cloneReq);
-      } catch (e) {
-        saveLoginStatus(0);
-        Routes.sailor(Routes.loginPage);
+      } else {
+        // showtoast("Network Failed");
       }
     } else {
-      // showtoast("Network Failed");
+      handler.next(error);
     }
   }));
   _dio.options.baseUrl = baseUrl;

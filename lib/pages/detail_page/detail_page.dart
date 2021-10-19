@@ -146,8 +146,8 @@ class _DetailPageState extends State<DetailPage> {
                         // width: 300,
                         padding: EdgeInsetsDirectional.only(start: 20, end: 20),
                         child: AnimationButton(
-                          loadingstar: loadingstar,
-                          loadingheart: loadingheart,
+                          loadingstar: data.showstar,
+                          loadingheart: data.showheart,
                           goChatPage: () async {
                             print("hello");
 
@@ -157,13 +157,16 @@ class _DetailPageState extends State<DetailPage> {
                             goToChatPage(groupid, widget.userDetails.id);
                           },
                           isDetail: true,
-                          onTapHeart: () {
+                          onTapHeart: () async {
+                            await context.read<HomeProvider>().changeheart();
                             String confirmedUser = widget.userDetails.id;
                             UserModel userData = data.userData;
                             HomeButtonNetwork()
                                 .postMatchRequest(confirmedUser, userData);
                           },
-                          onTapFlash: () {
+                          onTapFlash: () async {
+                            print("you click super star");
+                            await context.read<HomeProvider>().changestar();
                             String likedUser = widget.userDetails.id;
                             HomeButtonNetwork().postLikeUnlike(likedUser, "1");
                           },

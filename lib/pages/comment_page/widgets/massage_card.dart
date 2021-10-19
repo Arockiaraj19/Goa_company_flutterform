@@ -34,7 +34,8 @@ class _MassageCardState extends State<MassageCard> {
                     child: CircleAvatar(
                       radius: 28,
                       backgroundImage: NetworkImage(
-                        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                        widget.data.user_id_2_details[0].identificationImage ??
+                            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
                       ),
                     )),
                 Container(
