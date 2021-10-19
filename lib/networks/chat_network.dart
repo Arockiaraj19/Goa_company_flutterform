@@ -72,9 +72,8 @@ class ChatNetwork {
         });
         final results = List<Map<String, dynamic>>.from(response.data);
         print(response.data);
-        List<ChatGroup> chatgroups = results
-            .map((movieData) => ChatGroup.fromMap(movieData))
-            .toList(growable: false);
+        List<ChatGroup> chatgroups =
+            results.map((movieData) => ChatGroup.fromMap(movieData)).toList();
         print("group list correct a varuthaa");
 
         return chatgroups;

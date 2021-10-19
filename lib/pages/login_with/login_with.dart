@@ -3,6 +3,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signin_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/Forminput.dart';
@@ -246,18 +247,21 @@ class _LoginWithState extends State<LoginWith> {
           SizedBox(
             height: 3.h,
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "Forgot password ?",
-              textAlign: TextAlign.end,
-              style: TextStyle(
-                  fontSize: 40.sp,
-                  letterSpacing: 1.0,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xffC4C4C4)),
-              // TextStyle(
-              //     color: Colors.black, fontSize: 14, fontFamily: "lato"),
+          InkWell(
+            onTap: () => goToforgetEmail(),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "Forgot password ?",
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                    fontSize: 40.sp,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xffC4C4C4)),
+                // TextStyle(
+                //     color: Colors.black, fontSize: 14, fontFamily: "lato"),
+              ),
             ),
           ),
 
@@ -290,6 +294,10 @@ class _LoginWithState extends State<LoginWith> {
         ],
       ),
     );
+  }
+
+  goToforgetEmail() {
+    Routes.sailor(Routes.signUpWithEmailPage, params: {"isforget": true});
   }
 
   goToFindMatchPage() async {

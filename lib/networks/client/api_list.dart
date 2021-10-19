@@ -52,3 +52,17 @@ const String url_get_gender = "/user/utils/genders";
 //chat create group
 const String create_group = "/chats/group";
 const String new_message = "/chats/entry";
+
+//forget password to get otp with email
+const String forget_password_getotp = "/user/forgotpassword";
+
+//forget password to get resentotp with email;
+
+const String forget_password_resentotp = "/user/resendpasswordotp";
+
+//verify otp
+const String forget_verify_otp = "/user/checkforgotpasswordotp";
+
+//forget reset password
+
+const String forget_reset_password = "/user/resetpassword";

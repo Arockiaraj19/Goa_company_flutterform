@@ -1,6 +1,9 @@
+import 'package:dating_app/models/forgetresponse_model.dart';
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -12,7 +15,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddingPasswordForSignUp extends StatefulWidget {
   final String email;
-  AddingPasswordForSignUp({Key key, this.email}) : super(key: key);
+  final ResponseSubmitOtp otpdata;
+  final bool isforget;
+  AddingPasswordForSignUp({Key key, this.email, this.otpdata, this.isforget})
+      : super(key: key);
 
   @override
   _AddingPasswordForSignUpState createState() =>
@@ -34,6 +40,15 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
         return _buildWeb();
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("otp data correct a varuthaaaa");
+    print(widget.otpdata);
+    print("boolean enna varuthu");
+    print(widget.isforget);
   }
 
   Widget _buildPhone() {
@@ -93,6 +108,15 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
     var network1 = UserNetwork();
     UserModel userData = result ? await network1.getUserData() : null;
     userData != null ? onboardingCheck(userData) : null;
+  }
+
+  forgetresetpassword() async {
+    setState(() {
+      loading = true;
+    });
+    var result = await ForgetPassword().forgetResetPassword(
+        widget.otpdata.otp_id, widget.otpdata.user_id, _password1Ctrl.text);
+          Routes.sailor(Routes.success);
   }
 
   Widget commonPart(BuildContext context, {bool onWeb = false}) {
@@ -322,7 +346,11 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                 color: Colors.white,
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
-                    loading ? null : goToCreateProfilePage();
+                    if (widget.isforget) {
+                      forgetresetpassword();
+                    } else {
+                      goToCreateProfilePage();
+                    }
                   }
                 },
               ),

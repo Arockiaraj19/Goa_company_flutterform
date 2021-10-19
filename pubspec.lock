@@ -511,6 +511,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.5"
+  gradient_ui_widgets:
+    dependency: "direct main"
+    description:
+      name: gradient_ui_widgets
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2-nullsafety"
   http:
     dependency: transitive
     description:

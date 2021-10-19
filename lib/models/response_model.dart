@@ -49,10 +49,8 @@ class Responsestorageimage {
   String downloadUrl;
   Responsestorageimage({
     this.uploadUrl,
-     this.downloadUrl,
+    this.downloadUrl,
   });
-
-  
 
   Map<String, dynamic> toMap() {
     return {
@@ -70,5 +68,7 @@ class Responsestorageimage {
 
   String toJson() => json.encode(toMap());
 
-  factory Responsestorageimage.fromJson(String source) => Responsestorageimage.fromMap(json.decode(source));
+  factory Responsestorageimage.fromJson(String source) =>
+      Responsestorageimage.fromMap(json.decode(source));
 }
+

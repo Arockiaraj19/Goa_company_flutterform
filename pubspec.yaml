@@ -71,6 +71,7 @@ dependencies:
   firebase_messaging: ^10.0.8
   flutter_local_notifications: ^9.0.0
   smooth_page_indicator: ^1.0.0+2
+  gradient_ui_widgets: ^1.0.2-nullsafety
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:dating_app/models/forgetresponse_model.dart';
 import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/pages/Interest_hobbies_page/interest_hobbies_page.dart';
@@ -38,6 +39,7 @@ import 'pages/add_album_page/add_album_page.dart';
 import 'pages/imagecheck.dart';
 import 'pages/meet_page/meetup_page.dart';
 import 'pages/subscriptions/subscription_page.dart';
+import 'pages/success/Success_page.dart';
 
 class Routes {
   // RouteNames
@@ -75,6 +77,7 @@ class Routes {
   static String subscription = "subscription";
   static String payment = "payment";
   static String imagecheck = "imagecheck";
+  static String success = "success";
 
   static final sailor = Sailor();
 
@@ -147,8 +150,12 @@ class Routes {
       SailorRoute(
           name: signUpWithEmailPage,
           defaultTransitions: [SailorTransition.fade_in],
+          params: [SailorParam<bool>(name: 'isforget')],
           builder: (context, args, params) {
-            return SignUpWithEmailPage();
+            bool isforget = Sailor.param<bool>(context, "isforget");
+            return SignUpWithEmailPage(
+              isforget: isforget,
+            );
           }),
       SailorRoute(
           name: signUpWithMobilePage,
@@ -160,22 +167,36 @@ class Routes {
       SailorRoute(
           name: otpPage,
           defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<OtpModel>(name: "otpData")],
+          params: [
+            SailorParam<OtpModel>(name: "otpData"),
+            SailorParam<bool>(name: "isforget")
+          ],
           builder: (context, args, params) {
             OtpModel otpData = Sailor.param<OtpModel>(context, "otpData");
+            bool isforget = Sailor.param<bool>(context, "isforget");
             return OtpPage(
               otpData: otpData,
+              isforget: isforget,
             );
           }),
 
       SailorRoute(
           name: addingPasswordPage,
           defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<String>(name: 'email')],
+          params: [
+            SailorParam<String>(name: 'email'),
+            SailorParam<ResponseSubmitOtp>(name: 'otpdata'),
+            SailorParam<bool>(name: "isforget")
+          ],
           builder: (context, args, params) {
             String email = Sailor.param<String>(context, "email");
+            ResponseSubmitOtp otpdata =
+                Sailor.param<ResponseSubmitOtp>(context, "otpdata");
+            bool isforget = Sailor.param<bool>(context, "isforget");
             return AddingPasswordForSignUp(
               email: email,
+              otpdata: otpdata,
+              isforget: isforget,
             );
           }),
 
@@ -341,6 +362,13 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             return Imagecheck();
+          }),
+
+      SailorRoute(
+          name: success,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return SuccessPage();
           }),
     ]);
   }

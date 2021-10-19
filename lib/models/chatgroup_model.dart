@@ -10,6 +10,7 @@ class ChatGroup {
   int chat_count;
   String chat_time;
   List<UserModel> user_id_2_details;
+  List<dynamic> chat_details;
   ChatGroup({
     this.id,
     this.user_id_1,
@@ -18,6 +19,7 @@ class ChatGroup {
     this.chat_count,
     this.chat_time,
     this.user_id_2_details,
+    this.chat_details,
   });
 
   factory ChatGroup.fromMap(Map<String, dynamic> map) {
@@ -30,6 +32,7 @@ class ChatGroup {
       chat_time: map['chat_time'],
       user_id_2_details: List<UserModel>.from(
           map['user_id_2_details']?.map((x) => UserModel.fromJson(x))),
+      chat_details: List<dynamic>.from(map['chat_details']),
     );
   }
 
