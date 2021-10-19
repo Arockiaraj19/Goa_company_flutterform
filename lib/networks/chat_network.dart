@@ -109,4 +109,43 @@ class ChatNetwork {
       print(e);
     }
   }
+
+  Future blockuser(
+      String user1, String user2, String groupid, bool isblocked) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+
+      var data = _dio.then((value) async {
+        response = await value.patch(block_user, data: {
+          "blocking_user": user1,
+          "blocked_user": user2,
+          "group_id": groupid,
+          "is_blocked": isblocked //true or false
+        });
+        print("response message  block user");
+        print(response.data);
+      });
+      return data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future getblocklist() async {
+    Response response;
+    try {
+      final _dio = apiClient();
+      final id = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.get("/user/$id/chatblocklists");
+        print("response get block   list");
+        print(response.data);
+      
+      });
+      return data;
+    } catch (e) {
+      print(e);
+    }
+  }
 }

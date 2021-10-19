@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:dating_app/models/gender_model.dart';
 import 'package:dating_app/models/hobby.dart';
 import 'package:dating_app/models/interest.dart';
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/gender_network.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
+import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
 import 'package:dating_app/pages/profile_page/widgets/percentage_bar.dart';
 import 'package:dating_app/providers/home_provider.dart';
@@ -96,7 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       'isActive': false,
     },
     {
-      "gender": "other",
+      "gender": "More",
       "image": "null",
       'isActive': false,
     }
@@ -109,7 +112,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   fill() async {
     _firstNameCtrl.text = widget.userdata.firstName;
     _lastNameCtrl.text = widget.userdata.lastName;
-    // selectedDate=widget.userdata.dob;
+
     _bioCtrl.text = widget.userdata.bio ?? "";
     _heightCtrl.text =
         widget.userdata.height == null ? "" : widget.userdata.height.toString();
@@ -150,11 +153,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  Future _future;
+  String _selectedGender;
+  String _selectedGenderid;
+  GenderModel genderdetail;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // fill();
+    fill();
+    _future = GenderNetwork().getGenderData();
     if (interestData == null) {
       interestData = UserNetwork().getUserInterests();
       hobbyData = UserNetwork().getUserHobbies();
@@ -182,6 +190,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     });
   }
+
+  int time = 0;
 
   Widget _buildPhone() {
     var _leadingHeading = TextStyle(
@@ -279,27 +289,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              // PercentageBar(
-              //   percentage: 0.7,
-              //   onEditProfilePage: true,
-              //   onTap: () {
-              //     selectUserPic();
-              //   },
-              //   image: widget.userdata.profileImage.first,
-              //   selectedUserPic: selectedUserPic,
-              //   onTapClose: () {
-              //     setState(() {
-              //       selectedUserPic = null;
-              //     });
-              //   },
-              // ),
+              PercentageBar(
+                percentage: 0.7,
+                onEditProfilePage: true,
+                onTap: () {
+                  selectUserPic();
+                },
+                image: widget.userdata.identificationImage,
+                selectedUserPic: selectedUserPic,
+                onTapClose: () {
+                  setState(() {
+                    selectedUserPic = null;
+                  });
+                },
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     margin: EdgeInsetsDirectional.only(top: 5),
                     child: Text(
-                      "Adrianne Rico, 22",
+                      widget.userdata.firstName ?? "Some thing wrong",
                       style: _textStyleforName,
                     ),
                   ),
@@ -440,35 +450,88 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         Container(
                           width: MediaQuery.of(context).size.width,
                           height: 70,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              physics: ClampingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: itemGender.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                dynamic item = itemGender[index];
-                                return GenderCard(
-                                  name: item["gender"],
-                                  image: item["image"],
-                                  isActive: item["isActive"],
-                                  onTap: () {
-                                    if (mounted) {
-                                      setState(() {
-                                        selectedMenuIndex = index;
-                                        itemGender = itemGender
-                                            .map<Map<String, dynamic>>(
-                                                (Map<String, dynamic> item) {
-                                          item['isActive'] = false;
-                                          return item;
-                                        }).toList();
-                                        itemGender[index]['isActive'] = true;
-                                      });
-                                    }
-                                    print(
-                                        'pppppppppppppppppppppppppppppppppppp${item["gender"]}');
-                                  },
+                          child: FutureBuilder(
+                            future: _future,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                List<GenderModel> genderdata = snapshot.data;
+                                if (time == 0) {
+                                  _selectedGenderid = genderdata[0].id;
+                                  genderdetail = genderdata[0];
+                                }
+                                return ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    physics: ClampingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: 3,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      dynamic item = itemGender[index];
+
+                                      return GenderCard(
+                                        name: item["gender"],
+                                        image: item["image"],
+                                        isActive: item["isActive"],
+                                        onTap: () async {
+                                          if (mounted) {
+                                            setState(() {
+                                              selectedMenuIndex = index;
+                                              itemGender = itemGender.map<
+                                                      Map<String, dynamic>>(
+                                                  (Map<String, dynamic> item) {
+                                                item['isActive'] = false;
+                                                return item;
+                                              }).toList();
+                                              itemGender[index]['isActive'] =
+                                                  true;
+                                            });
+                                          }
+                                          _selectedGender = item["gender"];
+                                          print('${item["gender"]}');
+                                          if (item["gender"] == "More") {
+                                            final result = await Navigator.push(
+                                              context,
+                                              // Create the SelectionScreen in the next step.
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GenderPage(
+                                                          snapshot.data)),
+                                            );
+                                            _selectedGender =
+                                                result.title.toString();
+                                            setState(() {
+                                              itemGender[index]["gender"] =
+                                                  result.title.toString();
+                                            });
+                                            print(_selectedGender);
+                                          }
+                                          print("selected gender");
+                                          print(_selectedGender);
+                                          _selectedGenderid = genderdata
+                                              .firstWhere((element) =>
+                                                  element.title ==
+                                                  _selectedGender)
+                                              .id;
+                                          genderdetail = genderdata.firstWhere(
+                                              (element) =>
+                                                  element.id ==
+                                                  _selectedGenderid);
+                                          print("its id");
+                                          print(_selectedGenderid);
+                                          print("data");
+                                          print(genderdetail.id);
+                                          time++;
+                                        },
+                                      );
+                                    });
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(),
                                 );
-                              }),
+                              }
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -692,9 +755,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 GradientButton(
                   margin: EdgeInsets.all(0),
                   height: MediaQuery.of(context).size.height / 20,
-                  name: "Confirm",
+                  name: loading ? "Loading..." : "Confirm",
                   gradient: MainTheme.loginBtnGradient,
                   active: true,
+                  isLoading: loading,
                   color: Colors.white,
                   width: ScreenUtil().setWidth(300),
                   fontWeight: FontWeight.bold,
@@ -710,16 +774,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       setState(() {
                         loading = true;
                       });
-                      var result = selectedUserPic == null
+                      String result = selectedUserPic == null
                           ? widget.userdata.profileImage
-                          : await uploadImage();
+                          : await UploadImage()
+                              .uploadImage(selectedUserPic.path);
+
                       var userData = {
                         "first_name": _firstNameCtrl.text,
                         "last_name":
                             _lastNameCtrl.text, //"email":_emailCtrl.text,
                         "profession": ["$dropdownProfessionValue"],
                         "dob": selectedDate.toString(),
-                        // "gender": [],
+                        "gender_id": _selectedGenderid.toString(),
+                        "gender_details": [genderdetail.toMap()],
                         "height": int.parse(_heightCtrl.text),
                         "weight": int.parse(_weightCtrl.text),
                         "bio": _bioCtrl.text,
@@ -727,7 +794,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         "hobbies": hobbieSelected,
                         "hobby_details": hobbieSelected1,
                         "interest_details": interestSelected1,
-                        "profile_image": result
+                        "identification_image": result
                       };
                       print(userData);
                       UserModel data =
@@ -744,15 +811,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             )),
       ),
     );
-  }
-
-  uploadImage() async {
-    // Uint8List imageString = await File(selectedUserPic.path).readAsBytes();
-    // // List<int> imageBytes = File(selectedUserPic.path).readAsBytesSync();
-    // // String imageString = base64Encode(imageBytes);
-    // var network = UploadImage();
-    // // String result = await network.uploadImage(imageString);
-    // return [result];
   }
 
   void selectUserImage() {

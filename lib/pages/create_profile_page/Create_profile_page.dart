@@ -69,6 +69,9 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     }
   ];
   Future _future;
+  String _selectedGender;
+  String _selectedGenderid;
+  GenderModel genderdetail;
   @override
   void initState() {
     // TODO: implement initState
@@ -77,9 +80,6 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     _future = GenderNetwork().getGenderData();
   }
 
-  String _selectedGender;
-  String _selectedGenderid;
-  GenderModel genderdetail;
   fill() {
     setState(() {
       _emailCtrl.text = widget.userData.email;

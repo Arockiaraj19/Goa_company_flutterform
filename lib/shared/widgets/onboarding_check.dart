@@ -2,7 +2,7 @@ import 'package:dating_app/models/user.dart';
 import '../../routes.dart';
 
 onboardingCheck(UserModel userData) {
-  if (userData.dob == null) {
+  if (userData.firstName == null) {
     Routes.sailor(Routes.createProfilePage, params: {"userData": userData});
   } else if (userData.interests.length == 0 || userData.hobbies.length == 0) {
     Routes.sailor(Routes.interestHobbiesPage);

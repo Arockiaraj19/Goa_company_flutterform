@@ -83,10 +83,14 @@ class UserModel {
     profession = json['profession'].cast<String>();
     hobbies = json['hobbies'].cast<String>();
     interests = json['interests'].cast<String>();
-    interestDetails = List<InterestModel>.from(
-        json['interests_details']?.map((x) => InterestModel.fromJson(x)));
-    hobbyDetails = List<HobbyUserModel>.from(
-        json['hobbies_details']?.map((x) => HobbyUserModel.fromMap(x)));
+    interestDetails = json['interests_details'] == null
+        ? []
+        : List<InterestModel>.from(
+            json['interests_details']?.map((x) => InterestModel.fromJson(x)));
+    hobbyDetails = json['hobbies_details'] == null
+        ? []
+        : List<HobbyUserModel>.from(
+            json['hobbies_details']?.map((x) => HobbyUserModel.fromMap(x)));
 
     isMobileVerified = json['is_mobile_verified'];
     isEmailVerified = json['is_email_verified'];
@@ -101,7 +105,7 @@ class UserModel {
     email = json['email'];
     dob = json['dob'].toString();
     bio = json['bio'];
-    firstName = json['first_name'];
+    firstName = json['first_name'] != null ? json['first_name'] : null;
     gender = json['gender'].toString();
     lastName = json['last_name'];
     sexualOrientation =

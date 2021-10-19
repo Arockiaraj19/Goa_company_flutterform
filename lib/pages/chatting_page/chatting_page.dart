@@ -104,6 +104,13 @@ class _ChattingPageState extends State<ChattingPage> {
 
   TextEditingController _message = TextEditingController();
 
+  blockuser() async {
+    String userid = await getUserId();
+    print("you clicked block user");
+    var result =
+        await ChatNetwork().blockuser(userid, widget.id, widget.groupid, true);
+  }
+
   @override
   void dispose() {
     socket.emit("disconnect", "group_${widget.groupid}");
@@ -184,10 +191,13 @@ class _ChattingPageState extends State<ChattingPage> {
                         width: 25,
                         height: 25,
                       )),
-                      onSelected: (String result) {
+                      onSelected: (String result) async {
                         setState(() {
                           dropdownValue = result;
                         });
+                        if (result == itemdate[1]) {
+                          blockuser();
+                        }
                       },
                       itemBuilder: (BuildContext context) =>
                           itemdate.map<PopupMenuEntry<String>>((String value) {
@@ -262,8 +272,14 @@ class _ChattingPageState extends State<ChattingPage> {
                                                 vertical: 15.w,
                                               ),
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
+                                                crossAxisAlignment: data
+                                                            .chatMessageData[
+                                                                index]
+                                                            .receiverDetails[0]
+                                                            .userId ==
+                                                        widget.id
+                                                    ? CrossAxisAlignment.end
+                                                    : CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     data.chatMessageData[index]
@@ -285,7 +301,15 @@ class _ChattingPageState extends State<ChattingPage> {
                                                     convertime(data
                                                         .chatMessageData[index]
                                                         .createdAt),
-                                                    textAlign: TextAlign.right,
+                                                    textAlign: data
+                                                                .chatMessageData[
+                                                                    index]
+                                                                .receiverDetails[
+                                                                    0]
+                                                                .userId ==
+                                                            widget.id
+                                                        ? TextAlign.right
+                                                        : TextAlign.left,
                                                     style: TextStyle(
                                                       color: data
                                                                   .chatMessageData[

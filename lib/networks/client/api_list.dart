@@ -66,3 +66,13 @@ const String forget_verify_otp = "/user/checkforgotpasswordotp";
 //forget reset password
 
 const String forget_reset_password = "/user/resetpassword";
+
+//block user
+const String block_user = "/user/chatblock";
+
+//subscription plan
+const String subscription_plan = "/user/utils/subscriptionplans";
+
+//get country code
+
+const String country_code = "/user/utils/mobilecodes";
