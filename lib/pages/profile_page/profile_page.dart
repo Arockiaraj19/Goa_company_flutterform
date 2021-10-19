@@ -204,10 +204,10 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   child: Column(children: [
-                                    // PercentageBar(
-                                    //   image: data.userData.profileImage[0],
-                                    //   percentage: 0.8,
-                                    // ),
+                                    PercentageBar(
+                                      image: data.userData.identificationImage,
+                                      percentage: 0.8,
+                                    ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -468,13 +468,13 @@ class _ProfilePageState extends State<ProfilePage>
                                       child: Text("Album", style: subHeading))
                                 ],
                               ),
-                              // AlbumCardList(
-                              //   mainAxisSpacing: 10.0,
-                              //   crossAxisSpacing: 10.0,
-                              //   crossAxisCount: 3,
-                              //   images: data.userData.profileImage,
-                              //   itemCount: data.userData.profileImage.length,
-                              // )
+                              AlbumCardList(
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                crossAxisCount: 3,
+                                images: data.userData.profileImage,
+                                itemCount: data.userData.profileImage.length,
+                              )
                             ],
                           )),
                       SingleChildScrollView(

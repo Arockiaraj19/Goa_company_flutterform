@@ -62,22 +62,33 @@ class _PercentageBarState extends State<PercentageBar> {
               radius: 90.0,
               lineWidth: 5,
               percent: widget.percentage,
-              center: widget.onEditProfilePage == true? Container(
-                  child: InkWell(
-                      onTap: () {
-                        widget.onTap();
-                      },
-                      child: SizedBox(height: 80,width: 80,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child:widget.selectedUserPic!=null? Image.file(File(widget.selectedUserPic.path),
-                            fit: BoxFit.cover,)
-                            :imageViewer(widget.image),
-                        ),
-                      ))):SizedBox(height: 80,width: 80,child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: imageViewer(widget.image),
-              ),),
+              center: widget.onEditProfilePage == true
+                  ? Container(
+                      child: InkWell(
+                          onTap: () {
+                            widget.onTap();
+                          },
+                          child: SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: widget.selectedUserPic != null
+                                  ? Image.file(
+                                      File(widget.selectedUserPic.path),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : imageViewer(widget.image),
+                            ),
+                          )))
+                  : SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: imageViewer(widget.image),
+                      ),
+                    ),
               linearGradient: MainTheme.loginBtnGradient,
             ),
             linearGradient: MainTheme.firstPercentBarColor,
@@ -105,5 +116,4 @@ class _PercentageBarState extends State<PercentageBar> {
           : Container()
     ]);
   }
-  
 }

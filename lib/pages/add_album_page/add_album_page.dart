@@ -1,9 +1,12 @@
 import 'dart:typed_data';
+import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
+import 'package:dating_app/networks/user_network.dart';
 
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
+import 'package:dating_app/shared/widgets/onboarding_check.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -170,10 +173,10 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                 children: [
                   GradientButton(
                     height: 40,
-                    name: "Continue",
+                    name: loading ? "Loading.." : "Continue",
                     gradient: MainTheme.loginBtnGradient,
                     active: true,
-                    // isLoading: loading,
+                    isLoading: loading,
                     color: Colors.white,
                     width: ScreenUtil().setWidth(400),
                     fontWeight: FontWeight.w600,
@@ -194,21 +197,18 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
     print("kl1");
     for (int i = 0; i < 6; i++) {
       if (selectedUserAvatar[i] != null) {
-        print("kl2");
-
         String result = await network.uploadImage(selectedUserAvatar[i].path);
-        print("kl3");
+        print("output velia varuthaaa");
         print(result);
         uploadedImages.add(result);
-        print("kl");
       }
     }
-    print("op");
-    // var network1 = UserNetwork();
-    // var userData = {"profile_image": uploadedImages};
-    // UserModel result1 = await network1.patchUserData(userData);
+
+    var network1 = UserNetwork();
+    var userData = {"profile_image": uploadedImages};
+    UserModel result1 = await network1.patchUserData(userData);
     // Timer(Duration(seconds: 2), () => offLoading());
-    // result1 != null ? onboardingCheck(result1) : null;
+    result1 != null ? onboardingCheck(result1) : null;
   }
 
   offLoading() {
