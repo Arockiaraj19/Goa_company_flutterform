@@ -24,12 +24,12 @@ class _DatesCardListState extends State<DatesCardList> {
   @override
   Widget build(BuildContext context) {
     return ListView(shrinkWrap: true, children: [
-      DatesCard(
-        onWeb: widget.onWeb,
-        height: widget.datesCardHeight,
-        width: widget.datesCardWidth,
-        testWidth: widget.testWidth,
-      ),
+      // DatesCard(
+      //   onWeb: widget.onWeb,
+      //   height: widget.datesCardHeight,
+      //   width: widget.datesCardWidth,
+      //   testWidth: widget.testWidth,
+      // ),
     ]);
   }
 }

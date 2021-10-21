@@ -49,6 +49,7 @@ class Responses {
   String email;
   String firstName;
   String lastName;
+  String identificationImage;
 
   Responses(
       {this.id,
@@ -73,7 +74,8 @@ class Responses {
       this.sexualOrientation,
       this.email,
       this.firstName,
-      this.lastName});
+      this.lastName,
+      this.identificationImage});
 
   Responses.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -111,6 +113,7 @@ class Responses {
     email = json['email'];
     firstName = json['first_name'];
     lastName = json['last_name'];
+    identificationImage = json['identification_image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -144,6 +147,7 @@ class Responses {
     data['email'] = this.email;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
+    data['identification_image'] = this.identificationImage;
     return data;
   }
 }

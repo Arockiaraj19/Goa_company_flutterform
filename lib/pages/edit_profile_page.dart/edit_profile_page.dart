@@ -17,6 +17,7 @@ import 'package:dating_app/pages/profile_page/widgets/percentage_bar.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/shared/date_picker_input.dart';
 import 'package:dating_app/shared/helpers.dart';
+import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
@@ -141,11 +142,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   fillInterests() {
     for (int i = 0; i < interestData1.length; i++) {
-      if (widget.userdata.interests.contains(interestData1[i].id)) {
+      if (widget.userdata.interests.contains(interestData1[i].interest_id)) {
         interestBool[i] = true;
-        interestSelected.add(interestData1[i].id);
+        interestSelected.add(interestData1[i].interest_id);
         var val = {
-          "interest_id": interestData1[i].id,
+          "interest_id": interestData1[i].interest_id,
           "title": interestData1[i].title
         };
         interestSelected1.add(val);
@@ -289,20 +290,43 @@ class _EditProfilePageState extends State<EditProfilePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              PercentageBar(
-                percentage: 0.7,
-                onEditProfilePage: true,
-                onTap: () {
-                  selectUserPic();
-                },
-                image: widget.userdata.identificationImage,
-                selectedUserPic: selectedUserPic,
-                onTapClose: () {
-                  setState(() {
-                    selectedUserPic = null;
-                  });
+              FutureBuilder(
+                future: Persentage().checkPresentage(widget.userdata),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    return PercentageBar(
+                      percentage: snapshot.data,
+                      onEditProfilePage: true,
+                      onTap: () {
+                        selectUserPic();
+                      },
+                      image: widget.userdata.identificationImage,
+                      selectedUserPic: selectedUserPic,
+                      onTapClose: () {
+                        setState(() {
+                          selectedUserPic = null;
+                        });
+                      },
+                    );
+                  } else {
+                    return PercentageBar(
+                      percentage: 0,
+                      onEditProfilePage: true,
+                      onTap: () {
+                        selectUserPic();
+                      },
+                      image: widget.userdata.identificationImage,
+                      selectedUserPic: selectedUserPic,
+                      onTapClose: () {
+                        setState(() {
+                          selectedUserPic = null;
+                        });
+                      },
+                    );
+                  }
                 },
               ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -457,8 +481,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               if (snapshot.hasData) {
                                 List<GenderModel> genderdata = snapshot.data;
                                 if (time == 0) {
-                                  _selectedGenderid = genderdata[0].id;
-                                  genderdetail = genderdata[0];
+                                  _selectedGenderid = widget.userdata.gender;
+                                  genderdetail = genderdata.firstWhere(
+                                      (element) =>
+                                          element.id == widget.userdata.gender);
                                 }
                                 return ListView.builder(
                                     scrollDirection: Axis.horizontal,
@@ -580,24 +606,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       setState(() {
                                         interestBool[index] = false;
                                       });
-                                      interestSelected
-                                          .remove(snapshot.data[index].id);
-                                      var val = {
-                                        "interest_id": snapshot.data[index].id,
-                                        "title": snapshot.data[index].title
-                                      };
-                                      interestSelected1.remove(val);
+                                      interestSelected.remove(
+                                          snapshot.data[index].interest_id);
+
+                                      interestSelected1
+                                          .remove(snapshot.data[index].toMap());
                                     } else {
                                       setState(() {
                                         interestBool[index] = true;
                                       });
-                                      interestSelected
-                                          .add(snapshot.data[index].id);
-                                      var val = {
-                                        "interest_id": snapshot.data[index].id,
-                                        "title": snapshot.data[index].title
-                                      };
-                                      interestSelected1.add(val);
+                                      interestSelected.add(
+                                          snapshot.data[index].interest_id);
+
+                                      interestSelected1
+                                          .add(snapshot.data[index].toMap());
                                     }
                                   },
                                 );
@@ -775,7 +797,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         loading = true;
                       });
                       String result = selectedUserPic == null
-                          ? widget.userdata.profileImage
+                          ? widget.userdata.identificationImage
                           : await UploadImage()
                               .uploadImage(selectedUserPic.path);
 
@@ -796,6 +818,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         "interest_details": interestSelected1,
                         "identification_image": result
                       };
+                      print("edit profile userdata");
                       print(userData);
                       UserModel data =
                           await UserNetwork().patchUserData(userData);

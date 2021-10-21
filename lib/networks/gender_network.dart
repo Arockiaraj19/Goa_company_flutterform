@@ -16,6 +16,8 @@ class GenderNetwork {
         if (response.statusCode == 200) {
           // return response.data;
           final results = List<Map<String, dynamic>>.from(response.data);
+          print("gender response data");
+          print(response.data);
           List<GenderModel> genders = results
               .map((genderData) => GenderModel.fromMap(genderData))
               .toList(growable: false);

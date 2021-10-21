@@ -205,7 +205,10 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
     }
 
     var network1 = UserNetwork();
-    var userData = {"profile_image": uploadedImages};
+    var userData = {
+      "profile_image": uploadedImages,
+      "onboard_details_status": 1
+    };
     UserModel result1 = await network1.patchUserData(userData);
     // Timer(Duration(seconds: 2), () => offLoading());
     result1 != null ? onboardingCheck(result1) : null;

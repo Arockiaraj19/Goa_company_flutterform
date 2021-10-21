@@ -277,13 +277,23 @@ class Routes {
             SailorParam<String>(
               name: 'id',
             ),
+            SailorParam<String>(
+              name: 'image',
+            ),
+            SailorParam<String>(
+              name: 'name',
+            ),
           ],
           builder: (context, args, params) {
             String groupid = Sailor.param<String>(context, "groupid");
             String id = Sailor.param<String>(context, "id");
+            String image = Sailor.param<String>(context, "image");
+            String name = Sailor.param<String>(context, "name");
             return ChattingPage(
               groupid: groupid,
               id: id,
+              image: image,
+              name: name,
             );
           }),
 

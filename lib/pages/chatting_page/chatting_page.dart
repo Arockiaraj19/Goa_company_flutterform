@@ -65,7 +65,7 @@ class _ChattingPageState extends State<ChattingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("sender id corect a varuthaa");
+    print("enna id varuthu");
     print(widget.id);
 
     socket.onConnect((data) {
@@ -132,17 +132,20 @@ class _ChattingPageState extends State<ChattingPage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               backgroundColor: Colors.grey[50],
-              leading: Container(
-                  padding: EdgeInsets.all(15),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey[200],
-                    radius: 10,
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                  )),
+              leading: InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey[200],
+                      radius: 10,
+                      child: Icon(
+                        Icons.keyboard_arrow_left,
+                        color: Colors.black,
+                        size: 25,
+                      ),
+                    )),
+              ),
               titleSpacing: 0,
               title: Container(
                   child: Row(
@@ -157,7 +160,7 @@ class _ChattingPageState extends State<ChattingPage> {
                       margin: EdgeInsetsDirectional.only(start: 10),
                       child: widget.name == null
                           ? Text(
-                              'Anika',
+                              'Some One',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,

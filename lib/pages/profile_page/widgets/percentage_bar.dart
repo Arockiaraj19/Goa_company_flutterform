@@ -19,7 +19,7 @@ class PercentageBar extends StatefulWidget {
 
   PercentageBar(
       {Key key,
-      this.percentage = 0.8,
+      this.percentage,
       this.onEditProfilePage = false,
       this.onTapClose,
       this.colors,
@@ -39,7 +39,7 @@ class _PercentageBarState extends State<PercentageBar> {
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
             child: CircularPercentIndicator(
-          arcType: ArcType.FULL,
+          startAngle: 180,
           backgroundColor: Colors.grey[50],
           animation: true,
           animationDuration: 1200,
@@ -47,7 +47,7 @@ class _PercentageBarState extends State<PercentageBar> {
           lineWidth: 7,
           percent: widget.percentage,
           center: CircularPercentIndicator(
-            arcType: ArcType.FULL,
+            startAngle: 180,
             backgroundColor: Colors.grey[50],
             animation: true,
             animationDuration: 1200,
@@ -55,7 +55,7 @@ class _PercentageBarState extends State<PercentageBar> {
             lineWidth: 7,
             percent: widget.percentage,
             center: CircularPercentIndicator(
-              arcType: ArcType.FULL,
+              startAngle: 180,
               animation: true,
               backgroundColor: Colors.grey[50],
               animationDuration: 1200,

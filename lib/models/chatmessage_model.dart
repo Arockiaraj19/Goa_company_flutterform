@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class ChatMessage {
   String id;
   String groupid;
@@ -40,10 +42,14 @@ class ChatMessage {
       groupid: map['group_id'],
       message: map['message'],
       readByRecipients: List<String>.from(map['readByRecipients']),
-      senderDetails: List<Details>.from(
-          map['sender_details']?.map((x) => Details.fromMap(x))),
-      receiverDetails: List<Details>.from(
-          map['receiver_details']?.map((x) => Details.fromMap(x))),
+      senderDetails: map['sender_details'] != null
+          ? List<Details>.from(
+              map['sender_details']?.map((x) => Details.fromMap(x)))
+          : null,
+      receiverDetails: map['receiver_details'] != null
+          ? List<Details>.from(
+              map['receiver_details']?.map((x) => Details.fromMap(x)))
+          : null,
       createdAt: DateTime.parse(map['createdAt'].toString()),
       updatedAt: DateTime.parse(map['updatedAt'].toString()),
     );

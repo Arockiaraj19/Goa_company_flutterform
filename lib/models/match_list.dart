@@ -19,20 +19,20 @@ class MatchListModel {
 
   MatchListModel(
       {this.id,
-        this.isMatched,
-        this.gameScore,
-        this.matchScore,
-        this.isDeleted,
-        this.requestedUser,
-        this.confirmedUser,
-        this.requestedDevice,
-        this.createdAt,
-        this.updatedAt,
-        this.matchNo,
-        this.iV,
-        this.unmatchedDate,
-        this.unmatchedUser,
-        this.userDetails});
+      this.isMatched,
+      this.gameScore,
+      this.matchScore,
+      this.isDeleted,
+      this.requestedUser,
+      this.confirmedUser,
+      this.requestedDevice,
+      this.createdAt,
+      this.updatedAt,
+      this.matchNo,
+      this.iV,
+      this.unmatchedDate,
+      this.unmatchedUser,
+      this.userDetails});
 
   MatchListModel.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -83,7 +83,7 @@ class MatchListModel {
 class UserDetails {
   String sId;
   Location location;
-  int gender;
+  String gender;
   List<dynamic> profileImage;
   List<dynamic> profession;
   List<dynamic> interests;
@@ -107,41 +107,46 @@ class UserDetails {
 
   UserDetails(
       {this.sId,
-        this.location,
-        this.gender,
-        this.profileImage,
-        this.profession,
-        this.interests,
-        this.hobbies,
-        this.relationshipStatus,
-        this.religion,
-        this.isBlocked,
-        this.isDeleted,
-        this.isDeactivated,
-        this.matchCount,
-        this.badCount,
-        this.userId,
-        this.firstName,
-        this.lastName,
-        this.mobileNumber,
-        this.sexualOrientation,
-        this.createdAt,
-        this.updatedAt,
-        this.iV,
-        this.dob});
+      this.location,
+      this.gender,
+      this.profileImage,
+      this.profession,
+      this.interests,
+      this.hobbies,
+      this.relationshipStatus,
+      this.religion,
+      this.isBlocked,
+      this.isDeleted,
+      this.isDeactivated,
+      this.matchCount,
+      this.badCount,
+      this.userId,
+      this.firstName,
+      this.lastName,
+      this.mobileNumber,
+      this.sexualOrientation,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.dob});
 
   UserDetails.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     location = json['location'] != null
         ? new Location.fromJson(json['location'])
         : null;
-    gender = json['gender'];
-    profileImage = json['profile_image']==null?null:json['profile_image'].cast<String>();
-    profession = json['profession']==null?null:json['profession'].cast<String>();
-    interests = json['interests']==null?null:json['interests'].cast<String>();
-    hobbies = json['hobbies']==null?null:json['hobbies'].cast<String>();
+    gender = json['gender'].toString();
+    profileImage = json['profile_image'] == null
+        ? null
+        : json['profile_image'].cast<String>();
+    profession =
+        json['profession'] == null ? null : json['profession'].cast<String>();
+    interests =
+        json['interests'] == null ? null : json['interests'].cast<String>();
+    hobbies = json['hobbies'] == null ? null : json['hobbies'].cast<String>();
     relationshipStatus = json['relationship_status'];
-    religion = json['religion']==null?null:json['religion'].cast<String>();
+    religion =
+        json['religion'] == null ? null : json['religion'].cast<String>();
     isBlocked = json['is_blocked'];
     isDeleted = json['is_deleted'];
     isDeactivated = json['is_deactivated'];

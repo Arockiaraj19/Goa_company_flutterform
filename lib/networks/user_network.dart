@@ -104,11 +104,12 @@ class UserNetwork {
         response = await value.get(userInterestEndpoint);
         print("user interest response data");
         print(response.data);
-        if (response.statusCode == 200) {
-          return (response.data as List)
-              .map((x) => InterestModel.fromJson(x))
-              .toList();
-        }
+        final results = List<Map<String, dynamic>>.from(response.data);
+
+        List<InterestModel> interest = results
+            .map((hobbieData) => InterestModel.fromMap(hobbieData))
+            .toList(growable: false);
+        return interest;
       });
       return data;
     } catch (e) {
@@ -122,14 +123,14 @@ class UserNetwork {
       final _dio = apiClient();
       var data = _dio.then((value) async {
         response = await value.get(userHobbiesEndpoint);
-        print("user hobbies data");
-        print(response.data);
+        // print("user hobbies data");
+        // print(response.data);
         final results = List<Map<String, dynamic>>.from(response.data);
 
         List<HobbyModel> hobbies = results
             .map((hobbieData) => HobbyModel.fromMap(hobbieData))
             .toList(growable: false);
-        print(hobbies);
+        // print(hobbies);
         return hobbies;
       });
       return data;
@@ -205,6 +206,7 @@ class UserNetwork {
       String id = await getUserId();
       var data = _dio.then((value) async {
         response = await value.get(userMatchListEndpoint + "/" + id);
+        print("match list data");
         print(response.data);
         if (response.statusCode == 200) {
           return (response.data as List)

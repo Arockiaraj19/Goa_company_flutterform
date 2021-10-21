@@ -25,7 +25,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
   Future<List<HobbyModel>> hobbyData;
   List<String> interestSelected = [];
   List<String> hobbieSelected = [];
-  List<InterestModel> interestSelected1 = [];
+  List<dynamic> interestSelected1 = [];
   List<dynamic> hobbieSelected1 = [];
   List<bool> interestBool = [];
   List<bool> hobbieBool = [];
@@ -191,18 +191,18 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                                       setState(() {
                                         interestBool[index] = false;
                                       });
-                                      interestSelected
-                                          .remove(snapshot.data[index].id);
+                                      interestSelected.remove(
+                                          snapshot.data[index].interest_id);
                                       interestSelected1
-                                          .remove(snapshot.data[index]);
+                                          .remove(snapshot.data[index].toMap());
                                     } else {
                                       setState(() {
                                         interestBool[index] = true;
                                       });
-                                      interestSelected
-                                          .add(snapshot.data[index].id);
+                                      interestSelected.add(
+                                          snapshot.data[index].interest_id);
                                       interestSelected1
-                                          .add(snapshot.data[index]);
+                                          .add(snapshot.data[index].toMap());
                                     }
                                   },
                                 );
@@ -289,7 +289,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
     print("hobbie selected");
     print(hobbieSelected1[0]["title"]);
     print("interest selected");
-    print(interestSelected1[0].id);
+    print(interestSelected1[0]["title"]);
     var network = UserNetwork();
     var userData = {
       "interests": interestSelected,

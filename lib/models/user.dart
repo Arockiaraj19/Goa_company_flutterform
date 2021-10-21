@@ -7,7 +7,7 @@ class UserModel {
   Location location;
   List<String> profileImage;
   List<String> profession;
-  List<InterestModel> interestDetails;
+  List<InterestUserModel> interestDetails;
   List<HobbyUserModel> hobbyDetails;
   List<String> hobbies;
   List<String> interests;
@@ -85,8 +85,8 @@ class UserModel {
     interests = json['interests'].cast<String>();
     interestDetails = json['interests_details'] == null
         ? []
-        : List<InterestModel>.from(
-            json['interests_details']?.map((x) => InterestModel.fromJson(x)));
+        : List<InterestUserModel>.from(json['interests_details']
+            ?.map((x) => InterestUserModel.fromMap(x)));
     hobbyDetails = json['hobbies_details'] == null
         ? []
         : List<HobbyUserModel>.from(

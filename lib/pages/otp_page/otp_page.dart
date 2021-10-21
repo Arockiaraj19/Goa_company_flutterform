@@ -29,7 +29,7 @@ class OtpPage extends StatefulWidget {
 class _OtpPageState extends State<OtpPage> {
   final TextEditingController _otpController = TextEditingController();
   Timer _resendOTPTimer;
-  int _resendTimerString = 300;
+  int _resendTimerString = 120;
   bool _enableResendBtn = false;
   bool loading = false, err = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();

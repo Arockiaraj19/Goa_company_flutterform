@@ -240,6 +240,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
       loading = true;
     });
     var network = MobileSignUpNetwork();
+    print(_numberCtrl.text);
     var result = await network.verifyMobileNoForSignup(_numberCtrl.text);
     result ? registerUser(_numberCtrl.text, context, true) : null;
   }
@@ -281,6 +282,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
 
     return SafeArea(
         child: Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: Row(children: [
         Container(
@@ -330,8 +332,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
               end: _width / 30,
               start: _width / 30,
             ),
-            child: SingleChildScrollView(
-                child: Column(
+            child: Column(
               children: [
                 // Container(
                 //   height: _height / 20,
@@ -386,7 +387,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                   width: _width,
                 ),
               ],
-            )))
+            ))
       ]),
     ));
   }

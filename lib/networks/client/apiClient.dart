@@ -157,13 +157,7 @@ Future<Dio> imageClient() async {
 Future<Dio> authClient() async {
   final _dio = Dio();
   _dio.interceptors.clear();
-  _dio.interceptors.add(LogInterceptor(
-      responseBody: true,
-      error: false,
-      requestHeader: false,
-      responseHeader: false,
-      request: false,
-      requestBody: false));
+
   _dio.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
     // Do something before request is sent
@@ -177,7 +171,12 @@ Future<Dio> authClient() async {
     // Do something with response data
     return handler.next(response); // continue
   }, onError: (DioError error, handler) async {
-    showtoast(DioException.fromDioError(error).message);
+    if (error.response != null) {
+      if (error.response.statusCode == 410) {
+        showtoast(error.response.data["msg"]);
+        Routes.sailor(Routes.loginPage);
+      }
+    }
     return handler.next(error);
   }));
   _dio.options.baseUrl = baseUrl;

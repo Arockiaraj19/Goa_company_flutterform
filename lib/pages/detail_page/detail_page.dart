@@ -154,7 +154,11 @@ class _DetailPageState extends State<DetailPage> {
                             String groupid = await ChatNetwork().createGroup(
                                 widget.userDetails.id, data.userData);
 
-                            goToChatPage(groupid, widget.userDetails.id);
+                            goToChatPage(
+                                groupid,
+                                widget.userDetails.id,
+                                widget.userDetails.identificationImage,
+                                widget.userDetails.firstName);
                           },
                           isDetail: true,
                           onTapHeart: () async {
@@ -403,6 +407,7 @@ class _DetailPageState extends State<DetailPage> {
 
 class Conatiner {}
 
-goToChatPage(groupid, id) {
-  Routes.sailor(Routes.chattingPage, params: {"groupid": groupid, "id": id});
+goToChatPage(groupid, id, image, name) {
+  Routes.sailor(Routes.chattingPage,
+      params: {"groupid": groupid, "id": id, "image": image, "name": name});
 }

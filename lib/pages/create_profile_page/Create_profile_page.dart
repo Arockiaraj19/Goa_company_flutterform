@@ -273,8 +273,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                             await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
-                              firstDate: DateTime(2015),
-                              lastDate: DateTime(2025),
+                              firstDate: DateTime(1960),
+                              lastDate: DateTime(2200),
                             ).then((selectedDate) {
                               if (selectedDate != null) {
                                 _dobInputCtrl.text = DateFormat('dd-MM-yyyy')
@@ -545,7 +545,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       // "latitude": location[0].toString(),
       // "longitude": location[1].toString(),
     };
-    print("patch user data");
+    print("patch user data inga correct a varuthaaaa");
     print(userData);
     Timer(Duration(seconds: 3), () => offLoading());
     UserModel result = await network.patchUserData(userData);

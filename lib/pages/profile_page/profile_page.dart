@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dating_app/models/like_list.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/user_network.dart';
 
@@ -10,6 +11,7 @@ import 'package:dating_app/pages/profile_page/widgets/scores.dart';
 import 'package:dating_app/pages/profile_page/widgets/setting_box.dart';
 import 'package:dating_app/pages/profile_page/widgets/social_media_box.dart';
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/album_card_list.dart';
@@ -20,6 +22,7 @@ import 'package:dating_app/shared/widgets/subheading.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_insta/flutter_insta.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -67,6 +70,13 @@ class _ProfilePageState extends State<ProfilePage>
         return _buildWeb();
       }
     });
+  }
+
+  getinsta() async {
+    FlutterInsta flutterInsta = new FlutterInsta();
+    await flutterInsta.getProfileData("coding_boy_");
+    print(flutterInsta.username);
+    print(flutterInsta.bio);
   }
 
   Widget _buildPhone() {
@@ -204,9 +214,25 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   child: Column(children: [
-                                    PercentageBar(
-                                      image: data.userData.identificationImage,
-                                      percentage: 0.8,
+                                    FutureBuilder(
+                                      future: Persentage()
+                                          .checkPresentage(data.userData),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          return PercentageBar(
+                                            image: data
+                                                .userData.identificationImage,
+                                            percentage: snapshot.data,
+                                          );
+                                        } else {
+                                          return PercentageBar(
+                                            image: data
+                                                .userData.identificationImage,
+                                            percentage: 0,
+                                          );
+                                        }
+                                      },
                                     ),
                                     Row(
                                       mainAxisAlignment:
@@ -216,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           margin: EdgeInsetsDirectional.only(
                                               top: 5),
                                           child: Text(
-                                              "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""}, 22",
+                                              "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""}",
                                               style: _textStyleforName
 
                                               // TextStyle(
@@ -310,10 +336,13 @@ class _ProfilePageState extends State<ProfilePage>
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      SocialMediaBox(
-                        name: "Add Instagram",
-                        image: "assets/images/Instagram_icon.png",
-                        style: socialMediaText,
+                      InkWell(
+                        onTap: () => getinsta(),
+                        child: SocialMediaBox(
+                          name: "Add Instagram",
+                          image: "assets/images/Instagram_icon.png",
+                          style: socialMediaText,
+                        ),
                       ),
                       SocialMediaBox(
                         name: "andrina_rico",
