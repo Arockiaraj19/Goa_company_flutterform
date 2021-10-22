@@ -63,6 +63,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
                   goToDetailPage(widget.userSuggestionData.response[index]);
                 },
                 child: ImageCard(
+                  data:widget.userSuggestionData.response[index],
                   cardHeight: widget.itemheight ?? 300,
                   cardWidth: widget.itemwidth ?? 400,
                   name:

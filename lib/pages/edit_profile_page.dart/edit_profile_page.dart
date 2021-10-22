@@ -92,7 +92,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     {
       "gender": "Male",
       "image": "assets/icons/male.png",
-      'isActive': true,
+      'isActive': false,
     },
     {
       "gender": "Female",
@@ -162,6 +162,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    time = 0;
     fill();
     _future = GenderNetwork().getGenderData();
     if (interestData == null) {
@@ -180,6 +181,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  int time = 0;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -191,8 +193,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     });
   }
-
-  int time = 0;
 
   Widget _buildPhone() {
     var _leadingHeading = TextStyle(
@@ -473,7 +473,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 70,
                           child: FutureBuilder(
                             future: _future,
                             builder:
@@ -485,68 +484,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   genderdetail = genderdata.firstWhere(
                                       (element) =>
                                           element.id == widget.userdata.gender);
+                                  print("inga na select pannathu varuthaa");
+                                  print(_selectedGenderid);
+                                  print(genderdetail);
                                 }
-                                return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    physics: ClampingScrollPhysics(),
+                                return GridView.builder(
                                     shrinkWrap: true,
-                                    itemCount: 3,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisSpacing: 0.0,
+                                            mainAxisSpacing: 0.0,
+                                            crossAxisCount: 3,
+                                            childAspectRatio: 2.8),
+                                    itemCount: genderdata.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      dynamic item = itemGender[index];
-
-                                      return GenderCard(
-                                        name: item["gender"],
-                                        image: item["image"],
-                                        isActive: item["isActive"],
+                                      return GenderEditCard(
+                                        data: genderdata[index],
+                                        id: _selectedGenderid,
                                         onTap: () async {
-                                          if (mounted) {
-                                            setState(() {
-                                              selectedMenuIndex = index;
-                                              itemGender = itemGender.map<
-                                                      Map<String, dynamic>>(
-                                                  (Map<String, dynamic> item) {
-                                                item['isActive'] = false;
-                                                return item;
-                                              }).toList();
-                                              itemGender[index]['isActive'] =
-                                                  true;
-                                            });
-                                          }
-                                          _selectedGender = item["gender"];
-                                          print('${item["gender"]}');
-                                          if (item["gender"] == "More") {
-                                            final result = await Navigator.push(
-                                              context,
-                                              // Create the SelectionScreen in the next step.
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      GenderPage(
-                                                          snapshot.data)),
-                                            );
-                                            _selectedGender =
-                                                result.title.toString();
-                                            setState(() {
-                                              itemGender[index]["gender"] =
-                                                  result.title.toString();
-                                            });
-                                            print(_selectedGender);
-                                          }
-                                          print("selected gender");
-                                          print(_selectedGender);
-                                          _selectedGenderid = genderdata
-                                              .firstWhere((element) =>
-                                                  element.title ==
-                                                  _selectedGender)
-                                              .id;
-                                          genderdetail = genderdata.firstWhere(
-                                              (element) =>
-                                                  element.id ==
-                                                  _selectedGenderid);
-                                          print("its id");
-                                          print(_selectedGenderid);
-                                          print("data");
-                                          print(genderdetail.id);
+                                          setState(() {
+                                            _selectedGenderid =
+                                                genderdata[index].id;
+                                            genderdetail = genderdata[index];
+                                          });
                                           time++;
                                         },
                                       );

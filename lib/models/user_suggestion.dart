@@ -31,8 +31,8 @@ class Responses {
   String gender;
   List<dynamic> profileImage;
   List<dynamic> profession;
-  List<InterestModel> interests;
-  List<HobbyModel> hobbies;
+  List<String> interests;
+  List<String> hobbies;
   bool isMobileVerified;
   bool isEmailVerified;
   String relationshipStatus;
@@ -50,6 +50,8 @@ class Responses {
   String firstName;
   String lastName;
   String identificationImage;
+  List<InterestUserModel> interestDetails;
+  List<HobbyUserModel> hobbyDetails;
 
   Responses(
       {this.id,
@@ -75,7 +77,9 @@ class Responses {
       this.email,
       this.firstName,
       this.lastName,
-      this.identificationImage});
+      this.identificationImage,
+      this.interestDetails,
+      this.hobbyDetails});
 
   Responses.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -85,18 +89,8 @@ class Responses {
     // gender = json['gender'].toString();
     profileImage = json['profile_image'];
     profession = json['profession'];
-    // if (json['interests'] != null) {
-    //   interests = new List<InterestModel>();
-    //   json['interests'].forEach((v) {
-    //     interests.add(new InterestModel.fromJson(v));
-    //   });
-    // }
-    // if (json['hobbies'] != null) {
-    //   hobbies = new List<HobbyModel>();
-    //   json['hobbies'].forEach((v) {
-    //     hobbies.add(new HobbyModel.fromJson(v));
-    //   });
-    // }
+    hobbies = json['hobbies'].cast<String>();
+    interests = json['interests'].cast<String>();
     isMobileVerified = json['is_mobile_verified'];
     isEmailVerified = json['is_email_verified'];
     relationshipStatus = json['relationship_status'];
@@ -114,6 +108,14 @@ class Responses {
     firstName = json['first_name'];
     lastName = json['last_name'];
     identificationImage = json['identification_image'];
+    interestDetails = json['interests_details'] == null
+        ? []
+        : List<InterestUserModel>.from(json['interests_details']
+            ?.map((x) => InterestUserModel.fromMap(x)));
+    hobbyDetails = json['hobbies_details'] == null
+        ? []
+        : List<HobbyUserModel>.from(
+            json['hobbies_details']?.map((x) => HobbyUserModel.fromMap(x)));
   }
 
   Map<String, dynamic> toJson() {

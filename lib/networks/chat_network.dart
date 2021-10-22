@@ -110,7 +110,7 @@ class ChatNetwork {
     }
   }
 
-  Future blockuser(
+  Future<bool> blockuser(
       String user1, String user2, String groupid, bool isblocked) async {
     Response response;
     try {
@@ -125,6 +125,7 @@ class ChatNetwork {
         });
         print("response message  block user");
         print(response.data);
+        return true;
       });
       return data;
     } catch (e) {
@@ -141,7 +142,6 @@ class ChatNetwork {
         response = await value.get("/user/$id/chatblocklists");
         print("response get block   list");
         print(response.data);
-      
       });
       return data;
     } catch (e) {

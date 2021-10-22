@@ -137,7 +137,9 @@ class _MassageCardState extends State<MassageCard> {
                         ),
                         Container(
                           child: Text(
-                            widget.data.chat_details[0].message,
+                            widget.data.chat_details.length != 0
+                                ? widget.data.chat_details[0].message
+                                : "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

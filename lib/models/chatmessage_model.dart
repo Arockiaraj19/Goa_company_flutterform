@@ -50,8 +50,8 @@ class ChatMessage {
           ? List<Details>.from(
               map['receiver_details']?.map((x) => Details.fromMap(x)))
           : null,
-      createdAt: DateTime.parse(map['createdAt'].toString()),
-      updatedAt: DateTime.parse(map['updatedAt'].toString()),
+      createdAt: DateTime.parse(map['createdAt'].toString()).toLocal(),
+      updatedAt: DateTime.parse(map['updatedAt'].toString()).toLocal(),
     );
   }
 

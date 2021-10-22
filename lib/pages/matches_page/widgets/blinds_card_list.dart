@@ -36,46 +36,56 @@ class _BlindsCardListState extends State<BlindsCardList> {
     super.initState();
     context.read<BlindProvider>().getData();
   }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BlindProvider>(builder: (context, data, child) {
-      if(data.homeState == HomeState.Loading){
+      if (data.homeState == HomeState.Loading) {
         return Center(child: CircularProgressIndicator());
-      }else if(data.homeState == HomeState.Loaded){
-        return data.blindData.length == 0? Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children:[
-          SizedBox(width: double.infinity,height: 300,
-              child: Lottie.asset('assets/lottie/sad_face.json')),
-          Text("oops!! there is \nNo Blind Dates",style: TextStyle(fontSize: 18,)),
-          GradientButton(
-            margin: EdgeInsets.all(0),
-            height: MediaQuery.of(context).size.height / 20,
-            name: "Find me date",
-            gradient: MainTheme.loginBtnGradient,
-            active: true,
-            color: Colors.white,
-            width: ScreenUtil().setWidth(400),
-            fontWeight: FontWeight.bold,
-            borderRadius: BorderRadius.circular(5),
-            onPressed: ()async {
-              _showOtpBottomSheet();
-            },
-          ),
-        ]):
-        ListView.builder(
-          itemCount: data.blindData.length,
-          itemBuilder: (context, index) {
-            return BlindsCard(
-              onWeb: widget.onWeb,
-              height: widget.datesCardHeight,
-              width: widget.datesCardWidth,
-              testWidth: widget.testWidth,
-
-            );
-          },);
+      } else if (data.homeState == HomeState.Loaded) {
+        return data.blindData.length == 0
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                    SizedBox(
+                        width: double.infinity,
+                        height: 300,
+                        child: Lottie.asset('assets/lottie/sad_face.json')),
+                    Text("oops!! there is \nNo Blind Dates",
+                        style: TextStyle(
+                          fontSize: 18,
+                        )),
+                    GradientButton(
+                      margin: EdgeInsets.all(0),
+                      height: MediaQuery.of(context).size.height / 20,
+                      name: "Find me date",
+                      gradient: MainTheme.loginBtnGradient,
+                      active: true,
+                      color: Colors.white,
+                      width: ScreenUtil().setWidth(400),
+                      fontWeight: FontWeight.bold,
+                      borderRadius: BorderRadius.circular(5),
+                      onPressed: () async {
+                        _showOtpBottomSheet();
+                      },
+                    ),
+                  ])
+            : ListView.builder(
+                itemCount: data.blindData.length,
+                itemBuilder: (context, index) {
+                  return BlindsCard(
+                    onWeb: widget.onWeb,
+                    height: widget.datesCardHeight,
+                    width: widget.datesCardWidth,
+                    testWidth: widget.testWidth,
+                    data: data.blindData[index],
+                  );
+                },
+              );
       }
     });
   }
+
   _showOtpBottomSheet() {
     showModalBottomSheet(
         context: context,
@@ -84,8 +94,8 @@ class _BlindsCardListState extends State<BlindsCardList> {
         // enableDrag: false,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         builder: (BuildContext context) {
-          return Column(mainAxisSize: MainAxisSize.min,
-              children:[ FilterBottomSheet1()]);
+          return Column(
+              mainAxisSize: MainAxisSize.min, children: [FilterBottomSheet1()]);
         });
   }
 }

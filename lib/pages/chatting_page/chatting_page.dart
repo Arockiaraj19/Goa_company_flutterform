@@ -7,6 +7,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
+import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -107,8 +108,11 @@ class _ChattingPageState extends State<ChattingPage> {
   blockuser() async {
     String userid = await getUserId();
     print("you clicked block user");
-    var result =
+    bool result =
         await ChatNetwork().blockuser(userid, widget.id, widget.groupid, true);
+    if (result) {
+      showtoast("You blocked successfully");
+    }
   }
 
   @override

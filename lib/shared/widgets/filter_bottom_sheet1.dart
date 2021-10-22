@@ -25,7 +25,7 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
   TextEditingController _firstNameCtrl = TextEditingController();
   RangeValues _currentRangeValues = const RangeValues(40, 80);
   double _currentSliderValue = 20;
-  List type = ["", "mesomorph", "endomorph", "ectomorph"];
+  List type = ["", "Mesomorph", "Endomorph", "Ectomorph"];
   @override
   Widget build(BuildContext context) {
     return SliderTheme(
@@ -117,18 +117,23 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                     });
                   },
                 )),
+                // Container(
+                //     padding: EdgeInsetsDirectional.only(start: 10, end: 10),
+                //     child: InputField(
+                //       onTap: () {},
+                //       controller: _firstNameCtrl,
+                //       padding: EdgeInsets.all(10),
+                //       validators: (String value) {
+                //         if (value.isEmpty) return 'Required field';
+                //         return null;
+                //       },
+                //       hintText: 'location',
+                //     )),
                 Container(
-                    padding: EdgeInsetsDirectional.only(start: 10, end: 10),
-                    child: InputField(
-                      onTap: () {},
-                      controller: _firstNameCtrl,
-                      padding: EdgeInsets.all(10),
-                      validators: (String value) {
-                        if (value.isEmpty) return 'Required field';
-                        return null;
-                      },
-                      hintText: 'location',
-                    )),
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsetsDirectional.only(start: 20),
+                  child: Text("Type", style: MainTheme.subHeading),
+                ),
                 Container(
                   height: 60.h,
                   alignment: Alignment.center,
@@ -138,80 +143,80 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       Container(
-                        padding: EdgeInsetsDirectional.only(start: 20),
-                        child: Text("Type", style: MainTheme.subHeading),
-                      ),
-                      Container(
                         child: Row(
                           children: [
                             Container(
-                                width: 130,
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.all(0),
-                                  title: const Text(
-                                    'Mesomorph',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "OpenSans",
-                                      fontSize: 10,
-                                    ),
+                                child: Row(
+                              children: [
+                                Radio<int>(
+                                  activeColor: MainTheme.primaryColor,
+                                  value: 1,
+                                  groupValue: data.view,
+                                  onChanged: (int value) {
+                                    setState(() {
+                                      data.view = value;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  'Mesomorph',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "OpenSans",
+                                    fontSize: 35.sp,
                                   ),
-                                  leading: Radio<int>(
-                                    activeColor: MainTheme.primaryColor,
-                                    value: 1,
-                                    groupValue: data.view,
-                                    onChanged: (int value) {
-                                      setState(() {
-                                        data.view = value;
-                                      });
-                                    },
-                                  ),
-                                )),
+                                ),
+                              ],
+                            )),
                             Container(
-                                width: 120,
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.all(0),
-                                  title: const Text('Endomorph',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "OpenSans",
-                                        fontSize: 10,
-                                      )),
-                                  leading: Radio<int>(
-                                    activeColor: MainTheme.primaryColor,
-                                    value: 2,
-                                    groupValue: data.view,
-                                    onChanged: (int value) {
-                                      setState(() {
-                                        data.view = value;
-                                      });
-                                    },
+                                child: Row(
+                              children: [
+                                Radio<int>(
+                                  activeColor: MainTheme.primaryColor,
+                                  value: 2,
+                                  groupValue: data.view,
+                                  onChanged: (int value) {
+                                    setState(() {
+                                      data.view = value;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  'Endomorph',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "OpenSans",
+                                    fontSize: 35.sp,
                                   ),
-                                )),
+                                ),
+                              ],
+                            )),
                             Container(
-                                width: 120,
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.all(0),
-                                  title: const Text('Ectomorph',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "OpenSans",
-                                        fontSize: 10,
-                                      )),
-                                  leading: Radio<int>(
-                                    activeColor: MainTheme.primaryColor,
-                                    value: 3,
-                                    groupValue: data.view,
-                                    onChanged: (int value) {
-                                      setState(() {
-                                        data.view = value;
-                                      });
-                                    },
+                                child: Row(
+                              children: [
+                                Radio<int>(
+                                  activeColor: MainTheme.primaryColor,
+                                  value: 3,
+                                  groupValue: data.view,
+                                  onChanged: (int value) {
+                                    setState(() {
+                                      data.view = value;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  'Ectomorph',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "OpenSans",
+                                    fontSize: 35.sp,
                                   ),
-                                )),
+                                ),
+                              ],
+                            )),
                           ],
                         ),
                       )

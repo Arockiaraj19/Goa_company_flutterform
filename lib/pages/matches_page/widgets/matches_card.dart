@@ -1,5 +1,6 @@
 import 'package:dating_app/models/match_list.dart';
 import 'package:dating_app/models/user_suggestion.dart';
+import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,12 @@ class MatchesCard extends StatefulWidget {
   final double testWidth;
   final MatchListModel userData;
   MatchesCard(
-      {Key key, this.onWeb = false, this.height, this.width, this.testWidth, this.userData})
+      {Key key,
+      this.onWeb = false,
+      this.height,
+      this.width,
+      this.testWidth,
+      this.userData})
       : super(key: key);
 
   @override
@@ -21,6 +27,26 @@ class MatchesCard extends StatefulWidget {
 }
 
 class _MatchesCardState extends State<MatchesCard> {
+  Future<String> getimage() async {
+    String userid = await getUserId();
+    if (widget.userData.user1[0].userId != userid) {
+      return widget.userData.user1[0].identificationImage;
+    } else {
+      return widget.userData.user2[0].identificationImage;
+    }
+  }
+
+  Future<String> getname() async {
+    String userid = await getUserId();
+    if (widget.userData.user1[0].userId != userid) {
+      return widget.userData.user1[0].firstName;
+    } else {
+      return widget.userData.user2[0].firstName;
+    }
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     return widget.onWeb
@@ -34,27 +60,63 @@ class _MatchesCardState extends State<MatchesCard> {
                     Row(
                       children: [
                         Container(
-                            margin:
-                                EdgeInsetsDirectional.only(end: 10, start: 10),
-                            child: SizedBox(width: 60,height: 60,
-                              child: ClipRRect(borderRadius: BorderRadius.circular(100),
-                                child: imageViewer(widget.userData.userDetails.first.profileImage.first),),
-                            ),),
+                          margin:
+                              EdgeInsetsDirectional.only(end: 10, start: 10),
+                          child: SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: FutureBuilder(
+                              future: getimage(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  return ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: imageViewer(snapshot.data));
+                                } else {
+                                  return ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: Image.asset(
+                                          "assets/images/placeholder.png"));
+                                }
+                              },
+                            ),
+                          ),
+                        ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-
                             Container(
                               margin: EdgeInsetsDirectional.only(bottom: 5),
-                              child: Text(widget.userData.userDetails.first.firstName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    fontFamily: "Nunito"),
+                              child: FutureBuilder(
+                                future: getname(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      snapshot.data,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          fontFamily: "Nunito"),
+                                    );
+                                  } else {
+                                    return Text(
+                                      " ",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          fontFamily: "Nunito"),
+                                    );
+                                  }
+                                },
                               ),
                             ),
                           ],
@@ -100,25 +162,62 @@ class _MatchesCardState extends State<MatchesCard> {
                 Row(
                   children: [
                     Container(
-                        margin: EdgeInsetsDirectional.only(end: 10, start: 10),
-                        child: SizedBox(width: 60,height: 60,
-                          child: ClipRRect(borderRadius: BorderRadius.circular(100),
-                            child: imageViewer(widget.userData.userDetails.first.profileImage.first),),
-                        ),),
+                      margin: EdgeInsetsDirectional.only(end: 10, start: 10),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: FutureBuilder(
+                          future: getimage(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: imageViewer(snapshot.data));
+                            } else {
+                              return ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.asset(
+                                      "assets/images/placeholder.png"));
+                            }
+                          },
+                        ),
+                      ),
+                    ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Container(
                           margin: EdgeInsetsDirectional.only(bottom: 5),
-                          child: Text(widget.userData.userDetails.first.firstName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: ScreenUtil().setSp(40),
-                                fontFamily: "Nunito"),
+                          child: FutureBuilder(
+                            future: getname(),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      fontFamily: "Nunito"),
+                                );
+                              } else {
+                                return Text(
+                                  " ",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      fontFamily: "Nunito"),
+                                );
+                              }
+                            },
                           ),
                         ),
                       ],

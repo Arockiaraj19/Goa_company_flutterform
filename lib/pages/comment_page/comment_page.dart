@@ -177,9 +177,7 @@ class _CommentPageState extends State<CommentPage>
     );
   }
 
-  goToChattingPage() {
-    Routes.sailor(Routes.chattingPage);
-  }
+
 
   Widget _buildWeb() {
     var _height = MediaQuery.of(context).size.height;

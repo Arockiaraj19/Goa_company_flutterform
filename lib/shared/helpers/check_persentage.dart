@@ -1,4 +1,5 @@
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/models/user_suggestion.dart';
 
 class Persentage {
   Future<double> checkPresentage(UserModel userdata) async {
@@ -40,6 +41,10 @@ class Persentage {
       print("9");
       _persentage += 0.06;
     }
+    if (userdata.partnerType != null) {
+      print("13");
+      _persentage += 0.06;
+    }
     if (userdata.interests.length != 0) {
       print("10");
       _persentage += 0.06;
@@ -51,6 +56,42 @@ class Persentage {
     if (userdata.profileImage.length != 0) {
       print("12");
       _persentage += 0.06;
+    }
+    print("persentage enna varuthu");
+    print(_persentage.toString());
+    return _persentage;
+  }
+
+  Future<double> checkSuggestionPresentage(
+      UserModel userdata, Responses data) async {
+    double _persentage = 0.6;
+    if (userdata.sexualOrientation == data.sexualOrientation) {
+      _persentage += 0.1;
+    }
+    if (userdata.partnerType == data.partnerType) {
+      _persentage += 0.1;
+    }
+
+    if (userdata.hobbies.any((item) => data.hobbies.contains(item))) {
+      print(data.firstName);
+      print("hobbie1");
+      _persentage += 0.08;
+    }
+    if (userdata.interests.any((item) => data.interests.contains(item))) {
+      print(data.firstName);
+      print("interest1");
+      _persentage += 0.08;
+    }
+    if (userdata.interestDetails
+        .any((item) => data.interestDetails.contains(item))) {
+      print(data.firstName);
+      print("match detail ");
+      _persentage += 0.02;
+    }
+    if (userdata.hobbyDetails.any((item) => data.hobbyDetails.contains(item))) {
+      print(data.firstName);
+      print("match detail ");
+      _persentage += 0.02;
     }
     print("persentage enna varuthu");
     print(_persentage.toString());

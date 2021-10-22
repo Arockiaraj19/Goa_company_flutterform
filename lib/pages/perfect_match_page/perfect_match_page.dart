@@ -1,3 +1,6 @@
+import 'package:dating_app/models/matchuser_model.dart';
+import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/pages/detail_page/detail_page.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
@@ -9,7 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PerfectMatchPage extends StatefulWidget {
-  PerfectMatchPage({Key key}) : super(key: key);
+  final UserModel user1;
+  final MatchUser user2;
+  PerfectMatchPage({this.user1, this.user2});
 
   @override
   _PerfectMatchPageState createState() => _PerfectMatchPageState();
@@ -137,14 +142,14 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                               padding: EdgeInsetsDirectional.only(start: 50),
                               child: CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                                  widget.user1.identificationImage,
                                 ),
                                 radius: 40,
                               )),
                           Container(
                               child: CircleAvatar(
                             backgroundImage: NetworkImage(
-                              "https://us.123rf.com/450wm/vadymvdrobot/vadymvdrobot1803/vadymvdrobot180303570/97983244-happy-asian-woman-in-t-shirt-bites-eyeglasses-and-looking-at-the-camera-over-grey-background.jpg?ver=6",
+                              widget.user2.user2.identificationImage,
                             ),
                             radius: 40,
                           ))
@@ -158,7 +163,7 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                       Container(
                         padding: EdgeInsetsDirectional.only(top: 100),
                         child: Text(
-                          "Adrianne Rico, 22",
+                          widget.user2.user2.firstname,
                           style: TextStyle(
                               color: Colors.grey[600],
                               fontWeight: FontWeight.bold,
@@ -205,6 +210,9 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                     ],
                   ),
                 ]),
+                SizedBox(
+                  height: 30.h,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -230,12 +238,25 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                       width: ScreenUtil().setWidth(400),
                       borderRadius: BorderRadius.circular(5),
                       fontWeight: FontWeight.bold,
-                      onPressed: () {},
+                      onPressed: () async {
+                        String groupid = await ChatNetwork().createGroup(
+                            widget.user2.user2.userid, widget.user1);
+                        goToChatPage(
+                            groupid,
+                            widget.user2.user2.userid,
+                            widget.user2.user2.identificationImage,
+                            widget.user2.user2.firstname);
+                      },
                     ),
                   ],
                 ),
               ]),
             )));
+  }
+
+  goToChatPage(groupid, id, image, name) {
+    Routes.sailor(Routes.chattingPage,
+        params: {"groupid": groupid, "id": id, "image": image, "name": name});
   }
 
   goToQuizgamePage() {

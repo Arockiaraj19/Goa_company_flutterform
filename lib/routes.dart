@@ -1,4 +1,5 @@
 import 'package:dating_app/models/forgetresponse_model.dart';
+import 'package:dating_app/models/matchuser_model.dart';
 import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/pages/Interest_hobbies_page/interest_hobbies_page.dart';
@@ -300,8 +301,21 @@ class Routes {
       SailorRoute(
           name: perfectMatchPage,
           defaultTransitions: [SailorTransition.fade_in],
+          params: [
+            SailorParam<UserModel>(
+              name: 'user1',
+            ),
+            SailorParam<MatchUser>(
+              name: 'user2',
+            ),
+          ],
           builder: (context, args, params) {
-            return PerfectMatchPage();
+            UserModel user1 = Sailor.param<UserModel>(context, "user1");
+            MatchUser user2 = Sailor.param<MatchUser>(context, "user2");
+            return PerfectMatchPage(
+              user1: user1,
+              user2: user2,
+            );
           }),
 
       SailorRoute(
@@ -344,9 +358,13 @@ class Routes {
 
       SailorRoute(
           name: likeMatchListPage,
+          params: [SailorParam<int>(name: 'index')],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
-            return LikeMatchListPage();
+            int index = Sailor.param<int>(context, "index");
+            return LikeMatchListPage(
+              index: index,
+            );
           }),
       SailorRoute(
           name: meetuppage,

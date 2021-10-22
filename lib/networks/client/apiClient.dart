@@ -149,7 +149,7 @@ Future<Dio> imageClient() async {
     }
   }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 5000;
+  _dio.options.connectTimeout = 8000;
   _dio.options.receiveTimeout = 3000;
   return _dio;
 }

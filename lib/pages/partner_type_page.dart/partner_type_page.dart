@@ -20,23 +20,23 @@ class PartnerTypePage extends StatefulWidget {
 }
 
 class _PartnerTypePageState extends State<PartnerTypePage> {
-  bool loading= false;
+  bool loading = false;
   int selectedMenuIndex = 0;
 
   List<Map<String, dynamic>> itemGender = [
     {
       "gender": "Ectomorph",
-      "image": "assets/icons/male.png",
+      "image": "assets/images/man1.png",
       'isActive': true,
     },
     {
       "gender": "Mesomorph",
-      "image": "assets/icons/female.png",
+      "image": "assets/images/man2.png",
       'isActive': false,
     },
     {
       "gender": "Endomorph",
-      "image": "assets/icons/female.png",
+      "image": "assets/images/man3.png",
       'isActive': false,
     }
   ];
@@ -45,12 +45,12 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          if (constraints.maxWidth < 600) {
-            return _buildPhone();
-          } else {
-            return _buildWeb();
-          }
-        });
+      if (constraints.maxWidth < 600) {
+        return _buildPhone();
+      } else {
+        return _buildWeb();
+      }
+    });
   }
 
   Widget _buildPhone() {
@@ -68,24 +68,27 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
 
     return SafeArea(
         child: Scaffold(
-            bottomSheet: Container(height: 100,color:Colors.white,child:  Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                    height: 40,
-                    name: loading?"Saving..":"Continue",
-                    gradient: MainTheme.loginBtnGradient,
-                    active: true,
-                    isLoading: loading,
-                    color: Colors.white,
-                    width: ScreenUtil().setWidth(400),
-                    fontWeight: FontWeight.w600,
-                    onPressed: () {
-                      goToParterTypePage();
-                    }
-                ),
-              ],
-            ),),
+            bottomSheet: Container(
+              height: 100,
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GradientButton(
+                      height: 40,
+                      name: loading ? "Saving.." : "Continue",
+                      gradient: MainTheme.loginBtnGradient,
+                      active: true,
+                      isLoading: loading,
+                      color: Colors.white,
+                      width: ScreenUtil().setWidth(400),
+                      fontWeight: FontWeight.w600,
+                      onPressed: () {
+                        goToParterTypePage();
+                      }),
+                ],
+              ),
+            ),
             appBar: AppBar(
               leading: InkWell(
                   onTap: () {
@@ -104,79 +107,78 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
             ),
             body: SingleChildScrollView(
                 child: Column(children: [
-                  Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsetsDirectional.only(start: 10, end: 10),
-                        width: 250,
-                        color: MainTheme.primaryColor,
-                        height: 2,
-                      ),
-                    ],
-                  ),
+              Row(
+                children: [
                   Container(
                     margin: EdgeInsetsDirectional.only(start: 10, end: 10),
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.grey.shade300,
-                    height: 1,
+                    width: 250,
+                    color: MainTheme.primaryColor,
+                    height: 2,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                          padding: EdgeInsetsDirectional.only(top: 40, bottom: 30),
-                          child: Text("Who are you looking for?",
-                              style: _textStyleforLookingFor)),
-                    ],
-                  ),
-                  SizedBox(height: ScreenUtil().setHeight(60)),
+                ],
+              ),
+              Container(
+                margin: EdgeInsetsDirectional.only(start: 10, end: 10),
+                width: MediaQuery.of(context).size.width,
+                color: Colors.grey.shade300,
+                height: 1,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Container(
-                      width: MediaQuery.of(context).size.width * 0.588,
-                      child: ListView.builder(
-                          physics: ClampingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: itemGender.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            dynamic item = itemGender[index];
-                            return Container(
-                                height: 80,
-                                width: 60,
-                                child: GenderCard(
-                                  name: item["gender"],
-                                  image: item["image"],
-                                  isActive: item["isActive"],
-                                  onTap: () {
-                                    if (mounted) {
-                                      setState(() {
-                                        selectedMenuIndex = index;
-                                        itemGender = itemGender.map<Map<String, dynamic>>(
-                                                (Map<String, dynamic> item) {
-                                              item['isActive'] = false;
-                                              return item;
-                                            }).toList();
-                                        itemGender[index]['isActive'] = true;
-                                      });
-                                    }
-                                  },
-                                ));
-                          })),
-                ]))));
+                      padding: EdgeInsetsDirectional.only(top: 40, bottom: 30),
+                      child: Text("Who are you looking for?",
+                          style: _textStyleforLookingFor)),
+                ],
+              ),
+              SizedBox(height: ScreenUtil().setHeight(0)),
+              Container(
+                  width: MediaQuery.of(context).size.width * 0.588,
+                  child: ListView.builder(
+                      physics: ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: itemGender.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        dynamic item = itemGender[index];
+                        return Container(
+                            child: PartnerCard(
+                          name: item["gender"],
+                          image: item["image"],
+                          isActive: item["isActive"],
+                          onTap: () {
+                            if (mounted) {
+                              setState(() {
+                                selectedMenuIndex = index;
+                                itemGender = itemGender
+                                    .map<Map<String, dynamic>>(
+                                        (Map<String, dynamic> item) {
+                                  item['isActive'] = false;
+                                  return item;
+                                }).toList();
+                                itemGender[index]['isActive'] = true;
+                              });
+                            }
+                          },
+                        ));
+                      })),
+            ]))));
   }
 
   goToParterTypePage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
     var network = UserNetwork();
-    var userData={"partner_type":itemGender[selectedMenuIndex]["gender"]};
-    Timer(Duration(seconds: 3), ()=>offLoading());
-    UserModel result =await network.patchUserData(userData);
-    result != null? onboardingCheck(result):null;
+    var userData = {"partner_type": itemGender[selectedMenuIndex]["gender"]};
+    Timer(Duration(seconds: 3), () => offLoading());
+    UserModel result = await network.patchUserData(userData);
+    result != null ? onboardingCheck(result) : null;
   }
 
-  offLoading(){
+  offLoading() {
     setState(() {
-      loading=false;
+      loading = false;
     });
   }
 
@@ -191,7 +193,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
         fontFamily: "lato");
 
     var _textStyleforAlreadyHave =
-    TextStyle(color: Colors.black, fontSize: 14, fontFamily: "lato");
+        TextStyle(color: Colors.black, fontSize: 14, fontFamily: "lato");
 
     var _textStyleforLogin = TextStyle(
         color: Colors.black,
@@ -201,187 +203,190 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
 
     return SafeArea(
         child: Scaffold(
-          backgroundColor: Colors.black,
-          body: Row(children: [
-            Container(
-              height: _height,
-              width: _width,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage(
-                        "assets/images/web_login_image.png",
-                      ))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                      margin: EdgeInsetsDirectional.only(
-                        top: 30,
-                        start: 30,
-                      ),
-                      child: Text("Spark", style: _textStyleforSpark)),
-                ],
+      backgroundColor: Colors.black,
+      body: Row(children: [
+        Container(
+          height: _height,
+          width: _width,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage(
+                    "assets/images/web_login_image.png",
+                  ))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                  margin: EdgeInsetsDirectional.only(
+                    top: 30,
+                    start: 30,
+                  ),
+                  child: Text("Spark", style: _textStyleforSpark)),
+            ],
+          ),
+        ),
+        Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.grey[100],
+                  blurRadius: 1.0,
+                  offset: Offset(0, 5),
+                )
+              ],
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                topRight: Radius.zero,
+                bottomLeft: Radius.circular(10.0),
+                bottomRight: Radius.zero,
               ),
             ),
-            Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: Colors.grey[100],
-                      blurRadius: 1.0,
-                      offset: Offset(0, 5),
-                    )
-                  ],
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10.0),
-                    topRight: Radius.zero,
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.zero,
-                  ),
+            height: _height,
+            width: _width,
+            padding: EdgeInsetsDirectional.only(
+              end: _width / 30,
+              start: _width / 30,
+            ),
+            child: Scaffold(
+                backgroundColor: Colors.white,
+                appBar: AppBar(
+                  leading: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Icon(
+                        Icons.keyboard_arrow_left,
+                        color: Colors.black,
+                        size: ScreenUtil().setWidth(20),
+                      )),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
                 ),
-                height: _height,
-                width: _width,
-                padding: EdgeInsetsDirectional.only(
-                  end: _width / 30,
-                  start: _width / 30,
-                ),
-                child: Scaffold(
-                    backgroundColor: Colors.white,
-                    appBar: AppBar(
-                      leading: InkWell(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Icon(
-                            Icons.keyboard_arrow_left,
-                            color: Colors.black,
-                            size: ScreenUtil().setWidth(20),
-                          )),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
+                body: SingleChildScrollView(
+                    padding: EdgeInsetsDirectional.only(
+                      end: _width / 6,
+                      start: _width / 6,
                     ),
-                    body: SingleChildScrollView(
-                        padding: EdgeInsetsDirectional.only(
-                          end: _width / 6,
-                          start: _width / 6,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                      "Looking for",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: MainTheme.leadingHeadings,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          fontFamily: "Inter"),
-                                    )),
-                              ],
-                            ),
+                            Expanded(
+                                child: Text(
+                              "Looking for",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: MainTheme.leadingHeadings,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  fontFamily: "Inter"),
+                            )),
+                          ],
+                        ),
+                        Container(
+                          height: _height / 45,
+                          width: _width,
+                        ),
+                        Row(
+                          children: [
                             Container(
-                              height: _height / 45,
-                              width: _width,
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                  width: _width / 2,
-                                  color: MainTheme.primaryColor,
-                                  height: 2,
-                                ),
-                              ],
-                            ),
-                            Container(
-                              width: _width,
-                              color: Colors.grey.shade300,
-                              height: 1,
-                            ),
-                            Container(
-                              height: _height / 18,
-                              width: _width,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                      "Who are you looking for?",
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: MainTheme.leadingHeadings,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15,
-                                          fontFamily: "Inter"),
-                                    )),
-                              ],
-                            ),
-                            Container(
-                              height: _height / 15,
-                              width: _width,
-                            ),
-                            Container(width: _width / 2.5,
-                              child: ListView.builder(
-                                  physics: ClampingScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: itemGender.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    dynamic item = itemGender[index];
-                                    return Container(
-                                        height: 80,
-                                        width: 60,
-                                        child: GenderCard(
-                                          name: item["gender"],
-                                          image: item["image"],
-                                          isActive: item["isActive"],
-                                          onTap: () {
-                                            if (mounted) {
-                                              setState(() {
-                                                selectedMenuIndex = index;
-                                                itemGender = itemGender.map<Map<String, dynamic>>(
-                                                        (Map<String, dynamic> item) {
-                                                      item['isActive'] = false;
-                                                      return item;
-                                                    }).toList();
-                                                itemGender[index]['isActive'] = true;
-                                              });
-                                            }
-                                          },
-                                        ));
-                                  }),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientButton(
-                                  name: loading?"Saving..":"Continue",
-                                  gradient: MainTheme.loginBtnGradient,
-                                  height: 35,
-                                  fontSize: 14,
-                                  isLoading: loading,
-                                  width: _width / 6,
-                                  active: true,
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(5),
-                                  onPressed: () {
-                                    goToParterTypePage();
-                                  },
-                                ),
-                              ],
+                              width: _width / 2,
+                              color: MainTheme.primaryColor,
+                              height: 2,
                             ),
                           ],
-                        ))))
-          ]),
-        ));
+                        ),
+                        Container(
+                          width: _width,
+                          color: Colors.grey.shade300,
+                          height: 1,
+                        ),
+                        Container(
+                          height: _height / 18,
+                          width: _width,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                                child: Text(
+                              "Who are you looking for?",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: MainTheme.leadingHeadings,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                  fontFamily: "Inter"),
+                            )),
+                          ],
+                        ),
+                        Container(
+                          height: _height / 15,
+                          width: _width,
+                        ),
+                        Container(
+                          width: _width / 2.5,
+                          child: ListView.builder(
+                              physics: ClampingScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: itemGender.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                dynamic item = itemGender[index];
+                                return Container(
+                                    height: 80,
+                                    width: 60,
+                                    child: GenderCard(
+                                      name: item["gender"],
+                                      image: item["image"],
+                                      isActive: item["isActive"],
+                                      onTap: () {
+                                        if (mounted) {
+                                          setState(() {
+                                            selectedMenuIndex = index;
+                                            itemGender = itemGender.map<
+                                                    Map<String, dynamic>>(
+                                                (Map<String, dynamic> item) {
+                                              item['isActive'] = false;
+                                              return item;
+                                            }).toList();
+                                            itemGender[index]['isActive'] =
+                                                true;
+                                          });
+                                        }
+                                      },
+                                    ));
+                              }),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GradientButton(
+                              name: loading ? "Saving.." : "Continue",
+                              gradient: MainTheme.loginBtnGradient,
+                              height: 35,
+                              fontSize: 14,
+                              isLoading: loading,
+                              width: _width / 6,
+                              active: true,
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                              onPressed: () {
+                                goToParterTypePage();
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ))))
+      ]),
+    ));
   }
 }

@@ -8,11 +8,11 @@ class LikeListModel {
 
   LikeListModel(
       {this.id,
-        this.likedUser,
-        this.user,
-        this.likeCount,
-        this.hobbies,
-        this.interests});
+      this.likedUser,
+      this.user,
+      this.likeCount,
+      this.hobbies,
+      this.interests});
 
   LikeListModel.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -51,7 +51,7 @@ class LikeListModel {
 
 class LikedUser {
   String sId;
-  int gender;
+  String gender;
   List<String> profileImage;
   String relationshipStatus;
   int sexualOrientation;
@@ -60,16 +60,18 @@ class LikedUser {
 
   LikedUser(
       {this.sId,
-        this.gender,
-        this.relationshipStatus,
-        this.sexualOrientation,
-        this.firstName,
-        this.lastName});
+      this.gender,
+      this.relationshipStatus,
+      this.sexualOrientation,
+      this.firstName,
+      this.lastName});
 
   LikedUser.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    gender = json['gender'];
-    profileImage = json['profile_image']==null?null:json['profile_image'].cast<String>();
+    gender = json['gender'].toString();
+    profileImage = json['profile_image'] == null
+        ? null
+        : json['profile_image'].cast<String>();
     relationshipStatus = json['relationship_status'];
     sexualOrientation = json['sexual_orientation'];
     firstName = json['first_name'];

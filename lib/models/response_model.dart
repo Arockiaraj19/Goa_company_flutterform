@@ -3,7 +3,7 @@ import 'dart:convert';
 class ResponseData {
   String msg;
   String id;
-  String date;
+  DateTime date;
   int statusDetails;
 
   ResponseData({this.msg, this.id, this.date, this.statusDetails});
@@ -11,7 +11,7 @@ class ResponseData {
   ResponseData.fromJson(Map<String, dynamic> json) {
     msg = json['msg'];
     id = json["_id"];
-    date = json["updatedAt"];
+    date = DateTime.parse(json["updatedAt"].toString()).toLocal();
     statusDetails = json['status_details'];
   }
 
@@ -24,6 +24,9 @@ class ResponseData {
     return data;
   }
 }
+
+
+
 
 class ResponseData2 {
   String msg;
@@ -71,4 +74,3 @@ class Responsestorageimage {
   factory Responsestorageimage.fromJson(String source) =>
       Responsestorageimage.fromMap(json.decode(source));
 }
-

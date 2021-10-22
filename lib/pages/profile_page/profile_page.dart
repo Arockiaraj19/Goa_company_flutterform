@@ -300,7 +300,8 @@ class _ProfilePageState extends State<ProfilePage>
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Routes.sailor(Routes.likeMatchListPage);
+                              Routes.sailor(Routes.likeMatchListPage,
+                                  params: {"index": 0});
                             },
                             child: Scores(
                               name: likeCount == -1 ? "" : likeCount.toString(),
@@ -311,7 +312,8 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                           GestureDetector(
                             onTap: () {
-                              Routes.sailor(Routes.likeMatchListPage);
+                              Routes.sailor(Routes.likeMatchListPage,
+                                  params: {"index": 1});
                             },
                             child: Scores(
                               name:
@@ -324,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage>
                           GestureDetector(
                             onTap: () {},
                             child: Scores(
-                              name: "89",
+                              name: data.userData.score.toString(),
                               scores: "Score",
                               nameFont: profileScoreName,
                               valuefont: profileValue,

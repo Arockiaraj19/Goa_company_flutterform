@@ -6,6 +6,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
 // import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dio/dio.dart';
 
 import 'client/apiClient.dart';
@@ -214,6 +215,31 @@ class UserNetwork {
               .toList();
         }
       });
+      return data;
+    } catch (e) {
+      print("d");
+      print(e);
+    }
+  }
+
+  Future getMatchedprofiledata(userid) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+
+      var data = _dio.then((value) async {
+        response = await value.get("/user/$userid/profile");
+        print("get match user list data");
+        print(response.data);
+        final results = List<Map<String, dynamic>>.from(response.data);
+
+        List<Responses> finaldata = results
+            .map((hobbieData) => Responses.fromJson(hobbieData))
+            .toList(growable: false);
+        return Routes.sailor(Routes.detailPage,
+            params: {"userDetails": finaldata[0]});
+      });
+
       return data;
     } catch (e) {
       print("d");

@@ -15,7 +15,8 @@ class MatchListModel {
   int iV;
   String unmatchedDate;
   String unmatchedUser;
-  List<UserDetails> userDetails;
+  List<UserDetails> user1;
+  List<UserDetails> user2;
 
   MatchListModel(
       {this.id,
@@ -32,7 +33,8 @@ class MatchListModel {
       this.iV,
       this.unmatchedDate,
       this.unmatchedUser,
-      this.userDetails});
+      this.user1,
+      this.user2});
 
   MatchListModel.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -49,34 +51,18 @@ class MatchListModel {
     iV = json['__v'];
     unmatchedDate = json['unmatched_date'];
     unmatchedUser = json['unmatched_user'];
-    if (json['user_details'] != null) {
-      userDetails = new List<UserDetails>();
-      json['user_details'].forEach((v) {
-        userDetails.add(new UserDetails.fromJson(v));
+    if (json['user_id_1_details'] != null) {
+      user1 = new List<UserDetails>();
+      json['user_id_1_details'].forEach((v) {
+        user1.add(new UserDetails.fromJson(v));
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.id;
-    data['is_matched'] = this.isMatched;
-    data['game_score'] = this.gameScore;
-    data['match_score'] = this.matchScore;
-    data['is_deleted'] = this.isDeleted;
-    data['requested_user'] = this.requestedUser;
-    data['confirmed_user'] = this.confirmedUser;
-    data['requested_device'] = this.requestedDevice;
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
-    data['match_no'] = this.matchNo;
-    data['__v'] = this.iV;
-    data['unmatched_date'] = this.unmatchedDate;
-    data['unmatched_user'] = this.unmatchedUser;
-    if (this.userDetails != null) {
-      data['user_details'] = this.userDetails.map((v) => v.toJson()).toList();
+    if (json['user_id_2_details'] != null) {
+      user2 = new List<UserDetails>();
+      json['user_id_2_details'].forEach((v) {
+        user2.add(new UserDetails.fromJson(v));
+      });
     }
-    return data;
   }
 }
 
@@ -104,6 +90,7 @@ class UserDetails {
   String updatedAt;
   int iV;
   String dob;
+  String identificationImage;
 
   UserDetails(
       {this.sId,
@@ -128,7 +115,8 @@ class UserDetails {
       this.createdAt,
       this.updatedAt,
       this.iV,
-      this.dob});
+      this.dob,
+      this.identificationImage});
 
   UserDetails.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -161,6 +149,7 @@ class UserDetails {
     updatedAt = json['updatedAt'];
     iV = json['__v'];
     dob = json['dob'];
+    identificationImage = json['identification_image'];
   }
 
   Map<String, dynamic> toJson() {
