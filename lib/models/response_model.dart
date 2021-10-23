@@ -25,9 +25,6 @@ class ResponseData {
   }
 }
 
-
-
-
 class ResponseData2 {
   String msg;
   String path;
