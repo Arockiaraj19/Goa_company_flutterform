@@ -1,9 +1,11 @@
 import 'package:dating_app/models/forgetresponse_model.dart';
 import 'package:dating_app/models/matchuser_model.dart';
 import 'package:dating_app/models/otp_model.dart';
+import 'package:dating_app/models/question_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/pages/Interest_hobbies_page/interest_hobbies_page.dart';
 import 'package:dating_app/pages/add_profile_pic_page/add_profile_pic.dart';
+import 'package:dating_app/pages/album_view_page/album_view_page.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
 import 'package:dating_app/pages/comment_page/comment_page.dart';
 import 'package:dating_app/pages/create_profile_page/Create_profile_page.dart';
@@ -79,6 +81,7 @@ class Routes {
   static String payment = "payment";
   static String imagecheck = "imagecheck";
   static String success = "success";
+  static String albumview = "albumview";
 
   static final sailor = Sailor();
 
@@ -320,9 +323,18 @@ class Routes {
 
       SailorRoute(
           name: quizGamePage,
+          params: [
+            SailorParam<List<Getquestion>>(
+              name: 'questions',
+            ),
+          ],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
-            return QuizGamePage();
+            List<Getquestion> questions =
+                Sailor.param<List<Getquestion>>(context, "questions");
+            return QuizGamePage(
+              questions: questions,
+            );
           }),
 
       SailorRoute(
@@ -397,6 +409,18 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             return SuccessPage();
+          }),
+
+      SailorRoute(
+          name: albumview,
+          params: [SailorParam<List<String>>(name: 'galleryItems')],
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            List<String> galleryItems =
+                Sailor.param<List<String>>(context, "galleryItems");
+            return AlbumView(
+              galleryItems: galleryItems,
+            );
           }),
     ]);
   }

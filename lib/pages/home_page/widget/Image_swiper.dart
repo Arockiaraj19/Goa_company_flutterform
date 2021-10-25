@@ -45,7 +45,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
         // height: widget.height ?? 250,
         width: widget.width ?? MediaQuery.of(context).size.width,
         child: Swiper(
-          loop: false,
+          
           onIndexChanged: (int ind) {
             currentIndex = ind;
           },
@@ -63,7 +63,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
                   goToDetailPage(widget.userSuggestionData.response[index]);
                 },
                 child: ImageCard(
-                  data:widget.userSuggestionData.response[index],
+                  data: widget.userSuggestionData.response[index],
                   cardHeight: widget.itemheight ?? 300,
                   cardWidth: widget.itemwidth ?? 400,
                   name:

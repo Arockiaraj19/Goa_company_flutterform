@@ -5,7 +5,9 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -63,6 +65,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     // TODO: implement initState
+    initDynamicLinks();
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification notification = message.notification;
@@ -104,6 +107,45 @@ class _MyAppState extends State<MyApp> {
             });
       }
     });
+  }
+
+  Future<void> initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink(
+      onSuccess: (PendingDynamicLinkData dynamicLinkData) async {
+        await _handleDeepLink(dynamicLinkData);
+      },
+      onError: (OnLinkErrorException e) async {
+        print('DynamicLink Failed: ${e.message}');
+        return e.message;
+      },
+    );
+
+    final PendingDynamicLinkData data =
+        await FirebaseDynamicLinks.instance.getInitialLink();
+    if (data.link != null) {
+      _handleDeepLink(data);
+    }
+  }
+
+  // bool _deeplink = true;
+  _handleDeepLink(PendingDynamicLinkData data) async {
+    final Uri deepLink = data.link;
+    if (deepLink != null) {
+      print('_handleDeepLink | deeplink: $deepLink');
+
+      // Check if we want to make a post
+      var isPost = deepLink.pathSegments.contains('ref');
+
+      if (isPost) {
+        // get the title of the post
+        var title = deepLink.queryParameters['id'];
+
+        if (title != null) {
+          print("id main la correct a varuthaa");
+          showtoast(title);
+        }
+      }
+    }
   }
 
   @override

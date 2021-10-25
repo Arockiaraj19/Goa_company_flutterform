@@ -76,3 +76,14 @@ const String subscription_plan = "/user/utils/subscriptionplans";
 //get country code
 
 const String country_code = "/user/utils/mobilecodes";
+
+//games part
+const String getall_games = "/user/games";
+
+const String create_game_request = "/user/gamerequest";
+
+const String gameaction = "/user/gamerequestaction/";
+
+const String gameanswer = "/user/gameanswer";
+
+const String getgamesquestion = "/user/gamequestions/";

@@ -6,7 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Function onTapFilter;
-  MainAppBar({Key key, this.onTapFilter}) : super(key: key);
+  final bool istrue;
+  MainAppBar({Key key, this.onTapFilter, this.istrue}) : super(key: key);
 
   @override
   _MainAppBarState createState() => _MainAppBarState();
@@ -27,14 +28,15 @@ class _MainAppBarState extends State<MainAppBar> {
         backgroundColor: Colors.grey.shade50, // MainTheme.appBarColor,
         elevation: 0,
         actions: [
-          Container(
-            margin: EdgeInsetsDirectional.only(end: 10),
-            child: Icon(
-              Icons.notifications_outlined,
-              color: Colors.grey,
-              size: 25,
-            ),
-          )
+          if (widget.istrue)
+            Container(
+              margin: EdgeInsetsDirectional.only(end: 10),
+              child: Icon(
+                Icons.notifications_outlined,
+                color: Colors.grey,
+                size: 25,
+              ),
+            )
         ],
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(kToolbarHeight - 100),

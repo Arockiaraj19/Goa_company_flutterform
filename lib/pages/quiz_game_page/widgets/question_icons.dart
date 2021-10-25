@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Questionicons extends StatefulWidget {
-  Questionicons({Key key}) : super(key: key);
+  String answer;
+  int index;
+
+  Questionicons({Key key, this.answer,this.index}) : super(key: key);
 
   @override
   _QuestioniconsState createState() => _QuestioniconsState();
@@ -20,7 +23,7 @@ class _QuestioniconsState extends State<Questionicons> {
               backgroundColor: Colors.grey[400],
               radius: 20,
               child: Text(
-                'A',
+                widget.index.toString(),
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -31,7 +34,7 @@ class _QuestioniconsState extends State<Questionicons> {
             ),
             Container(
                 child: Text(
-              "Picnic",
+             widget.answer,
               textAlign: TextAlign.center,
             ))
           ],

@@ -1,3 +1,5 @@
+import 'package:dating_app/models/question_model.dart';
+import 'package:dating_app/networks/games_network.dart';
 import 'package:dating_app/pages/quiz_game_page/widgets/hart_view_icons.dart';
 import 'package:dating_app/pages/quiz_game_page/widgets/question_box.dart';
 import 'package:dating_app/pages/quiz_game_page/widgets/question_icons.dart';
@@ -11,15 +13,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class QuizGamePage extends StatefulWidget {
-  QuizGamePage({Key key}) : super(key: key);
+  List<Getquestion> questions;
+  QuizGamePage({this.questions});
 
   @override
   _QuizGamePageState createState() => _QuizGamePageState();
 }
 
 class _QuizGamePageState extends State<QuizGamePage> {
-  TabController _controller;
-  int _selectedIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    getdata();
+  }
+
+  getdata() {
+    Games().getallgames();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -32,12 +43,14 @@ class _QuizGamePageState extends State<QuizGamePage> {
     });
   }
 
+  PageController controller = PageController();
+
   Widget _buildPhone() {
     return SafeArea(
       child: Scaffold(
         body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+            height: double.infinity,
+            width: double.infinity,
             decoration: BoxDecoration(gradient: MainTheme.backgroundGradient),
             child: Column(children: [
               QuizAppBar(),
@@ -53,11 +66,8 @@ class _QuizGamePageState extends State<QuizGamePage> {
                     bottomRight: Radius.zero,
                   ),
                 ),
-                height:
-                    MediaQuery.of(context).size.height - (kToolbarHeight) - 57,
                 width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                    child: Column(children: [
+                child: Column(children: [
                   Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -84,7 +94,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                         scrollDirection: Axis.horizontal,
                                         physics: ClampingScrollPhysics(),
                                         shrinkWrap: true,
-                                        itemCount: 7,
+                                        itemCount: widget.questions.length,
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           return HartViewicons(
@@ -113,83 +123,89 @@ class _QuizGamePageState extends State<QuizGamePage> {
                         ),
                       ),
                     ),
-                    width: MediaQuery.of(context).size.width,
-                    height: 500,
-                    child: ListView.builder(
+                    width: double.infinity,
+                    height: 450,
+                    child: PageView.builder(
+                        controller: controller,
                         scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: 3,
+                        itemCount: widget.questions.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              QuestionBox(),
+                              QuestionBox(
+                                  question: widget.questions[index].question),
                               Container(
-                                  height: 300,
+                                  height: 250,
                                   width: MediaQuery.of(context).size.width,
-                                  child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: 3,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Questionicons();
-                                      }))
+                                  child: Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Games().answerquestion(
+                                              widget.questions[index].game,
+                                              widget.questions[index].id,
+                                              1,
+                                              widget.questions[index].type
+                                                  .toString());
+                                        },
+                                        child: Questionicons(
+                                            answer:
+                                                widget.questions[index].option1,
+                                            index: 1),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Games().answerquestion(
+                                              widget.questions[index].game,
+                                              widget.questions[index].id,
+                                              2,
+                                              widget.questions[index].type
+                                                  .toString());
+                                        },
+                                        child: Questionicons(
+                                            answer:
+                                                widget.questions[index].option2,
+                                            index: 2),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Games().answerquestion(
+                                              widget.questions[index].game,
+                                              widget.questions[index].id,
+                                              3,
+                                              widget.questions[index].type
+                                                  .toString());
+                                        },
+                                        child: Questionicons(
+                                            answer:
+                                                widget.questions[index].option3,
+                                            index: 3),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Games().answerquestion(
+                                              widget.questions[index].game,
+                                              widget.questions[index].id,
+                                              4,
+                                              widget.questions[index].type
+                                                  .toString());
+                                        },
+                                        child: Questionicons(
+                                            answer:
+                                                widget.questions[index].option4,
+                                            index: 4),
+                                      ),
+                                    ],
+                                  ))
                             ],
                           );
                         }),
                   )
-                ])),
+                ]),
               )
             ])),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Container(
-            padding: EdgeInsetsDirectional.only(end: 20, start: 20, bottom: 10),
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    child: CircleAvatar(
-                        backgroundColor: MainTheme.primaryColor,
-                        radius: 20,
-                        child: Icon(
-                          Icons.keyboard_arrow_left,
-                          color: Colors.white,
-                        ))),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(width: 1, color: MainTheme.primaryColor),
-                  ),
-                  child: MaterialButton(
-                    padding: EdgeInsets.only(left: 50, right: 50),
-                    child: Text(
-                      'Submit',
-                      style:
-                          TextStyle(height: 2, color: MainTheme.primaryColor),
-                    ),
-                    textColor: Colors.red,
-                    onPressed: () {
-                      goToQuizgamePage();
-                    },
-                  ),
-                ),
-                Container(
-                    child: CircleAvatar(
-                        backgroundColor: Colors.grey[400],
-                        radius: 20,
-                        child: InkWell(
-                            onTap: () {},
-                            child: Icon(
-                              Icons.keyboard_arrow_right,
-                              color: Colors.white,
-                            )))),
-              ],
-            )),
       ),
     );
   }

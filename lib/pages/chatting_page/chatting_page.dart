@@ -1,9 +1,13 @@
 import 'package:dating_app/models/chatmessage_model.dart';
+import 'package:dating_app/models/games.dart';
+import 'package:dating_app/models/question_model.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
+import 'package:dating_app/networks/games_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 
 import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
@@ -126,6 +130,12 @@ class _ChattingPageState extends State<ChattingPage> {
     return DateFormat('kk:mm:a').format(now);
   }
 
+  gotogame() async {
+    List<GamesModel> games = await Games().getallgames();
+    List<Getquestion> questions = await Games().getquestion(games[0].id);
+    Routes.sailor(Routes.quizGamePage, params: {"questions": questions});
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -204,6 +214,9 @@ class _ChattingPageState extends State<ChattingPage> {
                         });
                         if (result == itemdate[1]) {
                           blockuser();
+                        }
+                        if (result == itemdate[2]) {
+                          gotogame();
                         }
                       },
                       itemBuilder: (BuildContext context) =>

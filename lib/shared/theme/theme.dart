@@ -59,8 +59,6 @@ class MainTheme {
       stops: <double>[0.0, 1.0],
       tileMode: TileMode.mirror);
 
-
-
   //////otp page
 
   static const Color codeIsSendTextColor = Color.fromRGBO(86, 86, 86, 1);
@@ -147,10 +145,6 @@ class MainTheme {
     fontFamily: "OpenSans",
     fontSize: 12,
   );
-
-  
-
-
 
   static const LinearGradient buttonGradient = LinearGradient(
       colors: <Color>[

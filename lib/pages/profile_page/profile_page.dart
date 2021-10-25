@@ -19,6 +19,7 @@ import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/interest_card_list.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:dating_app/shared/widgets/subheading.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +30,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:sailor/sailor.dart';
+import 'package:share/share.dart';
 
 import '../../routes.dart';
 
@@ -351,10 +353,17 @@ class _ProfilePageState extends State<ProfilePage>
                         image: "assets/images/Facebook_icon.png",
                         style: socialMediaTextBold,
                       ),
-                      SocialMediaBox(
-                        name: "Add Linkedin",
-                        image: "assets/images/LinkedIn_icons.png",
-                        style: socialMediaText,
+                      InkWell(
+                        onTap: () {
+                          Routes.sailor(
+                            Routes.quizGamePage,
+                          );
+                        },
+                        child: SocialMediaBox(
+                          name: "Add Linkedin",
+                          image: "assets/images/LinkedIn_icons.png",
+                          style: socialMediaText,
+                        ),
                       ),
                     ]),
                 Container(
@@ -513,6 +522,11 @@ class _ProfilePageState extends State<ProfilePage>
                         padding: EdgeInsetsDirectional.only(
                             start: 20, end: 20, top: 30),
                         child: Column(children: [
+                          _isCreatingLink
+                              ? Center(child: CircularProgressIndicator())
+                              : InkWell(
+                                  onTap: () => _createDynamicLink(),
+                                  child: SettingBox(name: "Refer & Earn")),
                           InkWell(
                               onTap: () {
                                 Routes.sailor(Routes.meetuppage);
@@ -542,6 +556,46 @@ class _ProfilePageState extends State<ProfilePage>
         ),
       );
     }));
+  }
+
+  bool _isCreatingLink = false;
+
+  Future<void> _createDynamicLink() async {
+    String _linkMessage;
+    setState(() {
+      _isCreatingLink = true;
+    });
+
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+      uriPrefix: 'https://life2sparks.page.link',
+      link: Uri.parse("https://life2sparks.page.link/ref?id=1234567890"),
+      androidParameters: AndroidParameters(
+        packageName: "com.life2sparks",
+        minimumVersion: 0,
+      ),
+      dynamicLinkParametersOptions: DynamicLinkParametersOptions(
+        shortDynamicLinkPathLength: ShortDynamicLinkPathLength.short,
+      ),
+      iosParameters: IosParameters(
+        bundleId: 'com.google.FirebaseCppDynamicLinksTestApp.dev',
+        minimumVersion: '0',
+      ),
+    );
+
+    Uri url;
+    if (true) {
+      final ShortDynamicLink shortLink = await parameters.buildShortLink();
+      url = shortLink.shortUrl;
+    } else {
+      url = await parameters.buildUrl();
+    }
+
+    setState(() {
+      _linkMessage = url.toString();
+      _isCreatingLink = false;
+    });
+    print(url);
+    return Share.share(_linkMessage);
   }
 
   goToEditProfilePagePage(UserModel userData) {

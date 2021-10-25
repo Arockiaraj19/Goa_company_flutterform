@@ -49,16 +49,7 @@ class _MatchesPageState extends State<MatchesPage>
         appBar: AppBar(
             backgroundColor: MainTheme.appBarColor,
             elevation: 0,
-            actions: [
-              Container(
-                margin: EdgeInsetsDirectional.only(end: 10),
-                child: Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.grey,
-                  size: 25,
-                ),
-              )
-            ],
+            actions: [],
             bottom: PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight * 1.3),
                 child: PreferredSize(
@@ -93,8 +84,7 @@ class _MatchesPageState extends State<MatchesPage>
                         unselectedLabelColor: Colors.black,
                         labelStyle: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
-                        unselectedLabelStyle: TextStyle(
-                            fontSize: 14),
+                        unselectedLabelStyle: TextStyle(fontSize: 14),
                         indicatorWeight: 2,
                         tabs: <Widget>[
                           Container(
@@ -126,7 +116,6 @@ class _MatchesPageState extends State<MatchesPage>
               Container(child: MatchesCardList()),
               Container(child: BlindsCardList()),
             ]),
-
       ),
     );
   }

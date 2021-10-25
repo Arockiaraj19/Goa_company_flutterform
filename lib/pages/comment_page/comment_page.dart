@@ -57,17 +57,7 @@ class _CommentPageState extends State<CommentPage>
             backgroundColor: MainTheme.appBarColor,
             elevation: 0,
             actions: [
-              InkWell(
-                onTap: () async {},
-                child: Container(
-                  margin: EdgeInsetsDirectional.only(end: 10),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.grey,
-                    size: 25,
-                  ),
-                ),
-              )
+            
             ],
             bottom: PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight * 1.3),

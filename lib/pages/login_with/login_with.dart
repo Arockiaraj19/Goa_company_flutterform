@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/countrycode_network.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signin_network.dart';
 import 'package:dating_app/networks/user_network.dart';
@@ -10,6 +12,7 @@ import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -330,6 +333,9 @@ class _LoginWithState extends State<LoginWith> {
     //Timer(Duration(seconds: 8), ()=>offLoading());
   }
 
+  String countrycode;
+  CountryCode code;
+
   Widget _loginWithNumber({double btnWidth}) {
     return Form(
       key: _formKey,
@@ -337,7 +343,82 @@ class _LoginWithState extends State<LoginWith> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 80.h,
+            height: 40.h,
+          ),
+          Text(
+            "Choose your country",
+            style: TextStyle(
+                color: MainTheme.enterTextColor,
+                fontSize: 40.sp,
+                fontFamily: "lato",
+                fontWeight: FontWeight.w400),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Container(
+            child: DropdownSearch<CountryCode>(
+              dropdownSearchDecoration: InputDecoration(
+                contentPadding: EdgeInsets.only(
+                    left: 18.0.w, bottom: 0.0.h, top: 0.0.h, right: 2.0.w),
+                hintText: "Choose Country",
+                hintStyle: TextStyle(
+                    fontSize: 40.sp,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xffC4C4C4)),
+                errorStyle: TextStyle(
+                  fontSize: 40.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.pink,
+                ),
+                errorBorder: OutlineInputBorder(
+                  gapPadding: 0,
+                  borderSide: BorderSide(
+                      color: Colors.pink, width: 1, style: BorderStyle.solid),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.pink, width: 1, style: BorderStyle.solid),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Color(0xffC4C4C4),
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.pink, width: 1, style: BorderStyle.solid),
+                ),
+              ),
+              validator: (value) {
+                if (value == null) {
+                  return "* Required";
+                } else {
+                  return null;
+                }
+              },
+              showSearchBox: true,
+              isFilteredOnline: true,
+              itemAsString: (CountryCode u) => u.name,
+              onFind: (String filter) async {
+                print("on find eppu work aakuthu");
+                print(filter);
+                List<CountryCode> response =
+                    await CountryCodeNetwork().getcountrycode(filter);
+
+                return response;
+              },
+              onChanged: (CountryCode data) {
+                setState(() {
+                  countrycode = data.telephonecode;
+                });
+              },
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
           ),
           Text(
             "Enter your mobile number",
@@ -362,12 +443,23 @@ class _LoginWithState extends State<LoginWith> {
                 color: MainTheme.enterTextColor),
             decoration: InputDecoration(
               isDense: true,
-              prefixText: "+91",
-              prefixStyle: TextStyle(
-                  color: MainTheme.enterTextColor,
-                  fontSize: 40.sp,
-                  fontFamily: "lato",
-                  fontWeight: FontWeight.w400),
+              prefixIcon: countrycode == null
+                  ? null
+                  : Padding(
+                      padding: EdgeInsets.only(
+                          left: 18.0.w,
+                          bottom: 12.0.h,
+                          top: 12.0.h,
+                          right: 1.0.w),
+                      child: Text(
+                        countrycode == null ? "" : countrycode,
+                        style: TextStyle(
+                            fontSize: 40.sp,
+                            letterSpacing: 1.0,
+                            fontWeight: FontWeight.w400,
+                            color: MainTheme.enterTextColor),
+                      ),
+                    ),
               contentPadding: EdgeInsets.only(
                   left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
               hintText: 'Mobile number',

@@ -16,7 +16,6 @@ class Forminput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50.h,
       width: double.infinity,
       child: TextFormField(
           controller: emailController,
