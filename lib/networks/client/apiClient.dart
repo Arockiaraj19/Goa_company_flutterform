@@ -171,12 +171,12 @@ Future<Dio> authClient() async {
       // Do something with response data
       return handler.next(response); // continue
     }, onError: (DioError error, handler) async {
-      // if (error.response != null) {
-      //   if (error.response.statusCode == 410) {
-      //     showtoast(error.response.data["msg"]);
-      //     Routes.sailor(Routes.loginPage);
-      //   }
-      // }
+      if (error.response != null) {
+        if (error.response.statusCode == 410) {
+          showtoast(error.response.data["msg"]);
+          Routes.sailor(Routes.loginPage);
+        }
+      }
       print("ithu interceptor");
       return handler.next(error);
     }));

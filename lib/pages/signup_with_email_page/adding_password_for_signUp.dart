@@ -347,10 +347,14 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                 borderRadius: BorderRadius.circular(5),
                 color: Colors.white,
                 onPressed: () {
+                  print("adsf");
                   if (_formKey.currentState.validate()) {
+                    print("adsfsdfs");
+                    print(widget.isforget);
                     if (widget.isforget) {
                       forgetresetpassword();
                     } else {
+                      print("adsf");
                       goToCreateProfilePage();
                     }
                   }
