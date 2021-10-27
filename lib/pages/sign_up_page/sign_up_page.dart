@@ -133,7 +133,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       height: 15.h,
                     ),
                     GradientButton(
-                    
                       height: 125.w,
                       name: "Sign up with email",
                       borderRadius: BorderRadius.circular(30.r),
@@ -184,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   goToSignUpWithEmail() {
-    Routes.sailor(Routes.signUpWithEmailPage);
+    Routes.sailor(Routes.signUpWithEmailPage, params: {"isforget": false});
   }
 
   Widget _buildWeb() {

@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/countrycode_network.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signin_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -223,7 +227,7 @@ class _LoginWithState extends State<LoginWith> {
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Color(0xffC4C4C4),
+                    color: Color(0xffEFEBEB),
                     width: 1,
                     style: BorderStyle.solid),
               ),
@@ -246,18 +250,21 @@ class _LoginWithState extends State<LoginWith> {
           SizedBox(
             height: 3.h,
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "Forgot password ?",
-              textAlign: TextAlign.end,
-              style: TextStyle(
-                  fontSize: 40.sp,
-                  letterSpacing: 1.0,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xffC4C4C4)),
-              // TextStyle(
-              //     color: Colors.black, fontSize: 14, fontFamily: "lato"),
+          InkWell(
+            onTap: () => goToforgetEmail(),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "Forgot password ?",
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                    fontSize: 40.sp,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xffC4C4C4)),
+                // TextStyle(
+                //     color: Colors.black, fontSize: 14, fontFamily: "lato"),
+              ),
             ),
           ),
 
@@ -292,6 +299,10 @@ class _LoginWithState extends State<LoginWith> {
     );
   }
 
+  goToforgetEmail() {
+    Routes.sailor(Routes.signUpWithEmailPage, params: {"isforget": true});
+  }
+
   goToFindMatchPage() async {
     setState(() {
       loading = true;
@@ -322,6 +333,9 @@ class _LoginWithState extends State<LoginWith> {
     //Timer(Duration(seconds: 8), ()=>offLoading());
   }
 
+  String countrycode;
+  CountryCode code;
+
   Widget _loginWithNumber({double btnWidth}) {
     return Form(
       key: _formKey,
@@ -329,7 +343,10 @@ class _LoginWithState extends State<LoginWith> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 80.h,
+            height: 60.h,
+          ),
+          SizedBox(
+            height: 10.h,
           ),
           Text(
             "Enter your mobile number",
@@ -342,71 +359,162 @@ class _LoginWithState extends State<LoginWith> {
           SizedBox(
             height: 10.h,
           ),
-          TextFormField(
-            controller: _numberCtrl,
-            cursorColor: Colors.pink,
-            textAlign: TextAlign.left,
-            keyboardType: TextInputType.number,
-            style: TextStyle(
-                fontSize: 40.sp,
-                letterSpacing: 1.0,
-                fontWeight: FontWeight.w400,
-                color: MainTheme.enterTextColor),
-            decoration: InputDecoration(
-              isDense: true,
-              prefixText: "+91",
-              prefixStyle: TextStyle(
-                  color: MainTheme.enterTextColor,
-                  fontSize: 40.sp,
-                  fontFamily: "lato",
-                  fontWeight: FontWeight.w400),
-              contentPadding: EdgeInsets.only(
-                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
-              hintText: 'Mobile number',
-              hintStyle: TextStyle(
-                  fontSize: 40.sp,
-                  letterSpacing: 1.0,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xffC4C4C4)),
-              errorStyle: TextStyle(
-                fontSize: 40.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.pink,
-              ),
-              errorBorder: OutlineInputBorder(
-                gapPadding: 0,
-                borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color(0xffC4C4C4),
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
-              ),
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return "* Required";
-              }
-              RegExp regex = new RegExp(numberpattern);
-              if (!regex.hasMatch(value)) {
-                return 'Please enter only number';
-              }
-              if (value.length > 10 || value.length < 10) {
-                return "Please enter only 10 numbers";
-              }
+          Row(
+            children: [
+              Container(
+                width: 180.w,
+                child: DropdownSearch<CountryCode>(
+                  mode: Mode.BOTTOM_SHEET,
+                  dropdownButtonBuilder: (context) {
+                    return Container();
+                  },
+                  dropdownBuilderSupportsNullItem: true,
+                  dropDownButton: Icon(
+                    Icons.arrow_back,
+                    size: 0,
+                  ),
+                  dropdownSearchDecoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                        left: 18.0.w, bottom: 0.0.h, top: 0.0.h, right: 2.0.w),
+                    hintText: "+91",
+                    hintStyle: TextStyle(
+                        fontSize: 40.sp,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xffC4C4C4)),
+                    errorStyle: TextStyle(
+                      fontSize: 40.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.pink,
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderSide: BorderSide(
+                          color: Colors.pink,
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.pink,
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color(0xffC4C4C4),
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.pink,
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null) {
+                      return "* Required";
+                    } else {
+                      return null;
+                    }
+                  },
+                  showSearchBox: true,
+                  isFilteredOnline: true,
+                  itemAsString: (CountryCode u) => u.telephonecode,
+                  onFind: (String filter) async {
+                    print("on find eppu work aakuthu");
+                    print(filter);
+                    List<CountryCode> response =
+                        await CountryCodeNetwork().getcountrycode(filter);
 
-              return null;
-            },
+                    return response;
+                  },
+                  onChanged: (CountryCode data) {
+                    setState(() {
+                      countrycode = data.telephonecode;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 10.w,
+              ),
+              Expanded(
+                child: Container(
+                  child: TextFormField(
+                    controller: _numberCtrl,
+                    cursorColor: Colors.pink,
+                    textAlign: TextAlign.left,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                        fontSize: 40.sp,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.w400,
+                        color: MainTheme.enterTextColor),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.only(
+                          left: 18.0.w,
+                          bottom: 12.0.h,
+                          top: 12.0.h,
+                          right: 2.0.w),
+                      hintText: 'Mobile number',
+                      hintStyle: TextStyle(
+                          fontSize: 40.sp,
+                          letterSpacing: 1.0,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xffC4C4C4)),
+                      errorStyle: TextStyle(
+                        fontSize: 40.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.pink,
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        gapPadding: 0,
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xffC4C4C4),
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "* Required";
+                      }
+                      RegExp regex = new RegExp(numberpattern);
+                      if (!regex.hasMatch(value)) {
+                        return 'Please enter only number';
+                      }
+                      if (value.length > 10 || value.length < 10) {
+                        return "Please enter only 10 numbers";
+                      }
+
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(
             height: 50.h,

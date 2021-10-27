@@ -2,6 +2,8 @@ import 'package:dating_app/pages/home_page/widget/album_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import '../../routes.dart';
+
 class AlbumCardList extends StatefulWidget {
   final double mainAxisSpacing;
   final double crossAxisSpacing;
@@ -15,7 +17,8 @@ class AlbumCardList extends StatefulWidget {
       this.mainAxisSpacing,
       this.crossAxisCount,
       this.itemCount,
-      this.childAspectRatio, this.images})
+      this.childAspectRatio,
+      this.images})
       : super(key: key);
 
   @override
@@ -23,6 +26,10 @@ class AlbumCardList extends StatefulWidget {
 }
 
 class _AlbumCardListState extends State<AlbumCardList> {
+  gotoalbumpage(List<String> images) {
+    Routes.sailor(Routes.albumview, params: {"galleryItems": images});
+  }
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -35,7 +42,14 @@ class _AlbumCardListState extends State<AlbumCardList> {
           childAspectRatio: widget.childAspectRatio ?? 1.5),
       itemCount: widget.itemCount ?? 0,
       itemBuilder: (BuildContext context, int index) {
-        return AlbumCard(image: widget.images[index],);
+        return InkWell(
+            onTap: () {
+              print("you clicked goto album page");
+              gotoalbumpage(widget.images);
+            },
+            child: AlbumCard(
+              image: widget.images[index],
+            ));
       },
     );
   }

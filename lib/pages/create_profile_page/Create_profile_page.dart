@@ -11,12 +11,15 @@ import 'package:dating_app/shared/date_picker_input.dart';
 import 'package:dating_app/shared/helpers.dart';
 import 'package:dating_app/shared/helpers/get_loc_name.dart';
 import 'package:dating_app/shared/helpers/google_map.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class CreateProfilePage extends StatefulWidget {
   final UserModel userData;
@@ -66,6 +69,9 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     }
   ];
   Future _future;
+  String _selectedGender;
+  String _selectedGenderid;
+  GenderModel genderdetail;
   @override
   void initState() {
     // TODO: implement initState
@@ -74,13 +80,13 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     _future = GenderNetwork().getGenderData();
   }
 
-  String _selectedGender;
-  String _selectedGenderid;
   fill() {
     setState(() {
       _emailCtrl.text = widget.userData.email;
     });
   }
+
+  int time = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +100,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     });
   }
 
+  DateTime dateofbirth;
   Widget _buildPhone() {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
@@ -121,37 +128,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
 
     return SafeArea(
       child: Scaffold(
-          bottomSheet: Container(
-            height: 100,
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                  height: 40,
-                  name: loading ? "Saving.." : "Continue",
-                  gradient: MainTheme.loginBtnGradient,
-                  active: true,
-                  color: Colors.white,
-                  isLoading: loading,
-                  width: ScreenUtil().setWidth(400),
-                  fontWeight: FontWeight.w600,
-                  onPressed: () {
-                    setState(() {
-                      validate = true;
-                    });
-                    if (_formKey.currentState.validate() &&
-                        location.length > 0 &&
-                        selectedDate != null) {
-                      if (loading != true) {
-                        goToInterestHobbiesPage();
-                      }
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             leading: InkWell(
                 onTap: () {
@@ -168,8 +145,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
             title: Container(
                 child: Text("Create Profile", style: _textStyleforHeading)),
           ),
-          body: SingleChildScrollView(
-              child: Column(children: [
+          body: Column(children: [
             Row(
               children: [
                 Container(
@@ -196,252 +172,356 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                 ),
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InputField(
-                        onTap: () {},
-                        //labelBehavior: FloatingLabelBehavior.never,
-                        controller: _firstNameCtrl,
-                        padding: EdgeInsets.all(10),
-                        validators: (String value) {
-                          if (value.isEmpty) return 'Required field';
-                          return null;
-                        },
-                        hintText: 'Your first name',
-                      ),
-                      InputField(
-                        onTap: () {},
-                        // labelBehavior: FloatingLabelBehavior.never,
-                        controller: _lastNameCtrl,
-                        padding: EdgeInsets.all(10),
-                        validators: (String value) {
-                          if (value.isEmpty) return 'Required field';
-                          return null;
-                        },
-                        hintText: 'Your last name',
-                      ),
-                      InputField(
-                        onTap: () {},
-                        labelBehavior: FloatingLabelBehavior.never,
-                        controller: _emailCtrl,
-                        padding: EdgeInsets.all(10),
-                        validators: (String value) {
-                          if (value.isEmpty) return 'Required field';
-                          return null;
-                        },
-                        hintText: 'Email',
-                      ),
-                      DatePickerInput(
-                        hintText: selectedDate == null ? 'DD-MM-YYYY' : '',
-                        controller: _dobInputCtrl,
-                        onSelect: (DateTime date) {
-                          removeFocus(context);
-                          setState(() {
-                            selectedDate = date;
-                          });
-                          print(selectedDate);
-                        },
-                      ),
-                      validate == true && selectedDate == null
-                          ? Text(
-                              "    Please enter your DOB",
-                              style: TextStyle(color: Colors.red),
-                            )
-                          : Text(""),
-                      Container(
-                          margin: EdgeInsets.all(5),
-                          padding:
-                              EdgeInsetsDirectional.only(start: 10, end: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                blurRadius: 1.0,
-                                offset: Offset(0, 3),
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<dynamic>(
-                            isExpanded: true,
-                            value: dropdownProfessionValue,
-                            hint: Text("Profession"),
-                            icon: Icon(Icons.arrow_drop_down),
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black),
-                            underline: Container(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                dropdownProfessionValue = newValue;
-                              });
-                              print(dropdownProfessionValue);
-                            },
-                            items: itemdate.map<DropdownMenuItem<dynamic>>(
-                                (dynamic value) {
-                              return DropdownMenuItem<dynamic>(
-                                value: value,
-                                child: Text(value
-                                    // style: TextStyle(fontSize: 28.sp),
-                                    ),
-                              );
-                            }).toList(),
-                          )),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      validate == true && dropdownProfessionValue == null
-                          ? Text(
-                              "    Please choose your profession",
-                              style: TextStyle(color: Colors.red),
-                            )
-                          : Text(""),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                              padding:
-                                  EdgeInsetsDirectional.only(start: 5, top: 10),
-                              child: Text("Gender", style: _textForGender)),
-                        ],
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 70,
-                        child: FutureBuilder(
-                          future: _future,
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData) {
-                              List<GenderModel> genderdata = snapshot.data;
-                              return ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  physics: ClampingScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: 3,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    dynamic item = itemGender[index];
-                                    return GenderCard(
-                                      name: item["gender"],
-                                      image: item["image"],
-                                      isActive: item["isActive"],
-                                      onTap: () async {
-                                        if (mounted) {
-                                          setState(() {
-                                            selectedMenuIndex = index;
-                                            itemGender = itemGender.map<
-                                                    Map<String, dynamic>>(
-                                                (Map<String, dynamic> item) {
-                                              item['isActive'] = false;
-                                              return item;
-                                            }).toList();
-                                            itemGender[index]['isActive'] =
-                                                true;
-                                          });
-                                        }
-                                        _selectedGender = item["gender"];
-                                        print('${item["gender"]}');
-                                        if (item["gender"] == "More") {
-                                          final result = await Navigator.push(
-                                            context,
-                                            // Create the SelectionScreen in the next step.
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    GenderPage(snapshot.data)),
-                                          );
-                                          _selectedGender =
-                                              result.title.toString();
-                                          setState(() {
-                                            itemGender[index]["gender"] =
-                                                result.title.toString();
-                                          });
-                                          print(_selectedGender);
-                                        }
-                                        print("selected gender");
-                                        print(_selectedGender);
-                                        _selectedGenderid = genderdata
-                                            .firstWhere((element) =>
-                                                element.title ==
-                                                _selectedGender)
-                                            .id;
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.r, vertical: 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 8.h,
+                        ),
 
-                                        print("its id");
-                                        print(_selectedGenderid);
-                                      },
-                                    );
-                                  });
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
+                        Forminput(
+                          emailController: _firstNameCtrl,
+                          placeholder: 'Your first name',
+                          validation: (val) {
+                            if (val.isEmpty) {
+                              return "Please enter first name";
                             }
+
+                            // return null;
                           },
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          await getLoc();
-                          locationName = location.length > 0
-                              ? await getLocName(location[0], location[1])
-                              : "Try again";
-                          setState(() {
-                            locationName = locationName;
-                          });
-                        },
-                        child: Container(
-                          height: 50,
-                          margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                blurRadius: 1.0,
-                                offset: Offset(0, 3),
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  locationName == null
-                                      ? "Tap to get your location"
-                                      : locationName,
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal),
-                                ),
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  color: Colors.grey,
-                                )
-                              ]),
+                        SizedBox(
+                          height: 8.h,
                         ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      validate == true && location.length == 0
-                          ? Text(
-                              "    Please tap to get the current location",
-                              style: TextStyle(color: Colors.red),
-                            )
-                          : Text(""),
-                      SizedBox(
-                        height: 150.h,
-                      )
-                    ],
+
+                        Forminput(
+                          emailController: _lastNameCtrl,
+                          placeholder: 'Your last name',
+                          validation: (val) {
+                            if (val.isEmpty) {
+                              return "Please enter last name";
+                            }
+
+                            // return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Forminput(
+                          emailController: _emailCtrl,
+                          placeholder: "Email",
+                          validation: (val) {
+                            if (val.isEmpty) {
+                              return "Please enter email id";
+                            }
+                            RegExp regex = new RegExp(emailpatttern.toString());
+                            if (!regex.hasMatch(val)) {
+                              return 'Please enter valid email id';
+                            }
+                            if (val.length > 50) {
+                              return "Please enter less than 50 letters";
+                            }
+                            // return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        TextFormField(
+                          readOnly: true,
+                          controller: _dobInputCtrl,
+                          style: TextStyle(
+                              fontSize: 40.sp,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.w400,
+                              color: MainTheme.enterTextColor),
+                          decoration: InputDecoration(
+                            suffixIcon: const Icon(
+                              Icons.calendar_today_outlined,
+                              color: Color(0xff8F96AD),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                                left: 18.0.w,
+                                bottom: 12.0.h,
+                                top: 12.0.h,
+                                right: 2.0.w),
+                            hintText: "Date of birth",
+                            hintStyle: TextStyle(
+                              fontSize: 40.sp,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xff8F96AD),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xffEFEBEB),
+                                  width: 1,
+                                  style: BorderStyle.solid),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xffEFEBEB),
+                                  width: 1,
+                                  style: BorderStyle.solid),
+                            ),
+                          ),
+                          onTap: () async {
+                            await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1960),
+                              lastDate: DateTime(2200),
+                            ).then((selectedDate) {
+                              if (selectedDate != null) {
+                                _dobInputCtrl.text = DateFormat('dd-MM-yyyy')
+                                    .format(selectedDate);
+                                dateofbirth = selectedDate;
+                              }
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter date.';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        DropdownButtonFormField<dynamic>(
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                                left: 18.0.w,
+                                bottom: 12.0.h,
+                                top: 12.0.h,
+                                right: 2.0.w),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xffEFEBEB),
+                                  width: 1,
+                                  style: BorderStyle.solid),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xffEFEBEB),
+                                  width: 1,
+                                  style: BorderStyle.solid),
+                            ),
+                          ),
+                          isExpanded: true,
+                          value: dropdownProfessionValue,
+                          hint: Text("Profession"),
+                          icon: Icon(Icons.arrow_drop_down),
+                          elevation: 16,
+                          style: TextStyle(
+                              fontSize: 40.sp,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.w400,
+                              color: MainTheme.enterTextColor),
+                          onChanged: (newValue) {
+                            setState(() {
+                              dropdownProfessionValue = newValue;
+                            });
+                            print(dropdownProfessionValue);
+                          },
+                          items: itemdate
+                              .map<DropdownMenuItem<dynamic>>((dynamic value) {
+                            return DropdownMenuItem<dynamic>(
+                              value: value,
+                              child: Text(value
+                                  // style: TextStyle(fontSize: 28.sp),
+                                  ),
+                            );
+                          }).toList(),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please choose your profession';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                                padding: EdgeInsetsDirectional.only(
+                                    start: 5, top: 10),
+                                child: Text("Gender", style: _textForGender)),
+                          ],
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 70,
+                          child: FutureBuilder(
+                            future: _future,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                List<GenderModel> genderdata = snapshot.data;
+                                if (time == 0) {
+                                  _selectedGenderid = genderdata[0].id;
+                                  genderdetail = genderdata[0];
+                                }
+                                return ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    physics: ClampingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: 3,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      dynamic item = itemGender[index];
+
+                                      return GenderCard(
+                                        name: item["gender"],
+                                        image: item["image"],
+                                        isActive: item["isActive"],
+                                        onTap: () async {
+                                          if (mounted) {
+                                            setState(() {
+                                              selectedMenuIndex = index;
+                                              itemGender = itemGender.map<
+                                                      Map<String, dynamic>>(
+                                                  (Map<String, dynamic> item) {
+                                                item['isActive'] = false;
+                                                return item;
+                                              }).toList();
+                                              itemGender[index]['isActive'] =
+                                                  true;
+                                            });
+                                          }
+                                          _selectedGender = item["gender"];
+                                          print('${item["gender"]}');
+                                          if (item["gender"] == "More") {
+                                            final result = await Navigator.push(
+                                              context,
+                                              // Create the SelectionScreen in the next step.
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GenderPage(
+                                                          snapshot.data)),
+                                            );
+                                            _selectedGender =
+                                                result.title.toString();
+                                            setState(() {
+                                              itemGender[index]["gender"] =
+                                                  result.title.toString();
+                                            });
+                                            print(_selectedGender);
+                                          }
+                                          print("selected gender");
+                                          print(_selectedGender);
+                                          _selectedGenderid = genderdata
+                                              .firstWhere((element) =>
+                                                  element.title ==
+                                                  _selectedGender)
+                                              .id;
+                                          genderdetail = genderdata.firstWhere(
+                                              (element) =>
+                                                  element.id ==
+                                                  _selectedGenderid);
+                                          print("its id");
+                                          print(_selectedGenderid);
+                                          print("data");
+                                          print(genderdetail.id);
+                                          time++;
+                                        },
+                                      );
+                                    });
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        // GestureDetector(
+                        //   onTap: () async {
+
+                        //     locationName = location.length > 0
+                        //         ? await getLocName(location[0], location[1])
+                        //         : "Try again";
+                        //     setState(() {
+                        //       locationName = locationName;
+                        //     });
+                        //   },
+                        //   child: Container(
+                        //     height: 50,
+                        //     margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+                        //     width: MediaQuery.of(context).size.width,
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.white,
+                        //       boxShadow: <BoxShadow>[
+                        //         BoxShadow(
+                        //           color: Colors.grey.shade200,
+                        //           blurRadius: 1.0,
+                        //           offset: Offset(0, 3),
+                        //         )
+                        //       ],
+                        //       borderRadius: BorderRadius.circular(5),
+                        //     ),
+                        //     child: Row(
+                        //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //         children: [
+                        //           Text(
+                        //             locationName == null
+                        //                 ? "Tap to get your location"
+                        //                 : locationName,
+                        //             style: TextStyle(
+                        //                 color: Colors.grey,
+                        //                 fontSize: 15,
+                        //                 fontWeight: FontWeight.normal),
+                        //           ),
+                        //           Icon(
+                        //             Icons.location_on_outlined,
+                        //             color: Colors.grey,
+                        //           )
+                        //         ]),
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: 5,
+                        // ),
+                        // validate == true && location.length == 0
+                        //     ? Text(
+                        //         "    Please tap to get the current location",
+                        //         style: TextStyle(color: Colors.red),
+                        //       )
+                        //     : Text(""),
+
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: GradientButton(
+                            height: 40,
+                            name: loading ? "Saving.." : "Continue",
+                            gradient: MainTheme.loginBtnGradient,
+                            active: true,
+                            color: Colors.white,
+                            isLoading: loading,
+                            width: ScreenUtil().setWidth(400),
+                            fontWeight: FontWeight.w600,
+                            onPressed: () {
+                              if (_formKey.currentState.validate()) {
+                                goToInterestHobbiesPage();
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ))
-          ]))),
+          ])),
     );
   }
 
@@ -459,11 +539,14 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       "last_name": _lastNameCtrl.text,
       "email": _emailCtrl.text,
       "profession": ["$dropdownProfessionValue"],
-      "dob": selectedDate.toString(),
-      "gender": _selectedGenderid,
-      "latitude": location[0].toString(),
-      "longitude": location[1].toString(),
+      "dob": dateofbirth.toIso8601String(),
+      "gender_id": _selectedGenderid.toString(),
+      "gender_details": [genderdetail.toMap()],
+      // "latitude": location[0].toString(),
+      // "longitude": location[1].toString(),
     };
+    print("patch user data inga correct a varuthaaaa");
+    print(userData);
     Timer(Duration(seconds: 3), () => offLoading());
     UserModel result = await network.patchUserData(userData);
     result != null ? onboardingCheck(result) : null;

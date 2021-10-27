@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:dating_app/models/forgetresponse_model.dart';
 import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
+import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -17,7 +19,8 @@ import '../../routes.dart';
 
 class OtpPage extends StatefulWidget {
   final OtpModel otpData;
-  OtpPage({Key key, this.otpData}) : super(key: key);
+  final bool isforget;
+  OtpPage({Key key, this.otpData, this.isforget}) : super(key: key);
 
   @override
   _OtpPageState createState() => _OtpPageState();
@@ -26,7 +29,7 @@ class OtpPage extends StatefulWidget {
 class _OtpPageState extends State<OtpPage> {
   final TextEditingController _otpController = TextEditingController();
   Timer _resendOTPTimer;
-  int _resendTimerString = 300;
+  int _resendTimerString = 120;
   bool _enableResendBtn = false;
   bool loading = false, err = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -34,6 +37,9 @@ class _OtpPageState extends State<OtpPage> {
   @override
   void initState() {
     super.initState();
+    print("otp page la boolean correct a varuthaaa");
+    print(widget.isforget);
+    print(widget.otpData);
     timerFunction();
   }
 
@@ -94,6 +100,7 @@ class _OtpPageState extends State<OtpPage> {
 
     return SafeArea(
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               leading: InkWell(
                   onTap: () {
@@ -111,29 +118,50 @@ class _OtpPageState extends State<OtpPage> {
                   child:
                       Text("Verify Phone Number", style: _textStyleforHeading)),
             ),
-            body: SingleChildScrollView(
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 60.r, vertical: 0),
                 child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                  SizedBox(
+                    height: 20.h,
+                  ),
                   Container(
-                      margin: EdgeInsetsDirectional.only(top: 20),
-                      height: ScreenUtil().setHeight(100),
-                      width: ScreenUtil().setWidth(180),
+                      height: ScreenUtil().setHeight(150),
+                      width: ScreenUtil().setWidth(300),
                       child: Image.asset(
                         "assets/images/mobileImageWithMsg.png",
                         fit: BoxFit.fill,
-                      ))
-                ],
+                      )),
+                  _commonBuild(context)
+                ]),
               ),
-              _commonBuild(context)
-            ]))));
+            )));
   }
-  //
-  // goVerify(String otp) {
-  //   // Routes.sailor(Routes.signup);
-  //   // widget.otpData.submitOTP(otp);
-  // }
+
+  gotoForgetPasswordPage() async {
+    setState(() {
+      loading = true;
+    });
+    var network = ForgetPassword();
+    Timer(Duration(seconds: 4), () => offLoading());
+    ResponseSubmitOtp result = await network.forgetSubmitOtp(
+        _otpController.text, widget.otpData.value, widget.otpData.id);
+    showtoast(result.msg.toString());
+
+    Routes.sailor(Routes.addingPasswordPage, params: {
+      "email": widget.otpData.value,
+      "otpdata": result,
+      "isforget": true
+    });
+  }
+
+  offLoading() {
+    setState(() {
+      loading = false;
+    });
+  }
 
   goToAddingPasswordPage() async {
     setState(() {
@@ -146,7 +174,7 @@ class _OtpPageState extends State<OtpPage> {
       showtoast(result.msg.toString());
       result.statusDetails == 2
           ? Routes.sailor(Routes.addingPasswordPage,
-              params: {"email": widget.otpData.value})
+              params: {"email": widget.otpData.value, "isforget": false})
           : Routes.sailor(Routes.loginPage);
     } else {
       var _credential = PhoneAuthProvider.credential(
@@ -181,16 +209,12 @@ class _OtpPageState extends State<OtpPage> {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  margin: onWeb ? null : EdgeInsetsDirectional.only(top: 50),
-                  child: Text("Enter your 6-digit code",
-                      style: onWeb ? _textStyleSubHeading : _enterTextColor)),
-            ],
-          ),
+          Container(
+              margin: onWeb ? null : EdgeInsetsDirectional.only(top: 50),
+              child: Text("Enter your 6-digit code",
+                  style: onWeb ? _textStyleSubHeading : _enterTextColor)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -244,7 +268,7 @@ class _OtpPageState extends State<OtpPage> {
                         )
                       : SizedBox())
               : SizedBox(
-                  height: ScreenUtil().setHeight(50),
+                  height: ScreenUtil().setHeight(60),
                   child: err
                       ? Text(
                           "Please enter 6 digit OTP number",
@@ -271,7 +295,11 @@ class _OtpPageState extends State<OtpPage> {
                       isLoading: loading,
                       onPressed: () {
                         if (_otpController.text.length == 6) {
-                          goToAddingPasswordPage();
+                          if (widget.isforget) {
+                            gotoForgetPasswordPage();
+                          } else {
+                            goToAddingPasswordPage();
+                          }
                         } else {
                           setState(() {
                             err = true;
@@ -280,6 +308,9 @@ class _OtpPageState extends State<OtpPage> {
                       },
                     ),
             ],
+          ),
+          SizedBox(
+            height: 10.h,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -292,9 +323,15 @@ class _OtpPageState extends State<OtpPage> {
                         _resendTimerString = 300;
                       });
                       timerFunction();
-                      var network = EmailSignUpNetwork();
-                      bool result =
-                          await network.resendOtpForEmail(widget.otpData.value);
+                      if (widget.isforget) {
+                        String result = await ForgetPassword()
+                            .forgetGetresentOtp(widget.otpData.value);
+                        showtoast(result);
+                      } else {
+                        var network = EmailSignUpNetwork();
+                        bool result = await network
+                            .resendOtpForEmail(widget.otpData.value);
+                      }
                     }
                   },
                   child: Text(

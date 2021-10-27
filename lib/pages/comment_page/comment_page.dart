@@ -31,26 +31,11 @@ class _CommentPageState extends State<CommentPage>
     with TickerProviderStateMixin {
   TabController _tabController;
 
-  IO.Socket socket = IO.io(
-      socketUrl,
-      IO.OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
-          .build());
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     print("init socket state");
-    
-    socket.onConnect((data) {
-      print('connect' + data);
-    });
-    socket.on("checking", (data) => print(data));
-  }
-
-  void sentUserId() async {
-    String userId = await getUserId();
-    print("User id event" + userId);
-    await socket.emit('identity', userId);
   }
 
   @override
@@ -72,19 +57,7 @@ class _CommentPageState extends State<CommentPage>
             backgroundColor: MainTheme.appBarColor,
             elevation: 0,
             actions: [
-              InkWell(
-                onTap: () async {
-                  return sentUserId();
-                },
-                child: Container(
-                  margin: EdgeInsetsDirectional.only(end: 10),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.grey,
-                    size: 25,
-                  ),
-                ),
-              )
+            
             ],
             bottom: PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight * 1.3),
@@ -194,9 +167,7 @@ class _CommentPageState extends State<CommentPage>
     );
   }
 
-  goToChattingPage() {
-    Routes.sailor(Routes.chattingPage);
-  }
+
 
   Widget _buildWeb() {
     var _height = MediaQuery.of(context).size.height;

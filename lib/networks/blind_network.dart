@@ -6,19 +6,18 @@ import 'package:dio/dio.dart';
 import 'client/apiClient.dart';
 import 'client/api_list.dart';
 
-class BlindNetwork{
-
-
+class BlindNetwork {
   Future<bool> postBlindRequest(var postData) async {
     Response response;
     try {
       final _dio = apiClient();
-      var data=await _dio.then((value) async {
-        response =await value.post(blindRequestEndpoint,data: postData);
+      var data = await _dio.then((value) async {
+        response = await value.post(blindRequestEndpoint, data: postData);
         print("s");
         print(response.data);
         if (response.statusCode == 200) {
-          showtoast(ResponseData.fromJson(response.data).msg);
+          showtoast(response.data["msg"]);
+          ResponseData.fromJson(response.data);
           return true;
         }
       });
@@ -28,14 +27,14 @@ class BlindNetwork{
     }
   }
 
-
   Future<List<ResponseData>> getblindMatches() async {
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data=await _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id+blindMatchesEndpoint);
+      String id = await getUserId();
+      var data = await _dio.then((value) async {
+        response = await value
+            .get(userDetailsEndpoint + "/" + id + blindMatchesEndpoint);
         print(response.data);
 
         if (response.statusCode == 200) {
@@ -49,5 +48,4 @@ class BlindNetwork{
       print(e);
     }
   }
-
 }

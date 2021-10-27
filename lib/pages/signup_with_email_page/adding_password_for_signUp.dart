@@ -1,6 +1,9 @@
+import 'package:dating_app/models/forgetresponse_model.dart';
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -12,7 +15,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddingPasswordForSignUp extends StatefulWidget {
   final String email;
-  AddingPasswordForSignUp({Key key, this.email}) : super(key: key);
+  final ResponseSubmitOtp otpdata;
+  final bool isforget;
+  AddingPasswordForSignUp({Key key, this.email, this.otpdata, this.isforget})
+      : super(key: key);
 
   @override
   _AddingPasswordForSignUpState createState() =>
@@ -24,6 +30,8 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
   TextEditingController _password2Ctrl = TextEditingController();
   bool loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool obscureText = true;
+  bool obscureText1 = true;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -34,6 +42,15 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
         return _buildWeb();
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("otp data correct a varuthaaaa");
+    print(widget.otpdata);
+    print("boolean enna varuthu");
+    print(widget.isforget);
   }
 
   Widget _buildPhone() {
@@ -51,6 +68,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           leading: InkWell(
               onTap: () {
@@ -67,8 +85,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
           title: Container(
               child: Text("Create the password", style: _textStyleforHeading)),
         ),
-        body: SingleChildScrollView(
-            child: Padding(
+        body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
           child: Column(
             children: [
@@ -78,7 +95,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               commonPart(context, onWeb: false)
             ],
           ),
-        )),
+        ),
       ),
     );
   }
@@ -93,6 +110,15 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
     var network1 = UserNetwork();
     UserModel userData = result ? await network1.getUserData() : null;
     userData != null ? onboardingCheck(userData) : null;
+  }
+
+  forgetresetpassword() async {
+    setState(() {
+      loading = true;
+    });
+    var result = await ForgetPassword().forgetResetPassword(
+        widget.otpdata.otp_id, widget.otpdata.user_id, _password1Ctrl.text);
+    Routes.sailor(Routes.success);
   }
 
   Widget commonPart(BuildContext context, {bool onWeb = false}) {
@@ -114,8 +140,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
         fontWeight: FontWeight.w700,
         fontSize: 14,
         fontFamily: "lato");
-    bool obscureText = true;
-    bool obscureText1 = true;
+
     return Form(
       key: _formKey,
       child: Column(
@@ -135,6 +160,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
             decoration: InputDecoration(
               suffixIcon: InkWell(
                   onTap: () {
+                    print("you clicked");
                     setState(() {
                       if (obscureText == false) {
                         obscureText = true;
@@ -322,7 +348,11 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                 color: Colors.white,
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
-                    loading ? null : goToCreateProfilePage();
+                    if (widget.isforget) {
+                      forgetresetpassword();
+                    } else {
+                      goToCreateProfilePage();
+                    }
                   }
                 },
               ),
@@ -358,6 +388,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
 
     return SafeArea(
         child: Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: Row(children: [
         Container(

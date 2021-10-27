@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:338407139909:android:52ca47242bfd94b3b7d12c",
+        "mobilesdk_app_id": "1:338407139909:android:b4847dbb51112046b7d12c",
         "android_client_info": {
-          "package_name": "com.sparks"
+          "package_name": "com.life2sparks"
         }
       },
       "oauth_client": [

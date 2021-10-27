@@ -134,7 +134,8 @@ class _InputFieldState extends State<InputField> {
                                 labelText: widget.hintText,
                                 labelStyle: TextStyle(
                                   color: widget.lableColor ?? Colors.grey,
-                                  fontSize: 15,),
+                                  fontSize: 15,
+                                ),
                                 prefixStyle: TextStyle(color: Colors.black),
                                 prefix: widget.prefix,
                                 suffixIconConstraints:

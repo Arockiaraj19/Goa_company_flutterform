@@ -1,14 +1,21 @@
 import 'package:dating_app/models/user_suggestion.dart';
+import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PercentageMatchingBox extends StatefulWidget {
   final double height;
   final double width;
   final bool onWeb;
   final Responses userSuggestionData;
-  PercentageMatchingBox({Key key, this.height, this.width, this.onWeb = false,
-    this.userSuggestionData})
+  PercentageMatchingBox(
+      {Key key,
+      this.height,
+      this.width,
+      this.onWeb = false,
+      this.userSuggestionData})
       : super(key: key);
 
   @override
@@ -114,17 +121,43 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                           children: [
                             Expanded(
                                 flex: 3,
-                                child: Container(
-                                  child: Text(
-                                    "You and ${widget.userSuggestionData.firstName} have 85% of matching",
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        fontFamily: "Nunito"),
-                                  ),
+                                child: Consumer<HomeProvider>(
+                                  builder: (context, data, child) {
+                                    return Container(
+                                      child: FutureBuilder(
+                                        future: Persentage()
+                                            .checkSuggestionPresentage(
+                                                data.userData,
+                                                widget.userSuggestionData),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Text(
+                                              "You and ${widget.userSuggestionData.firstName} have ${(snapshot.data * 100).round().toString()}% of matching",
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  fontFamily: "Nunito"),
+                                            );
+                                          } else {
+                                            return Text(
+                                              "You and ${widget.userSuggestionData.firstName} have 0% of matching",
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                  fontFamily: "Nunito"),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  },
                                 )),
                             Container(
                               color: MainTheme.primaryColor,

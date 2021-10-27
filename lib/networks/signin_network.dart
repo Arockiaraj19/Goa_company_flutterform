@@ -28,7 +28,7 @@ class SignInNetwork {
       });
       return data;
     } catch (e) {
-      print("error triggered");
+      print("error triggered catch block");
       print(e);
       return false;
     }

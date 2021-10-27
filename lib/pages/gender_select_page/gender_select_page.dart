@@ -25,7 +25,7 @@ class _GenderPageState extends State<GenderPage> {
         centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
-          "Looking for",
+          "Choose gender",
           style: TextStyle(
             color: Color(0xff181725),
             fontSize: 60.sp,

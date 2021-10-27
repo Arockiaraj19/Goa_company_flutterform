@@ -17,7 +17,7 @@ class _HartViewiconsState extends State<HartViewicons> {
         child: Container(
             margin: EdgeInsetsDirectional.only(end: 5, start: 5),
             child: Icon(
-              Icons.favorite,
+              Icons.favorite_border,
               color: Colors.red,
             )));
   }

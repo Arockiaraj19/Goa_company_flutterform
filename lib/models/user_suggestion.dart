@@ -31,8 +31,8 @@ class Responses {
   String gender;
   List<dynamic> profileImage;
   List<dynamic> profession;
-  List<InterestModel> interests;
-  List<HobbyModel> hobbies;
+  List<String> interests;
+  List<String> hobbies;
   bool isMobileVerified;
   bool isEmailVerified;
   String relationshipStatus;
@@ -49,6 +49,9 @@ class Responses {
   String email;
   String firstName;
   String lastName;
+  String identificationImage;
+  List<InterestUserModel> interestDetails;
+  List<HobbyUserModel> hobbyDetails;
 
   Responses(
       {this.id,
@@ -73,28 +76,21 @@ class Responses {
       this.sexualOrientation,
       this.email,
       this.firstName,
-      this.lastName});
+      this.lastName,
+      this.identificationImage,
+      this.interestDetails,
+      this.hobbyDetails});
 
   Responses.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
     location = json['location'] != null
         ? new Location.fromJson(json['location'])
         : null;
-    gender = json['gender'].toString();
+    // gender = json['gender'].toString();
     profileImage = json['profile_image'];
     profession = json['profession'];
-    if (json['interests'] != null) {
-      interests = new List<InterestModel>();
-      json['interests'].forEach((v) {
-        interests.add(new InterestModel.fromJson(v));
-      });
-    }
-    if (json['hobbies'] != null) {
-      hobbies = new List<HobbyModel>();
-      json['hobbies'].forEach((v) {
-        hobbies.add(new HobbyModel.fromJson(v));
-      });
-    }
+    hobbies = json['hobbies'].cast<String>();
+    interests = json['interests'].cast<String>();
     isMobileVerified = json['is_mobile_verified'];
     isEmailVerified = json['is_email_verified'];
     relationshipStatus = json['relationship_status'];
@@ -111,6 +107,15 @@ class Responses {
     email = json['email'];
     firstName = json['first_name'];
     lastName = json['last_name'];
+    identificationImage = json['identification_image'];
+    interestDetails = json['interests_details'] == null
+        ? []
+        : List<InterestUserModel>.from(json['interests_details']
+            ?.map((x) => InterestUserModel.fromMap(x)));
+    hobbyDetails = json['hobbies_details'] == null
+        ? []
+        : List<HobbyUserModel>.from(
+            json['hobbies_details']?.map((x) => HobbyUserModel.fromMap(x)));
   }
 
   Map<String, dynamic> toJson() {
@@ -119,15 +124,15 @@ class Responses {
     if (this.location != null) {
       data['location'] = this.location.toJson();
     }
-    data['gender'] = this.gender;
+    // data['gender'] = this.gender;
     data['profile_image'] = this.profileImage;
     data['profession'] = this.profession;
-    if (this.interests != null) {
-      data['interests'] = this.interests.map((v) => v.toJson()).toList();
-    }
-    if (this.hobbies != null) {
-      data['hobbies'] = this.hobbies.map((v) => v.toJson()).toList();
-    }
+    // if (this.interests != null) {
+    //   data['interests'] = this.interests.map((v) => v.toJson()).toList();
+    // }
+    // if (this.hobbies != null) {
+    //   data['hobbies'] = this.hobbies.map((v) => v.toJson()).toList();
+    // }
     data['is_mobile_verified'] = this.isMobileVerified;
     data['is_email_verified'] = this.isEmailVerified;
     data['relationship_status'] = this.relationshipStatus;
@@ -144,6 +149,7 @@ class Responses {
     data['email'] = this.email;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
+    data['identification_image'] = this.identificationImage;
     return data;
   }
 }

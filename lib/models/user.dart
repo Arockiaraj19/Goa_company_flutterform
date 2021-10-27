@@ -7,8 +7,8 @@ class UserModel {
   Location location;
   List<String> profileImage;
   List<String> profession;
-  List<InterestModel> interestDetails;
-  List<HobbyModel> hobbyDetails;
+  List<InterestUserModel> interestDetails;
+  List<HobbyUserModel> hobbyDetails;
   List<String> hobbies;
   List<String> interests;
   bool isMobileVerified;
@@ -83,18 +83,15 @@ class UserModel {
     profession = json['profession'].cast<String>();
     hobbies = json['hobbies'].cast<String>();
     interests = json['interests'].cast<String>();
-    if (json['interest_details'] != null) {
-      interestDetails = new List<InterestModel>();
-      json['interest_details'].forEach((v) {
-        interestDetails.add(new InterestModel.fromJson(v));
-      });
-    }
-    if (json['hobby_details'] != null) {
-      hobbyDetails = new List<HobbyModel>();
-      json['hobby_details'].forEach((v) {
-        hobbyDetails.add(new HobbyModel.fromJson(v));
-      });
-    }
+    interestDetails = json['interests_details'] == null
+        ? []
+        : List<InterestUserModel>.from(json['interests_details']
+            ?.map((x) => InterestUserModel.fromMap(x)));
+    hobbyDetails = json['hobbies_details'] == null
+        ? []
+        : List<HobbyUserModel>.from(
+            json['hobbies_details']?.map((x) => HobbyUserModel.fromMap(x)));
+
     isMobileVerified = json['is_mobile_verified'];
     isEmailVerified = json['is_email_verified'];
     religion = json['religion'].cast<String>();
@@ -106,9 +103,9 @@ class UserModel {
     weight = json['weight'];
     badCount = json['bad_count'];
     email = json['email'];
-    dob = json['dob'];
+    dob = json['dob'].toString();
     bio = json['bio'];
-    firstName = json['first_name'];
+    firstName = json['first_name'] != null ? json['first_name'] : null;
     gender = json['gender'].toString();
     lastName = json['last_name'];
     sexualOrientation =

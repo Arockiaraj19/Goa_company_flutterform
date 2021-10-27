@@ -115,18 +115,23 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     });
                   },
                 )),
-                Container(
-                    padding: EdgeInsetsDirectional.only(start: 10, end: 10),
-                    child: InputField(
-                      onTap: () {},
-                      controller: _firstNameCtrl,
-                      padding: EdgeInsets.all(10),
-                      validators: (String value) {
-                        if (value.isEmpty) return 'Required field';
-                        return null;
-                      },
-                      hintText: 'location',
-                    )),
+
+                SizedBox(
+                  height: 10.h,
+                ),
+
+                // Container(
+                //     padding: EdgeInsetsDirectional.only(start: 10, end: 10),
+                //     child: InputField(
+                //       onTap: () {},
+                //       controller: _firstNameCtrl,
+                //       padding: EdgeInsets.all(10),
+                //       validators: (String value) {
+                //         if (value.isEmpty) return 'Required field';
+                //         return null;
+                //       },
+                //       hintText: 'location',
+                //     )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -158,6 +163,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         context.read<HomeProvider>().getFilteredData(
                             '${_currentRangeValues.start.toInt()}-${_currentRangeValues.end.toInt()}',
                             _currentSliderValue.toInt().toString(),
+                            // "20000000000000000000",
                             _lat.toString(),
                             _lng.toString());
 

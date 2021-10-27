@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class QuestionBox extends StatefulWidget {
-  QuestionBox({Key key}) : super(key: key);
+  String question;
+  QuestionBox({Key key, this.question}) : super(key: key);
 
   @override
   _QuestionBoxState createState() => _QuestionBoxState();
@@ -17,7 +18,7 @@ class _QuestionBoxState extends State<QuestionBox> {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
               child: Text(
-            "Which of these following is an idealdate for you?",
+            widget.question,
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: Colors.black,

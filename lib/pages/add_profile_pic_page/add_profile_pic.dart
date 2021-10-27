@@ -147,20 +147,15 @@ class _AddProfilePicState extends State<AddProfilePic> {
   }
 
   goToAlbumPage(XFile image) async {
-    List<int> imageBytes = File(image.path).readAsBytesSync();
-
-// convert that list to a string & encode the as base64 files
-    String imageString = base64Encode(imageBytes);
     setState(() {
       loading = true;
     });
     var network = UploadImage();
     var network1 = UserNetwork();
-    Timer(Duration(seconds: 6), () => offLoading());
-    // // String result = await network.uploadImage(imageString, 2);
-    // var userData = {"identification_image": result};
-    // UserModel result1 = await network1.patchUserData(userData);
-    // result1 != null ? onboardingCheck(result1) : null;
+    String result = await network.uploadImage(image.path);
+    var userData = {"identification_image": result};
+    UserModel result1 = await network1.patchUserData(userData);
+    result1 != null ? onboardingCheck(result1) : null;
   }
 
   offLoading() {

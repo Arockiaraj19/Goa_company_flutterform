@@ -1,10 +1,15 @@
 import 'dart:async';
 
+import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
+import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/shared/helpers/google_map.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
+import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../routes.dart';
 
@@ -16,13 +21,36 @@ class FindMatchPage extends StatefulWidget {
 }
 
 class _FindMatchPageState extends State<FindMatchPage> {
-
+  List<dynamic> location = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     saveLoginStatus(2);
-    Timer(Duration(seconds: 4), ()=>goToHomePage());
+    getLoc();
+  }
+
+  getLoc() async {
+    if (await Permission.location.request().isGranted) {
+      try {
+        location = await GoogleMapDisplay().createState().currentLocation();
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    var network = UserNetwork();
+    var userData = {
+      "latitude": location.length == 0 ? 0.toString() : location[0].toString(),
+      "longitude": location.length == 0 ? 0.toString() : location[1].toString(),
+    };
+    print("patch user data");
+    print(userData);
+    if (userData != null) {
+      UserModel result = await network.patchUserData(userData);
+    }
+
+    goToHomePage();
   }
 
   @override

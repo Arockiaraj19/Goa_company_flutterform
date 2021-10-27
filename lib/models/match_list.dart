@@ -15,24 +15,26 @@ class MatchListModel {
   int iV;
   String unmatchedDate;
   String unmatchedUser;
-  List<UserDetails> userDetails;
+  List<UserDetails> user1;
+  List<UserDetails> user2;
 
   MatchListModel(
       {this.id,
-        this.isMatched,
-        this.gameScore,
-        this.matchScore,
-        this.isDeleted,
-        this.requestedUser,
-        this.confirmedUser,
-        this.requestedDevice,
-        this.createdAt,
-        this.updatedAt,
-        this.matchNo,
-        this.iV,
-        this.unmatchedDate,
-        this.unmatchedUser,
-        this.userDetails});
+      this.isMatched,
+      this.gameScore,
+      this.matchScore,
+      this.isDeleted,
+      this.requestedUser,
+      this.confirmedUser,
+      this.requestedDevice,
+      this.createdAt,
+      this.updatedAt,
+      this.matchNo,
+      this.iV,
+      this.unmatchedDate,
+      this.unmatchedUser,
+      this.user1,
+      this.user2});
 
   MatchListModel.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -49,41 +51,25 @@ class MatchListModel {
     iV = json['__v'];
     unmatchedDate = json['unmatched_date'];
     unmatchedUser = json['unmatched_user'];
-    if (json['user_details'] != null) {
-      userDetails = new List<UserDetails>();
-      json['user_details'].forEach((v) {
-        userDetails.add(new UserDetails.fromJson(v));
+    if (json['user_id_1_details'] != null) {
+      user1 = new List<UserDetails>();
+      json['user_id_1_details'].forEach((v) {
+        user1.add(new UserDetails.fromJson(v));
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.id;
-    data['is_matched'] = this.isMatched;
-    data['game_score'] = this.gameScore;
-    data['match_score'] = this.matchScore;
-    data['is_deleted'] = this.isDeleted;
-    data['requested_user'] = this.requestedUser;
-    data['confirmed_user'] = this.confirmedUser;
-    data['requested_device'] = this.requestedDevice;
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
-    data['match_no'] = this.matchNo;
-    data['__v'] = this.iV;
-    data['unmatched_date'] = this.unmatchedDate;
-    data['unmatched_user'] = this.unmatchedUser;
-    if (this.userDetails != null) {
-      data['user_details'] = this.userDetails.map((v) => v.toJson()).toList();
+    if (json['user_id_2_details'] != null) {
+      user2 = new List<UserDetails>();
+      json['user_id_2_details'].forEach((v) {
+        user2.add(new UserDetails.fromJson(v));
+      });
     }
-    return data;
   }
 }
 
 class UserDetails {
   String sId;
   Location location;
-  int gender;
+  String gender;
   List<dynamic> profileImage;
   List<dynamic> profession;
   List<dynamic> interests;
@@ -104,44 +90,51 @@ class UserDetails {
   String updatedAt;
   int iV;
   String dob;
+  String identificationImage;
 
   UserDetails(
       {this.sId,
-        this.location,
-        this.gender,
-        this.profileImage,
-        this.profession,
-        this.interests,
-        this.hobbies,
-        this.relationshipStatus,
-        this.religion,
-        this.isBlocked,
-        this.isDeleted,
-        this.isDeactivated,
-        this.matchCount,
-        this.badCount,
-        this.userId,
-        this.firstName,
-        this.lastName,
-        this.mobileNumber,
-        this.sexualOrientation,
-        this.createdAt,
-        this.updatedAt,
-        this.iV,
-        this.dob});
+      this.location,
+      this.gender,
+      this.profileImage,
+      this.profession,
+      this.interests,
+      this.hobbies,
+      this.relationshipStatus,
+      this.religion,
+      this.isBlocked,
+      this.isDeleted,
+      this.isDeactivated,
+      this.matchCount,
+      this.badCount,
+      this.userId,
+      this.firstName,
+      this.lastName,
+      this.mobileNumber,
+      this.sexualOrientation,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.dob,
+      this.identificationImage});
 
   UserDetails.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     location = json['location'] != null
         ? new Location.fromJson(json['location'])
         : null;
-    gender = json['gender'];
-    profileImage = json['profile_image']==null?null:json['profile_image'].cast<String>();
-    profession = json['profession']==null?null:json['profession'].cast<String>();
-    interests = json['interests']==null?null:json['interests'].cast<String>();
-    hobbies = json['hobbies']==null?null:json['hobbies'].cast<String>();
+    gender = json['gender'].toString();
+    profileImage = json['profile_image'] == null
+        ? null
+        : json['profile_image'].cast<String>();
+    profession =
+        json['profession'] == null ? null : json['profession'].cast<String>();
+    interests =
+        json['interests'] == null ? null : json['interests'].cast<String>();
+    hobbies = json['hobbies'] == null ? null : json['hobbies'].cast<String>();
     relationshipStatus = json['relationship_status'];
-    religion = json['religion']==null?null:json['religion'].cast<String>();
+    religion =
+        json['religion'] == null ? null : json['religion'].cast<String>();
     isBlocked = json['is_blocked'];
     isDeleted = json['is_deleted'];
     isDeactivated = json['is_deactivated'];
@@ -156,6 +149,7 @@ class UserDetails {
     updatedAt = json['updatedAt'];
     iV = json['__v'];
     dob = json['dob'];
+    identificationImage = json['identification_image'];
   }
 
   Map<String, dynamic> toJson() {

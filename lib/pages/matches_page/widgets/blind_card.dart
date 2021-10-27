@@ -3,6 +3,7 @@ import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class BlindsCard extends StatefulWidget {
   final bool onWeb;
@@ -11,7 +12,12 @@ class BlindsCard extends StatefulWidget {
   final double testWidth;
   final ResponseData data;
   BlindsCard(
-      {Key key, this.onWeb = false, this.height, this.width, this.testWidth, this.data})
+      {Key key,
+      this.onWeb = false,
+      this.height,
+      this.width,
+      this.testWidth,
+      this.data})
       : super(key: key);
 
   @override
@@ -19,6 +25,9 @@ class BlindsCard extends StatefulWidget {
 }
 
 class _BlindsCardState extends State<BlindsCard> {
+  String convertime(now) {
+    return DateFormat('dd-MM-yyyy').format(now);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +45,21 @@ class _BlindsCardState extends State<BlindsCard> {
                             margin:
                                 EdgeInsetsDirectional.only(end: 10, start: 10),
                             child: CircleAvatar(
-                              radius: 28,
+                                radius: 28,
                                 backgroundColor: Colors.white,
-                              child: Icon(Icons.account_circle_outlined,
-                              size: 50,
-                              color: MainTheme.primaryColor,)
-                            )),
+                                child: Icon(
+                                  Icons.account_circle_outlined,
+                                  size: 50,
+                                  color: MainTheme.primaryColor,
+                                ))),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-
                             Container(
                               margin: EdgeInsetsDirectional.only(bottom: 5),
                               child: Text(
-                                widget.data.date.substring(0,10)??"",
+                                convertime(widget.data.date) ?? "",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -104,21 +113,21 @@ class _BlindsCardState extends State<BlindsCard> {
                     Container(
                         margin: EdgeInsetsDirectional.only(end: 10, start: 10),
                         child: CircleAvatar(
-                          radius: 28,
+                            radius: 28,
                             backgroundColor: Colors.white,
-                            child: Icon(Icons.account_circle_outlined,
+                            child: Icon(
+                              Icons.account_circle_outlined,
                               size: 50,
-                              color: MainTheme.primaryColor,)
-                        )),
+                              color: MainTheme.primaryColor,
+                            ))),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Container(
                           margin: EdgeInsetsDirectional.only(bottom: 5),
                           child: Text(
-                            widget.data.date.substring(0,10)??"",
+                            convertime(widget.data.date) ?? "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

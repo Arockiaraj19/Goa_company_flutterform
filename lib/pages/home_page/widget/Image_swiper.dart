@@ -45,6 +45,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
         // height: widget.height ?? 250,
         width: widget.width ?? MediaQuery.of(context).size.width,
         child: Swiper(
+          
           onIndexChanged: (int ind) {
             currentIndex = ind;
           },
@@ -62,17 +63,17 @@ class _ImageSwiperState extends State<ImageSwiper> {
                   goToDetailPage(widget.userSuggestionData.response[index]);
                 },
                 child: ImageCard(
+                  data: widget.userSuggestionData.response[index],
                   cardHeight: widget.itemheight ?? 300,
                   cardWidth: widget.itemwidth ?? 400,
-                  name: widget.userSuggestionData.response[index].firstName ??
-                      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-                  image: widget.userSuggestionData.response[index].profileImage
-                              .length ==
-                          0
+                  name:
+                      widget.userSuggestionData.response[index].firstName ?? "",
+                  image: widget.userSuggestionData.response[index]
+                              .identificationImage ==
+                          null
                       ? ""
-                      : widget.userSuggestionData.response[index].profileImage
-                              .first ??
-                          "",
+                      : widget.userSuggestionData.response[index]
+                          .identificationImage,
                 ));
           },
           itemCount: widget.userSuggestionData.response.length,
@@ -91,25 +92,30 @@ class _ImageSwiperState extends State<ImageSwiper> {
               goChatPage: () async {
                 print("message");
                 String groupid = await ChatNetwork().createGroup(
-                    widget.userSuggestionData.response[currentIndex].id);
+                    widget.userSuggestionData.response[currentIndex].id,
+                    data.userData);
 
-                goToChatPage(groupid,
-                    widget.userSuggestionData.response[currentIndex].id);
+                goToChatPage(
+                    groupid,
+                    widget.userSuggestionData.response[currentIndex].id,
+                    widget.userSuggestionData.response[currentIndex]
+                        .identificationImage,
+                    widget.userSuggestionData.response[currentIndex].firstName);
               },
-              onTapHeart: () {
-                 context.read<HomeProvider>().changeheart();
+              onTapHeart: () async {
+                await context.read<HomeProvider>().changeheart();
                 String confirmedUser =
                     widget.userSuggestionData.response[currentIndex].id;
                 UserModel userData = data.userData;
                 HomeButtonNetwork().postMatchRequest(confirmedUser, userData);
               },
-              onTapFlash: () {
+              onTapFlash: () async {
                 print("you click star");
-                 context.read<HomeProvider>().changestar();
-                print(currentIndex);
+                await context.read<HomeProvider>().changestar();
                 String likedUser =
                     widget.userSuggestionData.response[currentIndex].id;
                 HomeButtonNetwork().postLikeUnlike(likedUser, "1");
+                print(currentIndex);
               },
             ));
       })
@@ -120,7 +126,8 @@ class _ImageSwiperState extends State<ImageSwiper> {
     Routes.sailor(Routes.detailPage, params: {"userDetails": userDetails});
   }
 
-  goToChatPage(groupid, id) {
-    Routes.sailor(Routes.chattingPage, params: {"groupid": groupid, "id": id});
+  goToChatPage(groupid, id, image, name) {
+    Routes.sailor(Routes.chattingPage,
+        params: {"groupid": groupid, "id": id, "image": image, "name": name});
   }
 }

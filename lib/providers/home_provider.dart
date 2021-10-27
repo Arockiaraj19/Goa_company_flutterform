@@ -24,7 +24,6 @@ class HomeProvider extends ChangeNotifier {
   bool get showstar => _showstar;
   bool get showheart => _showheart;
 
-
   getData() async {
     _usersSuggestionData = null;
     _currentpage = 0;
@@ -45,7 +44,7 @@ class HomeProvider extends ChangeNotifier {
     _apply = true;
     _homeState = HomeState.Loading;
     _usersSuggestionData = null;
-    _type = lat == "null" ? 2 : 1;
+    _type = lat == "0" ? 2 : 1;
     _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
         _apply, _age, _distance, _lat, _lng, _type, _currentpage);
     print("ll22");
@@ -88,21 +87,20 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  changeheart() {
+  changeheart() async {
     _showheart = !_showheart;
     notifyListeners();
-    Future.delayed(Duration(seconds: 4));
+    await Future.delayed(Duration(seconds: 3));
     _showheart = !_showheart;
     notifyListeners();
   }
 
-  changestar() {
+  changestar() async {
+    print("star clicked");
     _showstar = !_showstar;
     notifyListeners();
-    Future.delayed(Duration(seconds: 4));
+    await Future.delayed(Duration(seconds: 3));
     _showstar = !_showstar;
     notifyListeners();
   }
-
-  
 }

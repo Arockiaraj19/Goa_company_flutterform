@@ -1,15 +1,19 @@
 import 'package:dating_app/models/user_suggestion.dart';
+import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class HomeGridViewcard extends StatefulWidget {
   final bool onWeb;
   final double width;
   final Responses userData;
-  HomeGridViewcard({Key key, this.onWeb = false, this.width, this.userData}) : super(key: key);
+  HomeGridViewcard({Key key, this.onWeb = false, this.width, this.userData})
+      : super(key: key);
 
   @override
   _HomeGridViewcardState createState() => _HomeGridViewcardState();
@@ -45,7 +49,7 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                           bottomRight: Radius.zero,
                         ),
                         child: Image.network(
-                          widget.userData.profileImage.first??"",
+                          widget.userData.identificationImage ?? "",
                           fit: BoxFit.cover,
                         ),
                       )),
@@ -79,23 +83,52 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                                   Container(
                                       padding:
                                           EdgeInsetsDirectional.only(end: 5),
-                                      child: CircularPercentIndicator(
-                                          linearGradient:
-                                              MainTheme.backgroundGradient,
-                                          animation: true,
-                                          backgroundColor: Colors.grey[50],
-                                          animationDuration: 1200,
-                                          radius: 30.0,
-                                          lineWidth: 5,
-                                          percent: 1,
-                                          center: Container(
-                                              child: Text(
-                                            '50',
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 10),
-                                          )))),
+                                      child: Consumer<HomeProvider>(
+                                        builder: (context, data, child) {
+                                          return CircularPercentIndicator(
+                                              linearGradient:
+                                                  MainTheme.backgroundGradient,
+                                              animation: true,
+                                              backgroundColor: Colors.grey[50],
+                                              animationDuration: 1200,
+                                              radius: 30.0,
+                                              lineWidth: 5,
+                                              percent: 1,
+                                              center: Container(
+                                                child: FutureBuilder(
+                                                  future: Persentage()
+                                                      .checkSuggestionPresentage(
+                                                          data.userData,
+                                                          widget.userData),
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      return Text(
+                                                        (snapshot.data * 100)
+                                                            .round()
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 10),
+                                                      );
+                                                    } else {
+                                                      return Text(
+                                                        '0',
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 10),
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ));
+                                        },
+                                      )),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -103,7 +136,7 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                                     children: [
                                       Container(
                                           child: Text(
-                                        '${widget.userData.firstName??""}, ${widget.userData.age.toString()}',
+                                        '${widget.userData.firstName ?? ""}, ${widget.userData.age.toString()}',
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,
@@ -170,11 +203,15 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                       bottomLeft: Radius.zero,
                       bottomRight: Radius.zero,
                     ),
-                    child: widget.userData.profileImage.length==0? Icon(FontAwesomeIcons.earlybirds,size: 50,)
-                        :Image.network(
-                      widget.userData.profileImage.first,
-                      fit: BoxFit.cover,
-                    ),
+                    child: widget.userData.identificationImage == null
+                        ? Icon(
+                            FontAwesomeIcons.earlybirds,
+                            size: 50,
+                          )
+                        : Image.network(
+                            widget.userData.identificationImage,
+                            fit: BoxFit.cover,
+                          ),
                   )),
               Container(
                   width: 200,
@@ -203,32 +240,61 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                  padding: EdgeInsetsDirectional.only(
-                                      end: 5, start: 5),
-                                  child: CircularPercentIndicator(
-                                      linearGradient:
-                                          MainTheme.backgroundGradient,
-                                      animation: true,
-                                      backgroundColor: Colors.grey[50],
-                                      animationDuration: 1200,
-                                      radius: 30.0,
-                                      lineWidth: 5,
-                                      percent: 0.5,
-                                      center: Container(
-                                          child: Text(
-                                        '50',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 10),
-                                      )))),
+                                padding: EdgeInsetsDirectional.only(
+                                    end: 5, start: 5),
+                                child: Consumer<HomeProvider>(
+                                  builder: (context, data, child) {
+                                    return CircularPercentIndicator(
+                                        linearGradient:
+                                            MainTheme.backgroundGradient,
+                                        animation: true,
+                                        backgroundColor: Colors.grey[50],
+                                        animationDuration: 1200,
+                                        radius: 30.0,
+                                        lineWidth: 5,
+                                        percent: 0.5,
+                                        center: Container(
+                                          child: FutureBuilder(
+                                            future: Persentage()
+                                                .checkSuggestionPresentage(
+                                                    data.userData,
+                                                    widget.userData),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
+                                              if (snapshot.hasData) {
+                                                return Text(
+                                                  (snapshot.data * 100)
+                                                      .round()
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 10),
+                                                );
+                                              } else {
+                                                return Text(
+                                                  '0',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 10),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ));
+                                  },
+                                ),
+                              ),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
                                       child: Text(
-                                    '${widget.userData.firstName??""}, ${widget.userData.age.toString()}',
+                                    '${widget.userData.firstName ?? ""}, ${widget.userData.age.toString()}',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,

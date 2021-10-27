@@ -6,6 +6,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
 // import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dio/dio.dart';
 
 import 'client/apiClient.dart';
@@ -17,19 +18,21 @@ class UserNetwork {
     try {
       final _dio = apiClient();
       var id = await getUserId();
+      print("ithu funtion kulla varuthaaa");
       print(userData);
       var data = await _dio.then((value) async {
         response =
             await value.patch(userDetailsEndpoint + "/" + id, data: userData);
         print("response");
         print(response.data);
+
         if (response.statusCode == 200) {
           return (response.data as List)
               .map((x) => UserModel.fromJson(x))
-              .toList()[0];
+              .toList();
         }
       });
-      return data;
+      return data[0];
     } catch (e) {
       print(e);
     }
@@ -58,7 +61,7 @@ class UserNetwork {
   }
 
   Future<UsersSuggestionModel> getUserSuggestionsData(
-      bool apply, String age, distance, type, lat, lng, int skip) async {
+      bool apply, String age, distance, lat, lng, type, int skip) async {
     Response response;
     try {
       var query;
@@ -72,6 +75,7 @@ class UserNetwork {
           "type": type,
           "skip": skip
         };
+        print(query);
       }
       final _dio = apiClient();
       String id = await getUserId();
@@ -100,11 +104,12 @@ class UserNetwork {
         response = await value.get(userInterestEndpoint);
         print("user interest response data");
         print(response.data);
-        if (response.statusCode == 200) {
-          return (response.data as List)
-              .map((x) => InterestModel.fromJson(x))
-              .toList();
-        }
+        final results = List<Map<String, dynamic>>.from(response.data);
+
+        List<InterestModel> interest = results
+            .map((hobbieData) => InterestModel.fromMap(hobbieData))
+            .toList(growable: false);
+        return interest;
       });
       return data;
     } catch (e) {
@@ -118,14 +123,14 @@ class UserNetwork {
       final _dio = apiClient();
       var data = _dio.then((value) async {
         response = await value.get(userHobbiesEndpoint);
-        print("user hobbies data");
-        print(response.data);
+        // print("user hobbies data");
+        // print(response.data);
         final results = List<Map<String, dynamic>>.from(response.data);
 
         List<HobbyModel> hobbies = results
             .map((hobbieData) => HobbyModel.fromMap(hobbieData))
             .toList(growable: false);
-        print(hobbies);
+        // print(hobbies);
         return hobbies;
       });
       return data;
@@ -201,6 +206,7 @@ class UserNetwork {
       String id = await getUserId();
       var data = _dio.then((value) async {
         response = await value.get(userMatchListEndpoint + "/" + id);
+        print("match list data");
         print(response.data);
         if (response.statusCode == 200) {
           return (response.data as List)
@@ -208,6 +214,31 @@ class UserNetwork {
               .toList();
         }
       });
+      return data;
+    } catch (e) {
+      print("d");
+      print(e);
+    }
+  }
+
+  Future getMatchedprofiledata(userid) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+
+      var data = _dio.then((value) async {
+        response = await value.get("/user/$userid/profile");
+        print("get match user list data");
+        print(response.data);
+        final results = List<Map<String, dynamic>>.from(response.data);
+
+        List<Responses> finaldata = results
+            .map((hobbieData) => Responses.fromJson(hobbieData))
+            .toList(growable: false);
+        return Routes.sailor(Routes.detailPage,
+            params: {"userDetails": finaldata[0]});
+      });
+
       return data;
     } catch (e) {
       print("d");

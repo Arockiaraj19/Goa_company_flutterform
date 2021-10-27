@@ -19,7 +19,7 @@ class PercentageBar extends StatefulWidget {
 
   PercentageBar(
       {Key key,
-      this.percentage = 0.8,
+      this.percentage,
       this.onEditProfilePage = false,
       this.onTapClose,
       this.colors,
@@ -39,7 +39,7 @@ class _PercentageBarState extends State<PercentageBar> {
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
             child: CircularPercentIndicator(
-          arcType: ArcType.FULL,
+          startAngle: 180,
           backgroundColor: Colors.grey[50],
           animation: true,
           animationDuration: 1200,
@@ -47,7 +47,7 @@ class _PercentageBarState extends State<PercentageBar> {
           lineWidth: 7,
           percent: widget.percentage,
           center: CircularPercentIndicator(
-            arcType: ArcType.FULL,
+            startAngle: 180,
             backgroundColor: Colors.grey[50],
             animation: true,
             animationDuration: 1200,
@@ -55,29 +55,40 @@ class _PercentageBarState extends State<PercentageBar> {
             lineWidth: 7,
             percent: widget.percentage,
             center: CircularPercentIndicator(
-              arcType: ArcType.FULL,
+              startAngle: 180,
               animation: true,
               backgroundColor: Colors.grey[50],
               animationDuration: 1200,
               radius: 90.0,
               lineWidth: 5,
               percent: widget.percentage,
-              center: widget.onEditProfilePage == true? Container(
-                  child: InkWell(
-                      onTap: () {
-                        widget.onTap();
-                      },
-                      child: SizedBox(height: 80,width: 80,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child:widget.selectedUserPic!=null? Image.file(File(widget.selectedUserPic.path),
-                            fit: BoxFit.cover,)
-                            :imageViewer(widget.image),
-                        ),
-                      ))):SizedBox(height: 80,width: 80,child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: imageViewer(widget.image),
-              ),),
+              center: widget.onEditProfilePage == true
+                  ? Container(
+                      child: InkWell(
+                          onTap: () {
+                            widget.onTap();
+                          },
+                          child: SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: widget.selectedUserPic != null
+                                  ? Image.file(
+                                      File(widget.selectedUserPic.path),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : imageViewer(widget.image),
+                            ),
+                          )))
+                  : SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: imageViewer(widget.image),
+                      ),
+                    ),
               linearGradient: MainTheme.loginBtnGradient,
             ),
             linearGradient: MainTheme.firstPercentBarColor,
@@ -105,5 +116,4 @@ class _PercentageBarState extends State<PercentageBar> {
           : Container()
     ]);
   }
-  
 }

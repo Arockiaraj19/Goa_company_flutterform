@@ -68,18 +68,20 @@ class _AnimationButtonState extends State<AnimationButton> {
               SizedBox(
                 width: 15,
               ),
-              Flash(
-                  preferences: AnimationPreferences(
-                    autoPlay: AnimationPlayStates.None,
-                  ),
-                  key: flash,
-                  child: CircularBtn(
-                    icon: FontAwesomeIcons.solidStar,
-                    btnColor: Colors.blue,
-                    ontap: () {
-                      widget.onTapFlash();
-                    },
-                  )),
+              widget.loadingstar
+                  ? CircularBtn(
+                      icon: FontAwesomeIcons.solidStar,
+                      btnColor: Colors.blue,
+                      ontap: () {
+                        widget.onTapFlash();
+                      },
+                    )
+                  : Lottiebtn(
+                      icon: Lottie.asset('assets/lottie/star.json',
+                          fit: BoxFit.cover),
+                      btnColor: Colors.red,
+                      ontap: () {},
+                    ),
               SizedBox(
                 width: 15,
               ),

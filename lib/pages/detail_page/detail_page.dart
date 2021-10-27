@@ -146,24 +146,31 @@ class _DetailPageState extends State<DetailPage> {
                         // width: 300,
                         padding: EdgeInsetsDirectional.only(start: 20, end: 20),
                         child: AnimationButton(
-                          loadingstar: loadingstar,
-                          loadingheart: loadingheart,
+                          loadingstar: data.showstar,
+                          loadingheart: data.showheart,
                           goChatPage: () async {
                             print("hello");
 
-                            String groupid = await ChatNetwork()
-                                .createGroup(widget.userDetails.id);
+                            String groupid = await ChatNetwork().createGroup(
+                                widget.userDetails.id, data.userData);
 
-                            goToChatPage(groupid, widget.userDetails.id);
+                            goToChatPage(
+                                groupid,
+                                widget.userDetails.id,
+                                widget.userDetails.identificationImage,
+                                widget.userDetails.firstName);
                           },
                           isDetail: true,
-                          onTapHeart: () {
+                          onTapHeart: () async {
+                            await context.read<HomeProvider>().changeheart();
                             String confirmedUser = widget.userDetails.id;
                             UserModel userData = data.userData;
                             HomeButtonNetwork()
                                 .postMatchRequest(confirmedUser, userData);
                           },
-                          onTapFlash: () {
+                          onTapFlash: () async {
+                            print("you click super star");
+                            await context.read<HomeProvider>().changestar();
                             String likedUser = widget.userDetails.id;
                             HomeButtonNetwork().postLikeUnlike(likedUser, "1");
                           },
@@ -400,6 +407,7 @@ class _DetailPageState extends State<DetailPage> {
 
 class Conatiner {}
 
-goToChatPage(groupid, id) {
-  Routes.sailor(Routes.chattingPage, params: {"groupid": groupid, "id": id});
+goToChatPage(groupid, id, image, name) {
+  Routes.sailor(Routes.chattingPage,
+      params: {"groupid": groupid, "id": id, "image": image, "name": name});
 }

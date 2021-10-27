@@ -1,5 +1,7 @@
+import 'package:dating_app/models/forgetresponse_model.dart';
 import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/response_model.dart';
+import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/pages/otp_page/otp_page.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
@@ -14,13 +16,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../routes.dart';
 
 class SignUpWithEmailPage extends StatefulWidget {
-  SignUpWithEmailPage({Key key}) : super(key: key);
+  final bool isforget;
+  SignUpWithEmailPage({this.isforget});
 
   @override
   _SignUpWithEmailPageState createState() => _SignUpWithEmailPageState();
 }
 
 class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
+  @override
+  void initState() {
+    super.initState();
+    print("sign up page kkulla enter aana enna boolean varuthu");
+    print(widget.isforget);
+  }
+
   TextEditingController _emailCtrl = TextEditingController();
   bool loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -68,14 +78,14 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                 height: 20.h,
               ),
               Container(
-                  height: 600.r,
-                  width: 450.r,
+                  height: 700.r,
+                  width: double.infinity,
                   child: Image.asset(
-                    "assets/images/mobileImage.png",
+                    "assets/images/signupWithEmail.png",
                     fit: BoxFit.fill,
                   )),
               SizedBox(
-                height: ScreenUtil().setHeight(70),
+                height: ScreenUtil().setHeight(30),
               ),
               commonPart(context, onWeb: false)
             ],
@@ -85,17 +95,36 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
     ));
   }
 
+  gotoForgetOtpPage() async {
+    setState(() {
+      loading = true;
+    });
+
+    var network = ForgetPassword();
+
+    ResponseForgetOtp result = await network.forgetGetOtp(_emailCtrl.text);
+    showtoast(result.msg.toString());
+    OtpModel data = OtpModel.fromJson({
+      "value": _emailCtrl.text,
+      "id": result.user_id,
+      "isMob": false,
+      "isSignUp": true
+    });
+    Routes.sailor(Routes.otpPage, params: {"otpData": data, "isforget": true});
+  }
+
   goToOtpPage() async {
-    // setState(() {
-    //   loading=true;
-    // });
+    setState(() {
+      loading = true;
+    });
     var network = EmailSignUpNetwork();
     ResponseData result = await network.verifyEmailForSignup(_emailCtrl.text);
     showtoast(result.msg.toString());
     OtpModel data = OtpModel.fromJson(
         {"value": _emailCtrl.text, "isMob": false, "isSignUp": true});
     result.statusDetails == 1
-        ? Routes.sailor(Routes.otpPage, params: {"otpData": data})
+        ? Routes.sailor(Routes.otpPage,
+            params: {"otpData": data, "isforget": false})
         : result.statusDetails == 2
             ? Routes.sailor(Routes.addingPasswordPage,
                 params: {"email": _emailCtrl.text})
@@ -175,10 +204,11 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                     fontWeight: FontWeight.w500,
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        setState(() {
-                          loading = !loading;
-                        });
-                        goToOtpPage();
+                        if (widget.isforget) {
+                          gotoForgetOtpPage();
+                        } else {
+                          goToOtpPage();
+                        }
                       }
                       // var dto = {"password": "123456", "email": "asd@mail.com"};
                       // _authStore.onLogin(dto);

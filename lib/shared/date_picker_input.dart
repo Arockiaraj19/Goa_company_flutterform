@@ -54,8 +54,8 @@ class _DatePickerInputState extends State<DatePickerInput> {
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900, 1),
-      lastDate: widget.lastDate ?? DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime(2200),
       builder: (context, child) {
         return Theme(
           data: ThemeData.from(

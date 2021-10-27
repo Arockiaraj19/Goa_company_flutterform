@@ -105,7 +105,8 @@ class MobileSignUpNetwork {
       print(mob);
       var data = _dio.then((value) async {
         response = await value.post(verifyMobileNoForSignupEndpoint,
-            data: {"mobile_number": "9688399791"});
+            data: {"mobile_number": mob});
+
         if (response.statusCode == 200) {
           return true;
         }

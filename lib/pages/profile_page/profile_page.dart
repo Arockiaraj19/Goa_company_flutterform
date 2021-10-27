@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dating_app/models/like_list.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/user_network.dart';
 
@@ -10,6 +11,7 @@ import 'package:dating_app/pages/profile_page/widgets/scores.dart';
 import 'package:dating_app/pages/profile_page/widgets/setting_box.dart';
 import 'package:dating_app/pages/profile_page/widgets/social_media_box.dart';
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/album_card_list.dart';
@@ -17,15 +19,18 @@ import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/interest_card_list.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:dating_app/shared/widgets/subheading.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_insta/flutter_insta.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:sailor/sailor.dart';
+import 'package:share/share.dart';
 
 import '../../routes.dart';
 
@@ -67,6 +72,13 @@ class _ProfilePageState extends State<ProfilePage>
         return _buildWeb();
       }
     });
+  }
+
+  getinsta() async {
+    FlutterInsta flutterInsta = new FlutterInsta();
+    await flutterInsta.getProfileData("coding_boy_");
+    print(flutterInsta.username);
+    print(flutterInsta.bio);
   }
 
   Widget _buildPhone() {
@@ -204,10 +216,26 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   child: Column(children: [
-                                    // PercentageBar(
-                                    //   image: data.userData.profileImage[0],
-                                    //   percentage: 0.8,
-                                    // ),
+                                    FutureBuilder(
+                                      future: Persentage()
+                                          .checkPresentage(data.userData),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          return PercentageBar(
+                                            image: data
+                                                .userData.identificationImage,
+                                            percentage: snapshot.data,
+                                          );
+                                        } else {
+                                          return PercentageBar(
+                                            image: data
+                                                .userData.identificationImage,
+                                            percentage: 0,
+                                          );
+                                        }
+                                      },
+                                    ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -216,7 +244,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           margin: EdgeInsetsDirectional.only(
                                               top: 5),
                                           child: Text(
-                                              "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""}, 22",
+                                              "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""}",
                                               style: _textStyleforName
 
                                               // TextStyle(
@@ -274,7 +302,8 @@ class _ProfilePageState extends State<ProfilePage>
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Routes.sailor(Routes.likeMatchListPage);
+                              Routes.sailor(Routes.likeMatchListPage,
+                                  params: {"index": 0});
                             },
                             child: Scores(
                               name: likeCount == -1 ? "" : likeCount.toString(),
@@ -285,7 +314,8 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                           GestureDetector(
                             onTap: () {
-                              Routes.sailor(Routes.likeMatchListPage);
+                              Routes.sailor(Routes.likeMatchListPage,
+                                  params: {"index": 1});
                             },
                             child: Scores(
                               name:
@@ -298,7 +328,7 @@ class _ProfilePageState extends State<ProfilePage>
                           GestureDetector(
                             onTap: () {},
                             child: Scores(
-                              name: "89",
+                              name: data.userData.score.toString(),
                               scores: "Score",
                               nameFont: profileScoreName,
                               valuefont: profileValue,
@@ -310,20 +340,26 @@ class _ProfilePageState extends State<ProfilePage>
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      SocialMediaBox(
-                        name: "Add Instagram",
-                        image: "assets/images/Instagram_icon.png",
-                        style: socialMediaText,
+                      InkWell(
+                        onTap: () => getinsta(),
+                        child: SocialMediaBox(
+                          name: "Add Instagram",
+                          image: "assets/images/Instagram_icon.png",
+                          style: socialMediaText,
+                        ),
                       ),
                       SocialMediaBox(
                         name: "andrina_rico",
                         image: "assets/images/Facebook_icon.png",
                         style: socialMediaTextBold,
                       ),
-                      SocialMediaBox(
-                        name: "Add Linkedin",
-                        image: "assets/images/LinkedIn_icons.png",
-                        style: socialMediaText,
+                      InkWell(
+                        onTap: () {},
+                        child: SocialMediaBox(
+                          name: "Add Linkedin",
+                          image: "assets/images/LinkedIn_icons.png",
+                          style: socialMediaText,
+                        ),
                       ),
                     ]),
                 Container(
@@ -415,7 +451,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         mainAxisSpacing: 0.0,
                                         crossAxisCount: 3,
                                         childAspectRatio: 2.8),
-                                itemCount: 0,
+                                itemCount: data.userData.interestDetails.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,
@@ -446,7 +482,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         mainAxisSpacing: 0.0,
                                         crossAxisCount: 3,
                                         childAspectRatio: 2.8),
-                                itemCount: 0,
+                                itemCount: data.userData.hobbyDetails.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return InterestBox(
                                     fillColor: Colors.white,
@@ -468,13 +504,13 @@ class _ProfilePageState extends State<ProfilePage>
                                       child: Text("Album", style: subHeading))
                                 ],
                               ),
-                              // AlbumCardList(
-                              //   mainAxisSpacing: 10.0,
-                              //   crossAxisSpacing: 10.0,
-                              //   crossAxisCount: 3,
-                              //   images: data.userData.profileImage,
-                              //   itemCount: data.userData.profileImage.length,
-                              // )
+                              AlbumCardList(
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                crossAxisCount: 3,
+                                images: data.userData.profileImage,
+                                itemCount: data.userData.profileImage.length,
+                              )
                             ],
                           )),
                       SingleChildScrollView(
@@ -482,6 +518,11 @@ class _ProfilePageState extends State<ProfilePage>
                         padding: EdgeInsetsDirectional.only(
                             start: 20, end: 20, top: 30),
                         child: Column(children: [
+                          _isCreatingLink
+                              ? Center(child: CircularProgressIndicator())
+                              : InkWell(
+                                  onTap: () => _createDynamicLink(),
+                                  child: SettingBox(name: "Refer & Earn")),
                           InkWell(
                               onTap: () {
                                 Routes.sailor(Routes.meetuppage);
@@ -511,6 +552,46 @@ class _ProfilePageState extends State<ProfilePage>
         ),
       );
     }));
+  }
+
+  bool _isCreatingLink = false;
+
+  Future<void> _createDynamicLink() async {
+    String _linkMessage;
+    setState(() {
+      _isCreatingLink = true;
+    });
+
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+      uriPrefix: 'https://life2sparks.page.link',
+      link: Uri.parse("https://life2sparks.page.link/ref?id=1234567890"),
+      androidParameters: AndroidParameters(
+        packageName: "com.life2sparks",
+        minimumVersion: 0,
+      ),
+      dynamicLinkParametersOptions: DynamicLinkParametersOptions(
+        shortDynamicLinkPathLength: ShortDynamicLinkPathLength.short,
+      ),
+      iosParameters: IosParameters(
+        bundleId: 'com.google.FirebaseCppDynamicLinksTestApp.dev',
+        minimumVersion: '0',
+      ),
+    );
+
+    Uri url;
+    if (true) {
+      final ShortDynamicLink shortLink = await parameters.buildShortLink();
+      url = shortLink.shortUrl;
+    } else {
+      url = await parameters.buildUrl();
+    }
+
+    setState(() {
+      _linkMessage = url.toString();
+      _isCreatingLink = false;
+    });
+    print(url);
+    return Share.share(_linkMessage);
   }
 
   goToEditProfilePagePage(UserModel userData) {

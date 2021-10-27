@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:dating_app/models/image_model.dart';
 import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/models/interest.dart';
 import 'package:dating_app/models/user.dart';
@@ -27,20 +28,16 @@ class UploadImage {
           queryParameters: {
             "directory": "user_gallery",
             "filename": "IMG_${id}_${DateTime.now().millisecond}.jpg",
+            "mimetype": "image/jpeg",
           },
         );
         print("response from edit profile data image");
         print(response.data);
 
         if (response.statusCode == 200) {
-          try {
-            Response imageresult =
-                await uploadaws(response.data["uploadUrl"], img64);
-            print("image result");
-            print(imageresult);
-          } catch (e) {
-            print(e);
-          }
+          ImageModel results = ImageModel.fromMap(response.data);
+          await uploadaws(results.uploadUrl, img64);
+          return results.viewUrl.toString();
         }
       });
       return data;
@@ -50,18 +47,19 @@ class UploadImage {
   }
 
   Future uploadaws(String uploadUrl, image) async {
-    print("uploadaws");
-    print(uploadUrl);
-    print("image path");
-    print(image);
     try {
       Response result = await Dio().put(
         uploadUrl,
-        data: File(image),
+        data: File(image).openRead(),
+        options: Options(
+          contentType: "image/jpeg",
+          headers: {
+            "Content-Length": File(image).lengthSync(),
+          },
+        ),
       );
       if (result.statusCode == 200) {
         print("image result");
-        print(result.data);
       }
 
       return result;

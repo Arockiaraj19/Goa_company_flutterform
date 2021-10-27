@@ -3,17 +3,21 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:dating_app/models/gender_model.dart';
 import 'package:dating_app/models/hobby.dart';
 import 'package:dating_app/models/interest.dart';
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/gender_network.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
+import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
 import 'package:dating_app/pages/profile_page/widgets/percentage_bar.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/shared/date_picker_input.dart';
 import 'package:dating_app/shared/helpers.dart';
+import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
@@ -88,7 +92,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     {
       "gender": "Male",
       "image": "assets/icons/male.png",
-      'isActive': true,
+      'isActive': false,
     },
     {
       "gender": "Female",
@@ -96,7 +100,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       'isActive': false,
     },
     {
-      "gender": "other",
+      "gender": "More",
       "image": "null",
       'isActive': false,
     }
@@ -109,7 +113,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   fill() async {
     _firstNameCtrl.text = widget.userdata.firstName;
     _lastNameCtrl.text = widget.userdata.lastName;
-    // selectedDate=widget.userdata.dob;
+
     _bioCtrl.text = widget.userdata.bio ?? "";
     _heightCtrl.text =
         widget.userdata.height == null ? "" : widget.userdata.height.toString();
@@ -138,11 +142,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   fillInterests() {
     for (int i = 0; i < interestData1.length; i++) {
-      if (widget.userdata.interests.contains(interestData1[i].id)) {
+      if (widget.userdata.interests.contains(interestData1[i].interest_id)) {
         interestBool[i] = true;
-        interestSelected.add(interestData1[i].id);
+        interestSelected.add(interestData1[i].interest_id);
         var val = {
-          "interest_id": interestData1[i].id,
+          "interest_id": interestData1[i].interest_id,
           "title": interestData1[i].title
         };
         interestSelected1.add(val);
@@ -150,11 +154,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  Future _future;
+  String _selectedGender;
+  String _selectedGenderid;
+  GenderModel genderdetail;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // fill();
+    time = 0;
+    fill();
+    _future = GenderNetwork().getGenderData();
     if (interestData == null) {
       interestData = UserNetwork().getUserInterests();
       hobbyData = UserNetwork().getUserHobbies();
@@ -171,6 +181,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  int time = 0;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -279,27 +290,50 @@ class _EditProfilePageState extends State<EditProfilePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              // PercentageBar(
-              //   percentage: 0.7,
-              //   onEditProfilePage: true,
-              //   onTap: () {
-              //     selectUserPic();
-              //   },
-              //   image: widget.userdata.profileImage.first,
-              //   selectedUserPic: selectedUserPic,
-              //   onTapClose: () {
-              //     setState(() {
-              //       selectedUserPic = null;
-              //     });
-              //   },
-              // ),
+              FutureBuilder(
+                future: Persentage().checkPresentage(widget.userdata),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    return PercentageBar(
+                      percentage: snapshot.data,
+                      onEditProfilePage: true,
+                      onTap: () {
+                        selectUserPic();
+                      },
+                      image: widget.userdata.identificationImage,
+                      selectedUserPic: selectedUserPic,
+                      onTapClose: () {
+                        setState(() {
+                          selectedUserPic = null;
+                        });
+                      },
+                    );
+                  } else {
+                    return PercentageBar(
+                      percentage: 0,
+                      onEditProfilePage: true,
+                      onTap: () {
+                        selectUserPic();
+                      },
+                      image: widget.userdata.identificationImage,
+                      selectedUserPic: selectedUserPic,
+                      onTapClose: () {
+                        setState(() {
+                          selectedUserPic = null;
+                        });
+                      },
+                    );
+                  }
+                },
+              ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     margin: EdgeInsetsDirectional.only(top: 5),
                     child: Text(
-                      "Adrianne Rico, 22",
+                      widget.userdata.firstName ?? "Some thing wrong",
                       style: _textStyleforName,
                     ),
                   ),
@@ -439,36 +473,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 70,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              physics: ClampingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: itemGender.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                dynamic item = itemGender[index];
-                                return GenderCard(
-                                  name: item["gender"],
-                                  image: item["image"],
-                                  isActive: item["isActive"],
-                                  onTap: () {
-                                    if (mounted) {
-                                      setState(() {
-                                        selectedMenuIndex = index;
-                                        itemGender = itemGender
-                                            .map<Map<String, dynamic>>(
-                                                (Map<String, dynamic> item) {
-                                          item['isActive'] = false;
-                                          return item;
-                                        }).toList();
-                                        itemGender[index]['isActive'] = true;
-                                      });
-                                    }
-                                    print(
-                                        'pppppppppppppppppppppppppppppppppppp${item["gender"]}');
-                                  },
+                          child: FutureBuilder(
+                            future: _future,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                List<GenderModel> genderdata = snapshot.data;
+                                if (time == 0) {
+                                  _selectedGenderid = widget.userdata.gender;
+                                  genderdetail = genderdata.firstWhere(
+                                      (element) =>
+                                          element.id == widget.userdata.gender);
+                                  print("inga na select pannathu varuthaa");
+                                  print(_selectedGenderid);
+                                  print(genderdetail);
+                                }
+                                return GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisSpacing: 0.0,
+                                            mainAxisSpacing: 0.0,
+                                            crossAxisCount: 3,
+                                            childAspectRatio: 2.8),
+                                    itemCount: genderdata.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return GenderEditCard(
+                                        data: genderdata[index],
+                                        id: _selectedGenderid,
+                                        onTap: () async {
+                                          setState(() {
+                                            _selectedGenderid =
+                                                genderdata[index].id;
+                                            genderdetail = genderdata[index];
+                                          });
+                                          time++;
+                                        },
+                                      );
+                                    });
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(),
                                 );
-                              }),
+                              }
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -517,24 +568,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       setState(() {
                                         interestBool[index] = false;
                                       });
-                                      interestSelected
-                                          .remove(snapshot.data[index].id);
-                                      var val = {
-                                        "interest_id": snapshot.data[index].id,
-                                        "title": snapshot.data[index].title
-                                      };
-                                      interestSelected1.remove(val);
+                                      interestSelected.remove(
+                                          snapshot.data[index].interest_id);
+
+                                      interestSelected1
+                                          .remove(snapshot.data[index].toMap());
                                     } else {
                                       setState(() {
                                         interestBool[index] = true;
                                       });
-                                      interestSelected
-                                          .add(snapshot.data[index].id);
-                                      var val = {
-                                        "interest_id": snapshot.data[index].id,
-                                        "title": snapshot.data[index].title
-                                      };
-                                      interestSelected1.add(val);
+                                      interestSelected.add(
+                                          snapshot.data[index].interest_id);
+
+                                      interestSelected1
+                                          .add(snapshot.data[index].toMap());
                                     }
                                   },
                                 );
@@ -692,9 +739,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 GradientButton(
                   margin: EdgeInsets.all(0),
                   height: MediaQuery.of(context).size.height / 20,
-                  name: "Confirm",
+                  name: loading ? "Loading..." : "Confirm",
                   gradient: MainTheme.loginBtnGradient,
                   active: true,
+                  isLoading: loading,
                   color: Colors.white,
                   width: ScreenUtil().setWidth(300),
                   fontWeight: FontWeight.bold,
@@ -710,16 +758,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       setState(() {
                         loading = true;
                       });
-                      var result = selectedUserPic == null
-                          ? widget.userdata.profileImage
-                          : await uploadImage();
+                      String result = selectedUserPic == null
+                          ? widget.userdata.identificationImage
+                          : await UploadImage()
+                              .uploadImage(selectedUserPic.path);
+
                       var userData = {
                         "first_name": _firstNameCtrl.text,
                         "last_name":
                             _lastNameCtrl.text, //"email":_emailCtrl.text,
                         "profession": ["$dropdownProfessionValue"],
                         "dob": selectedDate.toString(),
-                        // "gender": [],
+                        "gender_id": _selectedGenderid.toString(),
+                        "gender_details": [genderdetail.toMap()],
                         "height": int.parse(_heightCtrl.text),
                         "weight": int.parse(_weightCtrl.text),
                         "bio": _bioCtrl.text,
@@ -727,8 +778,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         "hobbies": hobbieSelected,
                         "hobby_details": hobbieSelected1,
                         "interest_details": interestSelected1,
-                        "profile_image": result
+                        "identification_image": result
                       };
+                      print("edit profile userdata");
                       print(userData);
                       UserModel data =
                           await UserNetwork().patchUserData(userData);
@@ -744,15 +796,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             )),
       ),
     );
-  }
-
-  uploadImage() async {
-    // Uint8List imageString = await File(selectedUserPic.path).readAsBytes();
-    // // List<int> imageBytes = File(selectedUserPic.path).readAsBytesSync();
-    // // String imageString = base64Encode(imageBytes);
-    // var network = UploadImage();
-    // // String result = await network.uploadImage(imageString);
-    // return [result];
   }
 
   void selectUserImage() {

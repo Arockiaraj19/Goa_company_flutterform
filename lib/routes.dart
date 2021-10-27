@@ -1,7 +1,11 @@
+import 'package:dating_app/models/forgetresponse_model.dart';
+import 'package:dating_app/models/matchuser_model.dart';
 import 'package:dating_app/models/otp_model.dart';
+import 'package:dating_app/models/question_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/pages/Interest_hobbies_page/interest_hobbies_page.dart';
 import 'package:dating_app/pages/add_profile_pic_page/add_profile_pic.dart';
+import 'package:dating_app/pages/album_view_page/album_view_page.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
 import 'package:dating_app/pages/comment_page/comment_page.dart';
 import 'package:dating_app/pages/create_profile_page/Create_profile_page.dart';
@@ -38,6 +42,7 @@ import 'pages/add_album_page/add_album_page.dart';
 import 'pages/imagecheck.dart';
 import 'pages/meet_page/meetup_page.dart';
 import 'pages/subscriptions/subscription_page.dart';
+import 'pages/success/Success_page.dart';
 
 class Routes {
   // RouteNames
@@ -75,6 +80,8 @@ class Routes {
   static String subscription = "subscription";
   static String payment = "payment";
   static String imagecheck = "imagecheck";
+  static String success = "success";
+  static String albumview = "albumview";
 
   static final sailor = Sailor();
 
@@ -147,8 +154,12 @@ class Routes {
       SailorRoute(
           name: signUpWithEmailPage,
           defaultTransitions: [SailorTransition.fade_in],
+          params: [SailorParam<bool>(name: 'isforget')],
           builder: (context, args, params) {
-            return SignUpWithEmailPage();
+            bool isforget = Sailor.param<bool>(context, "isforget");
+            return SignUpWithEmailPage(
+              isforget: isforget,
+            );
           }),
       SailorRoute(
           name: signUpWithMobilePage,
@@ -160,22 +171,36 @@ class Routes {
       SailorRoute(
           name: otpPage,
           defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<OtpModel>(name: "otpData")],
+          params: [
+            SailorParam<OtpModel>(name: "otpData"),
+            SailorParam<bool>(name: "isforget")
+          ],
           builder: (context, args, params) {
             OtpModel otpData = Sailor.param<OtpModel>(context, "otpData");
+            bool isforget = Sailor.param<bool>(context, "isforget");
             return OtpPage(
               otpData: otpData,
+              isforget: isforget,
             );
           }),
 
       SailorRoute(
           name: addingPasswordPage,
           defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<String>(name: 'email')],
+          params: [
+            SailorParam<String>(name: 'email'),
+            SailorParam<ResponseSubmitOtp>(name: 'otpdata'),
+            SailorParam<bool>(name: "isforget")
+          ],
           builder: (context, args, params) {
             String email = Sailor.param<String>(context, "email");
+            ResponseSubmitOtp otpdata =
+                Sailor.param<ResponseSubmitOtp>(context, "otpdata");
+            bool isforget = Sailor.param<bool>(context, "isforget");
             return AddingPasswordForSignUp(
               email: email,
+              otpdata: otpdata,
+              isforget: isforget,
             );
           }),
 
@@ -256,28 +281,66 @@ class Routes {
             SailorParam<String>(
               name: 'id',
             ),
+            SailorParam<String>(
+              name: 'image',
+            ),
+            SailorParam<String>(
+              name: 'name',
+            ),
           ],
           builder: (context, args, params) {
             String groupid = Sailor.param<String>(context, "groupid");
             String id = Sailor.param<String>(context, "id");
+            String image = Sailor.param<String>(context, "image");
+            String name = Sailor.param<String>(context, "name");
             return ChattingPage(
               groupid: groupid,
               id: id,
+              image: image,
+              name: name,
             );
           }),
 
       SailorRoute(
           name: perfectMatchPage,
           defaultTransitions: [SailorTransition.fade_in],
+          params: [
+            SailorParam<UserModel>(
+              name: 'user1',
+            ),
+            SailorParam<MatchUser>(
+              name: 'user2',
+            ),
+          ],
           builder: (context, args, params) {
-            return PerfectMatchPage();
+            UserModel user1 = Sailor.param<UserModel>(context, "user1");
+            MatchUser user2 = Sailor.param<MatchUser>(context, "user2");
+            return PerfectMatchPage(
+              user1: user1,
+              user2: user2,
+            );
           }),
 
       SailorRoute(
           name: quizGamePage,
+          params: [
+            SailorParam<List<Getquestion>>(
+              name: 'questions',
+            ),
+             SailorParam<String>(
+              name: 'playid',
+            ),
+          ],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
-            return QuizGamePage();
+            List<Getquestion> questions =
+                Sailor.param<List<Getquestion>>(context, "questions");
+              String playid =
+                Sailor.param<String>(context, "playid");
+            return QuizGamePage(
+              questions: questions,
+              playid:playid
+            );
           }),
 
       SailorRoute(
@@ -313,9 +376,13 @@ class Routes {
 
       SailorRoute(
           name: likeMatchListPage,
+          params: [SailorParam<int>(name: 'index')],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
-            return LikeMatchListPage();
+            int index = Sailor.param<int>(context, "index");
+            return LikeMatchListPage(
+              index: index,
+            );
           }),
       SailorRoute(
           name: meetuppage,
@@ -341,6 +408,25 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             return Imagecheck();
+          }),
+
+      SailorRoute(
+          name: success,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return SuccessPage();
+          }),
+
+      SailorRoute(
+          name: albumview,
+          params: [SailorParam<List<String>>(name: 'galleryItems')],
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            List<String> galleryItems =
+                Sailor.param<List<String>>(context, "galleryItems");
+            return AlbumView(
+              galleryItems: galleryItems,
+            );
           }),
     ]);
   }

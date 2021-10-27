@@ -33,7 +33,7 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
 
     var _textStyleForSikp = TextStyle(
       color: MainTheme.onboardingTextSkip,
-      fontSize: ScreenUtil().setSp(MainTheme.onboardingFontSize),
+      fontSize: 40.sp,
       fontFamily: "Inter",
     );
 
@@ -95,16 +95,16 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
             ),
             index == 2
                 ? Positioned(
-                    bottom: 10.w,
-                    right: 20.w,
+                    bottom: 90.w,
+                    right: 60.w,
                     child: GradientButton(
-                      height: 40.h,
-                      fontSize: 45.sp,
+                      height: 35.h,
+                      fontSize: 35.sp,
                       name: 'Get Started',
                       gradient: MainTheme.loginwithBtnGradient,
                       active: true,
                       color: Colors.white,
-                      width: 400.w,
+                      width: 300.w,
                       borderRadius: BorderRadius.circular(20.sp),
                       fontWeight: FontWeight.w500,
                       onPressed: () async {
@@ -116,13 +116,13 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
                       },
                     ))
                 : Positioned(
-                    bottom: 30.w,
-                    right: 40.w,
+                    bottom: 125.w,
+                    right: 70.w,
                     child: InkWell(
                         onTap: () {
                           Routes.sailor(Routes.signUpPage);
                         },
-                        child: Text('Skip', style: _textStyleForSikp)))
+                        child: Text('Skip', style: _textStyleForSikp))),
           ]);
         },
         loop: false,
@@ -130,7 +130,7 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
         autoplay: false,
         fade: 0.0,
         pagination: SwiperPagination(
-          
+            margin: EdgeInsets.symmetric(vertical: 100.w, horizontal: 70.w),
             alignment: Alignment.bottomLeft,
             builder: DotSwiperPaginationBuilder(
                 color: Colors.grey[300], activeColor: MainTheme.primaryColor)),

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class ChatMessage {
   String id;
   String groupid;
@@ -7,6 +9,8 @@ class ChatMessage {
   List<String> readByRecipients;
   List<Details> senderDetails;
   List<Details> receiverDetails;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   ChatMessage({
     this.id,
@@ -15,6 +19,8 @@ class ChatMessage {
     this.readByRecipients,
     this.senderDetails,
     this.receiverDetails,
+    this.createdAt,
+    this.updatedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,19 +31,27 @@ class ChatMessage {
       'readByRecipients': readByRecipients,
       'senderDetails': senderDetails?.map((x) => x.toMap())?.toList(),
       'receiverDetails': receiverDetails?.map((x) => x.toMap())?.toList(),
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
     };
   }
 
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
-      id: map['id'],
-      groupid: map['groupid'],
+      id: map['_id'],
+      groupid: map['group_id'],
       message: map['message'],
       readByRecipients: List<String>.from(map['readByRecipients']),
-      senderDetails: List<Details>.from(
-          map['sender_details'].map((x) => Details.fromMap(x))),
-      receiverDetails: List<Details>.from(
-          map['receiver_details'].map((x) => Details.fromMap(x))),
+      senderDetails: map['sender_details'] != null
+          ? List<Details>.from(
+              map['sender_details']?.map((x) => Details.fromMap(x)))
+          : null,
+      receiverDetails: map['receiver_details'] != null
+          ? List<Details>.from(
+              map['receiver_details']?.map((x) => Details.fromMap(x)))
+          : null,
+      createdAt: DateTime.parse(map['createdAt'].toString()).toLocal(),
+      updatedAt: DateTime.parse(map['updatedAt'].toString()).toLocal(),
     );
   }
 
@@ -51,10 +65,12 @@ class Details {
   String id;
   String firstname;
   String lastname;
+  String userId;
   Details({
     this.id,
     this.firstname,
     this.lastname,
+    this.userId,
   });
 
   Map<String, dynamic> toMap() {
@@ -62,14 +78,16 @@ class Details {
       'id': id,
       'firstname': firstname,
       'lastname': lastname,
+      'userId': userId,
     };
   }
 
   factory Details.fromMap(Map<String, dynamic> map) {
     return Details(
-      id: map['_id'],
-      firstname: map['first_name'],
-      lastname: map['last_name'],
+      id: map['id'],
+      firstname: map['firstname'],
+      lastname: map['lastname'],
+      userId: map['user_id'],
     );
   }
 
