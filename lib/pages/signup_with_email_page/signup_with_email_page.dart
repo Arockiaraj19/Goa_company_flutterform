@@ -3,15 +3,12 @@ import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
-import 'package:dating_app/pages/otp_page/otp_page.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
-import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../routes.dart';
 

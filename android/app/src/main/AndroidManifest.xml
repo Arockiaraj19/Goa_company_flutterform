@@ -11,7 +11,7 @@
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true">
-      <!-- <meta-data android:name="com.facebook.sdk.ApplicationId" 
+      <meta-data android:name="com.facebook.sdk.ApplicationId" 
         android:value="@string/facebook_app_id"/>
     
     <activity android:name="com.facebook.FacebookActivity"
@@ -28,7 +28,7 @@
             <data android:scheme="@string/fb_login_protocol_scheme" />
         </intent-filter>
     </activity>
-   -->
+  
 
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyAVJ2MU4IKey0sXdKG3VvBmn1Tf9p7Hbe0"/>

@@ -39,6 +39,7 @@ Future<Dio> apiClient() async {
     // Do something with response error
     if (error.response != null) {
       // print(error.response);
+      print("intercepter error la print aakuthaaa");
       showtoast(error.response.data["msg"]);
       print(error.response.data);
       print(error.requestOptions.data);

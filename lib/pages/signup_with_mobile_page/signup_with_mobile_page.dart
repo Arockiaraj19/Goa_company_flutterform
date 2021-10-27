@@ -86,6 +86,14 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    myFocusNode = FocusNode();
+  }
+
+  FocusNode myFocusNode;
+
   Widget _commonBuild(BuildContext context, {bool onWeb = false}) {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width / 2;
@@ -123,6 +131,8 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
               Container(
                 width: 180.w,
                 child: DropdownSearch<CountryCode>(
+                  searchDelay: Duration(seconds: 0),
+                  focusNode: myFocusNode,
                   mode: Mode.BOTTOM_SHEET,
                   dropdownButtonBuilder: (context) {
                     return Container();
@@ -172,19 +182,18 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                           style: BorderStyle.solid),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null) {
-                      return "* Required";
-                    } else {
-                      return null;
-                    }
-                  },
+                  // validator: (value) {
+                  //   if (value == null) {
+                  //     return "* Required";
+                  //   } else {
+                  //     return null;
+                  //   }
+                  // },
                   showSearchBox: true,
                   isFilteredOnline: true,
                   itemAsString: (CountryCode u) => u.telephonecode,
                   onFind: (String filter) async {
-                    print("on find eppu work aakuthu");
-                    print(filter);
+                    myFocusNode.requestFocus();
                     List<CountryCode> response =
                         await CountryCodeNetwork().getcountrycode(filter);
 

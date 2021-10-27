@@ -220,7 +220,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               }
               RegExp regex = new RegExp(passwordpattern.toString());
               if (!regex.hasMatch(val)) {
-                return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
+                return 'Your password must be have at least 8 \ncharacters long, 1 uppercase , 1 lowercase,\n1 number & 1 special character';
               }
               return null;
             },
@@ -304,7 +304,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
 
               RegExp regex = new RegExp(passwordpattern.toString());
               if (!regex.hasMatch(val)) {
-                return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
+                return 'Your password must be have at least 8 \ncharacters long, 1 uppercase , 1 lowercase,\n1 number & 1 special character';
               }
               return null;
             },
