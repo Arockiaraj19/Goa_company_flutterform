@@ -327,13 +327,19 @@ class Routes {
             SailorParam<List<Getquestion>>(
               name: 'questions',
             ),
+             SailorParam<String>(
+              name: 'playid',
+            ),
           ],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             List<Getquestion> questions =
                 Sailor.param<List<Getquestion>>(context, "questions");
+              String playid =
+                Sailor.param<String>(context, "playid");
             return QuizGamePage(
               questions: questions,
+              playid:playid
             );
           }),
 

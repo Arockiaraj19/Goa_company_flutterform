@@ -1,9 +1,12 @@
+import 'package:dating_app/models/country_code_model.dart';
+import 'package:dating_app/networks/countrycode_network.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -115,71 +118,158 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
           SizedBox(
             height: 10.h,
           ),
-          TextFormField(
-            controller: _numberCtrl,
-            cursorColor: Colors.pink,
-            textAlign: TextAlign.left,
-            keyboardType: TextInputType.number,
-            style: TextStyle(
-                fontSize: 40.sp,
-                letterSpacing: 1.0,
-                fontWeight: FontWeight.w400,
-                color: MainTheme.enterTextColor),
-            decoration: InputDecoration(
-              isDense: true,
-              prefixText: "+91",
-              prefixStyle: TextStyle(
-                  color: MainTheme.enterTextColor,
-                  fontSize: 40.sp,
-                  fontFamily: "lato",
-                  fontWeight: FontWeight.w400),
-              contentPadding: EdgeInsets.only(
-                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
-              hintText: 'Mobile number',
-              hintStyle: TextStyle(
-                  fontSize: 40.sp,
-                  letterSpacing: 1.0,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xffC4C4C4)),
-              errorStyle: TextStyle(
-                fontSize: 40.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.pink,
-              ),
-              errorBorder: OutlineInputBorder(
-                gapPadding: 0,
-                borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color(0xffC4C4C4),
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
-              ),
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return "* Required";
-              }
-              RegExp regex = new RegExp(numberpattern);
-              if (!regex.hasMatch(value)) {
-                return 'Please enter only number';
-              }
-              if (value.length > 10 || value.length < 10) {
-                return "Please enter only 10 numbers";
-              }
+          Row(
+            children: [
+              Container(
+                width: 180.w,
+                child: DropdownSearch<CountryCode>(
+                  mode: Mode.BOTTOM_SHEET,
+                  dropdownButtonBuilder: (context) {
+                    return Container();
+                  },
+                  dropdownBuilderSupportsNullItem: true,
+                  dropDownButton: Icon(
+                    Icons.arrow_back,
+                    size: 0,
+                  ),
+                  dropdownSearchDecoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                        left: 18.0.w, bottom: 0.0.h, top: 0.0.h, right: 2.0.w),
+                    hintText: "+91",
+                    hintStyle: TextStyle(
+                        fontSize: 40.sp,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xffC4C4C4)),
+                    errorStyle: TextStyle(
+                      fontSize: 40.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.pink,
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderSide: BorderSide(
+                          color: Colors.pink,
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.pink,
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color(0xffC4C4C4),
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.pink,
+                          width: 1,
+                          style: BorderStyle.solid),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null) {
+                      return "* Required";
+                    } else {
+                      return null;
+                    }
+                  },
+                  showSearchBox: true,
+                  isFilteredOnline: true,
+                  itemAsString: (CountryCode u) => u.telephonecode,
+                  onFind: (String filter) async {
+                    print("on find eppu work aakuthu");
+                    print(filter);
+                    List<CountryCode> response =
+                        await CountryCodeNetwork().getcountrycode(filter);
 
-              return null;
-            },
+                    return response;
+                  },
+                  onChanged: (CountryCode data) {},
+                ),
+              ),
+              SizedBox(
+                width: 10.w,
+              ),
+              Expanded(
+                child: Container(
+                  child: TextFormField(
+                    controller: _numberCtrl,
+                    cursorColor: Colors.pink,
+                    textAlign: TextAlign.left,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                        fontSize: 40.sp,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.w400,
+                        color: MainTheme.enterTextColor),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.only(
+                          left: 18.0.w,
+                          bottom: 12.0.h,
+                          top: 12.0.h,
+                          right: 2.0.w),
+                      hintText: 'Mobile number',
+                      hintStyle: TextStyle(
+                          fontSize: 40.sp,
+                          letterSpacing: 1.0,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xffC4C4C4)),
+                      errorStyle: TextStyle(
+                        fontSize: 40.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.pink,
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        gapPadding: 0,
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xffC4C4C4),
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "* Required";
+                      }
+                      RegExp regex = new RegExp(numberpattern);
+                      if (!regex.hasMatch(value)) {
+                        return 'Please enter only number';
+                      }
+                      if (value.length > 10 || value.length < 10) {
+                        return "Please enter only 10 numbers";
+                      }
+
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(
             height: 50.h,

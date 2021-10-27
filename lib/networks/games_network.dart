@@ -1,5 +1,8 @@
+import 'package:dating_app/models/game_request_model.dart';
 import 'package:dating_app/models/games.dart';
 import 'package:dating_app/models/question_model.dart';
+import 'package:dating_app/models/user2_game_request_model.dart';
+import 'package:dating_app/models/user2_question_model.dart';
 import 'package:dating_app/networks/client/apiClient.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
@@ -29,19 +32,21 @@ class Games {
     }
   }
 
-  Future sendgamerequest() async {
+  Future sendgamerequest(gameid, user2) async {
     Response response;
     try {
       final _dio = apiClient();
+      String id = await getUserId();
       var data = _dio.then((value) async {
         response = await value.post(create_game_request, data: {
-          "game_id": "611674f2715272678c19c9cb",
-          "match_id": "6110e19d4039d12c40a68aee",
-          "confirmed_user": "610ccb5b9d38be286811f02d",
-          "requested_user": "6109417a9d387a29ac196f96"
+          "game_id": gameid,
+          "confirmed_user": user2,
+          "requested_user": id,
         });
         print("game request");
-        print(response.data);
+        print(response.data["response"]);
+        GameRequest reuslt = GameRequest.fromMap(response.data["response"]);
+        return reuslt;
       });
       return data;
     } catch (e) {
@@ -64,18 +69,20 @@ class Games {
     }
   }
 
-  Future answerquestion(gameid, questionid, option, type) async {
+  Future answerquestion(String gameid, String questionid, String option,
+      String type, String playid) async {
     Response response;
     try {
       final _dio = apiClient();
       String id = await getUserId();
       var data = _dio.then((value) async {
         response = await value.post(gameanswer, data: {
-          "game_play_id": id,
+          "game_play_id": playid,
           "game_id": gameid,
           "question_id": questionid,
           "option": option,
-          "question_type": type
+          "question_type": type,
+          "user": id,
         });
         print("game answer");
         print(response.data);
@@ -86,16 +93,63 @@ class Games {
     }
   }
 
-  Future getquestion(id) async {
+  Future getquestion(id, playid) async {
     Response response;
     try {
       final _dio = apiClient();
       var data = _dio.then((value) async {
-        response = await value.get(getgamesquestion + id);
+        response = await value.get("/user/gamequestions/$id/play/$playid");
         print("get questions");
         print(response.data);
         final results = List<Map<String, dynamic>>.from(response.data);
 
+        List<Getquestion> finaldata = results
+            .map((codeData) => Getquestion.fromMap(codeData))
+            .toList(growable: false);
+
+        return finaldata;
+      });
+      return data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future checkrequest(String user) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+      String id = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.get("/user/requestedgame", queryParameters: {
+          "user_id_1": id,
+          "user_id_2": user,
+        });
+        print("check game request");
+        print(response.data);
+        CheckRequestModel result = CheckRequestModel.fromMap(response.data);
+        List<Getquestion> finaldata =
+            await sendrequest(result.gameId, result.questions);
+        User2Question combinedata = User2Question.fromMap(result.id, finaldata);
+        return combinedata;
+      });
+      return data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future sendrequest(String gameid, List<String> question) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+
+      var data = _dio.then((value) async {
+        response = await value.post("/user/reqgamequestions",
+            data: {"game_id": gameid, "questions": question});
+        print("game send requestion");
+        print(response.data);
+        final results = List<Map<String, dynamic>>.from(response.data);
         List<Getquestion> finaldata = results
             .map((codeData) => Getquestion.fromMap(codeData))
             .toList(growable: false);

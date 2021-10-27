@@ -11,7 +11,7 @@ enum HomeState { Initial, Loading, Loaded, Error }
 
 class BlindProvider extends ChangeNotifier {
   HomeState _homeState = HomeState.Initial;
-  List<ResponseData> _blindData;
+  List<ResponseData> _blindData = [];
   int currentpage = 0, totalPage = 1;
 
   HomeState get homeState => _homeState;
@@ -25,7 +25,6 @@ class BlindProvider extends ChangeNotifier {
   }
 
   postData(BuildContext context, var data) async {
-   
     var res = await BlindNetwork().postBlindRequest(data);
     res ? getData() : null;
   }

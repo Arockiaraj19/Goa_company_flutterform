@@ -240,25 +240,54 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                  padding: EdgeInsetsDirectional.only(
-                                      end: 5, start: 5),
-                                  child: CircularPercentIndicator(
-                                      linearGradient:
-                                          MainTheme.backgroundGradient,
-                                      animation: true,
-                                      backgroundColor: Colors.grey[50],
-                                      animationDuration: 1200,
-                                      radius: 30.0,
-                                      lineWidth: 5,
-                                      percent: 0.5,
-                                      center: Container(
-                                          child: Text(
-                                        '50',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 10),
-                                      )))),
+                                padding: EdgeInsetsDirectional.only(
+                                    end: 5, start: 5),
+                                child: Consumer<HomeProvider>(
+                                  builder: (context, data, child) {
+                                    return CircularPercentIndicator(
+                                        linearGradient:
+                                            MainTheme.backgroundGradient,
+                                        animation: true,
+                                        backgroundColor: Colors.grey[50],
+                                        animationDuration: 1200,
+                                        radius: 30.0,
+                                        lineWidth: 5,
+                                        percent: 0.5,
+                                        center: Container(
+                                          child: FutureBuilder(
+                                            future: Persentage()
+                                                .checkSuggestionPresentage(
+                                                    data.userData,
+                                                    widget.userData),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
+                                              if (snapshot.hasData) {
+                                                return Text(
+                                                  (snapshot.data * 100)
+                                                      .round()
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 10),
+                                                );
+                                              } else {
+                                                return Text(
+                                                  '0',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 10),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ));
+                                  },
+                                ),
+                              ),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,

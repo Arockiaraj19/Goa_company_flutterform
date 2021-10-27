@@ -46,8 +46,10 @@ class _FindMatchPageState extends State<FindMatchPage> {
     };
     print("patch user data");
     print(userData);
+    if (userData != null) {
+      UserModel result = await network.patchUserData(userData);
+    }
 
-    UserModel result = await network.patchUserData(userData);
     goToHomePage();
   }
 

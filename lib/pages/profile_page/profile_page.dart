@@ -354,11 +354,7 @@ class _ProfilePageState extends State<ProfilePage>
                         style: socialMediaTextBold,
                       ),
                       InkWell(
-                        onTap: () {
-                          Routes.sailor(
-                            Routes.quizGamePage,
-                          );
-                        },
+                        onTap: () {},
                         child: SocialMediaBox(
                           name: "Add Linkedin",
                           image: "assets/images/LinkedIn_icons.png",

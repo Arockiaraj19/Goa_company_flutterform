@@ -43,7 +43,7 @@ class _BlindsCardListState extends State<BlindsCardList> {
       if (data.homeState == HomeState.Loading) {
         return Center(child: CircularProgressIndicator());
       } else if (data.homeState == HomeState.Loaded) {
-        return data.blindData.length == 0
+        return data.blindData.length == 0 || data.blindData == null
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

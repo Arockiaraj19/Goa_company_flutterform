@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:dating_app/models/device_info.dart';
-import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/get_device_info.dart';
@@ -73,13 +71,13 @@ Future<Dio> apiClient() async {
       } else {
         // showtoast("Network Failed");
       }
-    } else {
-      handler.next(error);
-    }
+    } else {}
+    return handler.next(error);
   }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 5000;
+  _dio.options.connectTimeout = 10000;
   _dio.options.receiveTimeout = 3000;
+
   return _dio;
 }
 
@@ -149,8 +147,9 @@ Future<Dio> imageClient() async {
     }
   }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 8000;
+  _dio.options.connectTimeout = 10000;
   _dio.options.receiveTimeout = 3000;
+
   return _dio;
 }
 
@@ -159,28 +158,61 @@ Future<Dio> authClient() async {
   _dio.interceptors.clear();
 
   _dio.interceptors
-      .add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
-    // Do something before request is sent
-    // var accessToken = getAccessToken();
+    ..add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
+      // Do something before request is sent
+      // var accessToken = getAccessToken();
 
-    options.headers['content-Type'] = 'application/json';
-    // options.headers["Authorization"] = "Bearer" + accessToken;
-    // options.headers["Accept-Language"] = "en";
-    return handler.next(options);
-  }, onResponse: (Response response, handler) {
-    // Do something with response data
-    return handler.next(response); // continue
-  }, onError: (DioError error, handler) async {
-    if (error.response != null) {
-      if (error.response.statusCode == 410) {
-        showtoast(error.response.data["msg"]);
-        Routes.sailor(Routes.loginPage);
-      }
-    }
-    return handler.next(error);
-  }));
+      options.headers['content-Type'] = 'application/json';
+      // options.headers["Authorization"] = "Bearer" + accessToken;
+      // options.headers["Accept-Language"] = "en";
+      return handler.next(options);
+    }, onResponse: (Response response, handler) {
+      // Do something with response data
+      return handler.next(response); // continue
+    }, onError: (DioError error, handler) async {
+      // if (error.response != null) {
+      //   if (error.response.statusCode == 410) {
+      //     showtoast(error.response.data["msg"]);
+      //     Routes.sailor(Routes.loginPage);
+      //   }
+      // }
+      print("ithu interceptor");
+      return handler.next(error);
+    }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 5000;
+  _dio.options.connectTimeout = 10000;
   _dio.options.receiveTimeout = 3000;
+
   return _dio;
+}
+
+class CacheInterceptor extends Interceptor {
+  CacheInterceptor();
+
+  final _cache = <Uri, Response>{};
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    var response = _cache[options.uri];
+    if (options.extra['refresh'] == true) {
+      print('${options.uri}: force refresh, ignore cache! \n');
+      return handler.next(options);
+    } else if (response != null) {
+      print('cache hit: ${options.uri} \n');
+      return handler.resolve(response);
+    }
+    super.onRequest(options, handler);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    _cache[response.requestOptions.uri] = response;
+    super.onResponse(response, handler);
+  }
+
+  @override
+  void onError(DioError err, ErrorInterceptorHandler handler) {
+    print('onError: $err');
+    super.onError(err, handler);
+  }
 }

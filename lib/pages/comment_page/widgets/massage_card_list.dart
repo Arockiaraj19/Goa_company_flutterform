@@ -3,6 +3,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 
@@ -29,22 +30,73 @@ class _MassageCardListState extends State<MassageCardList> {
   //
   @override
   Widget build(BuildContext context) {
-    return Consumer<ChatProvider>(
-      builder: (context, data, child) {
-        return data.chatState == ChatState.Loaded
-            ? data.chatGroupData.length == 0
-                ? Container()
-                : ListView.builder(
-                    itemBuilder: (context, index) => MassageCard(
-                        height: widget.mcardHeight,
-                        width: widget.mCardWidth,
-                        data: data.chatGroupData[index]),
-                    itemCount: data.chatGroupData.length,
-                  )
-            : Center(
-                child: CircularProgressIndicator(),
-              );
-      },
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: 40.h,
+            child: TextFormField(
+              onChanged: (val) {
+                print(val);
+              },
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[200],
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Color(0xff8F96AD),
+                  size: 30,
+                ),
+                contentPadding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                hintText: "Search messages",
+                hintStyle: TextStyle(
+                    fontSize: 35.sp,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff666666)),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(80.w),
+                  borderSide: BorderSide(
+                      color: Color(0xffEFEBEB),
+                      width: 0,
+                      style: BorderStyle.solid),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(80.w),
+                  borderSide: BorderSide(
+                      color: Color(0xffEFEBEB),
+                      width: 0,
+                      style: BorderStyle.solid),
+                ),
+              ),
+              enableInteractiveSelection: true,
+            ),
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Expanded(
+          child: Container(
+            child: Consumer<ChatProvider>(
+              builder: (context, data, child) {
+                return data.chatState == ChatState.Loaded
+                    ? data.chatGroupData.length == 0
+                        ? Container()
+                        : ListView.builder(
+                            itemBuilder: (context, index) => MassageCard(
+                                height: widget.mcardHeight,
+                                width: widget.mCardWidth,
+                                data: data.chatGroupData[index]),
+                            itemCount: data.chatGroupData.length,
+                          )
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

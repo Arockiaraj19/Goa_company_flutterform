@@ -14,7 +14,8 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class QuizGamePage extends StatefulWidget {
   List<Getquestion> questions;
-  QuizGamePage({this.questions});
+  String playid;
+  QuizGamePage({this.questions, this.playid});
 
   @override
   _QuizGamePageState createState() => _QuizGamePageState();
@@ -44,7 +45,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
   }
 
   PageController controller = PageController();
-
+  int position = 1;
   Widget _buildPhone() {
     return SafeArea(
       child: Scaffold(
@@ -67,143 +68,205 @@ class _QuizGamePageState extends State<QuizGamePage> {
                   ),
                 ),
                 width: MediaQuery.of(context).size.width,
-                child: Column(children: [
-                  Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            width: 1,
-                            color: Colors.grey[300],
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 1,
+                                color: Colors.grey[300],
+                              ),
+                            ),
+                          ),
+                          child: Container(
+                              margin: EdgeInsetsDirectional.only(
+                                top: 20,
+                              ),
+                              height: 40,
+                              width: MediaQuery.of(context).size.width,
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                70,
+                                        child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            physics: ClampingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: widget.questions.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return HartViewicons(
+                                                onTap: () {},
+                                              );
+                                            })),
+                                    Container(
+                                        child: CircularPercentIndicator(
+                                            linearGradient:
+                                                MainTheme.backgroundGradient,
+                                            animation: true,
+                                            backgroundColor: Colors.grey[50],
+                                            animationDuration: 1200,
+                                            radius: 40.0,
+                                            lineWidth: 6,
+                                            percent: 1,
+                                            center:
+                                                Container(child: Text('50'))))
+                                  ]))),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            top: BorderSide(
+                              width: 1,
+                              color: Colors.grey[300],
+                            ),
                           ),
                         ),
-                      ),
-                      child: Container(
-                          margin: EdgeInsetsDirectional.only(
-                            top: 20,
+                        width: double.infinity,
+                        height: 450,
+                        child: PageView.builder(
+                            allowImplicitScrolling: false,
+                            controller: controller,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: widget.questions.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  QuestionBox(
+                                      question:
+                                          widget.questions[index].question),
+                                  InkWell(
+                                    onTap: () {
+                                      Games().answerquestion(
+                                          widget.questions[index].game,
+                                          widget.questions[index].id,
+                                          1.toString(),
+                                          widget.questions[index].type
+                                              .toString(),
+                                          widget.playid);
+                                    },
+                                    child: Questionicons(
+                                        answer: widget.questions[index].option1,
+                                        index: "A"),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Games().answerquestion(
+                                          widget.questions[index].game,
+                                          widget.questions[index].id,
+                                          2.toString(),
+                                          widget.questions[index].type
+                                              .toString(),
+                                          widget.playid);
+                                    },
+                                    child: Questionicons(
+                                        answer: widget.questions[index].option2,
+                                        index: "B"),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Games().answerquestion(
+                                          widget.questions[index].game,
+                                          widget.questions[index].id,
+                                          3.toString(),
+                                          widget.questions[index].type
+                                              .toString(),
+                                          widget.playid);
+                                    },
+                                    child: Questionicons(
+                                        answer: widget.questions[index].option3,
+                                        index: "C"),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Games().answerquestion(
+                                          widget.questions[index].game,
+                                          widget.questions[index].id,
+                                          4.toString(),
+                                          widget.questions[index].type
+                                              .toString(),
+                                          widget.playid);
+                                    },
+                                    child: Questionicons(
+                                        answer: widget.questions[index].option4,
+                                        index: "D"),
+                                  )
+                                ],
+                              );
+                            }),
+                      )
+                    ]),
+              ),
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: EdgeInsets.all(40.0.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 150.r,
+                          width: 150.r,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: MainTheme.backgroundGradient,
+                              color: Colors.grey,
+                              border: Border.all(width: 1, color: Colors.pink)),
+                          child: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
                           ),
-                          height: 40,
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                    width:
-                                        MediaQuery.of(context).size.width - 70,
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        physics: ClampingScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: widget.questions.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return HartViewicons(
-                                            onTap: () {},
-                                          );
-                                        })),
-                                Container(
-                                    child: CircularPercentIndicator(
-                                        linearGradient:
-                                            MainTheme.backgroundGradient,
-                                        animation: true,
-                                        backgroundColor: Colors.grey[50],
-                                        animationDuration: 1200,
-                                        radius: 40.0,
-                                        lineWidth: 6,
-                                        percent: 1,
-                                        center: Container(child: Text('50'))))
-                              ]))),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        top: BorderSide(
-                          width: 1,
-                          color: Colors.grey[300],
                         ),
-                      ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              position += 1;
+                            });
+                          },
+                          child: Container(
+                            width: 450.r,
+                            height: 150.r,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border:
+                                    Border.all(width: 1, color: Colors.pink)),
+                            child: Text(
+                              "Submit",
+                              style: TextStyle(
+                                color: MainTheme.primaryColor,
+                                fontSize: 45.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 150.r,
+                          width: 150.r,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[400],
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
                     ),
-                    width: double.infinity,
-                    height: 450,
-                    child: PageView.builder(
-                        controller: controller,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.questions.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              QuestionBox(
-                                  question: widget.questions[index].question),
-                              Container(
-                                  height: 250,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Games().answerquestion(
-                                              widget.questions[index].game,
-                                              widget.questions[index].id,
-                                              1,
-                                              widget.questions[index].type
-                                                  .toString());
-                                        },
-                                        child: Questionicons(
-                                            answer:
-                                                widget.questions[index].option1,
-                                            index: 1),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Games().answerquestion(
-                                              widget.questions[index].game,
-                                              widget.questions[index].id,
-                                              2,
-                                              widget.questions[index].type
-                                                  .toString());
-                                        },
-                                        child: Questionicons(
-                                            answer:
-                                                widget.questions[index].option2,
-                                            index: 2),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Games().answerquestion(
-                                              widget.questions[index].game,
-                                              widget.questions[index].id,
-                                              3,
-                                              widget.questions[index].type
-                                                  .toString());
-                                        },
-                                        child: Questionicons(
-                                            answer:
-                                                widget.questions[index].option3,
-                                            index: 3),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Games().answerquestion(
-                                              widget.questions[index].game,
-                                              widget.questions[index].id,
-                                              4,
-                                              widget.questions[index].type
-                                                  .toString());
-                                        },
-                                        child: Questionicons(
-                                            answer:
-                                                widget.questions[index].option4,
-                                            index: 4),
-                                      ),
-                                    ],
-                                  ))
-                            ],
-                          );
-                        }),
-                  )
-                ]),
+                  ),
+                ),
               )
             ])),
       ),

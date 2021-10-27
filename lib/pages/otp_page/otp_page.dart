@@ -145,13 +145,21 @@ class _OtpPageState extends State<OtpPage> {
       loading = true;
     });
     var network = ForgetPassword();
+    Timer(Duration(seconds: 4), () => offLoading());
     ResponseSubmitOtp result = await network.forgetSubmitOtp(
         _otpController.text, widget.otpData.value, widget.otpData.id);
     showtoast(result.msg.toString());
+
     Routes.sailor(Routes.addingPasswordPage, params: {
       "email": widget.otpData.value,
       "otpdata": result,
       "isforget": true
+    });
+  }
+
+  offLoading() {
+    setState(() {
+      loading = false;
     });
   }
 

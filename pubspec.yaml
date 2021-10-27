@@ -36,7 +36,7 @@ dependencies:
   percent_indicator: ^3.0.1
   get_it: ^7.2.0
   flake_uuid: ^0.2.0
-  dio: ^4.0.0
+  dio: ^4.0.1
   image_picker: ^0.8.2
   cached_network_image: ^3.1.0
   fluttertoast: ^8.0.8
@@ -77,6 +77,7 @@ dependencies:
   share: ^2.0.4
   firebase_dynamic_links: ^2.0.11
   dropdown_search: ^2.0.0
+  # flutter_facebook_auth: ^3.3.3-no-nullsafety
 
 
 dev_dependencies:

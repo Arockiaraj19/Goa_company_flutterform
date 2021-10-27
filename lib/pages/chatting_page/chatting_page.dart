@@ -1,6 +1,9 @@
 import 'package:dating_app/models/chatmessage_model.dart';
+import 'package:dating_app/models/game_request_model.dart';
 import 'package:dating_app/models/games.dart';
 import 'package:dating_app/models/question_model.dart';
+import 'package:dating_app/models/user2_game_request_model.dart';
+import 'package:dating_app/models/user2_question_model.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/games_network.dart';
@@ -132,8 +135,12 @@ class _ChattingPageState extends State<ChattingPage> {
 
   gotogame() async {
     List<GamesModel> games = await Games().getallgames();
-    List<Getquestion> questions = await Games().getquestion(games[0].id);
-    Routes.sailor(Routes.quizGamePage, params: {"questions": questions});
+    GameRequest gameRequest =
+        await Games().sendgamerequest(games[0].id, widget.id);
+    List<Getquestion> questions =
+        await Games().getquestion(games[0].id, gameRequest.id);
+    Routes.sailor(Routes.quizGamePage,
+        params: {"questions": questions, "playid": gameRequest.id});
   }
 
   @override
@@ -192,12 +199,55 @@ class _ChattingPageState extends State<ChattingPage> {
                 ],
               )),
               actions: [
-                Container(
-                    child: Image.asset(
-                  'assets/images/clock.png',
-                  width: 25,
-                  height: 25,
-                )),
+                FutureBuilder(
+                  future: Games().checkrequest(widget.id),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      print("inga snapshot data enna varuthu");
+                      print(snapshot.data.questions);
+                      return InkWell(
+                        onTap: () {
+                          Routes.sailor(Routes.quizGamePage, params: {
+                            "questions": snapshot.data.questions,
+                            "playid": snapshot.data.playid
+                          });
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 25,
+                          width: 25,
+                          child: Stack(
+                            children: [
+                              Container(
+                                  child: Image.asset(
+                                'assets/images/clock.png',
+                                width: 25,
+                                height: 25,
+                              )),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                    height: 7,
+                                    width: 7,
+                                    decoration: BoxDecoration(
+                                        gradient: MainTheme.backgroundGradient,
+                                        shape: BoxShape.circle)),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container(
+                          child: Image.asset(
+                        'assets/images/clock.png',
+                        width: 25,
+                        height: 25,
+                      ));
+                    }
+                  },
+                ),
                 Container(
                     padding: EdgeInsetsDirectional.only(end: 10),
                     child: PopupMenuButton<String>(

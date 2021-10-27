@@ -11,7 +11,9 @@ class ResponseData {
   ResponseData.fromJson(Map<String, dynamic> json) {
     msg = json['msg'];
     id = json["_id"];
-    date = DateTime.parse(json["updatedAt"].toString()).toLocal();
+    date = json["updatedAt"] != null
+        ? DateTime.parse(json["updatedAt"].toString()).toLocal()
+        : DateTime.now();
     statusDetails = json['status_details'];
   }
 
