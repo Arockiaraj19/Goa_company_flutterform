@@ -69,7 +69,7 @@ class Games {
     }
   }
 
-  Future answerquestion(String gameid, String questionid, String option,
+  Future<bool> answerquestion(String gameid, String questionid, String option,
       String type, String playid) async {
     Response response;
     try {
@@ -86,6 +86,7 @@ class Games {
         });
         print("game answer");
         print(response.data);
+        return true;
       });
       return data;
     } catch (e) {

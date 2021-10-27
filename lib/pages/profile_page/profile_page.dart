@@ -23,6 +23,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_insta/flutter_insta.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -348,17 +349,14 @@ class _ProfilePageState extends State<ProfilePage>
                           style: socialMediaText,
                         ),
                       ),
-                      SocialMediaBox(
-                        name: "andrina_rico",
-                        image: "assets/images/Facebook_icon.png",
-                        style: socialMediaTextBold,
-                      ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          return connectfb();
+                        },
                         child: SocialMediaBox(
-                          name: "Add Linkedin",
-                          image: "assets/images/LinkedIn_icons.png",
-                          style: socialMediaText,
+                          name: "andrina_rico",
+                          image: "assets/images/Facebook_icon.png",
+                          style: socialMediaTextBold,
                         ),
                       ),
                     ]),
@@ -555,6 +553,19 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   bool _isCreatingLink = false;
+
+  connectfb() async {
+    final LoginResult result = await FacebookAuth.instance
+        .login(); // by default we request the email and the public profile
+// or FacebookAuth.i.login()
+    if (result.status == LoginStatus.success) {
+      // you are logged
+      final AccessToken accessToken = result.accessToken;
+    } else {
+      print(result.status);
+      print(result.message);
+    }
+  }
 
   Future<void> _createDynamicLink() async {
     String _linkMessage;

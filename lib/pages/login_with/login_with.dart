@@ -5,6 +5,8 @@ import 'package:dating_app/networks/countrycode_network.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signin_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/providers/countryCode_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -15,6 +17,7 @@ import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class LoginWith extends StatefulWidget {
   final String name;
@@ -26,6 +29,8 @@ class LoginWith extends StatefulWidget {
 
 class _LoginWithState extends State<LoginWith> {
   TextEditingController _numberCtrl = TextEditingController();
+  TextEditingController codecontroller = TextEditingController();
+  TextEditingController bottomsheetcontroller = TextEditingController();
   TextEditingController _emailCtrl = TextEditingController();
   TextEditingController _passCtrl = TextEditingController();
   bool obscureText = true;
@@ -242,7 +247,7 @@ class _LoginWithState extends State<LoginWith> {
               }
               RegExp regex = new RegExp(passwordpattern.toString());
               if (!regex.hasMatch(val)) {
-                return 'password must be have at least 8 characters \nlong 1 uppercase & 1 lowercase character\n1 number';
+                return 'Your password must be have at least 8 \ncharacters long, 1 uppercase , 1 lowercase,\n1 number & 1 special character';
               }
               return null;
             },
@@ -333,6 +338,13 @@ class _LoginWithState extends State<LoginWith> {
     //Timer(Duration(seconds: 8), ()=>offLoading());
   }
 
+  @override
+  void initState() {
+    super.initState();
+    myFocusNode = FocusNode();
+  }
+
+  FocusNode myFocusNode;
   String countrycode;
   CountryCode code;
 
@@ -363,20 +375,25 @@ class _LoginWithState extends State<LoginWith> {
             children: [
               Container(
                 width: 180.w,
-                child: DropdownSearch<CountryCode>(
-                  mode: Mode.BOTTOM_SHEET,
-                  dropdownButtonBuilder: (context) {
-                    return Container();
-                  },
-                  dropdownBuilderSupportsNullItem: true,
-                  dropDownButton: Icon(
-                    Icons.arrow_back,
-                    size: 0,
-                  ),
-                  dropdownSearchDecoration: InputDecoration(
+                child: TextFormField(
+                  readOnly: true,
+                  controller: codecontroller,
+                  cursorColor: Colors.pink,
+                  textAlign: TextAlign.left,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                      fontSize: 40.sp,
+                      letterSpacing: 1.0,
+                      fontWeight: FontWeight.w400,
+                      color: MainTheme.enterTextColor),
+                  decoration: InputDecoration(
+                    isDense: true,
                     contentPadding: EdgeInsets.only(
-                        left: 18.0.w, bottom: 0.0.h, top: 0.0.h, right: 2.0.w),
-                    hintText: "+91",
+                        left: 18.0.w,
+                        bottom: 12.0.h,
+                        top: 12.0.h,
+                        right: 2.0.w),
+                    hintText: '+91',
                     hintStyle: TextStyle(
                         fontSize: 40.sp,
                         letterSpacing: 1.0,
@@ -413,28 +430,10 @@ class _LoginWithState extends State<LoginWith> {
                           style: BorderStyle.solid),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null) {
-                      return "* Required";
-                    } else {
-                      return null;
-                    }
-                  },
-                  showSearchBox: true,
-                  isFilteredOnline: true,
-                  itemAsString: (CountryCode u) => u.telephonecode,
-                  onFind: (String filter) async {
-                    print("on find eppu work aakuthu");
-                    print(filter);
-                    List<CountryCode> response =
-                        await CountryCodeNetwork().getcountrycode(filter);
-
-                    return response;
-                  },
-                  onChanged: (CountryCode data) {
-                    setState(() {
-                      countrycode = data.telephonecode;
-                    });
+                  validator: (value) {},
+                  onTap: () {
+                    context.read<CodeProvider>().getdata(null);
+                    _showbottom();
                   },
                 ),
               ),
@@ -544,6 +543,127 @@ class _LoginWithState extends State<LoginWith> {
         ],
       ),
     );
+  }
+
+  _showbottom() {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: MediaQuery.of(context).size.height / 2,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    controller: bottomsheetcontroller,
+                    cursorColor: Colors.pink,
+                    textAlign: TextAlign.left,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                        fontSize: 40.sp,
+                        letterSpacing: 1.0,
+                        fontWeight: FontWeight.w400,
+                        color: MainTheme.enterTextColor),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.only(
+                          left: 18.0.w,
+                          bottom: 12.0.h,
+                          top: 12.0.h,
+                          right: 2.0.w),
+                      hintText: 'Enter your country code',
+                      hintStyle: TextStyle(
+                          fontSize: 40.sp,
+                          letterSpacing: 1.0,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xffC4C4C4)),
+                      errorStyle: TextStyle(
+                        fontSize: 40.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.pink,
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        gapPadding: 0,
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xffC4C4C4),
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.pink,
+                            width: 1,
+                            style: BorderStyle.solid),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      print(value);
+                      if (value.length >= 2) {
+                        context.read<CodeProvider>().getdata(value);
+                      }
+                    },
+                    validator: (value) {},
+                  ),
+                  Expanded(child: Consumer<CodeProvider>(
+                    builder: (context, data, child) {
+                      return data.chatState == ChatState.Loading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : data.codeData.length == 0
+                              ? Center(
+                                  child: Text("no data"),
+                                )
+                              : SingleChildScrollView(
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: List.generate(
+                                            data.codeData.length,
+                                            (index) => InkWell(
+                                                  onTap: () {
+                                                    codecontroller.text = data
+                                                        .codeData[index]
+                                                        .telephonecode;
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    height: 40.h,
+                                                    child: Text(data
+                                                        .codeData[index]
+                                                        .telephonecode),
+                                                  ),
+                                                )),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                    },
+                  ))
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Widget _buildWeb() {

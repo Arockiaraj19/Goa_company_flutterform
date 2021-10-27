@@ -10,6 +10,7 @@ import 'package:dating_app/networks/games_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 
 import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
@@ -133,14 +134,19 @@ class _ChattingPageState extends State<ChattingPage> {
     return DateFormat('kk:mm:a').format(now);
   }
 
-  gotogame() async {
+  gotogame(user1, user2) async {
     List<GamesModel> games = await Games().getallgames();
     GameRequest gameRequest =
         await Games().sendgamerequest(games[0].id, widget.id);
     List<Getquestion> questions =
         await Games().getquestion(games[0].id, gameRequest.id);
-    Routes.sailor(Routes.quizGamePage,
-        params: {"questions": questions, "playid": gameRequest.id});
+    Routes.sailor(Routes.quizGamePage, params: {
+      "questions": questions,
+      "playid": gameRequest.id,
+      "user1": user1,
+      "user2": user2,
+      "istrue": true,
+    });
   }
 
   @override
@@ -205,39 +211,46 @@ class _ChattingPageState extends State<ChattingPage> {
                     if (snapshot.hasData) {
                       print("inga snapshot data enna varuthu");
                       print(snapshot.data.questions);
-                      return InkWell(
-                        onTap: () {
-                          Routes.sailor(Routes.quizGamePage, params: {
-                            "questions": snapshot.data.questions,
-                            "playid": snapshot.data.playid
-                          });
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 25,
-                          width: 25,
-                          child: Stack(
-                            children: [
-                              Container(
-                                  child: Image.asset(
-                                'assets/images/clock.png',
-                                width: 25,
-                                height: 25,
-                              )),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                    height: 7,
-                                    width: 7,
-                                    decoration: BoxDecoration(
-                                        gradient: MainTheme.backgroundGradient,
-                                        shape: BoxShape.circle)),
-                              )
-                            ],
+                      return Consumer<HomeProvider>(
+                          builder: (context, data, child) {
+                        return InkWell(
+                          onTap: () {
+                            Routes.sailor(Routes.quizGamePage, params: {
+                              "questions": snapshot.data.questions,
+                              "playid": snapshot.data.playid,
+                              "user1": data.userData.identificationImage,
+                              "user2": widget.image,
+                              "istrue": false,
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 25,
+                            width: 25,
+                            child: Stack(
+                              children: [
+                                Container(
+                                    child: Image.asset(
+                                  'assets/images/clock.png',
+                                  width: 25,
+                                  height: 25,
+                                )),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                      height: 7,
+                                      width: 7,
+                                      decoration: BoxDecoration(
+                                          gradient:
+                                              MainTheme.backgroundGradient,
+                                          shape: BoxShape.circle)),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      });
                     } else {
                       return Container(
                           child: Image.asset(
@@ -248,41 +261,44 @@ class _ChattingPageState extends State<ChattingPage> {
                     }
                   },
                 ),
-                Container(
-                    padding: EdgeInsetsDirectional.only(end: 10),
-                    child: PopupMenuButton<String>(
-                      initialValue: dropdownValue,
-                      icon: Container(
-                          child: Image.asset(
-                        'assets/images/3dot.png',
-                        width: 25,
-                        height: 25,
-                      )),
-                      onSelected: (String result) async {
-                        setState(() {
-                          dropdownValue = result;
-                        });
-                        if (result == itemdate[1]) {
-                          blockuser();
-                        }
-                        if (result == itemdate[2]) {
-                          gotogame();
-                        }
-                      },
-                      itemBuilder: (BuildContext context) =>
-                          itemdate.map<PopupMenuEntry<String>>((String value) {
-                        return PopupMenuItem<String>(
-                          height: 30,
-                          padding: EdgeInsets.only(left: 20, right: 5),
-                          value: value,
-                          child: Text(
-                            value,
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w600),
-                          ),
-                        );
-                      }).toList(),
-                    )),
+                Consumer<HomeProvider>(builder: (context, data, child) {
+                  return Container(
+                      padding: EdgeInsetsDirectional.only(end: 10),
+                      child: PopupMenuButton<String>(
+                        initialValue: dropdownValue,
+                        icon: Container(
+                            child: Image.asset(
+                          'assets/images/3dot.png',
+                          width: 25,
+                          height: 25,
+                        )),
+                        onSelected: (String result) async {
+                          setState(() {
+                            dropdownValue = result;
+                          });
+                          if (result == itemdate[1]) {
+                            blockuser();
+                          }
+                          if (result == itemdate[2]) {
+                            gotogame(data.userData.identificationImage,
+                                widget.image);
+                          }
+                        },
+                        itemBuilder: (BuildContext context) => itemdate
+                            .map<PopupMenuEntry<String>>((String value) {
+                          return PopupMenuItem<String>(
+                            height: 30,
+                            padding: EdgeInsets.only(left: 20, right: 5),
+                            value: value,
+                            child: Text(
+                              value,
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        }).toList(),
+                      ));
+                })
               ],
             ),
       body: WillPopScope(

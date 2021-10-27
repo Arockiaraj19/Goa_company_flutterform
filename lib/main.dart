@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'providers/countryCode_provider.dart';
+
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'fun ', // id
     'hello', // title
@@ -156,6 +158,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => MatchProvider()),
           ChangeNotifierProvider(create: (context) => BlindProvider()),
           ChangeNotifierProvider(create: (context) => ChatProvider()),
+          ChangeNotifierProvider(create: (context) => CodeProvider()),
         ],
         child: ScreenUtilInit(
             designSize: Size(1000, 690),

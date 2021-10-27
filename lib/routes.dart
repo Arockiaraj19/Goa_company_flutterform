@@ -327,19 +327,33 @@ class Routes {
             SailorParam<List<Getquestion>>(
               name: 'questions',
             ),
-             SailorParam<String>(
+            SailorParam<String>(
               name: 'playid',
+            ),
+            SailorParam<String>(
+              name: 'user1',
+            ),
+            SailorParam<String>(
+              name: 'user2',
+            ),
+            SailorParam<String>(
+              name: 'istrue',
             ),
           ],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             List<Getquestion> questions =
                 Sailor.param<List<Getquestion>>(context, "questions");
-              String playid =
-                Sailor.param<String>(context, "playid");
+            String playid = Sailor.param<String>(context, "playid");
+            String user1 = Sailor.param<String>(context, "user1");
+            String user2 = Sailor.param<String>(context, "user2");
+            bool istrue = Sailor.param<bool>(context, "istrue");
             return QuizGamePage(
               questions: questions,
-              playid:playid
+              playid: playid,
+              user1: user1,
+              user2: user2,
+              istrue: istrue,
             );
           }),
 
