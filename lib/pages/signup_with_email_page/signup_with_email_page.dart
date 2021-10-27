@@ -124,7 +124,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
             params: {"otpData": data, "isforget": false})
         : result.statusDetails == 2
             ? Routes.sailor(Routes.addingPasswordPage,
-                params: {"email": _emailCtrl.text})
+                params: {"email": _emailCtrl.text,"isforget":false})
             : Routes.sailor(Routes.loginPage);
   }
 
