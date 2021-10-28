@@ -90,7 +90,6 @@ class _HomePageState extends State<HomePage> {
           return val1;
         },
         child: RefreshIndicator(
-          
           onRefresh: _pullRefresh,
           child: Consumer<HomeProvider>(builder: (context, data, child) {
             return data.homeState == HomeState.Loaded
