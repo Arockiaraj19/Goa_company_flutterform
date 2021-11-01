@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AlbumImageCard extends StatefulWidget {
+  final String alreadyimage;
   final String image;
   final Color colors;
   final Function onTap;
@@ -15,6 +16,7 @@ class AlbumImageCard extends StatefulWidget {
 
   AlbumImageCard(
       {Key key,
+      this.alreadyimage,
       this.image,
       this.colors,
       this.onTap,
@@ -35,18 +37,30 @@ class _AlbumImageCardState extends State<AlbumImageCard> {
         Container(
             padding: EdgeInsets.all(10),
             height: MediaQuery.of(context).size.height / 6,
-            child:InkWell(
-                    onTap: () {
-                      widget.onTap();
-                      print(Platform.isAndroid);
-                    },
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: widget.selectedUserAvatar != null
-                            ? Platform.isAndroid?Image.file(File(widget.selectedUserAvatar.path),fit: BoxFit.fill,):
-                                                  Image.network(widget.selectedUserAvatar.path,fit: BoxFit.fill,)
-                            : Image.asset(
+            child: InkWell(
+                onTap: () {
+                  widget.onTap();
+                  print(Platform.isAndroid);
+                },
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: widget.selectedUserAvatar != null
+                        ? Platform.isAndroid
+                            ? Image.file(
+                                File(widget.selectedUserAvatar.path),
+                                fit: BoxFit.fill,
+                              )
+                            : Image.network(
+                                widget.selectedUserAvatar.path,
+                                fit: BoxFit.fill,
+                              )
+                        : widget.alreadyimage == null
+                            ? Image.asset(
                                 "assets/images/Add_image.png",
+                                fit: BoxFit.fill,
+                              )
+                            : Image.network(
+                                widget.alreadyimage,
                                 fit: BoxFit.fill,
                               )))),
         Positioned(

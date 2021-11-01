@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 8), () {
+    Timer(Duration(seconds: 2), () {
       setOnboarding();
     });
   }
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
       child: TextLiquidFill(
         boxHeight: 200.h,
         boxWidth: double.infinity,
-        text: 'SPARKS', loadDuration: Duration(seconds: 3),
+        text: 'SPARKS', loadDuration: Duration(seconds: 2),
         textAlign: TextAlign.center,
         waveColor: Color.fromRGBO(237, 107, 192, 1),
         boxBackgroundColor: Colors.white,

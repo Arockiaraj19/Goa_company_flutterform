@@ -41,6 +41,7 @@ import 'models/user_suggestion.dart';
 import 'pages/add_album_page/add_album_page.dart';
 import 'pages/imagecheck.dart';
 import 'pages/meet_page/meetup_page.dart';
+import 'pages/notification/notification_page.dart';
 import 'pages/subscriptions/subscription_page.dart';
 import 'pages/success/Success_page.dart';
 
@@ -82,6 +83,7 @@ class Routes {
   static String imagecheck = "imagecheck";
   static String success = "success";
   static String albumview = "albumview";
+  static String notification = "notification";
 
   static final sailor = Sailor();
 
@@ -336,8 +338,14 @@ class Routes {
             SailorParam<String>(
               name: 'user2',
             ),
-            SailorParam<String>(
+            SailorParam<bool>(
               name: 'istrue',
+            ),
+            SailorParam<String>(
+              name: 'user1name',
+            ),
+            SailorParam<String>(
+              name: 'user2name',
             ),
           ],
           defaultTransitions: [SailorTransition.fade_in],
@@ -348,20 +356,57 @@ class Routes {
             String user1 = Sailor.param<String>(context, "user1");
             String user2 = Sailor.param<String>(context, "user2");
             bool istrue = Sailor.param<bool>(context, "istrue");
+            String user1name = Sailor.param<String>(context, "user1name");
+            String user2name = Sailor.param<String>(context, "user2name");
             return QuizGamePage(
               questions: questions,
               playid: playid,
               user1: user1,
               user2: user2,
               istrue: istrue,
+              user1name: user1name,
+              user2name: user2name,
             );
           }),
 
       SailorRoute(
           name: quizSucessPage,
+          params: [
+            SailorParam<String>(
+              name: 'user1image',
+            ),
+            SailorParam<String>(
+              name: 'user2image',
+            ),
+            SailorParam<String>(
+              name: 'user1name',
+            ),
+            SailorParam<String>(
+              name: 'user2name',
+            ),
+            SailorParam<int>(
+              name: 'score',
+            ),
+            SailorParam<int>(
+              name: 'length',
+            ),
+          ],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
-            return QuizSucessPage();
+            String user1image = Sailor.param<String>(context, "user1image");
+            String user2image = Sailor.param<String>(context, "user2image");
+            String user1name = Sailor.param<String>(context, "user1name");
+            String user2name = Sailor.param<String>(context, "user2name");
+            int score = Sailor.param<int>(context, "score");
+            int length = Sailor.param<int>(context, "length");
+            return QuizSucessPage(
+              user1image: user1image,
+              user2image: user2image,
+              user1name: user1name,
+              user2name: user2name,
+              score: score,
+              length: length,
+            );
           }),
 
       SailorRoute(
@@ -441,6 +486,13 @@ class Routes {
             return AlbumView(
               galleryItems: galleryItems,
             );
+          }),
+
+      SailorRoute(
+          name: notification,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return Notification();
           }),
     ]);
   }

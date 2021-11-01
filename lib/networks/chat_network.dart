@@ -33,8 +33,8 @@ class ChatNetwork {
     }
   }
 
-  Future createMessage(
-      String receiverid, String message, String groupid) async {
+  Future createMessage(String receiverid, String message, String groupid,
+      List<String> image) async {
     Response response;
     try {
       final _dio = apiClient();
@@ -44,10 +44,10 @@ class ChatNetwork {
           "sender_id": id,
           "receiver_id": receiverid,
           "message": message,
-          "image": "",
+          "image": image,
           "group_id": groupid
         });
-        print("response create method");
+        print("response message method");
         print(response.data);
 
         return;
@@ -58,7 +58,7 @@ class ChatNetwork {
     }
   }
 
-  Future getGrouplist() async {
+  Future getGrouplist(String searchKeyWord) async {
     Response response;
     try {
       final _dio = apiClient();
@@ -69,6 +69,7 @@ class ChatNetwork {
         response = await value.get("/chats/$id/grouplists", queryParameters: {
           "skip": 0,
           "limit": 200,
+          "searchkey": searchKeyWord,
         });
         final results = List<Map<String, dynamic>>.from(response.data);
         print(response.data);

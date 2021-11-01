@@ -1,4 +1,5 @@
 import 'package:dating_app/models/hobby.dart';
+import 'package:dating_app/models/user.dart';
 
 import 'interest.dart';
 
@@ -52,6 +53,7 @@ class Responses {
   String identificationImage;
   List<InterestUserModel> interestDetails;
   List<HobbyUserModel> hobbyDetails;
+  bool isVerified;
 
   Responses(
       {this.id,
@@ -79,7 +81,8 @@ class Responses {
       this.lastName,
       this.identificationImage,
       this.interestDetails,
-      this.hobbyDetails});
+      this.hobbyDetails,
+      this.isVerified});
 
   Responses.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -116,6 +119,7 @@ class Responses {
         ? []
         : List<HobbyUserModel>.from(
             json['hobbies_details']?.map((x) => HobbyUserModel.fromMap(x)));
+    isVerified = json["is_user_verified"];
   }
 
   Map<String, dynamic> toJson() {
@@ -150,22 +154,6 @@ class Responses {
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
     data['identification_image'] = this.identificationImage;
-    return data;
-  }
-}
-
-class Location {
-  List<String> coordinates;
-
-  Location({this.coordinates});
-
-  Location.fromJson(Map<String, dynamic> json) {
-    coordinates = json['coordinates'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['coordinates'] = this.coordinates;
     return data;
   }
 }

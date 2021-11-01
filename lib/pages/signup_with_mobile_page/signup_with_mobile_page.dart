@@ -2,6 +2,8 @@ import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/networks/countrycode_network.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signup_network.dart';
+import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/providers/countryCode_provider.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -10,6 +12,8 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/src/provider.dart';
 
 import '../../routes.dart';
 
@@ -93,6 +97,8 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
   }
 
   FocusNode myFocusNode;
+  String countrycode;
+  CountryCode code;
 
   Widget _commonBuild(BuildContext context, {bool onWeb = false}) {
     var _height = MediaQuery.of(context).size.height;
@@ -130,22 +136,25 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
             children: [
               Container(
                 width: 180.w,
-                child: DropdownSearch<CountryCode>(
-                  searchDelay: Duration(seconds: 0),
-                  focusNode: myFocusNode,
-                  mode: Mode.BOTTOM_SHEET,
-                  dropdownButtonBuilder: (context) {
-                    return Container();
-                  },
-                  dropdownBuilderSupportsNullItem: true,
-                  dropDownButton: Icon(
-                    Icons.arrow_back,
-                    size: 0,
-                  ),
-                  dropdownSearchDecoration: InputDecoration(
+                child: TextFormField(
+                  readOnly: true,
+                  controller: codecontroller,
+                  cursorColor: Colors.pink,
+                  textAlign: TextAlign.left,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                      fontSize: 40.sp,
+                      letterSpacing: 1.0,
+                      fontWeight: FontWeight.w400,
+                      color: MainTheme.enterTextColor),
+                  decoration: InputDecoration(
+                    isDense: true,
                     contentPadding: EdgeInsets.only(
-                        left: 18.0.w, bottom: 0.0.h, top: 0.0.h, right: 2.0.w),
-                    hintText: "+91",
+                        left: 18.0.w,
+                        bottom: 12.0.h,
+                        top: 12.0.h,
+                        right: 2.0.w),
+                    hintText: '+91',
                     hintStyle: TextStyle(
                         fontSize: 40.sp,
                         letterSpacing: 1.0,
@@ -182,24 +191,18 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                           style: BorderStyle.solid),
                     ),
                   ),
-                  // validator: (value) {
-                  //   if (value == null) {
-                  //     return "* Required";
-                  //   } else {
-                  //     return null;
-                  //   }
-                  // },
-                  showSearchBox: true,
-                  isFilteredOnline: true,
-                  itemAsString: (CountryCode u) => u.telephonecode,
-                  onFind: (String filter) async {
-                    myFocusNode.requestFocus();
-                    List<CountryCode> response =
-                        await CountryCodeNetwork().getcountrycode(filter);
-
-                    return response;
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "*";
+                    }
+                    return null;
                   },
-                  onChanged: (CountryCode data) {},
+                  onTap: () {
+                    myFocusNode.requestFocus();
+                    context.read<CodeProvider>().getdata(null);
+
+                    _showbottom();
+                  },
                 ),
               ),
               SizedBox(
@@ -334,14 +337,145 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
     );
   }
 
+  TextEditingController codecontroller = TextEditingController();
+  TextEditingController bottomsheetcontroller = TextEditingController();
+  _showbottom() {
+    return showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Container(
+              height: MediaQuery.of(context).size.height / 2,
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextFormField(
+                      focusNode: myFocusNode,
+                      controller: bottomsheetcontroller,
+                      cursorColor: Colors.pink,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(
+                          fontSize: 40.sp,
+                          letterSpacing: 1.0,
+                          fontWeight: FontWeight.w400,
+                          color: MainTheme.enterTextColor),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.only(
+                            left: 18.0.w,
+                            bottom: 12.0.h,
+                            top: 12.0.h,
+                            right: 2.0.w),
+                        hintText: 'Enter your country code',
+                        hintStyle: TextStyle(
+                            fontSize: 40.sp,
+                            letterSpacing: 1.0,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xffC4C4C4)),
+                        errorStyle: TextStyle(
+                          fontSize: 40.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.pink,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          gapPadding: 0,
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color(0xffC4C4C4),
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        print(value);
+                        context.read<CodeProvider>().getdata(value);
+                      },
+                      validator: (value) {},
+                    ),
+                    Expanded(child: Consumer<CodeProvider>(
+                      builder: (context, data, child) {
+                        return data.chatState == ChatState.Loading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : data.codeData.length == 0
+                                ? Center(
+                                    child: Text("no data"),
+                                  )
+                                : SingleChildScrollView(
+                                    child: Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: List.generate(
+                                              data.codeData.length,
+                                              (index) => InkWell(
+                                                    onTap: () {
+                                                      codecontroller.text = data
+                                                          .codeData[index]
+                                                          .telephonecode;
+                                                      code =
+                                                          data.codeData[index];
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      height: 40.h,
+                                                      child: Text(data
+                                                          .codeData[index]
+                                                          .telephonecode),
+                                                    ),
+                                                  )),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                      },
+                    ))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   goToOtpPage() async {
     setState(() {
       loading = true;
     });
     var network = MobileSignUpNetwork();
-    print(_numberCtrl.text);
-    var result = await network.verifyMobileNoForSignup(_numberCtrl.text);
-    result ? registerUser(_numberCtrl.text, context, true) : null;
+   
+    var result = await network.verifyMobileNoForSignup(
+        codecontroller.text + _numberCtrl.text, code.id);
+    result
+        ? registerUser(codecontroller.text + _numberCtrl.text, context, true)
+        : null;
   }
 
   Widget _buildWeb() {

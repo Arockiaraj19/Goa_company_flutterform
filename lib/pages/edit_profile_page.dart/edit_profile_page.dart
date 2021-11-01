@@ -10,6 +10,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/gender_network.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/pages/add_album_page/widgets/album_image_card.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
 import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
@@ -124,6 +125,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     selectedDate = DateTime.parse(widget.userdata.dob);
     _dobInputCtrl.value =
         TextEditingValue(text: DateFormat.yMMMd().format(selectedDate));
+    for (var i = 0; i < widget.userdata.profileImage.length; i++) {
+      alreadyimage[i] = widget.userdata.profileImage[i];
+    }
   }
 
   fillHobbies() {
@@ -158,6 +162,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String _selectedGender;
   String _selectedGenderid;
   GenderModel genderdetail;
+  List<String> alreadyimage = [null, null, null, null, null, null];
   @override
   void initState() {
     // TODO: implement initState
@@ -182,6 +187,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   int time = 0;
+  List<XFile> selectedalbumAvatar = [null, null, null, null, null, null];
+  List<String> uploadedImages = [];
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -326,7 +333,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   }
                 },
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -445,9 +451,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             return null;
                           },
                           hintText: 'Height',
+                          suffixIcon: Text("cm  "),
                         ),
                         InputField(
                           onTap: () {},
+                          
                           controller: _weightCtrl,
                           padding: EdgeInsets.all(10),
                           validators: (String value) {
@@ -455,6 +463,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             return null;
                           },
                           hintText: 'Weight',
+                          suffixIcon: Text("kg  "),
                         ),
                         Row(
                           children: [
@@ -463,11 +472,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     start: 10, top: 5, bottom: 5),
                                 child: Text(
                                   "Gender",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: ScreenUtil().setSp(45),
-                                      fontFamily: "Inter"),
+                                  style: MainTheme.subHeading,
                                 )),
                           ],
                         ),
@@ -671,45 +676,44 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         child: CircularProgressIndicator(),
                       );
                   }),
-              // InterestcardList(
-              //   crossAxisCount: 3,
-              //   itemCount: 10,
-              //   mainAxisSpacing: 0.0,
-              //   crossAxisSpacing: 0.0,
-              //   fontSize: 11,
-              //   childAspectRatio: 3,
-              // ),
-              //   Row(
-              //     children: [
-              //       Container(
-              //           margin: EdgeInsetsDirectional.only(
-              //               start: 10, top: 10, bottom: 10),
-              //           child: Text("Album", style: MainTheme.subHeading))
-              //     ],
-              //   ),
-              //   StaggeredGridView.countBuilder(
-              //     shrinkWrap: true,
-              //     physics: NeverScrollableScrollPhysics(),
-              //     mainAxisSpacing: 0,
-              //     crossAxisSpacing: 0,
-              //     crossAxisCount: 3,
-              //     itemCount: 1,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       return AlbumImageCard(
-              //         onTap: () {
-              //           selectUserImage();
-              //         },
-              //         // selectedUserAvatar: selectedUserAvatar,
-              //         onTapClose: () {
-              //           setState(() {
-              //             selectedUserAvatar = null;
-              //           });
-              //         },
-              //       );
-              //     },
-              //     staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-              //   )
-              // ])),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: Container(
+                        child: Text("Album", style: MainTheme.subHeading)),
+                  )
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Container(
+                    color: Colors.grey[200],
+                    height: MediaQuery.of(context).size.height / 2.7,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.all(10),
+                    child: StaggeredGridView.countBuilder(
+                      crossAxisCount: 3,
+                      itemCount: 6,
+                      itemBuilder: (BuildContext context, int index) {
+                        return AlbumImageCard(
+                          alreadyimage: alreadyimage[index],
+                          onTap: () async {
+                            selectalbumImage(index);
+                          },
+                          selectedUserAvatar: selectedalbumAvatar[index],
+                          onTapClose: () {
+                            setState(() {
+                              selectedalbumAvatar[index] = null;
+                            });
+                          },
+                        );
+                      },
+                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                      mainAxisSpacing: 0,
+                      crossAxisSpacing: 0,
+                    )),
+              ),
               SizedBox(
                 height: 20,
               )
@@ -762,7 +766,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ? widget.userdata.identificationImage
                           : await UploadImage()
                               .uploadImage(selectedUserPic.path);
+                      await goToLookingForPagePage();
 
+                      print("album enna varuthu");
+                      print(uploadedImages);
+                      List<String> albumimage = uploadedImages.length == 0
+                          ? widget.userdata.profileImage
+                          : uploadedImages;
                       var userData = {
                         "first_name": _firstNameCtrl.text,
                         "last_name":
@@ -778,7 +788,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         "hobbies": hobbieSelected,
                         "hobby_details": hobbieSelected1,
                         "interest_details": interestSelected1,
-                        "identification_image": result
+                        "identification_image": result,
+                        "profile_image": albumimage,
                       };
                       print("edit profile userdata");
                       print(userData);
@@ -798,6 +809,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
+  goToLookingForPagePage() async {
+    var network = UploadImage();
+    print("kl1");
+    for (int i = 0; i < 6; i++) {
+      if (selectedalbumAvatar[i] != null) {
+        String result = await network.uploadImage(selectedalbumAvatar[i].path);
+        print("output velia varuthaaa");
+        print(result);
+        uploadedImages.add(result);
+      } else {
+        if (alreadyimage[i] != null) {
+          uploadedImages.add(alreadyimage[i]);
+        }
+      }
+    }
+  }
+
   void selectUserImage() {
     showDialog(
         context: context,
@@ -806,6 +834,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
             onImagePicked: (XFile imageData) {
               setState(() {
                 selectedUserAvatar = imageData;
+              });
+
+              // if (imageData.status == 'success') {
+              // _authStore.onAvatarSelected(imageData.image);
+              // }
+            },
+          );
+        });
+  }
+
+  void selectalbumImage(int index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ImageUploadAlert(
+            onImagePicked: (XFile imageData) {
+              setState(() {
+                selectedalbumAvatar[index] = imageData;
               });
 
               // if (imageData.status == 'success') {

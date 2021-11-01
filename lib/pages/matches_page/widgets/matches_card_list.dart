@@ -34,7 +34,7 @@ class _MatchesCardListState extends State<MatchesCardList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<MatchProvider>().getMatchData();
+    context.read<MatchProvider>().getMatchData("");
   }
 
   Future getdata(MatchListModel data) async {
@@ -57,7 +57,7 @@ class _MatchesCardListState extends State<MatchesCardList> {
               height: 40.h,
               child: TextFormField(
                 onChanged: (val) {
-                  print(val);
+                  context.read<MatchProvider>().getMatchData(val);
                 },
                 decoration: InputDecoration(
                   filled: true,

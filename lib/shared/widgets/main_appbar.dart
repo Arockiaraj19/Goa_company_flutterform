@@ -1,8 +1,10 @@
+import 'package:dating_app/providers/notification_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/filter_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Function onTapFilter;
@@ -29,13 +31,46 @@ class _MainAppBarState extends State<MainAppBar> {
         elevation: 0,
         actions: [
           if (widget.istrue)
-            Container(
-              margin: EdgeInsetsDirectional.only(end: 10),
-              child: Icon(
-                Icons.notifications_outlined,
-                color: Colors.grey,
-                size: 25,
-              ),
+            Consumer<NotificationProvider>(
+              builder: (context, data, child) {
+                return InkWell(
+                  onTap: () {
+                    Routes.sailor(Routes.notification);
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsetsDirectional.only(end: 10, top: 5),
+                        child: Icon(
+                          Icons.notifications_outlined,
+                          color: Colors.grey,
+                          size: 25,
+                        ),
+                      ),
+                      if (data.notificationData.length != 0)
+                        Positioned(
+                          right: 8,
+                          top: 2,
+                          child: Container(
+                              alignment: Alignment.center,
+                              height: 15,
+                              width: 15,
+                              decoration: BoxDecoration(
+                                color: MainTheme.primaryColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                data.notificationData.length.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30.sp,
+                                ),
+                              )),
+                        )
+                    ],
+                  ),
+                );
+              },
             )
         ],
         bottom: PreferredSize(

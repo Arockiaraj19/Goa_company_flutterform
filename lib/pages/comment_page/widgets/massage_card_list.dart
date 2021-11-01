@@ -24,7 +24,7 @@ class _MassageCardListState extends State<MassageCardList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<ChatProvider>().getGroupData();
+    context.read<ChatProvider>().getGroupData("");
   }
 
   //
@@ -38,7 +38,7 @@ class _MassageCardListState extends State<MassageCardList> {
             height: 40.h,
             child: TextFormField(
               onChanged: (val) {
-                print(val);
+                context.read<ChatProvider>().getGroupData(val);
               },
               decoration: InputDecoration(
                 filled: true,

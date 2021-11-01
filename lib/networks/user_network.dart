@@ -42,10 +42,11 @@ class UserNetwork {
     Response response;
     try {
       final _dio = apiClient();
-      String id=await getUserId();
-      var data=await _dio.then((value) async {
-        response =await value.get(userDetailsEndpoint+"/"+id);
-        print(response.data[0]["interests_detail"]);
+      String id = await getUserId();
+      var data = await _dio.then((value) async {
+        response = await value.get(userDetailsEndpoint + "/" + id);
+        print("user data location a varathaa");
+        print(response.data[0]["is_user_verified"]);
 
         print("hobbie details");
         if (response.statusCode == 200) {
@@ -84,7 +85,7 @@ class UserNetwork {
             userDetailsEndpoint + "/" + id + userSuggestionsEndpoint,
             queryParameters: query);
         print(response.requestOptions.queryParameters);
-        print(response.data);
+
         print("ll88");
         if (response.statusCode == 200) {
           return UsersSuggestionModel.fromJson(response.data);
@@ -199,13 +200,16 @@ class UserNetwork {
     }
   }
 
-  Future<List<MatchListModel>> getUserMatchList() async {
+  Future<List<MatchListModel>> getUserMatchList(searchKey) async {
     Response response;
     try {
       final _dio = apiClient();
       String id = await getUserId();
       var data = _dio.then((value) async {
-        response = await value.get(userMatchListEndpoint + "/" + id);
+        response =
+            await value.get(userMatchListEndpoint + "/" + id, queryParameters: {
+          "searchkey": searchKey,
+        });
         print("match list data");
         print(response.data);
         if (response.statusCode == 200) {

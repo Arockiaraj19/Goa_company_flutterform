@@ -11,17 +11,18 @@ class ChatMessage {
   List<Details> receiverDetails;
   DateTime createdAt;
   DateTime updatedAt;
+  List<String> images;
 
-  ChatMessage({
-    this.id,
-    this.groupid,
-    this.message,
-    this.readByRecipients,
-    this.senderDetails,
-    this.receiverDetails,
-    this.createdAt,
-    this.updatedAt,
-  });
+  ChatMessage(
+      {this.id,
+      this.groupid,
+      this.message,
+      this.readByRecipients,
+      this.senderDetails,
+      this.receiverDetails,
+      this.createdAt,
+      this.updatedAt,
+      this.images});
 
   Map<String, dynamic> toMap() {
     return {
@@ -38,21 +39,21 @@ class ChatMessage {
 
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
-      id: map['_id'],
-      groupid: map['group_id'],
-      message: map['message'],
-      readByRecipients: List<String>.from(map['readByRecipients']),
-      senderDetails: map['sender_details'] != null
-          ? List<Details>.from(
-              map['sender_details']?.map((x) => Details.fromMap(x)))
-          : null,
-      receiverDetails: map['receiver_details'] != null
-          ? List<Details>.from(
-              map['receiver_details']?.map((x) => Details.fromMap(x)))
-          : null,
-      createdAt: DateTime.parse(map['createdAt'].toString()).toLocal(),
-      updatedAt: DateTime.parse(map['updatedAt'].toString()).toLocal(),
-    );
+        id: map['_id'],
+        groupid: map['group_id'],
+        message: map['message'],
+        readByRecipients: List<String>.from(map['readByRecipients']),
+        senderDetails: map['sender_details'] != null
+            ? List<Details>.from(
+                map['sender_details']?.map((x) => Details.fromMap(x)))
+            : null,
+        receiverDetails: map['receiver_details'] != null
+            ? List<Details>.from(
+                map['receiver_details']?.map((x) => Details.fromMap(x)))
+            : null,
+        createdAt: DateTime.parse(map['createdAt'].toString()).toLocal(),
+        updatedAt: DateTime.parse(map['updatedAt'].toString()).toLocal(),
+        images: map["image"] == null ? [] : List<String>.from(map["image"]));
   }
 
   String toJson() => json.encode(toMap());
@@ -84,7 +85,7 @@ class Details {
 
   factory Details.fromMap(Map<String, dynamic> map) {
     return Details(
-      id: map['id'],
+      id: map['_id'],
       firstname: map['firstname'],
       lastname: map['lastname'],
       userId: map['user_id'],

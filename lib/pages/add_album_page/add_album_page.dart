@@ -150,6 +150,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                     itemCount: 6,
                     itemBuilder: (BuildContext context, int index) {
                       return AlbumImageCard(
+                        alreadyimage: null,
                         onTap: () async {
                           selectUserImage(index);
                         },

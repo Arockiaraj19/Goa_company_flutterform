@@ -7,6 +7,7 @@ import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,19 @@ class ImageCard extends StatefulWidget {
 }
 
 class _ImageCardState extends State<ImageCard> {
+  Future<String> getdistance(location) async {
+    print("location");
+
+    double distanceInMeters = await Geolocator.distanceBetween(
+        widget.data.location.coordinates[0],
+        widget.data.location.coordinates[1],
+        location.coordinates[0],
+        location.coordinates[1]);
+    print("location in miles");
+    String miles = (distanceInMeters / 1609.34).round().toString();
+    return miles;
+  }
+
   @override
   Widget build(BuildContext context) {
     var _height = MediaQuery.of(context).size.height - (kToolbarHeight);
@@ -48,7 +62,7 @@ class _ImageCardState extends State<ImageCard> {
         ),
         // height: 300,
         // width: 300,
-        height: widget.cardHeight ?? _height * 0.680,
+        height: widget.cardHeight ?? _height * 0.7,
         width: widget.cardWidth ?? _width * 0.300,
         child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -94,7 +108,7 @@ class _ImageCardState extends State<ImageCard> {
                         children: [
                           Container(
                               child: Text(
-                            widget.name,
+                            widget.name + ", " + widget.data.age.toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w700,
@@ -102,14 +116,35 @@ class _ImageCardState extends State<ImageCard> {
                           )),
                           Row(
                             children: [
-                              Container(
-                                child: Text(
-                                  '5 miles away',
-                                  style: TextStyle(
-                                      color: Colors.grey.shade700,
-                                      fontSize: 14),
-                                ),
-                              ),
+                              Consumer<HomeProvider>(
+                                  builder: (context, data, child) {
+                                return Container(
+                                  child: FutureBuilder(
+                                    future: getdistance(data.userData.location),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot snapshot) {
+                                      if (snapshot.hasData) {
+                                        return Text(
+                                          snapshot.data + " " + "Miles away",
+                                          style: TextStyle(
+                                              color: Colors.grey.shade700,
+                                              fontSize: 14),
+                                        );
+                                      } else {
+                                        return Text(
+                                          "0 Miles",
+                                          style: TextStyle(
+                                              color: Colors.grey.shade700,
+                                              fontSize: 14),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                );
+                              }),
+                              if (widget.data.isVerified == true)
+                                Image.asset("assets/images/isverified.png",
+                                    height: 25, width: 30)
                             ],
                           )
                         ],

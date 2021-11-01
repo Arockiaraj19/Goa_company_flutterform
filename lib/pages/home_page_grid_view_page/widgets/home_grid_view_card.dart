@@ -5,6 +5,7 @@ import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,19 @@ class HomeGridViewcard extends StatefulWidget {
 }
 
 class _HomeGridViewcardState extends State<HomeGridViewcard> {
+  Future<String> getdistance(location) async {
+    print("location");
+
+    double distanceInMeters = await Geolocator.distanceBetween(
+        widget.userData.location.coordinates[0],
+        widget.userData.location.coordinates[1],
+        location.coordinates[0],
+        location.coordinates[1]);
+    print("location in miles");
+    String miles = (distanceInMeters / 1609.34).round().toString();
+    return miles;
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.onWeb
@@ -144,14 +158,33 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                                       )),
                                       Row(
                                         children: [
-                                          Container(
-                                            child: Text(
-                                              '5 miles away',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12),
-                                            ),
-                                          ),
+                                          Consumer<HomeProvider>(
+                                              builder: (context, data, child) {
+                                            return Container(
+                                              child: FutureBuilder(
+                                                future: getdistance(
+                                                    data.userData.location),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    return Text(
+                                                      '${snapshot.data} miles away',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12),
+                                                    );
+                                                  } else {
+                                                    return Text(
+                                                      '0 miles away',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12),
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            );
+                                          }),
                                         ],
                                       )
                                     ],
@@ -184,35 +217,46 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
             Container(
                 child: FittedBox(
                     child: Column(children: [
-              Container(
-                  height: 200,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0),
-                      bottomLeft: Radius.zero,
-                      bottomRight: Radius.zero,
+              Stack(
+                children: [
+                  Container(
+                      height: 200,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10.0),
+                          topRight: Radius.circular(10.0),
+                          bottomLeft: Radius.zero,
+                          bottomRight: Radius.zero,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10.0),
+                          topRight: Radius.circular(10.0),
+                          bottomLeft: Radius.zero,
+                          bottomRight: Radius.zero,
+                        ),
+                        child: widget.userData.identificationImage == null
+                            ? Icon(
+                                FontAwesomeIcons.earlybirds,
+                                size: 50,
+                              )
+                            : Image.network(
+                                widget.userData.identificationImage,
+                                fit: BoxFit.cover,
+                              ),
+                      )),
+                  if (widget.userData.isVerified == true)
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Image.asset("assets/images/isverified.png",
+                          height: 35, width: 35 ),
                     ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0),
-                      bottomLeft: Radius.zero,
-                      bottomRight: Radius.zero,
-                    ),
-                    child: widget.userData.identificationImage == null
-                        ? Icon(
-                            FontAwesomeIcons.earlybirds,
-                            size: 50,
-                          )
-                        : Image.network(
-                            widget.userData.identificationImage,
-                            fit: BoxFit.cover,
-                          ),
-                  )),
+                ],
+              ),
               Container(
                   width: 200,
                   height: 66,
@@ -302,14 +346,33 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                                   )),
                                   Row(
                                     children: [
-                                      Container(
-                                        child: Text(
-                                          '5 miles away',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12),
-                                        ),
-                                      ),
+                                      Consumer<HomeProvider>(
+                                          builder: (context, data, child) {
+                                        return Container(
+                                          child: FutureBuilder(
+                                            future: getdistance(
+                                                data.userData.location),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
+                                              if (snapshot.hasData) {
+                                                return Text(
+                                                  '${snapshot.data} miles away',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12),
+                                                );
+                                              } else {
+                                                return Text(
+                                                  '0 miles away',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        );
+                                      }),
                                     ],
                                   )
                                 ],
@@ -319,6 +382,7 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                     ],
                   ))
             ]))),
+
             // Positioned(
             //     right: 10,
             //     top: 10,

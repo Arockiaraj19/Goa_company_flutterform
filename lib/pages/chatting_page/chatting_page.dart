@@ -1,27 +1,31 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chatmessage_model.dart';
 import 'package:dating_app/models/game_request_model.dart';
 import 'package:dating_app/models/games.dart';
 import 'package:dating_app/models/question_model.dart';
-import 'package:dating_app/models/user2_game_request_model.dart';
-import 'package:dating_app/models/user2_question_model.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/games_network.dart';
+import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
+import 'package:dating_app/networks/user_network.dart';
 
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
-import 'package:dating_app/shared/widgets/input_field.dart';
-import 'package:dating_app/shared/widgets/no_result.dart';
+import 'package:dating_app/shared/widgets/image_upload_alert.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/src/provider.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 // import 'package:web_socket_channel/io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:web_socket_channel/status.dart' as status;
@@ -59,7 +63,6 @@ class _ChattingPageState extends State<ChattingPage> {
     "Block",
     "Play",
     "Meetup",
-    "Expert support"
   ];
 
   IO.Socket socket = IO.io(
@@ -90,6 +93,8 @@ class _ChattingPageState extends State<ChattingPage> {
     socket.on("group_${widget.groupid}", (data) {
       print(data);
       final result = new Map<String, dynamic>.from(data);
+      print("what message i get");
+      print(result);
       ChatMessage chatdata = ChatMessage.fromMap(result);
       print(chatdata);
       return context.read<ChatProvider>().addsocketmessage(chatdata);
@@ -105,10 +110,11 @@ class _ChattingPageState extends State<ChattingPage> {
     });
   }
 
-  _sentmessage() {
-    ChatNetwork()
-        .createMessage(widget.id, _message.text.toString(), widget.groupid);
+  _sentmessage(List<String> image) {
+    ChatNetwork().createMessage(
+        widget.id, _message.text.toString(), widget.groupid, image);
     _message.text = "";
+    selectedUserAvatar = null;
   }
 
   TextEditingController _message = TextEditingController();
@@ -134,7 +140,7 @@ class _ChattingPageState extends State<ChattingPage> {
     return DateFormat('kk:mm:a').format(now);
   }
 
-  gotogame(user1, user2) async {
+  gotogame(user1, user2, user1name) async {
     List<GamesModel> games = await Games().getallgames();
     GameRequest gameRequest =
         await Games().sendgamerequest(games[0].id, widget.id);
@@ -146,6 +152,8 @@ class _ChattingPageState extends State<ChattingPage> {
       "user1": user1,
       "user2": user2,
       "istrue": true,
+      "user1name": user1name,
+      "user2name": widget.name,
     });
   }
 
@@ -221,6 +229,8 @@ class _ChattingPageState extends State<ChattingPage> {
                               "user1": data.userData.identificationImage,
                               "user2": widget.image,
                               "istrue": false,
+                              "user1name": data.userData.firstName,
+                              "user2name": widget.name,
                             });
                           },
                           child: Container(
@@ -252,12 +262,22 @@ class _ChattingPageState extends State<ChattingPage> {
                         );
                       });
                     } else {
-                      return Container(
-                          child: Image.asset(
-                        'assets/images/clock.png',
-                        width: 25,
-                        height: 25,
-                      ));
+                      return Consumer<HomeProvider>(
+                        builder: (context, data, child) {
+                          return InkWell(
+                            onTap: () {
+                              gotogame(data.userData.identificationImage,
+                                  widget.image, data.userData.firstName);
+                            },
+                            child: Container(
+                                child: Image.asset(
+                              'assets/images/clock.png',
+                              width: 25,
+                              height: 25,
+                            )),
+                          );
+                        },
+                      );
                     }
                   },
                 ),
@@ -276,12 +296,15 @@ class _ChattingPageState extends State<ChattingPage> {
                           setState(() {
                             dropdownValue = result;
                           });
+                          if (result == itemdate[0]) {
+                            UserNetwork().getMatchedprofiledata(widget.id);
+                          }
                           if (result == itemdate[1]) {
                             blockuser();
                           }
                           if (result == itemdate[2]) {
                             gotogame(data.userData.identificationImage,
-                                widget.image);
+                                widget.image, data.userData.firstName);
                           }
                         },
                         itemBuilder: (BuildContext context) => itemdate
@@ -314,114 +337,197 @@ class _ChattingPageState extends State<ChattingPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Consumer<ChatProvider>(
-                    builder: (context, data, child) {
-                      return data.chatState == ChatState.Loaded
-                          ? data.chatMessageData.length == 0
-                              ? Container()
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: List.generate(
-                                    data.chatMessageData.length,
-                                    (index) => Align(
-                                      alignment: data.chatMessageData[index]
-                                                  .receiverDetails[0].userId ==
-                                              widget.id
-                                          ? Alignment.centerRight
-                                          : Alignment.centerLeft,
+                child: Consumer<ChatProvider>(
+                  builder: (context, data, child) {
+                    return data.chatState == ChatState.Loaded
+                        ? data.chatMessageData.length == 0
+                            ? Container()
+                            : StickyGroupedListView<ChatMessage, DateTime>(
+                                reverse: true,
+                                elements: data.chatMessageData,
+                                order: StickyGroupedListOrder.ASC,
+                                groupBy: (ChatMessage element) => DateTime(
+                                    element.createdAt.year,
+                                    element.createdAt.month,
+                                    element.createdAt.day),
+                                groupComparator:
+                                    (DateTime value1, DateTime value2) =>
+                                        value2.compareTo(value1),
+                                itemComparator: (ChatMessage element1,
+                                        ChatMessage element2) =>
+                                    element1.createdAt
+                                        .compareTo(element2.createdAt),
+                                floatingHeader: true,
+                                groupSeparatorBuilder: (ChatMessage element) =>
+                                    Container(
+                                  height: 50,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      width: 120,
+                                      decoration: BoxDecoration(
+                                        color: MainTheme.primaryColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
+                                      ),
                                       child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 30.w, vertical: 30.w),
-                                        child: Card(
-                                          elevation: 2,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          DateFormat('dd-MM-yyyy').format(
+                                                      element.createdAt) ==
+                                                  DateFormat('dd-MM-yyyy')
+                                                      .format(DateTime.now())
+                                              ? "Today"
+                                              : DateFormat('dd-MM-yyyy').format(
+                                                          element.createdAt) ==
+                                                      DateFormat('dd-MM-yyyy')
+                                                          .format(DateTime.now()
+                                                              .subtract(
+                                                                  Duration(
+                                                                      days: 1)))
+                                                  ? "Yesterday"
+                                                  : '${element.createdAt.day}. ${element.createdAt.month}, ${element.createdAt.year}',
+                                          style: TextStyle(
+                                            color: Colors.white,
                                           ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                color: data
-                                                            .chatMessageData[
-                                                                index]
-                                                            .receiverDetails[0]
-                                                            .userId ==
-                                                        widget.id
-                                                    ? Color(0xffEB4DB5)
-                                                    : Colors.white),
-                                            child: Padding(
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                itemBuilder: (_, ChatMessage element) {
+                                  return Align(
+                                    alignment:
+                                        element.receiverDetails.first.userId ==
+                                                widget.id
+                                            ? Alignment.centerRight
+                                            : Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30.w, vertical: 30.w),
+                                      child: Card(
+                                        elevation: 2,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: element.receiverDetails[0]
+                                                          .userId ==
+                                                      widget.id
+                                                  ? Color(0xffEB4DB5)
+                                                  : Colors.white),
+                                          child: Padding(
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 50.w,
                                                 vertical: 15.w,
                                               ),
-                                              child: Column(
-                                                crossAxisAlignment: data
-                                                            .chatMessageData[
-                                                                index]
-                                                            .receiverDetails[0]
-                                                            .userId ==
-                                                        widget.id
-                                                    ? CrossAxisAlignment.end
-                                                    : CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    data.chatMessageData[index]
-                                                        .message,
-                                                    style: TextStyle(
-                                                      color: data
-                                                                  .chatMessageData[
-                                                                      index]
+                                              child: element.images.length == 0
+                                                  ? Column(
+                                                      crossAxisAlignment: element
                                                                   .receiverDetails[
                                                                       0]
                                                                   .userId ==
                                                               widget.id
-                                                          ? Colors.white
-                                                          : Color(0xff4A4A4A),
-                                                      fontSize: 40.sp,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    convertime(data
-                                                        .chatMessageData[index]
-                                                        .createdAt),
-                                                    textAlign: data
-                                                                .chatMessageData[
-                                                                    index]
-                                                                .receiverDetails[
-                                                                    0]
-                                                                .userId ==
-                                                            widget.id
-                                                        ? TextAlign.right
-                                                        : TextAlign.left,
-                                                    style: TextStyle(
-                                                      color: data
-                                                                  .chatMessageData[
-                                                                      index]
+                                                          ? CrossAxisAlignment
+                                                              .end
+                                                          : CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          element.message,
+                                                          style: TextStyle(
+                                                            color: element
+                                                                        .receiverDetails[
+                                                                            0]
+                                                                        .userId ==
+                                                                    widget.id
+                                                                ? Colors.white
+                                                                : Color(
+                                                                    0xff4A4A4A),
+                                                            fontSize: 40.sp,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          convertime(element
+                                                              .createdAt),
+                                                          textAlign: element
+                                                                      .receiverDetails[
+                                                                          0]
+                                                                      .userId ==
+                                                                  widget.id
+                                                              ? TextAlign.right
+                                                              : TextAlign.left,
+                                                          style: TextStyle(
+                                                            color: element
+                                                                        .receiverDetails[
+                                                                            0]
+                                                                        .userId ==
+                                                                    widget.id
+                                                                ? Colors.white
+                                                                : Color(
+                                                                    0xffEB4DB5),
+                                                            fontSize: 25.sp,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : Column(
+                                                      crossAxisAlignment: element
                                                                   .receiverDetails[
                                                                       0]
                                                                   .userId ==
                                                               widget.id
-                                                          ? Colors.white
-                                                          : Color(0xffEB4DB5),
-                                                      fontSize: 25.sp,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
+                                                          ? CrossAxisAlignment
+                                                              .end
+                                                          : CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        CachedNetworkImage(
+                                                          height: 200.h,
+                                                          width: 500.w,
+                                                          imageUrl:
+                                                              element.images[0],
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                        Text(
+                                                          convertime(element
+                                                              .createdAt),
+                                                          textAlign: element
+                                                                      .receiverDetails[
+                                                                          0]
+                                                                      .userId ==
+                                                                  widget.id
+                                                              ? TextAlign.right
+                                                              : TextAlign.left,
+                                                          style: TextStyle(
+                                                            color: element
+                                                                        .receiverDetails[
+                                                                            0]
+                                                                        .userId ==
+                                                                    widget.id
+                                                                ? Colors.white
+                                                                : Color(
+                                                                    0xffEB4DB5),
+                                                            fontSize: 25.sp,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )),
                                         ),
                                       ),
                                     ),
-                                  ))
-                          : Center(
-                              child: CircularProgressIndicator(),
-                            );
-                    },
-                  ),
+                                  );
+                                },
+                              )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          );
+                  },
                 ),
               ),
               Container(
@@ -450,18 +556,23 @@ class _ChattingPageState extends State<ChattingPage> {
                             child: TextField(
                               controller: _message,
                               decoration: InputDecoration(
-                                  suffixIcon: RotationTransition(
-                                      turns:
-                                          new AlwaysStoppedAnimation(30 / 360),
-                                      child: Icon(
-                                        Icons.attach_file,
-                                        color: Colors.black,
-                                      )),
+                                  suffixIcon: InkWell(
+                                    onTap: () {
+                                      selectUserImage();
+                                    },
+                                    child: RotationTransition(
+                                        turns: new AlwaysStoppedAnimation(
+                                            30 / 360),
+                                        child: Icon(
+                                          Icons.attach_file,
+                                          color: Colors.black,
+                                        )),
+                                  ),
                                   border: InputBorder.none,
                                   hintText: 'Type a message...'),
                             ))),
                     InkWell(
-                      onTap: () => _sentmessage(),
+                      onTap: () => _sentmessage([]),
                       child: Container(
                           child: CircleAvatar(
                         backgroundColor: MainTheme.primaryColor,
@@ -481,5 +592,114 @@ class _ChattingPageState extends State<ChattingPage> {
         ),
       ),
     ));
+  }
+
+  XFile selectedUserAvatar;
+
+  void selectUserImage() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ImageUploadAlert(
+            onImagePicked: (XFile imageData) {
+              setState(() {
+                selectedUserAvatar = imageData;
+              });
+              showPopup();
+            },
+          );
+        });
+  }
+
+  bool loading = false;
+
+  void showPopup() {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: false,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
+        builder: (context1) => StatefulBuilder(builder: (context, setSState) {
+              return Container(
+                padding: EdgeInsets.all(25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                        width: double.infinity,
+                        height: 300.h,
+                        child: Image.file(File(selectedUserAvatar.path))),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20.w, vertical: 0),
+                      child: loading
+                          ? Center(child: CircularProgressIndicator())
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                  InkWell(
+                                    onTap: () {
+                                      setSState(() {
+                                        loading = true;
+                                      });
+                                      goToAlbumPage(selectedUserAvatar);
+                                    },
+                                    child: Container(
+                                      height: 150.r,
+                                      width: 150.r,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: MainTheme.backgroundGradient,
+                                      ),
+                                      child: Icon(
+                                        Icons.check_rounded,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      selectedUserAvatar = null;
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      height: 150.r,
+                                      width: 150.r,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey[400],
+                                      ),
+                                      child: Icon(
+                                        Icons.cancel,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ]),
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                  ],
+                ),
+              );
+            }));
+  }
+
+  goToAlbumPage(XFile image) async {
+    var network = UploadImage();
+
+    String result = await network.uploadImage(image.path);
+    print("image result correct a varuthaaaa");
+    print(result);
+    List<String> images = [];
+    images.add(result);
+    _sentmessage(images);
+    Navigator.pop(context);
   }
 }

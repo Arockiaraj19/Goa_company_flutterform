@@ -50,12 +50,13 @@ class _QuizAppBarState extends State<QuizAppBar> {
           ]),
           Row(
             children: [
-              Container(
-                  margin: EdgeInsetsDirectional.only(end: 5, start: 5),
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(widget.user1),
-                  )),
+              if (widget.user1 != null)
+                Container(
+                    margin: EdgeInsetsDirectional.only(end: 5, start: 5),
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundImage: NetworkImage(widget.user1),
+                    )),
               CircleAvatar(
                 backgroundColor: Colors.grey[200],
                 radius: 10,
@@ -65,12 +66,13 @@ class _QuizAppBarState extends State<QuizAppBar> {
                   size: 12,
                 ),
               ),
-              Container(
-                  margin: EdgeInsetsDirectional.only(end: 10, start: 5),
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(widget.user2),
-                  )),
+              if (widget.user2 != null)
+                Container(
+                    margin: EdgeInsetsDirectional.only(end: 10, start: 5),
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundImage: NetworkImage(widget.user2),
+                    )),
             ],
           )
         ],

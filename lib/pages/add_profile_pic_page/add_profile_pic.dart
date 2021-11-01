@@ -53,70 +53,78 @@ class _AddProfilePicState extends State<AddProfilePic> {
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
-      builder: (context1) => Container(
-        padding: EdgeInsets.all(25),
-        child: loading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      goToAlbumPage(selectedUserAvatar);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: MainTheme.primaryColor)),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Selfi is readable",
-                        style: TextStyle(
-                            color: MainTheme.primaryColor,
-                            fontSize: 18,
-                            fontFamily: "Nunito"),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                      selectUserImage();
-                    },
-                    child: Container(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: MainTheme.primaryColor)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.camera_alt_outlined,
-                            color: MainTheme.primaryColor,
-                          ),
-                          Text(
-                            "Take a new picture",
+      builder: (context1) => StatefulBuilder(
+        builder: (BuildContext context, setSState) {
+          return Container(
+            padding: EdgeInsets.all(25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                loading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          setSState(() {
+                            loading = !loading;
+                          });
+                          goToAlbumPage(selectedUserAvatar);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border:
+                                  Border.all(color: MainTheme.primaryColor)),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Selfi is readable",
                             style: TextStyle(
                                 color: MainTheme.primaryColor,
                                 fontSize: 18,
                                 fontFamily: "Nunito"),
-                          )
-                        ],
+                          ),
+                        ),
                       ),
+                SizedBox(
+                  height: 25,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    selectUserImage();
+                  },
+                  child: Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: MainTheme.primaryColor)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.camera_alt_outlined,
+                          color: MainTheme.primaryColor,
+                        ),
+                        Text(
+                          "Take a new picture",
+                          style: TextStyle(
+                              color: MainTheme.primaryColor,
+                              fontSize: 18,
+                              fontFamily: "Nunito"),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -147,9 +155,6 @@ class _AddProfilePicState extends State<AddProfilePic> {
   }
 
   goToAlbumPage(XFile image) async {
-    setState(() {
-      loading = true;
-    });
     var network = UploadImage();
     var network1 = UserNetwork();
     String result = await network.uploadImage(image.path);

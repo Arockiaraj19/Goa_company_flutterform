@@ -43,6 +43,9 @@ Future<Dio> apiClient() async {
       showtoast(error.response.data["msg"]);
       print(error.response.data);
       print(error.requestOptions.data);
+      if (error.response.statusCode == 409) {
+        return showtoast(error.response.data["msg"]);
+      }
       if (error.response.statusCode == 410) {
         try {
           print("refersh");
@@ -76,7 +79,7 @@ Future<Dio> apiClient() async {
     return handler.next(error);
   }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 10000;
+  _dio.options.connectTimeout = 20000;
   _dio.options.receiveTimeout = 3000;
 
   return _dio;
@@ -148,7 +151,7 @@ Future<Dio> imageClient() async {
     }
   }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 10000;
+  _dio.options.connectTimeout = 20000;
   _dio.options.receiveTimeout = 3000;
 
   return _dio;
@@ -181,7 +184,7 @@ Future<Dio> authClient() async {
       return handler.next(error);
     }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 10000;
+  _dio.options.connectTimeout = 20000;
   _dio.options.receiveTimeout = 3000;
 
   return _dio;

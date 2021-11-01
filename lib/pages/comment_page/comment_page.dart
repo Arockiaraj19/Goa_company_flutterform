@@ -13,6 +13,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/alert_widget.dart';
 import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:flutter/material.dart';
@@ -51,117 +52,122 @@ class _CommentPageState extends State<CommentPage>
   }
 
   Widget _buildPhone() {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-            backgroundColor: MainTheme.appBarColor,
-            elevation: 0,
-            actions: [
-            
-            ],
-            bottom: PreferredSize(
-                preferredSize: Size.fromHeight(kToolbarHeight * 1.3),
-                child: PreferredSize(
-                    preferredSize: const Size.fromHeight(kToolbarHeight),
-                    child: Column(children: [
-                      Stack(children: [
-                        Container(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+    return WillPopScope(
+      onWillPop: (){
+         Alert().showAlertDialog(context);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+              backgroundColor: MainTheme.appBarColor,
+              elevation: 0,
+              actions: [
+              
+              ],
+              bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(kToolbarHeight * 1.3),
+                  child: PreferredSize(
+                      preferredSize: const Size.fromHeight(kToolbarHeight),
+                      child: Column(children: [
+                        Stack(children: [
+                          Container(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 40,
+                                child: Text(
+                                  "Matches",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      fontFamily: "Nunito"),
+                                ),
+                              ),
+                            ],
+                          )),
+                          // Positioned(
+                          //     right: 10,
+                          //     child: InkWell(
+                          //         onTap: () {},
+                          //         child: Container(
+                          //           child: Icon(
+                          //             Icons.search,
+                          //             color: Colors.black,
+                          //           ),
+                          //         )))
+                        ]),
+                        TabBar(
+                          controller: _tabController,
+                          indicatorColor: Colors.transparent,
+                          // indicatorPadding:
+                          //     const EdgeInsets.only(left: 25, right: 25, top: 10),
+                          labelColor: MainTheme.primaryColor,
+                          unselectedLabelColor: Colors.black,
+                          labelStyle: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          unselectedLabelStyle: TextStyle(fontSize: 14),
+                          indicatorWeight: 3,
+                          tabs: <Widget>[
                             Container(
-                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 5),
                               child: Text(
-                                "Matches",
-                                textAlign: TextAlign.center,
+                                "Message",
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    fontFamily: "Nunito"),
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            Container(
+                                margin: const EdgeInsets.only(bottom: 5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width: 1,
+                                      color: Colors.grey[300],
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      "Dates",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Container(
+                                      color: Colors.grey[300],
+                                      width: 1,
+                                      height: 20,
+                                    ),
+                                  ],
+                                )),
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "Request",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ],
-                        )),
-                        // Positioned(
-                        //     right: 10,
-                        //     child: InkWell(
-                        //         onTap: () {},
-                        //         child: Container(
-                        //           child: Icon(
-                        //             Icons.search,
-                        //             color: Colors.black,
-                        //           ),
-                        //         )))
-                      ]),
-                      TabBar(
-                        controller: _tabController,
-                        indicatorColor: Colors.transparent,
-                        // indicatorPadding:
-                        //     const EdgeInsets.only(left: 25, right: 25, top: 10),
-                        labelColor: MainTheme.primaryColor,
-                        unselectedLabelColor: Colors.black,
-                        labelStyle: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                        unselectedLabelStyle: TextStyle(fontSize: 14),
-                        indicatorWeight: 3,
-                        tabs: <Widget>[
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Message",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(bottom: 5),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    width: 1,
-                                    color: Colors.grey[300],
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Dates",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  Container(
-                                    color: Colors.grey[300],
-                                    width: 1,
-                                    height: 20,
-                                  ),
-                                ],
-                              )),
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Request",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Divider(),
-                    ])))),
-        body: TabBarView(
-            controller: _tabController,
-            physics: ClampingScrollPhysics(),
-            children: <Widget>[
-              Container(child: MassageCardList()),
-              Container(child: DatesCardList()),
-              Container(child: RequestCardList())
-            ]),
-        bottomNavigationBar: BottomTabBar(
-          currentIndex: 1,
+                        ),
+                        Divider(),
+                      ])))),
+          body: TabBarView(
+              controller: _tabController,
+              physics: ClampingScrollPhysics(),
+              children: <Widget>[
+                Container(child: MassageCardList()),
+                Container(child: DatesCardList()),
+                Container(child: RequestCardList())
+              ]),
+          bottomNavigationBar: BottomTabBar(
+            currentIndex: 1,
+          ),
         ),
       ),
     );

@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/models/gender_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/gender_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
 import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
+import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/providers/countryCode_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/date_picker_input.dart';
 import 'package:dating_app/shared/helpers.dart';
@@ -20,6 +23,7 @@ import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CreateProfilePage extends StatefulWidget {
   final UserModel userData;
@@ -36,6 +40,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   TextEditingController _lastNameCtrl = TextEditingController();
   TextEditingController _emailCtrl = TextEditingController();
   TextEditingController _dobInputCtrl = TextEditingController();
+  TextEditingController _numberCtrl = TextEditingController();
   List<dynamic> location = [];
   String locationName;
   DateTime selectedDate;
@@ -78,7 +83,12 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     super.initState();
     fill();
     _future = GenderNetwork().getGenderData();
+    myFocusNode = FocusNode();
   }
+
+  FocusNode myFocusNode;
+  String countrycode;
+  CountryCode code;
 
   fill() {
     setState(() {
@@ -228,6 +238,163 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                             // return null;
                           },
                         ),
+                        if (widget.userData.email != null)
+                          SizedBox(
+                            height: 8.h,
+                          ),
+                        if (widget.userData.email != null)
+                          Row(
+                            children: [
+                              Container(
+                                width: 180.w,
+                                child: TextFormField(
+                                  readOnly: true,
+                                  controller: codecontroller,
+                                  cursorColor: Colors.pink,
+                                  textAlign: TextAlign.left,
+                                  keyboardType: TextInputType.number,
+                                  style: TextStyle(
+                                      fontSize: 40.sp,
+                                      letterSpacing: 1.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: MainTheme.enterTextColor),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 18.0.w,
+                                        bottom: 12.0.h,
+                                        top: 12.0.h,
+                                        right: 2.0.w),
+                                    hintText: '+91',
+                                    hintStyle: TextStyle(
+                                        fontSize: 40.sp,
+                                        letterSpacing: 1.0,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xffC4C4C4)),
+                                    errorStyle: TextStyle(
+                                      fontSize: 40.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.pink,
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      gapPadding: 0,
+                                      borderSide: BorderSide(
+                                          color: Colors.pink,
+                                          width: 1,
+                                          style: BorderStyle.solid),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.pink,
+                                          width: 1,
+                                          style: BorderStyle.solid),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xffC4C4C4),
+                                          width: 1,
+                                          style: BorderStyle.solid),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.pink,
+                                          width: 1,
+                                          style: BorderStyle.solid),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return "* Required";
+                                    }
+                                    return null;
+                                  },
+                                  onTap: () {
+                                    myFocusNode.requestFocus();
+                                    context.read<CodeProvider>().getdata(null);
+
+                                    _showbottom();
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: TextFormField(
+                                    controller: _numberCtrl,
+                                    cursorColor: Colors.pink,
+                                    textAlign: TextAlign.left,
+                                    keyboardType: TextInputType.number,
+                                    style: TextStyle(
+                                        fontSize: 40.sp,
+                                        letterSpacing: 1.0,
+                                        fontWeight: FontWeight.w400,
+                                        color: MainTheme.enterTextColor),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 18.0.w,
+                                          bottom: 12.0.h,
+                                          top: 12.0.h,
+                                          right: 2.0.w),
+                                      hintText: 'Mobile number',
+                                      hintStyle: TextStyle(
+                                          fontSize: 40.sp,
+                                          letterSpacing: 1.0,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xffC4C4C4)),
+                                      errorStyle: TextStyle(
+                                        fontSize: 40.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.pink,
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        gapPadding: 0,
+                                        borderSide: BorderSide(
+                                            color: Colors.pink,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.pink,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xffC4C4C4),
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.pink,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return "* Required";
+                                      }
+                                      RegExp regex = new RegExp(numberpattern);
+                                      if (!regex.hasMatch(value)) {
+                                        return 'Please enter only number';
+                                      }
+                                      if (value.length > 10 ||
+                                          value.length < 10) {
+                                        return "Please enter only 10 numbers";
+                                      }
+
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         SizedBox(
                           height: 8.h,
                         ),
@@ -525,6 +692,134 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     );
   }
 
+  TextEditingController codecontroller = TextEditingController();
+  TextEditingController bottomsheetcontroller = TextEditingController();
+  _showbottom() {
+    return showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Container(
+              height: MediaQuery.of(context).size.height / 2,
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextFormField(
+                      focusNode: myFocusNode,
+                      controller: bottomsheetcontroller,
+                      cursorColor: Colors.pink,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(
+                          fontSize: 40.sp,
+                          letterSpacing: 1.0,
+                          fontWeight: FontWeight.w400,
+                          color: MainTheme.enterTextColor),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.only(
+                            left: 18.0.w,
+                            bottom: 12.0.h,
+                            top: 12.0.h,
+                            right: 2.0.w),
+                        hintText: 'Enter your country code',
+                        hintStyle: TextStyle(
+                            fontSize: 40.sp,
+                            letterSpacing: 1.0,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xffC4C4C4)),
+                        errorStyle: TextStyle(
+                          fontSize: 40.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.pink,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          gapPadding: 0,
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color(0xffC4C4C4),
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        print(value);
+                        context.read<CodeProvider>().getdata(value);
+                      },
+                      validator: (value) {},
+                    ),
+                    Expanded(child: Consumer<CodeProvider>(
+                      builder: (context, data, child) {
+                        return data.chatState == ChatState.Loading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : data.codeData.length == 0
+                                ? Center(
+                                    child: Text("no data"),
+                                  )
+                                : SingleChildScrollView(
+                                    child: Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: List.generate(
+                                              data.codeData.length,
+                                              (index) => InkWell(
+                                                    onTap: () {
+                                                      codecontroller.text = data
+                                                          .codeData[index]
+                                                          .telephonecode;
+                                                      code =
+                                                          data.codeData[index];
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      height: 40.h,
+                                                      child: Text(data
+                                                          .codeData[index]
+                                                          .telephonecode),
+                                                    ),
+                                                  )),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                      },
+                    ))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   getLoc() async {
     location = await GoogleMapDisplay().createState().currentLocation();
   }
@@ -534,17 +829,33 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       loading = true;
     });
     var network = UserNetwork();
-    var userData = {
-      "first_name": _firstNameCtrl.text,
-      "last_name": _lastNameCtrl.text,
-      "email": _emailCtrl.text,
-      "profession": ["$dropdownProfessionValue"],
-      "dob": dateofbirth.toIso8601String(),
-      "gender_id": _selectedGenderid.toString(),
-      "gender_details": [genderdetail.toMap()],
-      // "latitude": location[0].toString(),
-      // "longitude": location[1].toString(),
-    };
+    var userData;
+    if (widget.userData.email != null) {
+      userData = {
+        "first_name": _firstNameCtrl.text,
+        "last_name": _lastNameCtrl.text,
+        "email": _emailCtrl.text,
+        "profession": ["$dropdownProfessionValue"],
+        "dob": dateofbirth.toIso8601String(),
+        "gender_id": _selectedGenderid.toString(),
+        "gender_details": [genderdetail.toMap()],
+        "mobile_number": codecontroller.text + _numberCtrl.text,
+        "country": code.id,
+      };
+    } else {
+      userData = {
+        "first_name": _firstNameCtrl.text,
+        "last_name": _lastNameCtrl.text,
+        "email": _emailCtrl.text,
+        "profession": ["$dropdownProfessionValue"],
+        "dob": dateofbirth.toIso8601String(),
+        "gender_id": _selectedGenderid.toString(),
+        "gender_details": [genderdetail.toMap()],
+        // "latitude": location[0].toString(),
+        // "longitude": location[1].toString(),
+      };
+    }
+
     print("patch user data inga correct a varuthaaaa");
     print(userData);
     Timer(Duration(seconds: 3), () => offLoading());

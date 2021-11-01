@@ -2,6 +2,7 @@ import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/web_gredient_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../routes.dart';
@@ -16,14 +17,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
-        return _buildPhone();
-      } else {
-        return _buildWeb();
-      }
-    });
+    return WillPopScope(
+      onWillPop: () {
+        return SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      },
+      child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+        if (constraints.maxWidth < 1100) {
+          return _buildPhone();
+        } else {
+          return _buildWeb();
+        }
+      }),
+    );
   }
 
   Widget _buildPhone() {
@@ -103,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: _textStyleforSentence),
                     SizedBox(height: 230.h),
                     GradientButton(
-                        height: 125.w,
+                      height: 125.w,
                       name: "Login with Mobile",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,

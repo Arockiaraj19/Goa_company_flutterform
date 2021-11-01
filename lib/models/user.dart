@@ -36,41 +36,50 @@ class UserModel {
   int age;
   int likeCount;
   int score;
+  String facebookName;
+  String facebookId;
+  String coin;
+  bool isVerified;
 
-  UserModel(
-      {this.id,
-      this.location,
-      this.profileImage,
-      this.profession,
-      this.interestDetails,
-      this.hobbyDetails,
-      this.hobbies,
-      this.interests,
-      this.isMobileVerified,
-      this.isEmailVerified,
-      this.religion,
-      this.isBlocked,
-      this.isDeleted,
-      this.isDeactivated,
-      this.matchCount,
-      this.height,
-      this.weight,
-      this.badCount,
-      this.email,
-      this.dob,
-      this.bio,
-      this.firstName,
-      this.gender,
-      this.lastName,
-      this.sexualOrientation,
-      this.partnerType,
-      this.identificationImage,
-      this.onboardDetailsStatus,
-      this.userReferralCode,
-      this.ageInMillis,
-      this.age,
-      this.likeCount,
-      this.score});
+  UserModel({
+    this.id,
+    this.location,
+    this.profileImage,
+    this.profession,
+    this.interestDetails,
+    this.hobbyDetails,
+    this.hobbies,
+    this.interests,
+    this.isMobileVerified,
+    this.isEmailVerified,
+    this.religion,
+    this.isBlocked,
+    this.isDeleted,
+    this.isDeactivated,
+    this.matchCount,
+    this.height,
+    this.weight,
+    this.badCount,
+    this.email,
+    this.dob,
+    this.bio,
+    this.firstName,
+    this.gender,
+    this.lastName,
+    this.sexualOrientation,
+    this.partnerType,
+    this.identificationImage,
+    this.onboardDetailsStatus,
+    this.userReferralCode,
+    this.ageInMillis,
+    this.age,
+    this.likeCount,
+    this.score,
+    this.facebookName,
+    this.facebookId,
+    this.coin,
+    this.isVerified,
+  });
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -118,6 +127,10 @@ class UserModel {
     age = json['age'];
     likeCount = json['like_count'];
     score = json['score'];
+    facebookName = json["facebook_username"];
+    facebookId = json["facebook_link"];
+    coin = json["coin_value"].toString();
+    isVerified = json["is_user_verified"];
   }
 
   Map<String, dynamic> toJson() {
@@ -175,7 +188,8 @@ class Location {
 
   Location.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    coordinates = json['coordinates'].cast<double>();
+    coordinates =
+        (json['coordinates'] as List).map((e) => e as double).toList();
   }
 
   Map<String, dynamic> toJson() {

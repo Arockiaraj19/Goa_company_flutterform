@@ -3,6 +3,7 @@ import 'package:dating_app/pages/matches_page/widgets/blinds_card_list.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/alert_widget.dart';
 import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:flutter/material.dart';
@@ -41,81 +42,86 @@ class _MatchesPageState extends State<MatchesPage>
   }
 
   Widget _buildPhone() {
-    return SafeArea(
-      child: Scaffold(
-        bottomNavigationBar: BottomTabBar(
-          currentIndex: 2,
-        ),
-        appBar: AppBar(
-            backgroundColor: MainTheme.appBarColor,
-            elevation: 0,
-            actions: [],
-            bottom: PreferredSize(
-                preferredSize: Size.fromHeight(kToolbarHeight * 1.3),
-                child: PreferredSize(
-                    preferredSize: const Size.fromHeight(kToolbarHeight),
-                    child: Column(children: [
-                      Stack(children: [
-                        Container(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+    return WillPopScope(
+       onWillPop: (){
+         Alert().showAlertDialog(context);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          bottomNavigationBar: BottomTabBar(
+            currentIndex: 2,
+          ),
+          appBar: AppBar(
+              backgroundColor: MainTheme.appBarColor,
+              elevation: 0,
+              actions: [],
+              bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(kToolbarHeight * 1.3),
+                  child: PreferredSize(
+                      preferredSize: const Size.fromHeight(kToolbarHeight),
+                      child: Column(children: [
+                        Stack(children: [
+                          Container(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 40,
+                                child: Text(
+                                  "Matches",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      fontFamily: "Nunito"),
+                                ),
+                              ),
+                            ],
+                          )),
+                        ]),
+                        TabBar(
+                          controller: _tabController,
+                          indicatorColor: Colors.transparent,
+                          indicatorPadding:
+                              const EdgeInsets.only(left: 25, right: 25, top: 10),
+                          labelColor: MainTheme.primaryColor,
+                          unselectedLabelColor: Colors.black,
+                          labelStyle: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          unselectedLabelStyle: TextStyle(fontSize: 14),
+                          indicatorWeight: 2,
+                          tabs: <Widget>[
                             Container(
-                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 5),
                               child: Text(
                                 "Matches",
-                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    fontFamily: "Nunito"),
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                "Blind",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ],
-                        )),
-                      ]),
-                      TabBar(
-                        controller: _tabController,
-                        indicatorColor: Colors.transparent,
-                        indicatorPadding:
-                            const EdgeInsets.only(left: 25, right: 25, top: 10),
-                        labelColor: MainTheme.primaryColor,
-                        unselectedLabelColor: Colors.black,
-                        labelStyle: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                        unselectedLabelStyle: TextStyle(fontSize: 14),
-                        indicatorWeight: 2,
-                        tabs: <Widget>[
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Matches",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Blind",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Divider(),
-                    ])))),
-        body: TabBarView(
-            controller: _tabController,
-            physics: ClampingScrollPhysics(),
-            children: <Widget>[
-              Container(child: MatchesCardList()),
-              Container(child: BlindsCardList()),
-            ]),
+                        ),
+                        Divider(),
+                      ])))),
+          body: TabBarView(
+              controller: _tabController,
+              physics: ClampingScrollPhysics(),
+              children: <Widget>[
+                Container(child: MatchesCardList()),
+                Container(child: BlindsCardList()),
+              ]),
+        ),
       ),
     );
   }

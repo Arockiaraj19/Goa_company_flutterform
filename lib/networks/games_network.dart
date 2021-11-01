@@ -162,4 +162,40 @@ class Games {
       print(e);
     }
   }
+
+  Future getscrore(id) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+      var data = _dio.then((value) async {
+        response = await value.get("/user/gamescore/$id");
+        print("get score");
+        print(response.data);
+        int score = response.data["score"];
+        return score;
+      });
+      return data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<bool> leavegame(id) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+      String userid = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.patch("/user/leavegame",
+            data: {"game_play_id": id, "user": userid});
+        print("user leaving");
+        print(response.data);
+
+        return true;
+      });
+      return data;
+    } catch (e) {
+      print(e);
+    }
+  }
 }

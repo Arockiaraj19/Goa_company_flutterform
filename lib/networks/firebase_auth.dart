@@ -14,7 +14,7 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp) async {
   TextEditingController _codeController = TextEditingController();
 
   _auth.verifyPhoneNumber(
-      phoneNumber: "+91$mobile",
+      phoneNumber: mobile,
       timeout: Duration(seconds: 60),
       verificationCompleted: (AuthCredential authcredential) {
         Master_function(context, authcredential, mobile, isSignUp);
@@ -26,7 +26,7 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp) async {
         // var dataa=jsonEncode({"value":"+91$mobile","id":verificationId,
         //   "isMob":true,"isSignUp":true });
         OtpModel data = OtpModel.fromJson({
-          "value": "+91$mobile",
+          "value": mobile,
           "id": verificationId,
           "isMob": true,
           "isSignUp": isSignUp

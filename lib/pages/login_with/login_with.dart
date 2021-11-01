@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/countrycode_network.dart';
@@ -16,6 +17,7 @@ import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -85,7 +87,8 @@ class _LoginWithState extends State<LoginWith> {
                           "assets/images/login pic.png",
                         ))),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -334,7 +337,7 @@ class _LoginWithState extends State<LoginWith> {
       loading = true;
     });
     var network1 = UserNetwork();
-    await registerUser(_numberCtrl.text, context, false);
+    await registerUser(codecontroller.text + _numberCtrl.text, context, false);
     //Timer(Duration(seconds: 8), ()=>offLoading());
   }
 
@@ -430,9 +433,16 @@ class _LoginWithState extends State<LoginWith> {
                           style: BorderStyle.solid),
                     ),
                   ),
-                  validator: (value) {},
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "* Required";
+                    }
+                    return null;
+                  },
                   onTap: () {
+                    myFocusNode.requestFocus();
                     context.read<CodeProvider>().getdata(null);
+
                     _showbottom();
                   },
                 ),
@@ -547,119 +557,122 @@ class _LoginWithState extends State<LoginWith> {
 
   _showbottom() {
     return showModalBottomSheet(
+        isScrollControlled: true,
         context: context,
         builder: (context) {
-          return Container(
-            height: MediaQuery.of(context).size.height / 2,
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  TextFormField(
-                    controller: bottomsheetcontroller,
-                    cursorColor: Colors.pink,
-                    textAlign: TextAlign.left,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(
-                        fontSize: 40.sp,
-                        letterSpacing: 1.0,
-                        fontWeight: FontWeight.w400,
-                        color: MainTheme.enterTextColor),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.only(
-                          left: 18.0.w,
-                          bottom: 12.0.h,
-                          top: 12.0.h,
-                          right: 2.0.w),
-                      hintText: 'Enter your country code',
-                      hintStyle: TextStyle(
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Container(
+              height: MediaQuery.of(context).size.height / 2,
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextFormField(
+                      focusNode: myFocusNode,
+                      controller: bottomsheetcontroller,
+                      cursorColor: Colors.pink,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(
                           fontSize: 40.sp,
                           letterSpacing: 1.0,
                           fontWeight: FontWeight.w400,
-                          color: Color(0xffC4C4C4)),
-                      errorStyle: TextStyle(
-                        fontSize: 40.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.pink,
+                          color: MainTheme.enterTextColor),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.only(
+                            left: 18.0.w,
+                            bottom: 12.0.h,
+                            top: 12.0.h,
+                            right: 2.0.w),
+                        hintText: 'Enter your country code',
+                        hintStyle: TextStyle(
+                            fontSize: 40.sp,
+                            letterSpacing: 1.0,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xffC4C4C4)),
+                        errorStyle: TextStyle(
+                          fontSize: 40.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.pink,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          gapPadding: 0,
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color(0xffC4C4C4),
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.pink,
+                              width: 1,
+                              style: BorderStyle.solid),
+                        ),
                       ),
-                      errorBorder: OutlineInputBorder(
-                        gapPadding: 0,
-                        borderSide: BorderSide(
-                            color: Colors.pink,
-                            width: 1,
-                            style: BorderStyle.solid),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.pink,
-                            width: 1,
-                            style: BorderStyle.solid),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color(0xffC4C4C4),
-                            width: 1,
-                            style: BorderStyle.solid),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.pink,
-                            width: 1,
-                            style: BorderStyle.solid),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      print(value);
-                      if (value.length >= 2) {
+                      onChanged: (value) {
+                        print(value);
                         context.read<CodeProvider>().getdata(value);
-                      }
-                    },
-                    validator: (value) {},
-                  ),
-                  Expanded(child: Consumer<CodeProvider>(
-                    builder: (context, data, child) {
-                      return data.chatState == ChatState.Loading
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : data.codeData.length == 0
-                              ? Center(
-                                  child: Text("no data"),
-                                )
-                              : SingleChildScrollView(
-                                  child: Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        children: List.generate(
-                                            data.codeData.length,
-                                            (index) => InkWell(
-                                                  onTap: () {
-                                                    codecontroller.text = data
-                                                        .codeData[index]
-                                                        .telephonecode;
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Container(
-                                                    width: double.infinity,
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    height: 40.h,
-                                                    child: Text(data
-                                                        .codeData[index]
-                                                        .telephonecode),
-                                                  ),
-                                                )),
+                      },
+                      validator: (value) {},
+                    ),
+                    Expanded(child: Consumer<CodeProvider>(
+                      builder: (context, data, child) {
+                        return data.chatState == ChatState.Loading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : data.codeData.length == 0
+                                ? Center(
+                                    child: Text("no data"),
+                                  )
+                                : SingleChildScrollView(
+                                    child: Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: List.generate(
+                                              data.codeData.length,
+                                              (index) => InkWell(
+                                                    onTap: () {
+                                                      codecontroller.text = data
+                                                          .codeData[index]
+                                                          .telephonecode;
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      height: 40.h,
+                                                      child: Text(data
+                                                          .codeData[index]
+                                                          .telephonecode),
+                                                    ),
+                                                  )),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                    },
-                  ))
-                ],
+                                  );
+                      },
+                    ))
+                  ],
+                ),
               ),
             ),
           );

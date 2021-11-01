@@ -22,12 +22,9 @@ class ChatProvider extends ChangeNotifier {
   List<ChatMessage> _chatMessageData;
   List<ChatMessage> get chatMessageData => _chatMessageData;
 
-
-
-
-  getGroupData() async {
+  getGroupData(keyWord) async {
     _chatState = ChatState.Loading;
-    _chatGroupData = await ChatNetwork().getGrouplist();
+    _chatGroupData = await ChatNetwork().getGrouplist(keyWord);
 
     loaded();
   }
@@ -35,6 +32,7 @@ class ChatProvider extends ChangeNotifier {
   getMessageData(id) async {
     _chatState = ChatState.Loading;
     _chatMessageData = await ChatNetwork().getMessagelist(id);
+
     loaded();
   }
 
