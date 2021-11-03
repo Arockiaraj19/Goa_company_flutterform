@@ -157,10 +157,14 @@ class _AddProfilePicState extends State<AddProfilePic> {
   goToAlbumPage(XFile image) async {
     var network = UploadImage();
     var network1 = UserNetwork();
-    String result = await network.uploadImage(image.path);
-    var userData = {"identification_image": result};
-    UserModel result1 = await network1.patchUserData(userData);
-    result1 != null ? onboardingCheck(result1) : null;
+    try {
+      String result = await network.uploadImage(image.path);
+      var userData = {"identification_image": result};
+      UserModel result1 = await network1.patchUserData(userData);
+      result1 != null ? onboardingCheck(result1) : null;
+    } catch (e) {
+      offLoading();
+    }
   }
 
   offLoading() {

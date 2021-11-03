@@ -28,9 +28,7 @@ class SignInNetwork {
       });
       return data;
     } catch (e) {
-      print("error triggered catch block");
-      print(e);
-      return false;
+   throw e;
     }
   }
 
@@ -53,8 +51,7 @@ class SignInNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
-      return false;
+    throw e;
     }
   }
 }

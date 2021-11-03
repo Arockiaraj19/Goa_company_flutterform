@@ -194,25 +194,29 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
     setState(() {
       loading = true;
     });
-    var network = UploadImage();
-    print("kl1");
-    for (int i = 0; i < 6; i++) {
-      if (selectedUserAvatar[i] != null) {
-        String result = await network.uploadImage(selectedUserAvatar[i].path);
-        print("output velia varuthaaa");
-        print(result);
-        uploadedImages.add(result);
+    try {
+      var network = UploadImage();
+      print("kl1");
+      for (int i = 0; i < 6; i++) {
+        if (selectedUserAvatar[i] != null) {
+          String result = await network.uploadImage(selectedUserAvatar[i].path);
+          print("output velia varuthaaa");
+          print(result);
+          uploadedImages.add(result);
+        }
       }
-    }
 
-    var network1 = UserNetwork();
-    var userData = {
-      "profile_image": uploadedImages,
-      "onboard_details_status": 1
-    };
-    UserModel result1 = await network1.patchUserData(userData);
-    // Timer(Duration(seconds: 2), () => offLoading());
-    result1 != null ? onboardingCheck(result1) : null;
+      var network1 = UserNetwork();
+      var userData = {
+        "profile_image": uploadedImages,
+        "onboard_details_status": 1
+      };
+      UserModel result1 = await network1.patchUserData(userData);
+      // Timer(Duration(seconds: 2), () => offLoading());
+      result1 != null ? onboardingCheck(result1) : null;
+    } catch (e) {
+      offLoading();
+    }
   }
 
   offLoading() {

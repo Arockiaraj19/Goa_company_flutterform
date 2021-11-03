@@ -1,6 +1,10 @@
 import 'package:dating_app/pages/onboarding_page/widgets/onboarding_swiper.dart';
+import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/providers/notification_provider.dart';
+import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/src/provider.dart';
 
 class OnboardingPage extends StatefulWidget {
   OnboardingPage({Key key}) : super(key: key);
@@ -10,6 +14,8 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
+
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> item = [
@@ -38,7 +44,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return SafeArea(
         child: Scaffold(
       body: Container(
-        height:double.infinity,
+        height: double.infinity,
         width: double.infinity,
         child: OnboardingSwiper(
           promos: item,

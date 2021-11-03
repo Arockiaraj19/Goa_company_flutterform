@@ -20,7 +20,7 @@ class LookingForPage extends StatefulWidget {
 }
 
 class _LookingForPageState extends State<LookingForPage> {
-  bool loading= false;
+  bool loading = false;
   int selectedMenuIndex = 0;
 
   List<Map<String, dynamic>> itemGender = [
@@ -68,24 +68,27 @@ class _LookingForPageState extends State<LookingForPage> {
 
     return SafeArea(
         child: Scaffold(
-            bottomSheet: Container(height: 100,color:Colors.white,child:  Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GradientButton(
-                  height: 40,
-                  name: loading?"Saving..":"Continue",
-                  gradient: MainTheme.loginBtnGradient,
-                  active: true,
-                  isLoading: loading,
-                  color: Colors.white,
-                  width: ScreenUtil().setWidth(400),
-                  fontWeight: FontWeight.w600,
-                  onPressed: () {
-                    goToParterTypePage();
-                  }
-                ),
-              ],
-            ),),
+            bottomSheet: Container(
+              height: 100,
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GradientButton(
+                      height: 40,
+                      name: loading ? "Saving.." : "Continue",
+                      gradient: MainTheme.loginBtnGradient,
+                      active: true,
+                      isLoading: loading,
+                      color: Colors.white,
+                      width: ScreenUtil().setWidth(400),
+                      fontWeight: FontWeight.w600,
+                      onPressed: () {
+                        goToParterTypePage();
+                      }),
+                ],
+              ),
+            ),
             appBar: AppBar(
               leading: InkWell(
                   onTap: () {
@@ -149,11 +152,12 @@ class _LookingForPageState extends State<LookingForPage> {
                                 if (mounted) {
                                   setState(() {
                                     selectedMenuIndex = index;
-                                    itemGender = itemGender.map<Map<String, dynamic>>(
+                                    itemGender = itemGender
+                                        .map<Map<String, dynamic>>(
                                             (Map<String, dynamic> item) {
-                                          item['isActive'] = false;
-                                          return item;
-                                        }).toList();
+                                      item['isActive'] = false;
+                                      return item;
+                                    }).toList();
                                     itemGender[index]['isActive'] = true;
                                   });
                                 }
@@ -165,18 +169,22 @@ class _LookingForPageState extends State<LookingForPage> {
 
   goToParterTypePage() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
-    var network = UserNetwork();
-    var userData={"sexual_orientation":selectedMenuIndex.toString()};
-    Timer(Duration(seconds: 3), ()=>offLoading());
-    UserModel result =await network.patchUserData(userData);
-    result != null? onboardingCheck(result):null;
+    try {
+      var network = UserNetwork();
+      var userData = {"sexual_orientation": selectedMenuIndex.toString()};
+
+      UserModel result = await network.patchUserData(userData);
+      result != null ? onboardingCheck(result) : null;
+    } catch (e) {
+      offLoading();
+    }
   }
 
-  offLoading(){
+  offLoading() {
     setState(() {
-      loading=false;
+      loading = false;
     });
   }
 
@@ -330,41 +338,44 @@ class _LookingForPageState extends State<LookingForPage> {
                           height: _height / 15,
                           width: _width,
                         ),
-                        Container(width: _width / 2.5,
+                        Container(
+                          width: _width / 2.5,
                           child: ListView.builder(
-                            physics: ClampingScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: itemGender.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              dynamic item = itemGender[index];
-                              return Container(
-                                  height: 80,
-                                  width: 60,
-                                  child: GenderCard(
-                                    name: item["gender"],
-                                    image: item["image"],
-                                    isActive: item["isActive"],
-                                    onTap: () {
-                                      if (mounted) {
-                                        setState(() {
-                                          selectedMenuIndex = index;
-                                          itemGender = itemGender.map<Map<String, dynamic>>(
-                                                  (Map<String, dynamic> item) {
-                                                item['isActive'] = false;
-                                                return item;
-                                              }).toList();
-                                          itemGender[index]['isActive'] = true;
-                                        });
-                                      }
-                                    },
-                                  ));
-                            }),
-                            ),
+                              physics: ClampingScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: itemGender.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                dynamic item = itemGender[index];
+                                return Container(
+                                    height: 80,
+                                    width: 60,
+                                    child: GenderCard(
+                                      name: item["gender"],
+                                      image: item["image"],
+                                      isActive: item["isActive"],
+                                      onTap: () {
+                                        if (mounted) {
+                                          setState(() {
+                                            selectedMenuIndex = index;
+                                            itemGender = itemGender.map<
+                                                    Map<String, dynamic>>(
+                                                (Map<String, dynamic> item) {
+                                              item['isActive'] = false;
+                                              return item;
+                                            }).toList();
+                                            itemGender[index]['isActive'] =
+                                                true;
+                                          });
+                                        }
+                                      },
+                                    ));
+                              }),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GradientButton(
-                              name: loading?"Saving..":"Continue",
+                              name: loading ? "Saving.." : "Continue",
                               gradient: MainTheme.loginBtnGradient,
                               height: 35,
                               fontSize: 14,

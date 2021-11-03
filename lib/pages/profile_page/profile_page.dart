@@ -547,6 +547,11 @@ class _ProfilePageState extends State<ProfilePage>
                                   Routes.sailor(Routes.meetuppage);
                                 },
                                 child: SettingBox(name: "Booking")),
+                            InkWell(
+                                onTap: () {
+                                  Routes.sailor(Routes.subscription);
+                                },
+                                child: SettingBox(name: "Subscription")),
                             SettingBox(name: "Order history"),
                             SettingBox(name: "About"),
                             GestureDetector(

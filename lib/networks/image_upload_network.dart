@@ -42,7 +42,7 @@ class UploadImage {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -64,7 +64,7 @@ class UploadImage {
 
       return result;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 }

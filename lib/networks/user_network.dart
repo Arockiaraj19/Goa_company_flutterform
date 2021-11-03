@@ -34,7 +34,7 @@ class UserNetwork {
       });
       return data[0];
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -45,10 +45,7 @@ class UserNetwork {
       String id = await getUserId();
       var data = await _dio.then((value) async {
         response = await value.get(userDetailsEndpoint + "/" + id);
-        print("user data location a varathaa");
-        print(response.data[0]["is_user_verified"]);
 
-        print("hobbie details");
         if (response.statusCode == 200) {
           return (response.data as List)
               .map((x) => UserModel.fromJson(x))
@@ -57,7 +54,8 @@ class UserNetwork {
       });
       return data[0];
     } catch (e) {
-      print(e);
+      print("front la catch kku data varuthu");
+      throw e;
     }
   }
 
@@ -93,7 +91,7 @@ class UserNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -114,7 +112,7 @@ class UserNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -136,7 +134,7 @@ class UserNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -155,7 +153,7 @@ class UserNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -177,7 +175,7 @@ class UserNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -196,7 +194,7 @@ class UserNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 
@@ -220,8 +218,7 @@ class UserNetwork {
       });
       return data;
     } catch (e) {
-      print("d");
-      print(e);
+      throw e;
     }
   }
 
@@ -245,8 +242,7 @@ class UserNetwork {
 
       return data;
     } catch (e) {
-      print("d");
-      print(e);
+      throw e;
     }
   }
 }

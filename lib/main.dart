@@ -7,6 +7,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
+import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:device_preview/device_preview.dart';
@@ -277,6 +278,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => ChatProvider()),
           ChangeNotifierProvider(create: (context) => CodeProvider()),
           ChangeNotifierProvider(create: (context) => NotificationProvider()),
+          ChangeNotifierProvider(create: (context) => SubscriptionProvider()),
         ],
         child: ScreenUtilInit(
             designSize: Size(1000, 690),

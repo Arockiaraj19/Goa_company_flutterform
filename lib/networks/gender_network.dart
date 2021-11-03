@@ -28,7 +28,7 @@ class GenderNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 }

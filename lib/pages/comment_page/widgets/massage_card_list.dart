@@ -1,6 +1,7 @@
 import 'package:dating_app/pages/comment_page/widgets/massage_card.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,19 +80,26 @@ class _MassageCardListState extends State<MassageCardList> {
           child: Container(
             child: Consumer<ChatProvider>(
               builder: (context, data, child) {
-                return data.chatState == ChatState.Loaded
-                    ? data.chatGroupData.length == 0
-                        ? Container()
-                        : ListView.builder(
-                            itemBuilder: (context, index) => MassageCard(
-                                height: widget.mcardHeight,
-                                width: widget.mCardWidth,
-                                data: data.chatGroupData[index]),
-                            itemCount: data.chatGroupData.length,
-                          )
-                    : Center(
-                        child: CircularProgressIndicator(),
-                      );
+                return data.chatState == ChatState.Error
+                    ? ErrorCard(
+                        text: data.errorText,
+                        ontab: () {
+                          context.read<ChatProvider>().getGroupData("");
+                        },
+                      )
+                    : data.chatState == ChatState.Loaded
+                        ? data.chatGroupData.length == 0
+                            ? Container()
+                            : ListView.builder(
+                                itemBuilder: (context, index) => MassageCard(
+                                    height: widget.mcardHeight,
+                                    width: widget.mCardWidth,
+                                    data: data.chatGroupData[index]),
+                                itemCount: data.chatGroupData.length,
+                              )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          );
               },
             ),
           ),

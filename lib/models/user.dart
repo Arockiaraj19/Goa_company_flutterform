@@ -40,6 +40,7 @@ class UserModel {
   String facebookId;
   String coin;
   bool isVerified;
+  int subCount;
 
   UserModel({
     this.id,
@@ -79,6 +80,7 @@ class UserModel {
     this.facebookId,
     this.coin,
     this.isVerified,
+    this.subCount,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -131,6 +133,7 @@ class UserModel {
     facebookId = json["facebook_link"];
     coin = json["coin_value"].toString();
     isVerified = json["is_user_verified"];
+    subCount = json["profile_visit_count"];
   }
 
   Map<String, dynamic> toJson() {

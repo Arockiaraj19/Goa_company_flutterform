@@ -25,7 +25,7 @@ class ForgetPassword {
       });
       return data;
     } catch (e) {
-      print(e);
+     throw e;
     }
   }
 
@@ -45,7 +45,7 @@ class ForgetPassword {
       });
       return data;
     } catch (e) {
-      print(e);
+    throw e;
     }
   }
 
@@ -66,7 +66,7 @@ class ForgetPassword {
       });
       return data;
     } catch (e) {
-      print(e);
+     throw e;
     }
   }
 
@@ -87,7 +87,7 @@ class ForgetPassword {
       });
       return data;
     } catch (e) {
-      print(e);
+     throw e;
     }
   }
 }

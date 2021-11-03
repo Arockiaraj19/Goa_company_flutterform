@@ -3,13 +3,20 @@ import 'dart:async';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/providers/notification_provider.dart';
+import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/helpers/google_map.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/src/provider.dart';
+import 'package:sailor/sailor.dart';
 
 import '../../routes.dart';
 
@@ -27,7 +34,16 @@ class _FindMatchPageState extends State<FindMatchPage> {
     // TODO: implement initState
     super.initState();
     saveLoginStatus(2);
+
+    getdata();
+
     getLoc();
+  }
+
+  getdata() {
+    context.read<HomeProvider>().getData();
+    context.read<SubscriptionProvider>().checkplans();
+    context.read<NotificationProvider>().getData();
   }
 
   getLoc() async {
@@ -48,9 +64,14 @@ class _FindMatchPageState extends State<FindMatchPage> {
     print(userData);
     if (userData != null) {
       UserModel result = await network.patchUserData(userData);
+      if (context.read<HomeProvider>().homeState != HomeState.Error &&
+          context.read<SubscriptionProvider>().subscriptionState !=
+              SubscriptionState.Error &&
+          context.read<NotificationProvider>().notificationState !=
+              NotificationState.Error) {
+        goToHomePage();
+      }
     }
-
-    goToHomePage();
   }
 
   @override
@@ -75,107 +96,200 @@ class _FindMatchPageState extends State<FindMatchPage> {
             automaticallyImplyLeading: false,
             backgroundColor: Colors.grey[50],
           ),
-          body: InkWell(
-            child: SingleChildScrollView(
-                child: Column(children: [
-              Container(
-                margin: EdgeInsetsDirectional.only(start: 10, end: 10),
-                width: MediaQuery.of(context).size.width,
-                color: MainTheme.primaryColor,
-                height: 2,
-              ),
-              Container(
-                  margin:
-                      EdgeInsetsDirectional.only(start: 60, end: 60, top: 20),
-                  child: Row(children: [
-                    Expanded(
-                        child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          text: "Now",
-                          style: TextStyle(
-                              color: MainTheme.primaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: ScreenUtil().setSp(45),
-                              fontFamily: "Inter"),
-                          children: [
-                            TextSpan(
-                              text: " let’s perfect that profile ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  // fontWeight: FontWeight.bold,
-                                  fontSize: ScreenUtil().setSp(45),
-                                  fontFamily: "Inter"),
-                            ),
-                            TextSpan(
-                              text: "of yours!",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  // fontWeight: FontWeight.bold,
-                                  fontSize: ScreenUtil().setSp(45),
-                                  fontFamily: "Inter"),
-                            )
-                          ]),
-                    )),
-                  ])),
-              SizedBox(height: ScreenUtil().setHeight(40)),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Container(
-                    child: Image.asset("assets/images/searching-radius.gif",
-                        height: MediaQuery.of(context).size.height / 2.3,
-                        width: MediaQuery.of(context).size.width)),
-              ]),
-              SizedBox(height: ScreenUtil().setHeight(40)),
-              Container(
-                  margin:
-                      EdgeInsetsDirectional.only(start: 90, end: 90, top: 20),
-                  child: Row(children: [
-                    Expanded(
-                        child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          text: "Find Your",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: ScreenUtil().setSp(45),
-                              fontFamily: "Inter"),
-                          children: [
-                            TextSpan(
-                              text: " Parnter ",
-                              style: TextStyle(
-                                  color: MainTheme.primaryColor,
-                                  // fontWeight: FontWeight.bold,
-                                  fontSize: ScreenUtil().setSp(45),
-                                  fontFamily: "Inter"),
-                            ),
-                            TextSpan(
-                              text: "With Us",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  // fontWeight: FontWeight.bold,
-                                  fontSize: ScreenUtil().setSp(45),
-                                  fontFamily: "Inter"),
-                            )
-                          ]),
-                    )),
-                  ])),
-              Container(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                    Container(
-                        margin: EdgeInsetsDirectional.only(top: 20),
-                        child: Text(
-                          "Join us and socialize with million of people",
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: ScreenUtil().setSp(28),
-                              fontFamily: "lato"),
-                        ))
-                  ])),
-              SizedBox(height: ScreenUtil().setHeight(30)),
-            ])),
+          body: Consumer<HomeProvider>(
+            builder: (context, watch, child) {
+              return watch.homeState == HomeState.Error
+                  ? ErrorCard(
+                      text: watch.errorText,
+                      ontab: () => Routes.sailor(Routes.findMatchPage,
+                          navigationType: NavigationType.pushReplace))
+                  : Consumer<SubscriptionProvider>(
+                      builder: (context, sub, child) {
+                        return sub.subscriptionState == SubscriptionState.Error
+                            ? ErrorCard(
+                                text: sub.errorText,
+                                ontab: () => Routes.sailor(Routes.findMatchPage,
+                                    navigationType: NavigationType.pushReplace))
+                            : Consumer<NotificationProvider>(
+                                builder: (context, noti, child) {
+                                  return noti.notificationState ==
+                                          NotificationState.Error
+                                      ? ErrorCard(
+                                          text: noti.errorText,
+                                          ontab: () => Routes.sailor(
+                                              Routes.findMatchPage,
+                                              navigationType:
+                                                  NavigationType.pushReplace))
+                                      : InkWell(
+                                          child: SingleChildScrollView(
+                                              child: Column(children: [
+                                            Container(
+                                              margin:
+                                                  EdgeInsetsDirectional.only(
+                                                      start: 10, end: 10),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              color: MainTheme.primaryColor,
+                                              height: 2,
+                                            ),
+                                            Container(
+                                                margin:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 60,
+                                                        end: 60,
+                                                        top: 20),
+                                                child: Row(children: [
+                                                  Expanded(
+                                                      child: RichText(
+                                                    textAlign: TextAlign.center,
+                                                    text: TextSpan(
+                                                        text: "Now",
+                                                        style: TextStyle(
+                                                            color: MainTheme
+                                                                .primaryColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                ScreenUtil()
+                                                                    .setSp(45),
+                                                            fontFamily:
+                                                                "Inter"),
+                                                        children: [
+                                                          TextSpan(
+                                                            text:
+                                                                " let’s perfect that profile ",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontSize:
+                                                                    ScreenUtil()
+                                                                        .setSp(
+                                                                            45),
+                                                                fontFamily:
+                                                                    "Inter"),
+                                                          ),
+                                                          TextSpan(
+                                                            text: "of yours!",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontSize:
+                                                                    ScreenUtil()
+                                                                        .setSp(
+                                                                            45),
+                                                                fontFamily:
+                                                                    "Inter"),
+                                                          )
+                                                        ]),
+                                                  )),
+                                                ])),
+                                            SizedBox(
+                                                height:
+                                                    ScreenUtil().setHeight(40)),
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                      child: Image.asset(
+                                                          "assets/images/searching-radius.gif",
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height /
+                                                              2.3,
+                                                          width: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width)),
+                                                ]),
+                                            SizedBox(
+                                                height:
+                                                    ScreenUtil().setHeight(40)),
+                                            Container(
+                                                margin:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 90,
+                                                        end: 90,
+                                                        top: 20),
+                                                child: Row(children: [
+                                                  Expanded(
+                                                      child: RichText(
+                                                    textAlign: TextAlign.center,
+                                                    text: TextSpan(
+                                                        text: "Find Your",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                ScreenUtil()
+                                                                    .setSp(45),
+                                                            fontFamily:
+                                                                "Inter"),
+                                                        children: [
+                                                          TextSpan(
+                                                            text: " Parnter ",
+                                                            style: TextStyle(
+                                                                color: MainTheme
+                                                                    .primaryColor,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontSize:
+                                                                    ScreenUtil()
+                                                                        .setSp(
+                                                                            45),
+                                                                fontFamily:
+                                                                    "Inter"),
+                                                          ),
+                                                          TextSpan(
+                                                            text: "With Us",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                // fontWeight: FontWeight.bold,
+                                                                fontSize:
+                                                                    ScreenUtil()
+                                                                        .setSp(
+                                                                            45),
+                                                                fontFamily:
+                                                                    "Inter"),
+                                                          )
+                                                        ]),
+                                                  )),
+                                                ])),
+                                            Container(
+                                                child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                  Container(
+                                                      margin:
+                                                          EdgeInsetsDirectional
+                                                              .only(top: 20),
+                                                      child: Text(
+                                                        "Join us and socialize with million of people",
+                                                        style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontSize:
+                                                                ScreenUtil()
+                                                                    .setSp(28),
+                                                            fontFamily: "lato"),
+                                                      ))
+                                                ])),
+                                            SizedBox(
+                                                height:
+                                                    ScreenUtil().setHeight(30)),
+                                          ])),
+                                        );
+                                },
+                              );
+                      },
+                    );
+            },
           )),
     );
   }

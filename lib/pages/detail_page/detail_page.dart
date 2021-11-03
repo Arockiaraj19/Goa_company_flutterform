@@ -9,10 +9,12 @@ import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
+import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
 
 class DetailPage extends StatefulWidget {
   final Responses userDetails;
@@ -151,28 +153,43 @@ class _DetailPageState extends State<DetailPage> {
                           goChatPage: () async {
                             print("hello");
 
-                            String groupid = await ChatNetwork().createGroup(
-                                widget.userDetails.id, data.userData);
+                            try {
+                              String groupid = await ChatNetwork().createGroup(
+                                  widget.userDetails.id, data.userData);
 
-                            goToChatPage(
-                                groupid,
-                                widget.userDetails.id,
-                                widget.userDetails.identificationImage,
-                                widget.userDetails.firstName);
+                              goToChatPage(
+                                  groupid,
+                                  widget.userDetails.id,
+                                  widget.userDetails.identificationImage,
+                                  widget.userDetails.firstName);
+                            } on DioError catch (e) {
+                              print(e);
+                            }
                           },
                           isDetail: true,
                           onTapHeart: () async {
                             await context.read<HomeProvider>().changeheart();
                             String confirmedUser = widget.userDetails.id;
                             UserModel userData = data.userData;
-                            HomeButtonNetwork()
-                                .postMatchRequest(confirmedUser, userData);
+                            try {
+                              await HomeButtonNetwork()
+                                  .postMatchRequest(confirmedUser, userData);
+                            } on DioError catch (e) {
+                              print(e);
+                            }
                           },
                           onTapFlash: () async {
                             print("you click super star");
                             await context.read<HomeProvider>().changestar();
                             String likedUser = widget.userDetails.id;
-                            HomeButtonNetwork().postLikeUnlike(likedUser, "1");
+                            try {
+                              await HomeButtonNetwork()
+                                  .postLikeUnlike(likedUser, "1");
+                            } on DioError catch (e) {
+                              if (e.response.statusCode == 408) {
+                                _showplans(context);
+                              }
+                            }
                           },
                         ));
                   }),
@@ -395,6 +412,19 @@ class _DetailPageState extends State<DetailPage> {
                 ],
               ))
         ])));
+  }
+
+  _showplans(context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        // isDismissible: false,
+        // enableDrag: false,
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        builder: (BuildContext context) {
+          return BottomsheetWidget();
+        });
   }
 
   Widget _buildWeb() {

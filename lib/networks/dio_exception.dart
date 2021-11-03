@@ -16,7 +16,7 @@ class DioException implements Exception {
         message = "Receive timeout in connection with API server";
         break;
       case DioErrorType.response:
-        message = _handleError(dioError.response.statusCode);
+        message = _handleError(dioError.response.statusCode, dioError);
         break;
       case DioErrorType.sendTimeout:
         message = "Send timeout in connection with API server";
@@ -29,7 +29,7 @@ class DioException implements Exception {
 
   String message;
 
-  String _handleError(int statusCode) {
+  String _handleError(int statusCode, DioError dioError) {
     switch (statusCode) {
       case 400:
         return 'Bad request';
@@ -37,6 +37,12 @@ class DioException implements Exception {
         return 'The requested resource was not found';
       case 500:
         return 'Internal server error';
+      case 410:
+        return dioError.response.data["msg"].toString();
+      case 409:
+        return dioError.response.data["msg"].toString();
+      case 408:
+        return dioError.response.data["msg"].toString();
       default:
         return 'Oops something went wrong';
     }

@@ -104,21 +104,33 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
     setState(() {
       loading = true;
     });
-    var network = EmailSignUpNetwork();
-    bool result =
-        await network.signUpWithEmail(widget.email, _password1Ctrl.text);
-    var network1 = UserNetwork();
-    UserModel userData = result ? await network1.getUserData() : null;
-    userData != null ? onboardingCheck(userData) : null;
+    try {
+      var network = EmailSignUpNetwork();
+      bool result =
+          await network.signUpWithEmail(widget.email, _password1Ctrl.text);
+      var network1 = UserNetwork();
+      UserModel userData = result ? await network1.getUserData() : null;
+      userData != null ? onboardingCheck(userData) : null;
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   forgetresetpassword() async {
     setState(() {
       loading = true;
     });
-    var result = await ForgetPassword().forgetResetPassword(
-        widget.otpdata.otp_id, widget.otpdata.user_id, _password1Ctrl.text);
-    Routes.sailor(Routes.success);
+    try {
+      var result = await ForgetPassword().forgetResetPassword(
+          widget.otpdata.otp_id, widget.otpdata.user_id, _password1Ctrl.text);
+      Routes.sailor(Routes.success);
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   Widget commonPart(BuildContext context, {bool onWeb = false}) {

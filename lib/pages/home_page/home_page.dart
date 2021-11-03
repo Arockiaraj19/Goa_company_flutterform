@@ -9,12 +9,15 @@ import 'package:dating_app/pages/home_page/widget/bio.dart';
 import 'package:dating_app/pages/home_page_grid_view_page/home_page_grid_view_page.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
+import 'package:dating_app/providers/subscription_provider.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/album_card_list.dart';
 import 'package:dating_app/shared/widgets/alert_widget.dart';
 import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/home_page_grid_view_list.dart';
 import 'package:dating_app/shared/widgets/interest_card_list.dart';
 import 'package:dating_app/shared/widgets/main_appbar.dart';
@@ -30,6 +33,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:sailor/sailor.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -47,8 +51,9 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     FCM().initPushNotification();
-    context.read<HomeProvider>().getData();
-    context.read<NotificationProvider>().getData();
+    if (context.read<SubscriptionProvider>().plan == null) {
+      context.read<SubscriptionProvider>().getprofilecount();
+    }
   }
 
   @override
@@ -98,45 +103,60 @@ class _HomePageState extends State<HomePage> {
           },
           child: RefreshIndicator(
             onRefresh: _pullRefresh,
-            child: Consumer<HomeProvider>(builder: (context, data, child) {
-              return data.homeState == HomeState.Loaded
-                  ? data.usersSuggestionData.response.length == 0
-                      ? noResult()
-                      : data.view == 1
-                          ? SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Container(
-                                      height: _height / 1.20,
-                                      width: double.infinity,
-                                      child: ImageSwiper(
-                                        itemheight: 460.h,
-                                        itemwidth: double.infinity,
-                                        userSuggestionData:
-                                            data.usersSuggestionData,
-                                        promos: [
-                                          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-                                          "https://us.123rf.com/450wm/vadymvdrobot/vadymvdrobot1803/vadymvdrobot180303570/97983244-happy-asian-woman-in-t-shirt-bites-eyeglasses-and-looking-at-the-camera-over-grey-background.jpg?ver=6",
-                                          "https://cdn.lifehack.org/wp-content/uploads/2014/03/shutterstock_97566446.jpg",
-                                          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29ufGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"
-                                        ],
-                                        onTap: (dynamic promo) {},
-                                      )),
-                                  SizedBox(
-                                    height: ScreenUtil().setHeight(15),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: HomePageGridViewPage(
-                                usersData: data.usersSuggestionData,
-                              ),
-                            )
-                  : Center(
-                      child: CircularProgressIndicator(),
-                    );
+            child:
+                Consumer<SubscriptionProvider>(builder: (context, sub, child) {
+              return sub.subscriptionState == SubscriptionState.Error
+                  ? ErrorCard(
+                      text: sub.errorText,
+                      ontab: () => Routes.sailor(Routes.homePage,
+                          navigationType: NavigationType.pushReplace))
+                  : Consumer<HomeProvider>(builder: (context, data, child) {
+                      return data.homeState == HomeState.Error
+                          ? ErrorCard(
+                              text: data.errorText,
+                              ontab: () => Routes.sailor(Routes.homePage,
+                                  navigationType: NavigationType.pushReplace))
+                          : data.homeState == HomeState.Loaded
+                              ? data.usersSuggestionData.response.length == 0
+                                  ? noResult()
+                                  : data.view == 1
+                                      ? SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                  height: _height / 1.20,
+                                                  width: double.infinity,
+                                                  child: ImageSwiper(
+                                                    itemheight: 460.h,
+                                                    itemwidth: double.infinity,
+                                                    userSuggestionData: data
+                                                        .usersSuggestionData,
+                                                    promos: [
+                                                      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                                                      "https://us.123rf.com/450wm/vadymvdrobot/vadymvdrobot1803/vadymvdrobot180303570/97983244-happy-asian-woman-in-t-shirt-bites-eyeglasses-and-looking-at-the-camera-over-grey-background.jpg?ver=6",
+                                                      "https://cdn.lifehack.org/wp-content/uploads/2014/03/shutterstock_97566446.jpg",
+                                                      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29ufGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"
+                                                    ],
+                                                    onTap: (dynamic promo) {},
+                                                  )),
+                                              SizedBox(
+                                                height:
+                                                    ScreenUtil().setHeight(15),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 15),
+                                          child: HomePageGridViewPage(
+                                            usersData: data.usersSuggestionData,
+                                          ),
+                                        )
+                              : Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                    });
             }),
           ),
         ),

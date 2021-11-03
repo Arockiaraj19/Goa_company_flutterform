@@ -12,6 +12,7 @@ import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/Forminput.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
@@ -87,8 +88,7 @@ class _LoginWithState extends State<LoginWith> {
                           "assets/images/login pic.png",
                         ))),
                 child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
+                  padding: EdgeInsets.symmetric(horizontal: 80.r, vertical: 0),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -317,13 +317,17 @@ class _LoginWithState extends State<LoginWith> {
     });
     var network = SignInNetwork();
     var network1 = UserNetwork();
-    Timer(Duration(seconds: 3), () => offLoading());
-    print("before login");
-    bool result = await network.signInWithEmail(
-        _emailCtrl.text.trim(), _passCtrl.text.trim());
-    print("after login login");
-    UserModel userData = result ? await network1.getUserData() : null;
-    userData != null ? onboardingCheck(userData) : null;
+
+    try {
+      print("before login");
+      bool result = await network.signInWithEmail(
+          _emailCtrl.text.trim(), _passCtrl.text.trim());
+      print("after login login");
+      UserModel userData = result ? await network1.getUserData() : null;
+      userData != null ? onboardingCheck(userData) : null;
+    } catch (e) {
+      offLoading();
+    }
   }
 
   offLoading() {
@@ -336,8 +340,13 @@ class _LoginWithState extends State<LoginWith> {
     setState(() {
       loading = true;
     });
-    var network1 = UserNetwork();
-    await registerUser(codecontroller.text + _numberCtrl.text, context, false);
+    try {
+      var network1 = UserNetwork();
+      await registerUser(
+          codecontroller.text + _numberCtrl.text, context, false);
+    } catch (e) {
+      offLoading();
+    }
     //Timer(Duration(seconds: 8), ()=>offLoading());
   }
 
@@ -633,42 +642,53 @@ class _LoginWithState extends State<LoginWith> {
                     ),
                     Expanded(child: Consumer<CodeProvider>(
                       builder: (context, data, child) {
-                        return data.chatState == ChatState.Loading
-                            ? Center(
-                                child: CircularProgressIndicator(),
+                        return data.chatState == ChatState.Error
+                            ? ErrorCard(
+                                text: data.errorText,
+                                ontab: () {
+                                  context.read<CodeProvider>().getdata("");
+                                },
                               )
-                            : data.codeData.length == 0
+                            : data.chatState == ChatState.Loading
                                 ? Center(
-                                    child: Text("no data"),
+                                    child: CircularProgressIndicator(),
                                   )
-                                : SingleChildScrollView(
-                                    child: Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: List.generate(
-                                              data.codeData.length,
-                                              (index) => InkWell(
-                                                    onTap: () {
-                                                      codecontroller.text = data
-                                                          .codeData[index]
-                                                          .telephonecode;
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Container(
-                                                      width: double.infinity,
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      height: 40.h,
-                                                      child: Text(data
-                                                          .codeData[index]
-                                                          .telephonecode),
-                                                    ),
-                                                  )),
+                                : data.codeData.length == 0
+                                    ? Center(
+                                        child: Text("no data"),
+                                      )
+                                    : SingleChildScrollView(
+                                        child: Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: List.generate(
+                                                  data.codeData.length,
+                                                  (index) => InkWell(
+                                                        onTap: () {
+                                                          codecontroller.text =
+                                                              data
+                                                                  .codeData[
+                                                                      index]
+                                                                  .telephonecode;
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Container(
+                                                          width:
+                                                              double.infinity,
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          height: 40.h,
+                                                          child: Text(data
+                                                              .codeData[index]
+                                                              .telephonecode),
+                                                        ),
+                                                      )),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  );
+                                      );
                       },
                     ))
                   ],

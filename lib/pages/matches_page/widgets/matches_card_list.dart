@@ -2,6 +2,7 @@ import 'package:dating_app/models/match_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/providers/match_provider.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -97,9 +98,16 @@ class _MatchesCardListState extends State<MatchesCardList> {
           Expanded(
             child: Container(
               child: Consumer<MatchProvider>(builder: (context, data, child) {
-                if (data.homeState == HomeState.Loading) {
+                if (data.matchState == MatchState.Error) {
+                  return ErrorCard(
+                    text: data.errorText,
+                    ontab: () {
+                      context.read<MatchProvider>().getMatchData("");
+                    },
+                  );
+                } else if (data.matchState == MatchState.Loading) {
                   return Center(child: CircularProgressIndicator());
-                } else if (data.homeState == HomeState.Loaded) {
+                } else if (data.matchState == MatchState.Loaded) {
                   return data.matchListData.length == 0
                       ? noResult()
                       : ListView.builder(

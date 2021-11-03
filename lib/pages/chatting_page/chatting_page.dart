@@ -16,6 +16,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
@@ -110,11 +111,15 @@ class _ChattingPageState extends State<ChattingPage> {
     });
   }
 
-  _sentmessage(List<String> image) {
-    ChatNetwork().createMessage(
-        widget.id, _message.text.toString(), widget.groupid, image);
-    _message.text = "";
-    selectedUserAvatar = null;
+  _sentmessage(List<String> image) async {
+    try {
+      ChatNetwork().createMessage(
+          widget.id, _message.text.toString(), widget.groupid, image);
+      _message.text = "";
+      selectedUserAvatar = null;
+    } catch (e) {
+      print(e);
+    }
   }
 
   TextEditingController _message = TextEditingController();
@@ -122,10 +127,14 @@ class _ChattingPageState extends State<ChattingPage> {
   blockuser() async {
     String userid = await getUserId();
     print("you clicked block user");
-    bool result =
-        await ChatNetwork().blockuser(userid, widget.id, widget.groupid, true);
-    if (result) {
-      showtoast("You blocked successfully");
+    try {
+      bool result = await ChatNetwork()
+          .blockuser(userid, widget.id, widget.groupid, true);
+      if (result) {
+        showtoast("You blocked successfully");
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -141,20 +150,24 @@ class _ChattingPageState extends State<ChattingPage> {
   }
 
   gotogame(user1, user2, user1name) async {
-    List<GamesModel> games = await Games().getallgames();
-    GameRequest gameRequest =
-        await Games().sendgamerequest(games[0].id, widget.id);
-    List<Getquestion> questions =
-        await Games().getquestion(games[0].id, gameRequest.id);
-    Routes.sailor(Routes.quizGamePage, params: {
-      "questions": questions,
-      "playid": gameRequest.id,
-      "user1": user1,
-      "user2": user2,
-      "istrue": true,
-      "user1name": user1name,
-      "user2name": widget.name,
-    });
+    try {
+      List<GamesModel> games = await Games().getallgames();
+      GameRequest gameRequest =
+          await Games().sendgamerequest(games[0].id, widget.id);
+      List<Getquestion> questions =
+          await Games().getquestion(games[0].id, gameRequest.id);
+      Routes.sailor(Routes.quizGamePage, params: {
+        "questions": questions,
+        "playid": gameRequest.id,
+        "user1": user1,
+        "user2": user2,
+        "istrue": true,
+        "user1name": user1name,
+        "user2name": widget.name,
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -297,7 +310,12 @@ class _ChattingPageState extends State<ChattingPage> {
                             dropdownValue = result;
                           });
                           if (result == itemdate[0]) {
-                            UserNetwork().getMatchedprofiledata(widget.id);
+                            try {
+                              await UserNetwork()
+                                  .getMatchedprofiledata(widget.id);
+                            } catch (e) {
+                              print(e);
+                            }
                           }
                           if (result == itemdate[1]) {
                             blockuser();
@@ -339,194 +357,217 @@ class _ChattingPageState extends State<ChattingPage> {
               Expanded(
                 child: Consumer<ChatProvider>(
                   builder: (context, data, child) {
-                    return data.chatState == ChatState.Loaded
-                        ? data.chatMessageData.length == 0
-                            ? Container()
-                            : StickyGroupedListView<ChatMessage, DateTime>(
-                                reverse: true,
-                                elements: data.chatMessageData,
-                                order: StickyGroupedListOrder.ASC,
-                                groupBy: (ChatMessage element) => DateTime(
-                                    element.createdAt.year,
-                                    element.createdAt.month,
-                                    element.createdAt.day),
-                                groupComparator:
-                                    (DateTime value1, DateTime value2) =>
-                                        value2.compareTo(value1),
-                                itemComparator: (ChatMessage element1,
-                                        ChatMessage element2) =>
-                                    element1.createdAt
-                                        .compareTo(element2.createdAt),
-                                floatingHeader: true,
-                                groupSeparatorBuilder: (ChatMessage element) =>
-                                    Container(
-                                  height: 50,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      width: 120,
-                                      decoration: BoxDecoration(
-                                        color: MainTheme.primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20.0)),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          DateFormat('dd-MM-yyyy').format(
-                                                      element.createdAt) ==
-                                                  DateFormat('dd-MM-yyyy')
-                                                      .format(DateTime.now())
-                                              ? "Today"
-                                              : DateFormat('dd-MM-yyyy').format(
+                    return data.chatState == ChatState.Error
+                        ? ErrorCard(
+                            text: data.errorText,
+                            ontab: () => context
+                                .read<ChatProvider>()
+                                .getMessageData(widget.groupid))
+                        : data.chatState == ChatState.Loaded
+                            ? data.chatMessageData.length == 0
+                                ? Container()
+                                : StickyGroupedListView<ChatMessage, DateTime>(
+                                    reverse: true,
+                                    elements: data.chatMessageData,
+                                    order: StickyGroupedListOrder.DESC,
+                                    groupBy: (ChatMessage element) => DateTime(
+                                        element.createdAt.year,
+                                        element.createdAt.month,
+                                        element.createdAt.day),
+                                    groupComparator:
+                                        (DateTime value1, DateTime value2) =>
+                                            value2.compareTo(value1),
+                                    itemComparator: (ChatMessage element1,
+                                            ChatMessage element2) =>
+                                        element1.createdAt
+                                            .compareTo(element2.createdAt),
+                                    floatingHeader: true,
+                                    groupSeparatorBuilder:
+                                        (ChatMessage element) => Container(
+                                      height: 50,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                          width: 120,
+                                          decoration: BoxDecoration(
+                                            color: MainTheme.primaryColor,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20.0)),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              DateFormat('dd-MM-yyyy').format(
                                                           element.createdAt) ==
                                                       DateFormat('dd-MM-yyyy')
-                                                          .format(DateTime.now()
-                                                              .subtract(
-                                                                  Duration(
-                                                                      days: 1)))
-                                                  ? "Yesterday"
-                                                  : '${element.createdAt.day}. ${element.createdAt.month}, ${element.createdAt.year}',
-                                          style: TextStyle(
-                                            color: Colors.white,
+                                                          .format(
+                                                              DateTime.now())
+                                                  ? "Today"
+                                                  : DateFormat('dd-MM-yyyy')
+                                                              .format(element
+                                                                  .createdAt) ==
+                                                          DateFormat('dd-MM-yyyy')
+                                                              .format(DateTime
+                                                                      .now()
+                                                                  .subtract(
+                                                                      Duration(
+                                                                          days:
+                                                                              1)))
+                                                      ? "Yesterday"
+                                                      : '${element.createdAt.day}. ${element.createdAt.month}, ${element.createdAt.year}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                itemBuilder: (_, ChatMessage element) {
-                                  return Align(
-                                    alignment:
-                                        element.receiverDetails.first.userId ==
+                                    itemBuilder: (_, ChatMessage element) {
+                                      return Align(
+                                        alignment: element.receiverDetails.first
+                                                    .userId ==
                                                 widget.id
                                             ? Alignment.centerRight
                                             : Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 30.w, vertical: 30.w),
-                                      child: Card(
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 30.w, vertical: 30.w),
+                                          child: Card(
+                                            elevation: 2,
+                                            shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5),
-                                              color: element.receiverDetails[0]
-                                                          .userId ==
-                                                      widget.id
-                                                  ? Color(0xffEB4DB5)
-                                                  : Colors.white),
-                                          child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 50.w,
-                                                vertical: 15.w,
-                                              ),
-                                              child: element.images.length == 0
-                                                  ? Column(
-                                                      crossAxisAlignment: element
-                                                                  .receiverDetails[
-                                                                      0]
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color:
+                                                      element.receiverDetails[0]
                                                                   .userId ==
                                                               widget.id
-                                                          ? CrossAxisAlignment
-                                                              .end
-                                                          : CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          element.message,
-                                                          style: TextStyle(
-                                                            color: element
-                                                                        .receiverDetails[
-                                                                            0]
-                                                                        .userId ==
-                                                                    widget.id
-                                                                ? Colors.white
-                                                                : Color(
-                                                                    0xff4A4A4A),
-                                                            fontSize: 40.sp,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          convertime(element
-                                                              .createdAt),
-                                                          textAlign: element
-                                                                      .receiverDetails[
-                                                                          0]
-                                                                      .userId ==
-                                                                  widget.id
-                                                              ? TextAlign.right
-                                                              : TextAlign.left,
-                                                          style: TextStyle(
-                                                            color: element
-                                                                        .receiverDetails[
-                                                                            0]
-                                                                        .userId ==
-                                                                    widget.id
-                                                                ? Colors.white
-                                                                : Color(
-                                                                    0xffEB4DB5),
-                                                            fontSize: 25.sp,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  : Column(
-                                                      crossAxisAlignment: element
-                                                                  .receiverDetails[
-                                                                      0]
-                                                                  .userId ==
-                                                              widget.id
-                                                          ? CrossAxisAlignment
-                                                              .end
-                                                          : CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        CachedNetworkImage(
-                                                          height: 200.h,
-                                                          width: 500.w,
-                                                          imageUrl:
-                                                              element.images[0],
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                        Text(
-                                                          convertime(element
-                                                              .createdAt),
-                                                          textAlign: element
-                                                                      .receiverDetails[
-                                                                          0]
-                                                                      .userId ==
-                                                                  widget.id
-                                                              ? TextAlign.right
-                                                              : TextAlign.left,
-                                                          style: TextStyle(
-                                                            color: element
-                                                                        .receiverDetails[
-                                                                            0]
-                                                                        .userId ==
-                                                                    widget.id
-                                                                ? Colors.white
-                                                                : Color(
-                                                                    0xffEB4DB5),
-                                                            fontSize: 25.sp,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )),
+                                                          ? Color(0xffEB4DB5)
+                                                          : Colors.white),
+                                              child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 50.w,
+                                                    vertical: 15.w,
+                                                  ),
+                                                  child:
+                                                      element.images.length == 0
+                                                          ? Column(
+                                                              crossAxisAlignment: element
+                                                                          .receiverDetails[
+                                                                              0]
+                                                                          .userId ==
+                                                                      widget.id
+                                                                  ? CrossAxisAlignment
+                                                                      .end
+                                                                  : CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  element
+                                                                      .message,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: element.receiverDetails[0].userId ==
+                                                                            widget
+                                                                                .id
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Color(
+                                                                            0xff4A4A4A),
+                                                                    fontSize:
+                                                                        40.sp,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  convertime(element
+                                                                      .createdAt),
+                                                                  textAlign: element
+                                                                              .receiverDetails[
+                                                                                  0]
+                                                                              .userId ==
+                                                                          widget
+                                                                              .id
+                                                                      ? TextAlign
+                                                                          .right
+                                                                      : TextAlign
+                                                                          .left,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: element.receiverDetails[0].userId ==
+                                                                            widget
+                                                                                .id
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Color(
+                                                                            0xffEB4DB5),
+                                                                    fontSize:
+                                                                        25.sp,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Column(
+                                                              crossAxisAlignment: element
+                                                                          .receiverDetails[
+                                                                              0]
+                                                                          .userId ==
+                                                                      widget.id
+                                                                  ? CrossAxisAlignment
+                                                                      .end
+                                                                  : CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                CachedNetworkImage(
+                                                                  height: 200.h,
+                                                                  width: 500.w,
+                                                                  imageUrl: element
+                                                                      .images[0],
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                                Text(
+                                                                  convertime(element
+                                                                      .createdAt),
+                                                                  textAlign: element
+                                                                              .receiverDetails[
+                                                                                  0]
+                                                                              .userId ==
+                                                                          widget
+                                                                              .id
+                                                                      ? TextAlign
+                                                                          .right
+                                                                      : TextAlign
+                                                                          .left,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: element.receiverDetails[0].userId ==
+                                                                            widget
+                                                                                .id
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Color(
+                                                                            0xffEB4DB5),
+                                                                    fontSize:
+                                                                        25.sp,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          );
+                                      );
+                                    },
+                                  )
+                            : Center(
+                                child: CircularProgressIndicator(),
+                              );
                   },
                 ),
               ),

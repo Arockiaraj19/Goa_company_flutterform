@@ -4,38 +4,54 @@ import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/blind_network.dart';
+import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-enum HomeState { Initial, Loading, Loaded, Error }
+enum BlindState { Initial, Loading, Loaded, Error }
 
 class BlindProvider extends ChangeNotifier {
-  HomeState _homeState = HomeState.Initial;
-  List<ResponseData> _blindData = [];
+  BlindState _blindState = BlindState.Initial;
+  List<ResponseData> _blindData=[];
   int currentpage = 0, totalPage = 1;
 
-  HomeState get homeState => _homeState;
+  BlindState get blindState => _blindState;
   List<ResponseData> get blindData => _blindData;
-
+  String _errorText;
+  String get errorText => _errorText;
   getData() async {
-    _homeState = HomeState.Loading;
-    _blindData = await BlindNetwork().getblindMatches();
+    _blindState = BlindState.Loading;
 
+    try {
+      _blindData = await BlindNetwork().getblindMatches();
+    } on DioError catch (e) {
+      _errorText = DioException.fromDioError(e).toString();
+
+      return error();
+    }
     loaded();
   }
 
   postData(BuildContext context, var data) async {
-    var res = await BlindNetwork().postBlindRequest(data);
-    res ? getData() : null;
+    try {
+      var res = await BlindNetwork().postBlindRequest(data);
+
+      res ? getData() : null;
+    } on DioError catch (e) {
+      _errorText = DioException.fromDioError(e).toString();
+
+      return error();
+    }
   }
 
   loaded() {
-    _homeState = HomeState.Loaded;
+    _blindState = BlindState.Loaded;
     notifyListeners();
   }
 
   error() {
-    _homeState = HomeState.Error;
+    _blindState = BlindState.Error;
     notifyListeners();
   }
 

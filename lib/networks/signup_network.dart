@@ -22,9 +22,8 @@ class EmailSignUpNetwork {
         }
       });
       return data;
-    } on DioError catch (dioerror) {
-      print("error main la varuthaa");
-      print(dioerror);
+    }  catch (e) {
+     throw e;
     }
   }
 
@@ -41,8 +40,7 @@ class EmailSignUpNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
-      showtoast(e["msg"]);
+     throw e;
     }
   }
 
@@ -62,9 +60,7 @@ class EmailSignUpNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
-      showtoast(e["msg"]);
-      return false;
+     throw e;
     }
   }
 
@@ -90,9 +86,7 @@ class EmailSignUpNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
-      showtoast(e["msg"]);
-      return false;
+    throw e;
     }
   }
 }
@@ -113,8 +107,7 @@ class MobileSignUpNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
-      showtoast(e["msg"]);
+     throw e;
     }
   }
 
@@ -139,9 +132,7 @@ class MobileSignUpNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
-      showtoast(e["msg"]);
-      return false;
+   throw e;
     }
   }
 }

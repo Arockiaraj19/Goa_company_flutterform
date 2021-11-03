@@ -6,6 +6,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/countryCode_provider.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -417,44 +418,55 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                     ),
                     Expanded(child: Consumer<CodeProvider>(
                       builder: (context, data, child) {
-                        return data.chatState == ChatState.Loading
-                            ? Center(
-                                child: CircularProgressIndicator(),
+                        return data.chatState == ChatState.Error
+                            ? ErrorCard(
+                                text: data.errorText,
+                                ontab: () {
+                                  context.read<CodeProvider>().getdata("");
+                                },
                               )
-                            : data.codeData.length == 0
+                            : data.chatState == ChatState.Loading
                                 ? Center(
-                                    child: Text("no data"),
+                                    child: CircularProgressIndicator(),
                                   )
-                                : SingleChildScrollView(
-                                    child: Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: List.generate(
-                                              data.codeData.length,
-                                              (index) => InkWell(
-                                                    onTap: () {
-                                                      codecontroller.text = data
-                                                          .codeData[index]
-                                                          .telephonecode;
-                                                      code =
-                                                          data.codeData[index];
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Container(
-                                                      width: double.infinity,
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      height: 40.h,
-                                                      child: Text(data
-                                                          .codeData[index]
-                                                          .telephonecode),
-                                                    ),
-                                                  )),
+                                : data.codeData.length == 0
+                                    ? Center(
+                                        child: Text("no data"),
+                                      )
+                                    : SingleChildScrollView(
+                                        child: Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: List.generate(
+                                                  data.codeData.length,
+                                                  (index) => InkWell(
+                                                        onTap: () {
+                                                          codecontroller.text =
+                                                              data
+                                                                  .codeData[
+                                                                      index]
+                                                                  .telephonecode;
+                                                          code = data
+                                                              .codeData[index];
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Container(
+                                                          width:
+                                                              double.infinity,
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          height: 40.h,
+                                                          child: Text(data
+                                                              .codeData[index]
+                                                              .telephonecode),
+                                                        ),
+                                                      )),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  );
+                                      );
                       },
                     ))
                   ],
@@ -470,12 +482,17 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
       loading = true;
     });
     var network = MobileSignUpNetwork();
-   
-    var result = await network.verifyMobileNoForSignup(
-        codecontroller.text + _numberCtrl.text, code.id);
-    result
-        ? registerUser(codecontroller.text + _numberCtrl.text, context, true)
-        : null;
+    try {
+      var result = await network.verifyMobileNoForSignup(
+          codecontroller.text + _numberCtrl.text, code.id);
+      result
+          ? registerUser(codecontroller.text + _numberCtrl.text, context, true)
+          : null;
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   Widget _buildWeb() {

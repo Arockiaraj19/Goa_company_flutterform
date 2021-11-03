@@ -1,9 +1,13 @@
+import 'package:dating_app/models/user.dart';
 import 'package:dating_app/pages/like_match_list_page/widgets/like_list.dart';
 import 'package:dating_app/pages/like_match_list_page/widgets/match_list.dart';
 import 'package:dating_app/pages/matches_page/widgets/matches_card_list.dart';
+import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
+import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
+import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +32,33 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
     _tabController =
         TabController(length: 2, vsync: this, initialIndex: widget.index);
     context.read<MatchProvider>().getMatchLikeData();
+    Future.delayed(Duration(seconds: 2), () {
+      _checkSub();
+    });
+  }
+
+  _checkSub() async {
+    if (context.read<SubscriptionProvider>().plan == null) {
+      if (context.read<SubscriptionProvider>().subscriptionData.length == 0) {
+        context.read<SubscriptionProvider>().getdata();
+        _showplans();
+      } else {
+        _showplans();
+      }
+    }
+  }
+
+  _showplans() {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        // isDismissible: false,
+        // enableDrag: false,
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        builder: (BuildContext context) {
+          return BottomsheetWidget();
+        });
   }
 
   @override
@@ -93,9 +124,9 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
                     // Divider(),
                   ])))),
       body: Consumer<MatchProvider>(builder: (context, data, child) {
-        if (data.homeState == HomeState.Loading) {
+        if (data.matchState == MatchState.Loading) {
           return LinearProgressIndicator();
-        } else if (data.homeState == HomeState.Loaded) {
+        } else if (data.matchState == MatchState.Loaded) {
           return TabBarView(
               controller: _tabController,
               physics: ClampingScrollPhysics(),
@@ -229,9 +260,9 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
                               // Divider(),
                             ])))),
                 body: Consumer<MatchProvider>(builder: (context, data, child) {
-                  if (data.homeState == HomeState.Loading) {
+                  if (data.matchState == MatchState.Loading) {
                     return LinearProgressIndicator();
-                  } else if (data.homeState == HomeState.Loaded) {
+                  } else if (data.matchState == MatchState.Loaded) {
                     return TabBarView(
                         controller: _tabController,
                         children: <Widget>[

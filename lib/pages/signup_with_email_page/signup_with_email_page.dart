@@ -99,33 +99,46 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
 
     var network = ForgetPassword();
 
-    ResponseForgetOtp result = await network.forgetGetOtp(_emailCtrl.text);
-    showtoast(result.msg.toString());
-    OtpModel data = OtpModel.fromJson({
-      "value": _emailCtrl.text,
-      "id": result.user_id,
-      "isMob": false,
-      "isSignUp": true
-    });
-    Routes.sailor(Routes.otpPage, params: {"otpData": data, "isforget": true});
+    try {
+      ResponseForgetOtp result = await network.forgetGetOtp(_emailCtrl.text);
+      showtoast(result.msg.toString());
+      OtpModel data = OtpModel.fromJson({
+        "value": _emailCtrl.text,
+        "id": result.user_id,
+        "isMob": false,
+        "isSignUp": true
+      });
+      Routes.sailor(Routes.otpPage,
+          params: {"otpData": data, "isforget": true});
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   goToOtpPage() async {
     setState(() {
       loading = true;
     });
-    var network = EmailSignUpNetwork();
-    ResponseData result = await network.verifyEmailForSignup(_emailCtrl.text);
-    showtoast(result.msg.toString());
-    OtpModel data = OtpModel.fromJson(
-        {"value": _emailCtrl.text, "isMob": false, "isSignUp": true});
-    result.statusDetails == 1
-        ? Routes.sailor(Routes.otpPage,
-            params: {"otpData": data, "isforget": false})
-        : result.statusDetails == 2
-            ? Routes.sailor(Routes.addingPasswordPage,
-                params: {"email": _emailCtrl.text,"isforget":false})
-            : Routes.sailor(Routes.loginPage);
+    try {
+      var network = EmailSignUpNetwork();
+      ResponseData result = await network.verifyEmailForSignup(_emailCtrl.text);
+      showtoast(result.msg.toString());
+      OtpModel data = OtpModel.fromJson(
+          {"value": _emailCtrl.text, "isMob": false, "isSignUp": true});
+      result.statusDetails == 1
+          ? Routes.sailor(Routes.otpPage,
+              params: {"otpData": data, "isforget": false})
+          : result.statusDetails == 2
+              ? Routes.sailor(Routes.addingPasswordPage,
+                  params: {"email": _emailCtrl.text, "isforget": false})
+              : Routes.sailor(Routes.loginPage);
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   Widget commonPart(BuildContext context, {bool onWeb = false}) {

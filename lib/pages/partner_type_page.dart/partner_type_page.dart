@@ -169,11 +169,15 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
     setState(() {
       loading = true;
     });
-    var network = UserNetwork();
-    var userData = {"partner_type": itemGender[selectedMenuIndex]["gender"]};
-    Timer(Duration(seconds: 3), () => offLoading());
-    UserModel result = await network.patchUserData(userData);
-    result != null ? onboardingCheck(result) : null;
+    try {
+      var network = UserNetwork();
+      var userData = {"partner_type": itemGender[selectedMenuIndex]["gender"]};
+   
+      UserModel result = await network.patchUserData(userData);
+      Routes.sailor(Routes.subscription);
+    } catch (e) {
+      offLoading();
+    }
   }
 
   offLoading() {

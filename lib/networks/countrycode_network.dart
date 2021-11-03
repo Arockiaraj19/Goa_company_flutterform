@@ -24,7 +24,7 @@ class CountryCodeNetwork {
       });
       return data;
     } catch (e) {
-      print(e);
+      throw e;
     }
   }
 }

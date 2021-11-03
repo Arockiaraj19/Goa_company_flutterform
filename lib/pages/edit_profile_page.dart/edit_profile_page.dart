@@ -31,6 +31,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/src/provider.dart';
+import 'package:dio/dio.dart';
 
 class EditProfilePage extends StatefulWidget {
   final UserModel userdata;
@@ -455,7 +456,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         InputField(
                           onTap: () {},
-                          
                           controller: _weightCtrl,
                           padding: EdgeInsets.all(10),
                           validators: (String value) {
@@ -762,11 +762,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       setState(() {
                         loading = true;
                       });
-                      String result = selectedUserPic == null
-                          ? widget.userdata.identificationImage
-                          : await UploadImage()
-                              .uploadImage(selectedUserPic.path);
-                      await goToLookingForPagePage();
+                      String result;
+                      try {
+                        result = selectedUserPic == null
+                            ? widget.userdata.identificationImage
+                            : await UploadImage()
+                                .uploadImage(selectedUserPic.path);
+                      } on DioError catch (e) {
+                        setState(() {
+                          loading = false;
+                        });
+                      }
+                      try {
+                        await goToLookingForPagePage();
+                      } on DioError catch (e) {
+                        setState(() {
+                          loading = false;
+                        });
+                      }
 
                       print("album enna varuthu");
                       print(uploadedImages);
@@ -793,13 +806,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       };
                       print("edit profile userdata");
                       print(userData);
-                      UserModel data =
-                          await UserNetwork().patchUserData(userData);
-                      data != null
-                          ? await context.read<HomeProvider>().replaceData(data)
-                          : null;
-                      print("ool");
-                      Navigator.pop(context);
+                      try {
+                        UserModel data =
+                            await UserNetwork().patchUserData(userData);
+                        data != null
+                            ? await context
+                                .read<HomeProvider>()
+                                .replaceData(data)
+                            : null;
+                        print("ool");
+                        Navigator.pop(context);
+                      } on DioError catch (e) {
+                        setState(() {
+                          loading = false;
+                        });
+                      }
                     }
                   },
                 ),
@@ -810,19 +831,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   goToLookingForPagePage() async {
-    var network = UploadImage();
-    print("kl1");
-    for (int i = 0; i < 6; i++) {
-      if (selectedalbumAvatar[i] != null) {
-        String result = await network.uploadImage(selectedalbumAvatar[i].path);
-        print("output velia varuthaaa");
-        print(result);
-        uploadedImages.add(result);
-      } else {
-        if (alreadyimage[i] != null) {
-          uploadedImages.add(alreadyimage[i]);
+    try {
+      var network = UploadImage();
+      print("kl1");
+      for (int i = 0; i < 6; i++) {
+        if (selectedalbumAvatar[i] != null) {
+          String result =
+              await network.uploadImage(selectedalbumAvatar[i].path);
+          print("output velia varuthaaa");
+          print(result);
+          uploadedImages.add(result);
+        } else {
+          if (alreadyimage[i] != null) {
+            uploadedImages.add(alreadyimage[i]);
+          }
         }
       }
+    } catch (e) {
+      throw e;
     }
   }
 

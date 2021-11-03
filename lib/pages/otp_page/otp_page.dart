@@ -145,16 +145,19 @@ class _OtpPageState extends State<OtpPage> {
       loading = true;
     });
     var network = ForgetPassword();
-    Timer(Duration(seconds: 4), () => offLoading());
-    ResponseSubmitOtp result = await network.forgetSubmitOtp(
-        _otpController.text, widget.otpData.value, widget.otpData.id);
-    showtoast(result.msg.toString());
+    try {
+      ResponseSubmitOtp result = await network.forgetSubmitOtp(
+          _otpController.text, widget.otpData.value, widget.otpData.id);
+      showtoast(result.msg.toString());
 
-    Routes.sailor(Routes.addingPasswordPage, params: {
-      "email": widget.otpData.value,
-      "otpdata": result,
-      "isforget": true
-    });
+      Routes.sailor(Routes.addingPasswordPage, params: {
+        "email": widget.otpData.value,
+        "otpdata": result,
+        "isforget": true
+      });
+    } catch (e) {
+      offLoading();
+    }
   }
 
   offLoading() {
@@ -167,20 +170,24 @@ class _OtpPageState extends State<OtpPage> {
     setState(() {
       loading = true;
     });
-    if (widget.otpData.isMob == false) {
-      var network = EmailSignUpNetwork();
-      ResponseData result = await network.verifyOtpForSignup(
-          widget.otpData.value, _otpController.text);
-      showtoast(result.msg.toString());
-      result.statusDetails == 2
-          ? Routes.sailor(Routes.addingPasswordPage,
-              params: {"email": widget.otpData.value, "isforget": false})
-          : Routes.sailor(Routes.loginPage);
-    } else {
-      var _credential = PhoneAuthProvider.credential(
-          verificationId: widget.otpData.id, smsCode: _otpController.text);
-      Master_function(
-          context, _credential, widget.otpData.value, widget.otpData.isSignUp);
+    try {
+      if (widget.otpData.isMob == false) {
+        var network = EmailSignUpNetwork();
+        ResponseData result = await network.verifyOtpForSignup(
+            widget.otpData.value, _otpController.text);
+        showtoast(result.msg.toString());
+        result.statusDetails == 2
+            ? Routes.sailor(Routes.addingPasswordPage,
+                params: {"email": widget.otpData.value, "isforget": false})
+            : Routes.sailor(Routes.loginPage);
+      } else {
+        var _credential = PhoneAuthProvider.credential(
+            verificationId: widget.otpData.id, smsCode: _otpController.text);
+        Master_function(context, _credential, widget.otpData.value,
+            widget.otpData.isSignUp);
+      }
+    } catch (e) {
+      offLoading();
     }
   }
 

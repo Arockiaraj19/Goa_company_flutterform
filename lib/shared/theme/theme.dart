@@ -199,4 +199,33 @@ class MainTheme {
       end: Alignment.topCenter,
       stops: <double>[0.0, 1.0],
       tileMode: TileMode.mirror);
+
+  static const LinearGradient bottomsheet = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color.fromRGBO(0, 0, 0, 0),
+        Color.fromRGBO(0, 0, 0, 0),
+        Color.fromRGBO(0, 0, 0, 1),
+        Color.fromRGBO(0, 0, 0, 1),
+        Color.fromRGBO(0, 0, 0, 1),
+        Color.fromRGBO(0, 0, 0, 1),
+        Color.fromRGBO(0, 0, 0, 1),
+      ]);
+
+  static const LinearGradient subscripeCard = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color.fromRGBO(245, 177, 44, 1),
+        Color.fromRGBO(220, 95, 68, 1)
+      ]);
+
+  static const LinearGradient subscripeCard1 = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color.fromRGBO(246, 94, 126, 1),
+        Color.fromRGBO(239, 102, 143, 1)
+      ]);
 }

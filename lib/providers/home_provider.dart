@@ -2,7 +2,9 @@ import 'package:dating_app/models/like_list.dart';
 import 'package:dating_app/models/match_list.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
+import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 enum HomeState { Initial, Loading, Loaded, Error }
@@ -23,16 +25,26 @@ class HomeProvider extends ChangeNotifier {
 
   bool get showstar => _showstar;
   bool get showheart => _showheart;
+  String _errorText;
+  String get errorText => _errorText;
 
   getData() async {
     _usersSuggestionData = null;
     _currentpage = 0;
     _homeState = HomeState.Loading;
-    _userData = await UserNetwork().getUserData();
+    try {
+      _userData = await UserNetwork().getUserData();
+      _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
+          _apply, _age, _distance, _lat, _lng, _type, _currentpage);
+    } on DioError catch (e) {
+      print("error provider kku varuthaa");
+      _errorText = DioException.fromDioError(e).toString();
+      print(_errorText);
+      return error();
+    }
     print("user data");
     print(_userData);
-    _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
-        _apply, _age, _distance, _lat, _lng, _type, _currentpage);
+
     loaded();
   }
 
@@ -45,8 +57,15 @@ class HomeProvider extends ChangeNotifier {
     _homeState = HomeState.Loading;
     _usersSuggestionData = null;
     _type = lat == "0" ? 2 : 1;
-    _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
-        _apply, _age, _distance, _lat, _lng, _type, _currentpage);
+    try {
+      _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
+          _apply, _age, _distance, _lat, _lng, _type, _currentpage);
+    } on DioError catch (e) {
+      print("error provider kku varuthaa");
+      _errorText = DioException.fromDioError(e).toString();
+      print(_errorText);
+      return error();
+    }
     print("ll22");
     loaded();
   }
@@ -54,8 +73,15 @@ class HomeProvider extends ChangeNotifier {
   reload() async {
     _homeState = HomeState.Loading;
     notifyListeners();
-    _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
-        _apply, _age, _distance, _lat, _lng, _type, _currentpage);
+    try {
+      _usersSuggestionData = await UserNetwork().getUserSuggestionsData(
+          _apply, _age, _distance, _lat, _lng, _type, _currentpage);
+    } on DioError catch (e) {
+      print("error provider kku varuthaa");
+      _errorText = DioException.fromDioError(e).toString();
+      print(_errorText);
+      return error();
+    }
     loaded();
   }
 

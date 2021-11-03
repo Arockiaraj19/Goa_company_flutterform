@@ -92,9 +92,13 @@ class _QuizGamePageState extends State<QuizGamePage> {
   Widget _buildPhone() {
     return WillPopScope(
       onWillPop: () async {
-        bool istrue = await Games().leavegame(widget.playid);
-        if (istrue) {
-          Navigator.pop(context);
+        try {
+          bool istrue = await Games().leavegame(widget.playid);
+          if (istrue) {
+            Navigator.pop(context);
+          }
+        } catch (e) {
+          print(e);
         }
       },
       child: SafeArea(
@@ -353,23 +357,27 @@ class _QuizGamePageState extends State<QuizGamePage> {
                               if (answer == null) {
                                 showtoast("please select answer");
                               } else {
-                                bool result = await Games().answerquestion(
-                                    answer.game,
-                                    answer.id,
-                                    answer.index,
-                                    answer.type,
-                                    answer.playid);
-                                if (result) {
-                                  answer = null;
-                                  option = null;
+                                try {
+                                  bool result = await Games().answerquestion(
+                                      answer.game,
+                                      answer.id,
+                                      answer.index,
+                                      answer.type,
+                                      answer.playid);
+                                  if (result) {
+                                    answer = null;
+                                    option = null;
 
-                                  setState(() {
-                                    controller.nextPage(
-                                        duration: Duration(milliseconds: 100),
-                                        curve: Curves.easeIn);
-                                    heartbool[position] = true;
-                                    position += 1;
-                                  });
+                                    setState(() {
+                                      controller.nextPage(
+                                          duration: Duration(milliseconds: 100),
+                                          curve: Curves.easeIn);
+                                      heartbool[position] = true;
+                                      position += 1;
+                                    });
+                                  }
+                                } catch (e) {
+                                  print(e);
                                 }
                               }
                               if (position == widget.questions.length) {

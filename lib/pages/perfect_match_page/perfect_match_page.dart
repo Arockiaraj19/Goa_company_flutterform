@@ -214,21 +214,21 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                   height: 30.h,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GradientButton(
-                      height: MediaQuery.of(context).size.height / 20,
-                      name: "Play match",
-                      gradient: MainTheme.loginBtnGradient,
-                      active: true,
-                      color: Colors.white,
-                      width: ScreenUtil().setWidth(350),
-                      fontWeight: FontWeight.bold,
-                      borderRadius: BorderRadius.circular(5),
-                      onPressed: () {
-                        goToQuizgamePage();
-                      },
-                    ),
+                    // GradientButton(
+                    //   height: MediaQuery.of(context).size.height / 20,
+                    //   name: "Play match",
+                    //   gradient: MainTheme.loginBtnGradient,
+                    //   active: true,
+                    //   color: Colors.white,
+                    //   width: ScreenUtil().setWidth(350),
+                    //   fontWeight: FontWeight.bold,
+                    //   borderRadius: BorderRadius.circular(5),
+                    //   onPressed: () {
+                    //     goToQuizgamePage();
+                    //   },
+                    // ),
                     GradientButton(
                       height: MediaQuery.of(context).size.height / 20,
                       name: "Say “Hi”",
