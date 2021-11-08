@@ -540,7 +540,8 @@ class _ProfilePageState extends State<ProfilePage>
                             _isCreatingLink
                                 ? Center(child: CircularProgressIndicator())
                                 : InkWell(
-                                    onTap: () => _createDynamicLink(),
+                                    onTap: () => _createDynamicLink(
+                                        data.userData.userReferralCode),
                                     child: SettingBox(name: "Refer & Earn")),
                             InkWell(
                                 onTap: () {
@@ -656,7 +657,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Future<void> _createDynamicLink() async {
+  Future<void> _createDynamicLink(String refId) async {
     String _linkMessage;
     setState(() {
       _isCreatingLink = true;
@@ -664,7 +665,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://life2sparks.page.link',
-      link: Uri.parse("https://life2sparks.page.link/ref?id=1234567890"),
+      link: Uri.parse("https://life2sparks.page.link/ref?id=$refId"),
       androidParameters: AndroidParameters(
         packageName: "com.life2sparks",
         minimumVersion: 0,

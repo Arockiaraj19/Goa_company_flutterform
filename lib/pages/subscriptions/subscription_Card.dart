@@ -213,12 +213,20 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                     await UserNetwork().getUserData();
                                 onboardingCheck(result);
                               } on DioError catch (e) {
-                                print(DioException.fromDioError(e));
                                 print("error enna varuthu");
                                 print(e);
                                 setState(() {
                                   loading = false;
                                 });
+                                // if (e.response.statusCode == 409) {
+                                //   print("ithukulla error varuthaaa");
+                                //   setState(() {
+                                //     loading = false;
+                                //   });
+                                //   UserModel result =
+                                //       await UserNetwork().getUserData();
+                                //   onboardingCheck(result);
+                                // }
                               }
                             },
                             child: Container(
@@ -226,14 +234,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                               width: 300.w,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromRGBO(235, 77, 181, 1),
-                                      Color.fromRGBO(239, 103, 152, 1)
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
+                                  gradient: MainTheme.backgroundGradient,
                                   borderRadius: BorderRadius.circular(5)),
                               child: Text(
                                 "Upgrade",

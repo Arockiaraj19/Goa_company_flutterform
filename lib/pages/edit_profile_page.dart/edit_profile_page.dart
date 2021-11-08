@@ -704,6 +704,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           selectedUserAvatar: selectedalbumAvatar[index],
                           onTapClose: () {
                             setState(() {
+                              alreadyimage[index] = null;
                               selectedalbumAvatar[index] = null;
                             });
                           },

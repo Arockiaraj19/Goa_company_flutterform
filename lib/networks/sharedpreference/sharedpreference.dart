@@ -82,4 +82,14 @@ getAddress() async {
   return address;
 }
 
+setRef(id) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('ref', id);
+}
 
+getRef() async {
+  String id;
+  final prefs = await SharedPreferences.getInstance();
+  id = prefs.getString('ref');
+  return id;
+}

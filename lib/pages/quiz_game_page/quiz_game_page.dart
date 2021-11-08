@@ -345,7 +345,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
                           //         gradient: MainTheme.backgroundGradient,
                           //         color: Colors.grey,
                           //         border:
-                          //             Border.all(width: 1, color: Colors.pink)),
+                          //             Border.all(width: 1, color: MainTheme.primaryColor)),
                           //     child: Icon(
                           //       Icons.arrow_back_ios_new,
                           //       color: Colors.white,
@@ -408,8 +408,8 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                       ? null
                                       : MainTheme.backgroundGradient,
                                   borderRadius: BorderRadius.circular(5),
-                                  border:
-                                      Border.all(width: 1, color: Colors.pink)),
+                                  border: Border.all(
+                                      width: 1, color: MainTheme.primaryColor)),
                               child: Text(
                                 "Submit",
                                 style: TextStyle(

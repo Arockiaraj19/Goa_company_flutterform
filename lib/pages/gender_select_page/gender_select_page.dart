@@ -1,5 +1,6 @@
 import 'package:dating_app/models/gender_model.dart';
 import 'package:dating_app/networks/gender_network.dart';
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -62,13 +63,14 @@ class _GenderPageState extends State<GenderPage> {
                               borderRadius: BorderRadius.circular(10.w),
                               color: Colors.white,
                               border: choosenvalue == index
-                                  ? Border.all(width: 2, color: Colors.pink)
+                                  ? Border.all(
+                                      width: 2, color: MainTheme.primaryColor)
                                   : null),
                           child: Text(
                             widget.data[index].title,
                             style: TextStyle(
                               color: choosenvalue == index
-                                  ? Colors.pink
+                                  ? MainTheme.primaryColor
                                   : Colors.grey[400],
                               fontSize: 40.sp,
                               fontWeight: FontWeight.w600,

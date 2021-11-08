@@ -1,3 +1,4 @@
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -33,7 +34,7 @@ class _QuestioniconsState extends State<Questionicons> {
                       alignment: Alignment.centerLeft,
                       child: CircleAvatar(
                         backgroundColor: widget.option == widget.answer
-                            ? Colors.pink
+                            ? MainTheme.primaryColor
                             : Colors.grey[400],
                         radius: 20,
                         child: Text(
@@ -52,7 +53,7 @@ class _QuestioniconsState extends State<Questionicons> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: widget.option == widget.answer
-                          ? Colors.pink
+                          ? MainTheme.primaryColor
                           : Colors.black,
                     ),
                   )),

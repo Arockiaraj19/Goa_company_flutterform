@@ -140,7 +140,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                 child: TextFormField(
                   readOnly: true,
                   controller: codecontroller,
-                  cursorColor: Colors.pink,
+                  cursorColor: MainTheme.primaryColor,
                   textAlign: TextAlign.left,
                   keyboardType: TextInputType.number,
                   style: TextStyle(
@@ -164,18 +164,18 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                     errorStyle: TextStyle(
                       fontSize: 40.sp,
                       fontWeight: FontWeight.w400,
-                      color: Colors.pink,
+                      color: MainTheme.primaryColor,
                     ),
                     errorBorder: OutlineInputBorder(
                       gapPadding: 0,
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
@@ -187,7 +187,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                     ),
                     focusedErrorBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
@@ -213,7 +213,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                 child: Container(
                   child: TextFormField(
                     controller: _numberCtrl,
-                    cursorColor: Colors.pink,
+                    cursorColor: MainTheme.primaryColor,
                     textAlign: TextAlign.left,
                     keyboardType: TextInputType.number,
                     style: TextStyle(
@@ -237,18 +237,18 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                       errorStyle: TextStyle(
                         fontSize: 40.sp,
                         fontWeight: FontWeight.w400,
-                        color: Colors.pink,
+                        color: MainTheme.primaryColor,
                       ),
                       errorBorder: OutlineInputBorder(
                         gapPadding: 0,
                         borderSide: BorderSide(
-                            color: Colors.pink,
+                            color: MainTheme.primaryColor,
                             width: 1,
                             style: BorderStyle.solid),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                            color: Colors.pink,
+                            color: MainTheme.primaryColor,
                             width: 1,
                             style: BorderStyle.solid),
                       ),
@@ -260,7 +260,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                            color: Colors.pink,
+                            color: MainTheme.primaryColor,
                             width: 1,
                             style: BorderStyle.solid),
                       ),
@@ -358,7 +358,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                     TextFormField(
                       focusNode: myFocusNode,
                       controller: bottomsheetcontroller,
-                      cursorColor: Colors.pink,
+                      cursorColor: MainTheme.primaryColor,
                       textAlign: TextAlign.left,
                       keyboardType: TextInputType.number,
                       style: TextStyle(
@@ -382,18 +382,18 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                         errorStyle: TextStyle(
                           fontSize: 40.sp,
                           fontWeight: FontWeight.w400,
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                         ),
                         errorBorder: OutlineInputBorder(
                           gapPadding: 0,
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),
@@ -405,7 +405,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),

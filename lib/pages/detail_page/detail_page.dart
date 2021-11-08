@@ -6,9 +6,11 @@ import 'package:dating_app/networks/home_button_network.dart';
 import 'package:dating_app/pages/detail_page/widgets/detail_slider.dart';
 import 'package:dating_app/pages/detail_page/widgets/percentage_matching_box.dart';
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
+import 'package:dating_app/shared/widgets/bottmsheet.dart';
 import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -143,55 +145,77 @@ class _DetailPageState extends State<DetailPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  Consumer<HomeProvider>(builder: (context, data, child) {
-                    return Container(
-                        // width: 300,
-                        padding: EdgeInsetsDirectional.only(start: 20, end: 20),
-                        child: AnimationButton(
-                          loadingstar: data.showstar,
-                          loadingheart: data.showheart,
-                          goChatPage: () async {
-                            print("hello");
+                  Consumer<SubscriptionProvider>(
+                      builder: (context, subdata, child) {
+                    return Consumer<HomeProvider>(
+                        builder: (context, data, child) {
+                      return Container(
+                          // width: 300,
+                          padding:
+                              EdgeInsetsDirectional.only(start: 20, end: 20),
+                          child: AnimationButton(
+                            loadingstar: data.showstar,
+                            loadingheart: data.showheart,
+                            goChatPage: () async {
+                              print("hello");
 
-                            try {
-                              String groupid = await ChatNetwork().createGroup(
-                                  widget.userDetails.id, data.userData);
+                              try {
+                                String groupid = await ChatNetwork()
+                                    .createGroup(
+                                        widget.userDetails.id, data.userData);
 
-                              goToChatPage(
-                                  groupid,
-                                  widget.userDetails.id,
-                                  widget.userDetails.identificationImage,
-                                  widget.userDetails.firstName);
-                            } on DioError catch (e) {
-                              print(e);
-                            }
-                          },
-                          isDetail: true,
-                          onTapHeart: () async {
-                            await context.read<HomeProvider>().changeheart();
-                            String confirmedUser = widget.userDetails.id;
-                            UserModel userData = data.userData;
-                            try {
-                              await HomeButtonNetwork()
-                                  .postMatchRequest(confirmedUser, userData);
-                            } on DioError catch (e) {
-                              print(e);
-                            }
-                          },
-                          onTapFlash: () async {
-                            print("you click super star");
-                            await context.read<HomeProvider>().changestar();
-                            String likedUser = widget.userDetails.id;
-                            try {
-                              await HomeButtonNetwork()
-                                  .postLikeUnlike(likedUser, "1");
-                            } on DioError catch (e) {
-                              if (e.response.statusCode == 408) {
-                                _showplans(context);
+                                goToChatPage(
+                                    groupid,
+                                    widget.userDetails.id,
+                                    widget.userDetails.identificationImage,
+                                    widget.userDetails.firstName);
+                              } on DioError catch (e) {
+                                if (e.response.statusCode == 408) {
+                                  if (subdata.plan == null) {
+                                    if (subdata.subscriptionData.length == 0) {
+                                      subdata.getdata();
+                                      BottomSheetClass().showplans(context);
+                                    } else {
+                                      BottomSheetClass().showplans(context);
+                                    }
+                                  }
+                                }
                               }
-                            }
-                          },
-                        ));
+                            },
+                            isDetail: true,
+                            onTapHeart: () async {
+                              await context.read<HomeProvider>().changeheart();
+                              String confirmedUser = widget.userDetails.id;
+                              UserModel userData = data.userData;
+                              try {
+                                await HomeButtonNetwork()
+                                    .postMatchRequest(confirmedUser, userData);
+                              } on DioError catch (e) {
+                                print(e);
+                              }
+                            },
+                            onTapFlash: () async {
+                              print("you click super star");
+                              await context.read<HomeProvider>().changestar();
+                              String likedUser = widget.userDetails.id;
+                              try {
+                                await HomeButtonNetwork()
+                                    .postLikeUnlike(likedUser, "1");
+                              } on DioError catch (e) {
+                                if (e.response.statusCode == 408) {
+                                  if (subdata.plan == null) {
+                                    if (subdata.subscriptionData.length == 0) {
+                                      subdata.getdata();
+                                      BottomSheetClass().showplans(context);
+                                    } else {
+                                      BottomSheetClass().showplans(context);
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                          ));
+                    });
                   }),
                   Row(
                     children: [
@@ -342,7 +366,7 @@ class _DetailPageState extends State<DetailPage> {
                                   radius: 20,
                                   child: Image.asset(
                                     "assets/icons/swim.png",
-                                    color: Colors.red,
+                                    color: MainTheme.primaryColor,
                                     width: 20,
                                     height: 20,
                                   ))),
@@ -355,7 +379,7 @@ class _DetailPageState extends State<DetailPage> {
                                     "assets/icons/bag.png",
                                     width: 20,
                                     height: 20,
-                                    color: Colors.red,
+                                    color: MainTheme.primaryColor,
                                   ))),
                           Container(
                               child: CircleAvatar(
@@ -365,7 +389,7 @@ class _DetailPageState extends State<DetailPage> {
                                     "assets/icons/book.png",
                                     width: 20,
                                     height: 20,
-                                    color: Colors.red,
+                                    color: MainTheme.primaryColor,
                                   )))
                         ],
                       ),
@@ -412,19 +436,6 @@ class _DetailPageState extends State<DetailPage> {
                 ],
               ))
         ])));
-  }
-
-  _showplans(context) {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        // isDismissible: false,
-        // enableDrag: false,
-        backgroundColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        builder: (BuildContext context) {
-          return BottomsheetWidget();
-        });
   }
 
   Widget _buildWeb() {

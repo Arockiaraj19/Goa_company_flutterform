@@ -11,7 +11,8 @@ class MainTheme {
   static const Color appBarColor = Colors.white;
   static const Color bottomBarColor = Color.fromRGBO(251, 251, 251, 1);
   static const Color bottomBarBtnColor = Color.fromRGBO(235, 77, 181, 1);
-  static const Color primaryColor = Color.fromRGBO(235, 77, 181, 1);
+  static const Color primaryColor = Color(0xffA18CD1);
+  static const Color chatPageColor = Color(0xffA18CD1);
   static const Color showMoreColor = Color.fromRGBO(235, 77, 181, 1);
   static const Color loginTextColor = Color.fromRGBO(232, 232, 232, 1);
   static const Color trackColors = Color.fromRGBO(255, 255, 255, 1);
@@ -22,10 +23,7 @@ class MainTheme {
   static const Color onboardingTextSkip = Color.fromRGBO(116, 116, 116, 1);
   static const double onboardingFontSize = 35;
   static const LinearGradient getStartedBtnGradient = LinearGradient(
-      colors: <Color>[
-        Color.fromRGBO(235, 77, 181, 1),
-        Color.fromRGBO(239, 103, 152, 1)
-      ],
+      colors: <Color>[Color(0xffA18CD1), Color(0xffFBC2EB)],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       stops: <double>[0.0, 1.0],
@@ -50,10 +48,7 @@ class MainTheme {
   static const Color forgotPassTextColor = Color.fromRGBO(151, 151, 151, 1);
 
   static const LinearGradient loginwithBtnGradient = LinearGradient(
-      colors: <Color>[
-        Color.fromRGBO(237, 107, 192, 1),
-        Color.fromRGBO(239, 103, 144, 1)
-      ],
+      colors: <Color>[Color(0xffA18CD1), Color(0xffFBC2EB)],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       stops: <double>[0.0, 1.0],
@@ -89,10 +84,7 @@ class MainTheme {
   static const Color profileValue = Color.fromRGBO(255, 255, 255, 1);
 
   static const LinearGradient ScoreBackgroundGradient = LinearGradient(
-      colors: <Color>[
-        Color.fromRGBO(235, 77, 181, 1),
-        Color.fromRGBO(246, 94, 126, 1)
-      ],
+      colors: <Color>[Color(0xffA18CD1), Color(0xffFBC2EB)],
       begin: Alignment.bottomCenter,
       end: Alignment.topCenter,
       stops: <double>[0.0, 0.5],
@@ -147,20 +139,14 @@ class MainTheme {
   );
 
   static const LinearGradient buttonGradient = LinearGradient(
-      colors: <Color>[
-        Color.fromRGBO(255, 103, 155, 1),
-        Color.fromRGBO(255, 137, 96, 1),
-      ],
+      colors: <Color>[Color(0xffA18CD1), Color(0xffFBC2EB)],
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
       stops: <double>[0.1, 0.9],
       tileMode: TileMode.mirror);
 
   static const LinearGradient loginBtnGradient = LinearGradient(
-      colors: <Color>[
-        Color.fromRGBO(235, 77, 181, 1),
-        Color.fromRGBO(239, 103, 144, 1)
-      ],
+      colors: <Color>[Color(0xffA18CD1), Color(0xffFBC2EB)],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       stops: <double>[0.1, 0.9],
@@ -181,22 +167,16 @@ class MainTheme {
       tileMode: TileMode.mirror);
 
   static const LinearGradient firstPercentBarColor = LinearGradient(
-      colors: <Color>[
-        Color.fromRGBO(237, 107, 192, 0.5),
-        Color.fromRGBO(246, 94, 126, 0.5)
-      ],
+      colors: <Color>[Color(0xffA18CD1), Color(0xffFBC2EB)],
       begin: Alignment.bottomLeft,
       end: Alignment.topLeft,
       stops: <double>[0, 0.5],
       tileMode: TileMode.mirror);
 
   static const LinearGradient backgroundGradient = LinearGradient(
-      colors: <Color>[
-        Color.fromRGBO(235, 77, 181, 1),
-        Color.fromRGBO(248, 85, 101, 1)
-      ],
+      colors: <Color>[Color(0xffA18CD1), Color(0xffFBC2EB)],
       begin: Alignment.topCenter,
-      end: Alignment.topCenter,
+      end: Alignment.bottomCenter,
       stops: <double>[0.0, 1.0],
       tileMode: TileMode.mirror);
 
@@ -224,8 +204,10 @@ class MainTheme {
   static const LinearGradient subscripeCard1 = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [
-        Color.fromRGBO(246, 94, 126, 1),
-        Color.fromRGBO(239, 102, 143, 1)
-      ]);
+      colors: [Color(0xffA18CD1), Color(0xffFBC2EB)]);
+
+  static const LinearGradient detailPageCard = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [Color(0xffA18CD1), Color(0xffFBC2EB)]);
 }

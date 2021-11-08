@@ -9,7 +9,7 @@ showtoast(String content){
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 4,
       webShowClose: true,
-      backgroundColor: Color.fromRGBO(239, 103, 144, 1).withOpacity(0.8),
+      backgroundColor:MainTheme.primaryColor.withOpacity(0.8),
       textColor: Colors.white,
       fontSize: 16.0
   );

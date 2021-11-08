@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dating_app/models/firebase_messing.dart';
+import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/detail_page/widgets/percentage_matching_box.dart';
 import 'package:dating_app/pages/home_page/widget/Image_swiper.dart';
@@ -54,6 +55,19 @@ class _HomePageState extends State<HomePage> {
     if (context.read<SubscriptionProvider>().plan == null) {
       context.read<SubscriptionProvider>().getprofilecount();
     }
+    if (context.read<HomeProvider>().userData.chatCountUpdate != null) {
+      Duration difference = DateTime.now()
+          .difference(context.read<HomeProvider>().userData.chatCountUpdate);
+      print("difference in days");
+      print(difference.inDays);
+      if (difference.inDays >= 1) {
+        callCountUpdate();
+      }
+    }
+  }
+
+  callCountUpdate() async {
+    await ChatNetwork().updateUserCount();
   }
 
   @override
@@ -167,11 +181,11 @@ class _HomePageState extends State<HomePage> {
             child: data.view == 2
                 ? Icon(
                     Icons.grid_view_outlined,
-                    color: Colors.pink,
+                    color: MainTheme.primaryColor,
                   )
                 : Icon(
                     Icons.list,
-                    color: Colors.pink,
+                    color: MainTheme.primaryColor,
                   ),
             onPressed: () {
               if (data.view == 1) {

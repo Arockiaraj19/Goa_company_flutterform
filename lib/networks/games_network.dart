@@ -28,7 +28,7 @@ class Games {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -50,7 +50,7 @@ class Games {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -65,7 +65,7 @@ class Games {
       });
       return data;
     } catch (e) {
-    throw e;
+      throw e;
     }
   }
 
@@ -90,7 +90,7 @@ class Games {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -112,7 +112,7 @@ class Games {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -136,7 +136,7 @@ class Games {
       });
       return data;
     } catch (e) {
-   throw e;
+      throw e;
     }
   }
 
@@ -159,7 +159,7 @@ class Games {
       });
       return data;
     } catch (e) {
-    throw e;
+      throw e;
     }
   }
 
@@ -176,7 +176,7 @@ class Games {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -195,7 +195,7 @@ class Games {
       });
       return data;
     } catch (e) {
-    throw e;
+      throw e;
     }
   }
 }

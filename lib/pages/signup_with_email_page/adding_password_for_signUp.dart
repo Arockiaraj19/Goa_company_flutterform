@@ -165,7 +165,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
           SizedBox(height: 12.h),
           TextFormField(
             controller: _password1Ctrl,
-            cursorColor: Colors.pink,
+            cursorColor: MainTheme.primaryColor,
             textAlign: TextAlign.left,
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText,
@@ -205,15 +205,19 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               errorStyle: TextStyle(
                 fontSize: 40.sp,
                 fontWeight: FontWeight.w400,
-                color: Colors.pink,
+                color: MainTheme.primaryColor,
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -223,7 +227,9 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
             ),
             validator: (val) {
@@ -246,7 +252,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
           SizedBox(height: 12.h),
           TextFormField(
             controller: _password2Ctrl,
-            cursorColor: Colors.pink,
+            cursorColor: MainTheme.primaryColor,
             textAlign: TextAlign.left,
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText1,
@@ -285,15 +291,19 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               errorStyle: TextStyle(
                 fontSize: 40.sp,
                 fontWeight: FontWeight.w400,
-                color: Colors.pink,
+                color: MainTheme.primaryColor,
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -303,7 +313,9 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
             ),
             validator: (val) {

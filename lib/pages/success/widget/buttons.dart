@@ -1,3 +1,4 @@
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,7 +24,7 @@ class _FlatbuttonstyleState extends State<Flatbuttonstyle> {
               fontSize: 18.sp,
               fontWeight: FontWeight.w600)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.w)),
-      color: Colors.pink,
+      color: MainTheme.primaryColor,
       splashColor: Colors.white,
     );
   }

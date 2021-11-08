@@ -39,8 +39,9 @@ class _BottomTabBar extends State<BottomTabBar> {
       height: 70.h,
       itemCount: iconList.length,
       tabBuilder: (int index, bool isActive) {
-        final iconcolor = isActive ? Colors.pink : Color(0xff99A3B0);
-        final textcolor = isActive ? Colors.pink : Colors.transparent;
+        final iconcolor = isActive ? MainTheme.primaryColor : Color(0xff99A3B0);
+        final textcolor =
+            isActive ? MainTheme.primaryColor : Colors.transparent;
         return Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

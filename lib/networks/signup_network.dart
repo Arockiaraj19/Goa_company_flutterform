@@ -22,8 +22,8 @@ class EmailSignUpNetwork {
         }
       });
       return data;
-    }  catch (e) {
-     throw e;
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -40,7 +40,7 @@ class EmailSignUpNetwork {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -60,7 +60,7 @@ class EmailSignUpNetwork {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -86,7 +86,7 @@ class EmailSignUpNetwork {
       });
       return data;
     } catch (e) {
-    throw e;
+      throw e;
     }
   }
 }
@@ -107,11 +107,12 @@ class MobileSignUpNetwork {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
   Future<bool> signUpWithMobile(String mobile) async {
+    print("sign up with mobile la error varuthaaa");
     Response response;
     try {
       final _dio = authClient();
@@ -132,7 +133,7 @@ class MobileSignUpNetwork {
       });
       return data;
     } catch (e) {
-   throw e;
+      throw e;
     }
   }
 }

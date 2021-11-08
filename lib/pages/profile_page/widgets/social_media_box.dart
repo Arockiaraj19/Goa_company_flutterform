@@ -1,3 +1,4 @@
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class SocialMediaBox extends StatefulWidget {
@@ -23,7 +24,7 @@ class _SocialMediaBoxState extends State<SocialMediaBox> {
             margin: EdgeInsetsDirectional.only(top: 10),
             child: Image.asset(
               widget.image,
-              width: 20,
+              width: 30,
               height: 20,
             )),
         Container(

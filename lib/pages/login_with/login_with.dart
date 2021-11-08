@@ -184,7 +184,7 @@ class _LoginWithState extends State<LoginWith> {
           ),
           TextFormField(
             controller: _passCtrl,
-            cursorColor: Colors.pink,
+            cursorColor: MainTheme.primaryColor,
             textAlign: TextAlign.left,
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText,
@@ -223,15 +223,19 @@ class _LoginWithState extends State<LoginWith> {
               errorStyle: TextStyle(
                 fontSize: 40.sp,
                 fontWeight: FontWeight.w400,
-                color: Colors.pink,
+                color: MainTheme.primaryColor,
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -241,7 +245,9 @@ class _LoginWithState extends State<LoginWith> {
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Colors.pink, width: 1, style: BorderStyle.solid),
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
               ),
             ),
             validator: (val) {
@@ -390,7 +396,7 @@ class _LoginWithState extends State<LoginWith> {
                 child: TextFormField(
                   readOnly: true,
                   controller: codecontroller,
-                  cursorColor: Colors.pink,
+                  cursorColor: MainTheme.primaryColor,
                   textAlign: TextAlign.left,
                   keyboardType: TextInputType.number,
                   style: TextStyle(
@@ -414,18 +420,18 @@ class _LoginWithState extends State<LoginWith> {
                     errorStyle: TextStyle(
                       fontSize: 40.sp,
                       fontWeight: FontWeight.w400,
-                      color: Colors.pink,
+                      color: MainTheme.primaryColor,
                     ),
                     errorBorder: OutlineInputBorder(
                       gapPadding: 0,
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
@@ -437,7 +443,7 @@ class _LoginWithState extends State<LoginWith> {
                     ),
                     focusedErrorBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
@@ -463,7 +469,7 @@ class _LoginWithState extends State<LoginWith> {
                 child: Container(
                   child: TextFormField(
                     controller: _numberCtrl,
-                    cursorColor: Colors.pink,
+                    cursorColor: MainTheme.primaryColor,
                     textAlign: TextAlign.left,
                     keyboardType: TextInputType.number,
                     style: TextStyle(
@@ -487,18 +493,18 @@ class _LoginWithState extends State<LoginWith> {
                       errorStyle: TextStyle(
                         fontSize: 40.sp,
                         fontWeight: FontWeight.w400,
-                        color: Colors.pink,
+                        color: MainTheme.primaryColor,
                       ),
                       errorBorder: OutlineInputBorder(
                         gapPadding: 0,
                         borderSide: BorderSide(
-                            color: Colors.pink,
+                            color: MainTheme.primaryColor,
                             width: 1,
                             style: BorderStyle.solid),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                            color: Colors.pink,
+                            color: MainTheme.primaryColor,
                             width: 1,
                             style: BorderStyle.solid),
                       ),
@@ -510,7 +516,7 @@ class _LoginWithState extends State<LoginWith> {
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                            color: Colors.pink,
+                            color: MainTheme.primaryColor,
                             width: 1,
                             style: BorderStyle.solid),
                       ),
@@ -582,7 +588,7 @@ class _LoginWithState extends State<LoginWith> {
                     TextFormField(
                       focusNode: myFocusNode,
                       controller: bottomsheetcontroller,
-                      cursorColor: Colors.pink,
+                      cursorColor: MainTheme.primaryColor,
                       textAlign: TextAlign.left,
                       keyboardType: TextInputType.number,
                       style: TextStyle(
@@ -606,18 +612,18 @@ class _LoginWithState extends State<LoginWith> {
                         errorStyle: TextStyle(
                           fontSize: 40.sp,
                           fontWeight: FontWeight.w400,
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                         ),
                         errorBorder: OutlineInputBorder(
                           gapPadding: 0,
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),
@@ -629,7 +635,7 @@ class _LoginWithState extends State<LoginWith> {
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),

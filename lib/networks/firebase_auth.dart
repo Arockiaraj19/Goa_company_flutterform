@@ -44,20 +44,24 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp) async {
 Master_function(BuildContext context, var cred, String mob, bool isSignUp) {
   _auth.signInWithCredential(cred).then((dynamic result) async {
     print("done");
-    if (isSignUp == true) {
-      var network = MobileSignUpNetwork();
-      bool res = await network.signUpWithMobile(mob);
-      var network1 = UserNetwork();
-      UserModel userData = res ? await network1.getUserData() : null;
-      userData != null ? onboardingCheck(userData) : null;
-    } else {
-      var network = SignInNetwork();
-      var network1 = UserNetwork();
-      bool result = await network.signInWithMobile(mob);
-      UserModel userData = result ? await network1.getUserData() : null;
-      userData != null ? onboardingCheck(userData) : null;
+    try {
+      if (isSignUp == true) {
+        var network = MobileSignUpNetwork();
+        bool res = await network.signUpWithMobile(mob);
+        var network1 = UserNetwork();
+        UserModel userData = res ? await network1.getUserData() : null;
+        userData != null ? onboardingCheck(userData) : null;
+      } else {
+        var network = SignInNetwork();
+        var network1 = UserNetwork();
+        bool result = await network.signInWithMobile(mob);
+        UserModel userData = result ? await network1.getUserData() : null;
+        userData != null ? onboardingCheck(userData) : null;
+      }
+    } catch (e) {
+      throw e;
     }
   }).catchError((e) {
-    print(e);
+    throw e;
   });
 }

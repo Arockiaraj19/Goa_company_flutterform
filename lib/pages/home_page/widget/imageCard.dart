@@ -159,6 +159,7 @@ class _ImageCardState extends State<ImageCard> {
                                 AsyncSnapshot<double> snapshot) {
                               if (snapshot.hasData) {
                                 return CircularPercentIndicator(
+                                  
                                     linearGradient:
                                         MainTheme.backgroundGradient,
                                     animation: true,

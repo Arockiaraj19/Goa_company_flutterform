@@ -7,8 +7,10 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
+import 'package:dating_app/providers/ref_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -262,7 +264,13 @@ class _MyAppState extends State<MyApp> {
 
         if (title != null) {
           print("id main la correct a varuthaa");
-          showtoast(title);
+          print(title);
+
+          // Future.delayed(Duration(seconds: 1), () {
+          //   context.read<RefProvider>().saveId(title);
+          // });
+
+          setRef(title.toString());
         }
       }
     }
@@ -279,6 +287,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => CodeProvider()),
           ChangeNotifierProvider(create: (context) => NotificationProvider()),
           ChangeNotifierProvider(create: (context) => SubscriptionProvider()),
+          ChangeNotifierProvider(create: (context) => RefProvider()),
         ],
         child: ScreenUtilInit(
             designSize: Size(1000, 690),
@@ -295,6 +304,9 @@ class _MyAppState extends State<MyApp> {
                   theme: ThemeData(
                       scaffoldBackgroundColor: Colors.white,
                       fontFamily: 'Nunito',
+                      primaryColor: MainTheme.primaryColor,
+                      indicatorColor: MainTheme.primaryColor,
+                      accentColor: MainTheme.primaryColor,
                       appBarTheme: AppBarTheme(
                         elevation: 2,
                         iconTheme:

@@ -4,11 +4,14 @@ import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/models/gender_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/gender_network.dart';
+import 'package:dating_app/networks/ref_network.dart';
+import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
 import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/countryCode_provider.dart';
+import 'package:dating_app/providers/ref_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/date_picker_input.dart';
 import 'package:dating_app/shared/helpers.dart';
@@ -251,7 +254,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                 child: TextFormField(
                                   readOnly: true,
                                   controller: codecontroller,
-                                  cursorColor: Colors.pink,
+                                  cursorColor: MainTheme.primaryColor,
                                   textAlign: TextAlign.left,
                                   keyboardType: TextInputType.number,
                                   style: TextStyle(
@@ -275,18 +278,18 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                     errorStyle: TextStyle(
                                       fontSize: 40.sp,
                                       fontWeight: FontWeight.w400,
-                                      color: Colors.pink,
+                                      color: MainTheme.primaryColor,
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       gapPadding: 0,
                                       borderSide: BorderSide(
-                                          color: Colors.pink,
+                                          color: MainTheme.primaryColor,
                                           width: 1,
                                           style: BorderStyle.solid),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Colors.pink,
+                                          color: MainTheme.primaryColor,
                                           width: 1,
                                           style: BorderStyle.solid),
                                     ),
@@ -298,7 +301,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                     ),
                                     focusedErrorBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Colors.pink,
+                                          color: MainTheme.primaryColor,
                                           width: 1,
                                           style: BorderStyle.solid),
                                     ),
@@ -324,7 +327,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                 child: Container(
                                   child: TextFormField(
                                     controller: _numberCtrl,
-                                    cursorColor: Colors.pink,
+                                    cursorColor: MainTheme.primaryColor,
                                     textAlign: TextAlign.left,
                                     keyboardType: TextInputType.number,
                                     style: TextStyle(
@@ -348,18 +351,18 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                       errorStyle: TextStyle(
                                         fontSize: 40.sp,
                                         fontWeight: FontWeight.w400,
-                                        color: Colors.pink,
+                                        color: MainTheme.primaryColor,
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         gapPadding: 0,
                                         borderSide: BorderSide(
-                                            color: Colors.pink,
+                                            color: MainTheme.primaryColor,
                                             width: 1,
                                             style: BorderStyle.solid),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.pink,
+                                            color: MainTheme.primaryColor,
                                             width: 1,
                                             style: BorderStyle.solid),
                                       ),
@@ -371,7 +374,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.pink,
+                                            color: MainTheme.primaryColor,
                                             width: 1,
                                             style: BorderStyle.solid),
                                       ),
@@ -713,7 +716,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                     TextFormField(
                       focusNode: myFocusNode,
                       controller: bottomsheetcontroller,
-                      cursorColor: Colors.pink,
+                      cursorColor: MainTheme.primaryColor,
                       textAlign: TextAlign.left,
                       keyboardType: TextInputType.number,
                       style: TextStyle(
@@ -737,18 +740,18 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                         errorStyle: TextStyle(
                           fontSize: 40.sp,
                           fontWeight: FontWeight.w400,
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                         ),
                         errorBorder: OutlineInputBorder(
                           gapPadding: 0,
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),
@@ -760,7 +763,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors.pink,
+                              color: MainTheme.primaryColor,
                               width: 1,
                               style: BorderStyle.solid),
                         ),
@@ -840,6 +843,18 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     setState(() {
       loading = true;
     });
+    String refid = await getRef();
+    print("inga refid correct varuthaa");
+    print(refid);
+    if (refid != null) {
+      try {
+        await Ref().addReferal();
+      } catch (e) {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
     var network = UserNetwork();
     var userData;
     if (widget.userData.email != null) {

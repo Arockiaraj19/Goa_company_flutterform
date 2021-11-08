@@ -149,4 +149,22 @@ class ChatNetwork {
       throw e;
     }
   }
+
+  Future<bool> updateUserCount() async {
+    Response response;
+    try {
+      final _dio = apiClient();
+      String userId = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.patch("/user/daychatcount/" + userId,
+            queryParameters: {"type": "1"});
+        print("response chat update");
+        print(response.data);
+        return true;
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

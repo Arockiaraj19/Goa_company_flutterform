@@ -25,7 +25,7 @@ class Subscription {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -47,7 +47,7 @@ class Subscription {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -89,7 +89,7 @@ class Subscription {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -137,6 +137,7 @@ class Subscription {
       });
       return data;
     } catch (e) {
+      print("error subscription page la fron la varuthaaa");
       throw e;
     }
   }

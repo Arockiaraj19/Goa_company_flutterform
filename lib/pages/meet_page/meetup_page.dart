@@ -1,5 +1,6 @@
 import 'package:dating_app/pages/meet_page/gift_tab.dart';
 import 'package:dating_app/pages/meet_page/meetup_list_page.dart';
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,9 +42,13 @@ class _MeetupPageState extends State<MeetupPage> {
   @override
   Widget build(BuildContext context) {
     TextStyle _styleselected = TextStyle(
-        fontSize: 40.sp, fontWeight: FontWeight.w700, color: Colors.pink);
+        fontSize: 40.sp,
+        fontWeight: FontWeight.w700,
+        color: MainTheme.primaryColor);
     TextStyle _styleBody3 = TextStyle(
-        fontSize: 40.sp, fontWeight: FontWeight.w400, color: Colors.pink);
+        fontSize: 40.sp,
+        fontWeight: FontWeight.w400,
+        color: MainTheme.primaryColor);
 
     return Scaffold(
       appBar: AppBar(
@@ -86,9 +91,9 @@ class _MeetupPageState extends State<MeetupPage> {
                 child: new TabBar(
                     labelStyle: _styleselected,
                     isScrollable: true,
-                    indicatorColor: Colors.pink,
+                    indicatorColor: MainTheme.primaryColor,
                     unselectedLabelColor: Colors.grey,
-                    labelColor: Colors.pink,
+                    labelColor: MainTheme.primaryColor,
                     labelPadding:
                         EdgeInsets.only(bottom: 2.h, right: 35.w, left: 35.w),
                     unselectedLabelStyle: _styleBody3,

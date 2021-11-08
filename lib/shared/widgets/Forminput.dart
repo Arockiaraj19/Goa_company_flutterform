@@ -19,7 +19,7 @@ class Forminput extends StatelessWidget {
       width: double.infinity,
       child: TextFormField(
           controller: emailController,
-          cursorColor: Colors.pink,
+          cursorColor: MainTheme.primaryColor,
           textAlign: TextAlign.left,
           style: TextStyle(
               fontSize: 40.sp,
@@ -38,16 +38,20 @@ class Forminput extends StatelessWidget {
             errorStyle: TextStyle(
               fontSize: 40.sp,
               fontWeight: FontWeight.w400,
-              color: Colors.pink,
+              color: MainTheme.primaryColor,
             ),
             errorBorder: OutlineInputBorder(
               gapPadding: 0,
               borderSide: BorderSide(
-                  color: Colors.pink, width: 1, style: BorderStyle.solid),
+                  color: MainTheme.primaryColor,
+                  width: 1,
+                  style: BorderStyle.solid),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                  color: Colors.pink, width: 1, style: BorderStyle.solid),
+                  color: MainTheme.primaryColor,
+                  width: 1,
+                  style: BorderStyle.solid),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
@@ -55,7 +59,9 @@ class Forminput extends StatelessWidget {
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                  color: Colors.pink, width: 1, style: BorderStyle.solid),
+                  color: MainTheme.primaryColor,
+                  width: 1,
+                  style: BorderStyle.solid),
             ),
           ),
           validator: validation),

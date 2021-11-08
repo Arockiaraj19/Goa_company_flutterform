@@ -43,7 +43,7 @@ class PaymentPage extends StatelessWidget {
                 "Premium Subscription Plan",
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                    color: Colors.pink,
+                    color: MainTheme.primaryColor,
                     fontSize: 40.sp,
                     fontWeight: FontWeight.w400),
               ),

@@ -41,6 +41,7 @@ class UserModel {
   String coin;
   bool isVerified;
   int subCount;
+  DateTime chatCountUpdate;
 
   UserModel({
     this.id,
@@ -81,6 +82,7 @@ class UserModel {
     this.coin,
     this.isVerified,
     this.subCount,
+    this.chatCountUpdate,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -134,6 +136,8 @@ class UserModel {
     coin = json["coin_value"].toString();
     isVerified = json["is_user_verified"];
     subCount = json["profile_visit_count"];
+    chatCountUpdate =
+        DateTime.parse(json['chat_count_update'].toString()).toLocal();
   }
 
   Map<String, dynamic> toJson() {

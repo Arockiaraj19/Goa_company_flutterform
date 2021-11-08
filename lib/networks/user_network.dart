@@ -43,6 +43,8 @@ class UserNetwork {
     try {
       final _dio = apiClient();
       String id = await getUserId();
+      print("user id correct varuthaa");
+      print(id);
       var data = await _dio.then((value) async {
         response = await value.get(userDetailsEndpoint + "/" + id);
 

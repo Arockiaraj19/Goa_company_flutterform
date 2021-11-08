@@ -42,9 +42,9 @@ Future<Dio> apiClient() async {
     if (error.response != null) {
       // print(error.response);
 
-      if (error.response.statusCode == 409) {
-        return showtoast(error.response.data["msg"]);
-      }
+      // if (error.response.statusCode == 409) {
+      //  showtoast(error.response.data["msg"]);
+      // }
       if (error.response.statusCode == 410) {
         try {
           print("refersh");
@@ -78,7 +78,7 @@ Future<Dio> apiClient() async {
     return handler.next(error);
   }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 20000;
+  _dio.options.connectTimeout = 60000;
   _dio.options.receiveTimeout = 3000;
 
   return _dio;
@@ -106,39 +106,8 @@ Future<Dio> authClient() async {
       return handler.next(error);
     }));
   _dio.options.baseUrl = baseUrl;
-  _dio.options.connectTimeout = 20000;
+  _dio.options.connectTimeout = 60000;
   _dio.options.receiveTimeout = 3000;
 
   return _dio;
-}
-
-class CacheInterceptor extends Interceptor {
-  CacheInterceptor();
-
-  final _cache = <Uri, Response>{};
-
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    var response = _cache[options.uri];
-    if (options.extra['refresh'] == true) {
-      print('${options.uri}: force refresh, ignore cache! \n');
-      return handler.next(options);
-    } else if (response != null) {
-      print('cache hit: ${options.uri} \n');
-      return handler.resolve(response);
-    }
-    super.onRequest(options, handler);
-  }
-
-  @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    _cache[response.requestOptions.uri] = response;
-    super.onResponse(response, handler);
-  }
-
-  @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
-    print('onError: $err');
-    super.onError(err, handler);
-  }
 }

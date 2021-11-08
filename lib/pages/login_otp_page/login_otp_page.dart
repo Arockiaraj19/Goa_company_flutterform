@@ -158,7 +158,7 @@
 //     return BoxDecoration(
 //         borderRadius: BorderRadius.circular(5.0),
 //         border: Border.all(
-//           color: Colors.pink,
+//           color: MainTheme.primaryColor,
 //         ));
 //   }
 

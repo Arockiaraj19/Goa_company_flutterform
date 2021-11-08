@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
         boxWidth: double.infinity,
         text: 'SPARKS', loadDuration: Duration(seconds: 2),
         textAlign: TextAlign.center,
-        waveColor: Color.fromRGBO(237, 107, 192, 1),
+        waveColor: MainTheme.primaryColor,
         boxBackgroundColor: Colors.white,
         textStyle: TextStyle(
           fontSize: 230.sp,

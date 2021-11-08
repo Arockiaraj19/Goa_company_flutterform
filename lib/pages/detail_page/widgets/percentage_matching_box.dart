@@ -30,7 +30,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
             children: [
               Container(
                   decoration: BoxDecoration(
-                    gradient: MainTheme.loginwithBtnGradient,
+                    gradient: MainTheme.detailPageCard,
                     boxShadow: <BoxShadow>[
                       BoxShadow(color: Colors.grey, blurRadius: 1.0)
                     ],
@@ -102,7 +102,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
             children: [
               Container(
                   decoration: BoxDecoration(
-                    color: MainTheme.primaryColor,
+                    gradient: MainTheme.detailPageCard,
                     boxShadow: <BoxShadow>[
                       BoxShadow(color: Colors.grey, blurRadius: 1.0)
                     ],
@@ -160,7 +160,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                                   },
                                 )),
                             Container(
-                              color: MainTheme.primaryColor,
+                              color: Colors.transparent,
                               height: 50,
                               width: 50,
                             )

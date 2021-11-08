@@ -367,7 +367,9 @@ class _ChattingPageState extends State<ChattingPage> {
                             ? data.chatMessageData.length == 0
                                 ? Container()
                                 : StickyGroupedListView<ChatMessage, DateTime>(
+                                    addAutomaticKeepAlives: true,
                                     reverse: true,
+                                    addSemanticIndexes: true,
                                     elements: data.chatMessageData,
                                     order: StickyGroupedListOrder.DESC,
                                     groupBy: (ChatMessage element) => DateTime(
@@ -376,12 +378,12 @@ class _ChattingPageState extends State<ChattingPage> {
                                         element.createdAt.day),
                                     groupComparator:
                                         (DateTime value1, DateTime value2) =>
-                                            value2.compareTo(value1),
+                                            value1.compareTo(value2),
                                     itemComparator: (ChatMessage element1,
                                             ChatMessage element2) =>
                                         element1.createdAt
                                             .compareTo(element2.createdAt),
-                                    floatingHeader: true,
+                                    floatingHeader: false,
                                     groupSeparatorBuilder:
                                         (ChatMessage element) => Container(
                                       height: 50,
@@ -390,7 +392,7 @@ class _ChattingPageState extends State<ChattingPage> {
                                         child: Container(
                                           width: 120,
                                           decoration: BoxDecoration(
-                                            color: MainTheme.primaryColor,
+                                            color: MainTheme.chatPageColor,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20.0)),
                                           ),
@@ -448,7 +450,8 @@ class _ChattingPageState extends State<ChattingPage> {
                                                       element.receiverDetails[0]
                                                                   .userId ==
                                                               widget.id
-                                                          ? Color(0xffEB4DB5)
+                                                          ? MainTheme
+                                                              .chatPageColor
                                                           : Colors.white),
                                               child: Padding(
                                                   padding: EdgeInsets.symmetric(
@@ -504,8 +507,8 @@ class _ChattingPageState extends State<ChattingPage> {
                                                                                 .id
                                                                         ? Colors
                                                                             .white
-                                                                        : Color(
-                                                                            0xffEB4DB5),
+                                                                        : MainTheme
+                                                                            .chatPageColor,
                                                                     fontSize:
                                                                         25.sp,
                                                                   ),
@@ -551,8 +554,8 @@ class _ChattingPageState extends State<ChattingPage> {
                                                                                 .id
                                                                         ? Colors
                                                                             .white
-                                                                        : Color(
-                                                                            0xffEB4DB5),
+                                                                        : MainTheme
+                                                                            .chatPageColor,
                                                                     fontSize:
                                                                         25.sp,
                                                                   ),
@@ -616,7 +619,7 @@ class _ChattingPageState extends State<ChattingPage> {
                       onTap: () => _sentmessage([]),
                       child: Container(
                           child: CircleAvatar(
-                        backgroundColor: MainTheme.primaryColor,
+                        backgroundColor: MainTheme.chatPageColor,
                         radius: 22,
                         child: Icon(
                           FontAwesomeIcons.solidPaperPlane,

@@ -117,6 +117,7 @@ class _PartnerCardState extends State<PartnerCard> {
                   Container(
                     child: Image.asset(
                       widget.image,
+                      color: MainTheme.primaryColor,
                     ),
                   ),
                   SizedBox(height: 10.h),

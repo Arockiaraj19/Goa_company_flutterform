@@ -183,7 +183,7 @@ class _OtpPageState extends State<OtpPage> {
       } else {
         var _credential = PhoneAuthProvider.credential(
             verificationId: widget.otpData.id, smsCode: _otpController.text);
-        Master_function(context, _credential, widget.otpData.value,
+        await Master_function(context, _credential, widget.otpData.value,
             widget.otpData.isSignUp);
       }
     } catch (e) {

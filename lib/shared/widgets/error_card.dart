@@ -1,3 +1,4 @@
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,14 +33,7 @@ class _ErrorCardState extends State<ErrorCard> {
               width: 300.w,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromRGBO(235, 77, 181, 1),
-                      Color.fromRGBO(239, 103, 152, 1)
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+                  gradient: MainTheme.backgroundGradient,
                   borderRadius: BorderRadius.circular(5)),
               child: Text(
                 "Reload",

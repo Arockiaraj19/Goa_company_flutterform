@@ -1,5 +1,6 @@
 import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/networks/countrycode_network.dart';
+import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,18 +41,18 @@ class _CountryCodePageState extends State<CountryCodePage> {
                     errorStyle: TextStyle(
                       fontSize: 40.sp,
                       fontWeight: FontWeight.w400,
-                      color: Colors.pink,
+                      color: MainTheme.primaryColor,
                     ),
                     errorBorder: OutlineInputBorder(
                       gapPadding: 0,
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),
@@ -63,7 +64,7 @@ class _CountryCodePageState extends State<CountryCodePage> {
                     ),
                     focusedErrorBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Colors.pink,
+                          color: MainTheme.primaryColor,
                           width: 1,
                           style: BorderStyle.solid),
                     ),

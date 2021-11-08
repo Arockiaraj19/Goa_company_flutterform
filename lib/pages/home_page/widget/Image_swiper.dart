@@ -7,16 +7,12 @@ import 'package:dating_app/pages/home_page/widget/imageCard.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
-import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
-import 'package:dating_app/shared/widgets/error_card.dart';
-import 'package:dating_app/shared/widgets/no_result.dart';
+import 'package:dating_app/shared/widgets/bottmsheet.dart';
 import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
-import 'package:sailor/sailor.dart';
 import 'package:dio/dio.dart';
 
 class ImageSwiper extends StatefulWidget {
@@ -56,6 +52,25 @@ class _ImageSwiperState extends State<ImageSwiper> {
               child: Consumer<HomeProvider>(
                 builder: (context, data, child) {
                   return Swiper(
+                    onTap: (index) async {
+                      if (subdata.plan == null) {
+                        if (int.parse(subdata.count) >=
+                            data.userData.subCount) {
+                          List<UserModel> data =
+                              await Subscription().updateCount(1);
+                          await context
+                              .read<HomeProvider>()
+                              .replaceData(data[0]);
+                        } else {
+                          if (subdata.subscriptionData.length == 0) {
+                            subdata.getdata();
+                            BottomSheetClass().showplans(context);
+                          } else {
+                            BottomSheetClass().showplans(context);
+                          }
+                        }
+                      }
+                    },
                     controller: _controller,
                     loop: false,
                     outer: true,
@@ -79,9 +94,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                         } else {
                           if (subdata.subscriptionData.length == 0) {
                             subdata.getdata();
-                            _showplans(context);
+                            BottomSheetClass().showplans(context);
                           } else {
-                            _showplans(context);
+                            BottomSheetClass().showplans(context);
                           }
                         }
                       }
@@ -96,9 +111,26 @@ class _ImageSwiperState extends State<ImageSwiper> {
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,
-                          onTap: () {
-                            goToDetailPage(
-                                widget.userSuggestionData.response[index]);
+                          onTap: () async {
+                            if (subdata.plan == null) {
+                              if (int.parse(subdata.count) >=
+                                  data.userData.subCount) {
+                                List<UserModel> data =
+                                    await Subscription().updateCount(1);
+                                await context
+                                    .read<HomeProvider>()
+                                    .replaceData(data[0]);
+                                goToDetailPage(
+                                    widget.userSuggestionData.response[index]);
+                              } else {
+                                if (subdata.subscriptionData.length == 0) {
+                                  subdata.getdata();
+                                  BottomSheetClass().showplans(context);
+                                } else {
+                                  BottomSheetClass().showplans(context);
+                                }
+                              }
+                            }
                           },
                           child: ImageCard(
                             data: widget.userSuggestionData.response[index],
@@ -143,6 +175,16 @@ class _ImageSwiperState extends State<ImageSwiper> {
                           widget.userSuggestionData.response[currentIndex]
                               .firstName);
                     } on DioError catch (e) {
+                      if (e.response.statusCode == 408) {
+                        if (subdata.plan == null) {
+                          if (subdata.subscriptionData.length == 0) {
+                            subdata.getdata();
+                            BottomSheetClass().showplans(context);
+                          } else {
+                            BottomSheetClass().showplans(context);
+                          }
+                        }
+                      }
                       print(e);
                     }
                   },
@@ -167,7 +209,14 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       await HomeButtonNetwork().postLikeUnlike(likedUser, "1");
                     } on DioError catch (e) {
                       if (e.response.statusCode == 408) {
-                        _showplans(context);
+                        if (subdata.plan == null) {
+                          if (subdata.subscriptionData.length == 0) {
+                            subdata.getdata();
+                            BottomSheetClass().showplans(context);
+                          } else {
+                            BottomSheetClass().showplans(context);
+                          }
+                        }
                       }
                       print(e);
                     }
@@ -187,18 +236,5 @@ class _ImageSwiperState extends State<ImageSwiper> {
   goToChatPage(groupid, id, image, name) {
     Routes.sailor(Routes.chattingPage,
         params: {"groupid": groupid, "id": id, "image": image, "name": name});
-  }
-
-  _showplans(context) {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        // isDismissible: false,
-        // enableDrag: false,
-        backgroundColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        builder: (BuildContext context) {
-          return BottomsheetWidget();
-        });
   }
 }
