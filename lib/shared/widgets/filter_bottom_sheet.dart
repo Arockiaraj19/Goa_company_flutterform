@@ -8,8 +8,10 @@ import 'package:dating_app/shared/widgets/input_field.dart';
 import 'package:dating_app/shared/widgets/main_appbar.dart';
 // import 'package:dating_app/shared/widgets/radio_button_row.dart';
 import 'package:dating_app/shared/widgets/sliders_feilds.dart';
+import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 
@@ -115,23 +117,27 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     });
                   },
                 )),
-
                 SizedBox(
                   height: 10.h,
                 ),
-
-                // Container(
-                //     padding: EdgeInsetsDirectional.only(start: 10, end: 10),
-                //     child: InputField(
-                //       onTap: () {},
-                //       controller: _firstNameCtrl,
-                //       padding: EdgeInsets.all(10),
-                //       validators: (String value) {
-                //         if (value.isEmpty) return 'Required field';
-                //         return null;
-                //       },
-                //       hintText: 'location',
-                //     )),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    padding: EdgeInsetsDirectional.only(start: 20),
+                    child: Text("Location", style: MainTheme.subHeading),
+                  ),
+                ),
+                Container(
+                    padding: EdgeInsetsDirectional.only(start: 10, end: 10),
+                    child: InputField(
+                      onTap: () {},
+                      controller: _firstNameCtrl,
+                      padding: EdgeInsets.all(10),
+                      validators: (String value) {
+                        if (value.isEmpty) return 'Required field';
+                        return null;
+                      },
+                    )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -144,7 +150,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       width: ScreenUtil().setWidth(300),
                       borderRadius: BorderRadius.circular(5),
                       fontWeight: FontWeight.bold,
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.pop(context);
                       },
                     ),
@@ -158,14 +164,23 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       fontWeight: FontWeight.bold,
                       borderRadius: BorderRadius.circular(5),
                       onPressed: () async {
-                        var _lat = await getLat();
-                        var _lng = await getLng();
+                        List<Location> locations;
+                        try {
+                          locations =
+                              await locationFromAddress(_firstNameCtrl.text);
+                          print("location correct a varuthaa");
+                          print(locations[0].latitude);
+                        } catch (e) {
+                          print("error enna varuthu");
+                          print(e);
+                          return showtoast(e.toString());
+                        }
                         context.read<HomeProvider>().getFilteredData(
                             '${_currentRangeValues.start.toInt()}-${_currentRangeValues.end.toInt()}',
                             _currentSliderValue.toInt().toString(),
                             // "20000000000000000000",
-                            _lat.toString(),
-                            _lng.toString());
+                            locations[0].latitude.toString(),
+                            locations[0].longitude.toString());
 
                         Navigator.pop(context);
                       },

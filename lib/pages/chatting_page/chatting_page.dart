@@ -386,6 +386,7 @@ class _ChattingPageState extends State<ChattingPage> {
                                     floatingHeader: false,
                                     groupSeparatorBuilder:
                                         (ChatMessage element) => Container(
+                                      color: Colors.white,
                                       height: 50,
                                       child: Align(
                                         alignment: Alignment.center,

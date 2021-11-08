@@ -102,6 +102,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       }
                     },
                     layout: SwiperLayout.TINDER,
+               
                     itemWidth: widget.itemwidth ?? 300,
                     itemHeight: widget.itemheight ?? 400,
                     itemBuilder: (BuildContext context, int index) {

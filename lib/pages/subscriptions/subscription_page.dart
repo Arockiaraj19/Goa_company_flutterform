@@ -3,6 +3,7 @@ import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 
@@ -20,6 +21,7 @@ class _SubscriptionState extends State<Subscription> {
     context.read<SubscriptionProvider>().getdata();
   }
 
+  SwiperController _controller = SwiperController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -58,9 +60,15 @@ class _SubscriptionState extends State<Subscription> {
                           : Container(
                               width: double.infinity,
                               height: double.infinity,
-                              child: ListView.builder(
+                              child: Swiper(
                                   scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
+                                  controller: _controller,
+                                  viewportFraction: 0.85,
+                                  scale: 0.9,
+                                  loop: false,
+                                  outer: true,
+                                  itemHeight: 480.h,
+                                  itemWidth: double.infinity,
                                   itemCount: data.subscriptionData.length,
                                   itemBuilder: (context, index) {
                                     return SubscriptionCard(

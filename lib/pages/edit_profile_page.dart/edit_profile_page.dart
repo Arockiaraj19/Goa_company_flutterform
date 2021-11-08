@@ -446,6 +446,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         InputField(
                           onTap: () {},
                           controller: _heightCtrl,
+                          inputType: TextInputType.number,
                           padding: EdgeInsets.all(10),
                           validators: (String value) {
                             if (value.isEmpty) return 'Required field';
@@ -458,6 +459,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           onTap: () {},
                           controller: _weightCtrl,
                           padding: EdgeInsets.all(10),
+                          inputType: TextInputType.number,
                           validators: (String value) {
                             if (value.isEmpty) return 'Required field';
                             return null;

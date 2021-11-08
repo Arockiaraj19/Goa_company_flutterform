@@ -28,13 +28,14 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 0.w),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
                 height: 30.h,
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
-                height: 115.h,
+                height: 120.h,
                 decoration: BoxDecoration(
                     gradient: widget.index % 2 == 0
                         ? MainTheme.subscripeCard1
@@ -58,7 +59,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                       height: 5.h,
                     ),
                     Text(
-                      "Unlock all our features to be in complete control \n of your experiance.",
+                      "Unlock all our features to be in complete control of your experiance.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
@@ -169,6 +170,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                     )
                   : Container(
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           InkWell(
                             onTap: () async {

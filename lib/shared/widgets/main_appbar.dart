@@ -107,13 +107,17 @@ class _MainAppBarState extends State<MainAppBar> {
   _showOtpBottomSheet() {
     showModalBottomSheet(
         context: context,
-        // isScrollControlled: true,
+        isScrollControlled: true,
         // isDismissible: false,
         // enableDrag: false,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         builder: (BuildContext context) {
-          return Column(
-              mainAxisSize: MainAxisSize.min, children: [FilterBottomSheet()]);
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [FilterBottomSheet()]),
+          );
         });
   }
 }
