@@ -194,7 +194,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -346,7 +346,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ],
               ),
-              SocialMediaRowList(),
+              // SocialMediaRowList(),
               Container(
                   padding:
                       EdgeInsetsDirectional.only(start: 10, end: 10, top: 10),
@@ -474,7 +474,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     start: 10, top: 5, bottom: 5),
                                 child: Text(
                                   "Gender",
-                                  style: MainTheme.subHeading,
+                                  style: _textForsubHeading,
                                 )),
                           ],
                         ),
@@ -683,7 +683,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Container(
-                        child: Text("Album", style: MainTheme.subHeading)),
+                        child: Text("Album", style: _textForsubHeading)),
                   )
                 ],
               ),

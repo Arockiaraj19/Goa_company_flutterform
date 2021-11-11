@@ -4,6 +4,7 @@ import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/question_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/pages/Interest_hobbies_page/interest_hobbies_page.dart';
+import 'package:dating_app/pages/about_page/aboutUs_page.dart';
 import 'package:dating_app/pages/add_profile_pic_page/add_profile_pic.dart';
 import 'package:dating_app/pages/album_view_page/album_view_page.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
@@ -84,6 +85,7 @@ class Routes {
   static String success = "success";
   static String albumview = "albumview";
   static String notification = "notification";
+  static String aboutus = "aboutus";
 
   static final sailor = Sailor();
 
@@ -493,6 +495,13 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             return Notification();
+          }),
+
+      SailorRoute(
+          name: aboutus,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return AboutUs();
           }),
     ]);
   }

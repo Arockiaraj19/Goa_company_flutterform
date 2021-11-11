@@ -8,6 +8,7 @@ import 'package:dating_app/pages/detail_page/widgets/percentage_matching_box.dar
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
 import 'package:dating_app/shared/widgets/bottmsheet.dart';
@@ -15,6 +16,7 @@ import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 
@@ -32,12 +34,25 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
       }
     });
+  }
+
+  Future<String> getdistance(location) async {
+    print("location");
+
+    double distanceInMeters = await Geolocator.distanceBetween(
+        widget.userDetails.location.coordinates[0],
+        widget.userDetails.location.coordinates[1],
+        location.coordinates[0],
+        location.coordinates[1]);
+    print("location in miles");
+    String miles = (distanceInMeters / 1609.34).round().toString();
+    return miles;
   }
 
   bool loadingstar = true;
@@ -48,63 +63,47 @@ class _DetailPageState extends State<DetailPage> {
         appBar: AppBar(
           backgroundColor: MainTheme.appBarColor,
           elevation: 0,
+          centerTitle: true,
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+                padding: EdgeInsets.all(15),
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey[200],
+                  radius: 10,
+                  child: Icon(
+                    Icons.keyboard_arrow_left,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                )),
+          ),
+          title: Text(
+            "Details",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 50.sp,
+                fontFamily: "Nunito"),
+          ),
           actions: [
-            Container(
-              margin: EdgeInsetsDirectional.only(end: 10),
-              child: Icon(
-                Icons.notifications_outlined,
-                color: Colors.grey,
-                size: 25,
-              ),
-            )
+            // Container(
+            //   margin: EdgeInsetsDirectional.only(end: 10),
+            //   child: Icon(
+            //     Icons.notifications_outlined,
+            //     color: Colors.grey,
+            //     size: 25,
+            //   ),
+            // )
           ],
         ),
         body: SingleChildScrollView(
             child: Column(children: [
-          Stack(children: [
-            Container(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 40,
-                  child: Text(
-                    "Details",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        fontFamily: "Nunito"),
-                  ),
-                ),
-              ],
-            )),
-            Positioned(
-              left: 10,
-              child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                      child: CircleAvatar(
-                    backgroundColor: Colors.grey[200],
-                    radius: 15,
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      color: Colors.black,
-                    ),
-                  ))),
-            )
-          ]),
-          Row(
-            children: [
-              Container(
-                  child: DetailSlider(
-                promos: widget.userDetails.profileImage,
-              ))
-            ],
-          ),
+          Container(
+              child: DetailSlider(
+            promos: widget.userDetails.profileImage,
+          )),
           Container(
               padding: EdgeInsetsDirectional.only(start: 30, end: 30),
               child: Column(
@@ -117,7 +116,7 @@ class _DetailPageState extends State<DetailPage> {
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 17,
+                              fontSize: 55.sp,
                               fontFamily: "Nunito"),
                         ),
                       ),
@@ -128,17 +127,36 @@ class _DetailPageState extends State<DetailPage> {
                       Container(
                           child: Icon(
                         Icons.location_on,
-                        size: 13,
+                        size: 40.sp,
                         color: MainTheme.primaryColor,
                       )),
                       Container(
-                        child: Text(
-                          "Distance(2km)",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 11,
-                              fontFamily: "Nunito"),
-                        ),
+                        child: Consumer<HomeProvider>(
+                            builder: (context, data, child) {
+                          return FutureBuilder(
+                            future: getdistance(data.userData.location),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data + " " + "Miles away",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 35.sp,
+                                      fontFamily: "Nunito"),
+                                );
+                              } else {
+                                return Text(
+                                  "0 Miles away",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 35.sp,
+                                      fontFamily: "Nunito"),
+                                );
+                              }
+                            },
+                          );
+                        }),
                       ),
                     ],
                   ),
@@ -191,7 +209,16 @@ class _DetailPageState extends State<DetailPage> {
                                 await HomeButtonNetwork()
                                     .postMatchRequest(confirmedUser, userData);
                               } on DioError catch (e) {
-                                print(e);
+                                if (e.response.statusCode == 408) {
+                                  if (subdata.plan == null) {
+                                    if (subdata.subscriptionData.length == 0) {
+                                      subdata.getdata();
+                                      BottomSheetClass().showplans(context);
+                                    } else {
+                                      BottomSheetClass().showplans(context);
+                                    }
+                                  }
+                                }
                               }
                             },
                             onTapFlash: () async {
@@ -226,7 +253,7 @@ class _DetailPageState extends State<DetailPage> {
                           style: TextStyle(
                               color: Colors.grey[600],
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              fontSize: 55.sp,
                               fontFamily: "Nunito"),
                         ),
                       ),
@@ -246,7 +273,7 @@ class _DetailPageState extends State<DetailPage> {
                         maxLines: selected ? 10 : 2,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 12,
+                            fontSize: 40.sp,
                             fontFamily: "Nunito"),
                       )),
                   Row(
@@ -263,14 +290,14 @@ class _DetailPageState extends State<DetailPage> {
                                   'See less',
                                   style: TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 12,
+                                      fontSize: 40.sp,
                                       fontFamily: "Nunito"),
                                 )
                               : Text(
                                   'See more',
                                   style: TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 12,
+                                      fontSize: 40.sp,
                                       fontFamily: "Nunito"),
                                 ))
                     ],
@@ -364,49 +391,79 @@ class _DetailPageState extends State<DetailPage> {
                               child: CircleAvatar(
                                   backgroundColor: Colors.grey[350],
                                   radius: 20,
-                                  child: Image.asset(
-                                    "assets/icons/swim.png",
-                                    color: MainTheme.primaryColor,
-                                    width: 20,
-                                    height: 20,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(15.0.r),
+                                    child: Image.asset(
+                                      "assets/icons/swim.png",
+                                      color: MainTheme.primaryColor,
+                                      width: 60.r,
+                                      height: 60.r,
+                                    ),
                                   ))),
                           Container(
                               margin: EdgeInsetsDirectional.only(start: 15),
                               child: CircleAvatar(
                                   backgroundColor: Colors.grey[350],
                                   radius: 20,
-                                  child: Image.asset(
-                                    "assets/icons/bag.png",
-                                    width: 20,
-                                    height: 20,
-                                    color: MainTheme.primaryColor,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(15.0.r),
+                                    child: Image.asset(
+                                      "assets/icons/bag.png",
+                                      width: 60.r,
+                                      height: 60.r,
+                                      color: MainTheme.primaryColor,
+                                    ),
                                   ))),
                           Container(
                               child: CircleAvatar(
                                   backgroundColor: Colors.grey[350],
                                   radius: 20,
-                                  child: Image.asset(
-                                    "assets/icons/book.png",
-                                    width: 20,
-                                    height: 20,
-                                    color: MainTheme.primaryColor,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(15.0.r),
+                                    child: Image.asset(
+                                      "assets/icons/book.png",
+                                      width: 60.r,
+                                      height: 60.r,
+                                      color: MainTheme.primaryColor,
+                                    ),
                                   )))
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            margin: EdgeInsetsDirectional.only(start: 10),
-                            child: Text(
-                              "6+ same interests",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  fontFamily: "Nunito"),
-                            ),
-                          ),
+                          Consumer<HomeProvider>(
+                              builder: (context, data, child) {
+                            return Container(
+                              margin: EdgeInsetsDirectional.only(start: 10),
+                              child: FutureBuilder(
+                                future: Persentage().interestPercentage(
+                                    data.userData, widget.userDetails),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      "${snapshot.data} + same interests",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 46.sp,
+                                          fontFamily: "Nunito"),
+                                    );
+                                  } else {
+                                    return Text(
+                                      "0+ same interests",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 46.sp,
+                                          fontFamily: "Nunito"),
+                                    );
+                                  }
+                                },
+                              ),
+                            );
+                          }),
                           Container(
                               margin: EdgeInsetsDirectional.only(start: 10),
                               child: Row(
@@ -416,7 +473,7 @@ class _DetailPageState extends State<DetailPage> {
                                     'Show me',
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 12,
+                                        fontSize: 35.sp,
                                         fontFamily: "Nunito"),
                                   ),
                                   Icon(

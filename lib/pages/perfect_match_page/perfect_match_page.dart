@@ -10,6 +10,7 @@ import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sailor/sailor.dart';
 
 class PerfectMatchPage extends StatefulWidget {
   final UserModel user1;
@@ -25,7 +26,7 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -256,7 +257,8 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
 
   goToChatPage(groupid, id, image, name) {
     Routes.sailor(Routes.chattingPage,
-        params: {"groupid": groupid, "id": id, "image": image, "name": name});
+        params: {"groupid": groupid, "id": id, "image": image, "name": name},
+        navigationType: NavigationType.pushReplace);
   }
 
   goToQuizgamePage() {

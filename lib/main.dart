@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/providers/blind_provider.dart';
@@ -11,21 +10,21 @@ import 'package:dating_app/providers/ref_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
-import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'models/question_model.dart';
 import 'providers/countryCode_provider.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'fun ', // id
+    'fun', // id
     'hello', // title
     description: 'hello bro', // description
     importance: Importance.high,
@@ -84,7 +83,14 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: onselectnotication);
-  runApp(MyApp());
+  await MobileAds.instance.initialize();
+
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => MyApp(), // Wrap your app
+    ),
+  );
 }
 
 onselectnotication(String payload) async {
@@ -294,9 +300,9 @@ class _MyAppState extends State<MyApp> {
             builder: () => MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: 'Sparks',
-                  // locale: DevicePreview.locale(context), // Add the locale here
-                  // builder: DevicePreview.appBuilder, // Add the builder here
-                  builder: BotToastInit(),
+                  locale: DevicePreview.locale(context), // Add the locale here
+                  builder: DevicePreview.appBuilder, // Add the builder here
+                  // builder: BotToastInit(),
                   navigatorObservers: [BotToastNavigatorObserver()],
                   navigatorKey: Routes.sailor.navigatorKey,
                   onGenerateRoute: Routes.sailor.generator(),

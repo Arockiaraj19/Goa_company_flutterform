@@ -36,27 +36,27 @@ class _BottomTabBar extends State<BottomTabBar> {
   @override
   Widget build(BuildContext context) {
     return AnimatedBottomNavigationBar.builder(
-      height: 70.h,
+      height: kBottomNavigationBarHeight,
       itemCount: iconList.length,
       tabBuilder: (int index, bool isActive) {
         final iconcolor = isActive ? MainTheme.primaryColor : Color(0xff99A3B0);
         final textcolor =
             isActive ? MainTheme.primaryColor : Colors.transparent;
         return Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SizedBox(height: 5.h),
-            Icon(
-              iconList[index],
-              size: 24,
-              color: iconcolor,
+            FittedBox(
+              child: Icon(
+                iconList[index],
+                color: iconcolor,
+              ),
             ),
-            SizedBox(height: 1.h),
-            Text(
-              bottomnavheading[index],
-              maxLines: 1,
-              style: TextStyle(color: textcolor, fontSize: 40.sp),
+            FittedBox(
+              child: Text(
+                bottomnavheading[index],
+                maxLines: 1,
+                style: TextStyle(color: textcolor),
+              ),
             )
           ],
         );

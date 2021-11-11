@@ -35,7 +35,6 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
-                height: 120.h,
                 decoration: BoxDecoration(
                     gradient: widget.index % 2 == 0
                         ? MainTheme.subscripeCard1
@@ -97,7 +96,10 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                 fontWeight: FontWeight.w800),
                           ),
                         ],
-                      )
+                      ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
                   ],
                 ),
               ),
@@ -113,42 +115,40 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                         Padding(
                           padding: EdgeInsets.all(40.w),
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 0.85,
-                            child: Table(
-                                columnWidths: const <int, TableColumnWidth>{
-                                  0: const FixedColumnWidth(210),
-                                  1: const FlexColumnWidth(4),
-                                },
-                                children: [
-                                  TableRow(children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 30.0.w, top: 30.w),
-                                      child: tableHeading(
-                                          'What you get:', TextAlign.start),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: 30.0.w, top: 30.w),
-                                      child: tableHeading(
-                                          'Silver', TextAlign.center),
-                                    ),
-                                  ]),
-                                  for (var plan in data.checklistData)
-                                    tablerow(
-                                        plan.title,
-                                        widget.data.checklists.any((element) =>
-                                            element.id == plan.id)),
-                                ]),
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: Table(columnWidths: <int, TableColumnWidth>{
+                              0: FixedColumnWidth(500.w),
+                              1: FlexColumnWidth(100.w),
+                            }, children: [
+                              TableRow(children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: 30.0.w, top: 30.w),
+                                  child: tableHeading(
+                                      'What you get:', TextAlign.start),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: 30.0.w, top: 30.w),
+                                  child:
+                                      tableHeading('Silver', TextAlign.center),
+                                ),
+                              ]),
+                              for (var plan in data.checklistData)
+                                tablerow(
+                                    plan.title,
+                                    widget.data.checklists.any(
+                                        (element) => element.id == plan.id)),
+                            ]),
                           ),
                         ),
                         Positioned(
-                          right: -25,
-                          top: -25,
+                          right: -100.w,
+                          top: -100.w,
                           child: Transform.rotate(
                             angle: 40,
                             child: Container(
-                              height: 150.r,
+                              height: 300.r,
                               width: 150.r,
                               decoration: BoxDecoration(
                                   gradient: MainTheme.loginwithBtnGradient,

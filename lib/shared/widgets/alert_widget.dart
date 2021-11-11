@@ -18,9 +18,11 @@ class Alert {
           child: Text(
             "No",
             style: TextStyle(
-                fontSize: 45.sp,
-                color: Colors.black,
-                fontWeight: FontWeight.w400),
+              fontSize: 45.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w400,
+              fontFamily: "Inter",
+            ),
           ),
         ),
         SizedBox(width: 50.w),
@@ -31,24 +33,32 @@ class Alert {
           child: Text(
             "Yes",
             style: TextStyle(
-                fontSize: 45.sp,
-                color: MainTheme.primaryColor,
-                fontWeight: FontWeight.w400),
+              fontSize: 45.sp,
+              color: MainTheme.primaryColor,
+              fontWeight: FontWeight.w400,
+              fontFamily: "Inter",
+            ),
           ),
         ),
         SizedBox(width: 20.w),
       ],
-      title: Text(
-        "Leave this app",
-        style: TextStyle(
-            fontSize: 60.sp,
-            color: MainTheme.primaryColor,
-            fontWeight: FontWeight.w600),
-      ),
+      // title: Text(
+      //   "Leave this app",
+      //   style: TextStyle(
+      //     fontSize: 55.sp,
+      //     color: MainTheme.primaryColor,
+      //     fontWeight: FontWeight.w600,
+      //     fontFamily: "Inter",
+      //   ),
+      // ),
       content: Text(
-        "Are you sure you want to leave this app?",
+        "Are you sure want to leave?",
         style: TextStyle(
-            fontSize: 45.sp, color: Colors.black, fontWeight: FontWeight.w400),
+          fontSize: 45.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w400,
+          fontFamily: "Inter",
+        ),
       ),
     );
 

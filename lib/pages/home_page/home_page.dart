@@ -19,6 +19,7 @@ import 'package:dating_app/shared/widgets/alert_widget.dart';
 import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
+import 'package:dating_app/shared/widgets/filter_bottom_sheet.dart';
 import 'package:dating_app/shared/widgets/home_page_grid_view_list.dart';
 import 'package:dating_app/shared/widgets/interest_card_list.dart';
 import 'package:dating_app/shared/widgets/main_appbar.dart';
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -88,14 +89,69 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildPhone() {
     var _height = MediaQuery.of(context).size.height - kToolbarHeight;
+    var _textStyleforHeading = TextStyle(
+        color: MainTheme.mainHeadingColors,
+        fontWeight: FontWeight.bold,
+        fontSize: 50.sp,
+        fontFamily: "lato");
     return WillPopScope(
       onWillPop: () {
         Alert().showAlertDialog(context);
       },
       child: Scaffold(
         backgroundColor: Colors.grey.shade50,
-        appBar: MainAppBar(
-          istrue: true,
+        appBar: AppBar(
+          backgroundColor: Colors.grey.shade50,
+          elevation: 0,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          actions: [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(right: 50.w),
+                child: Consumer<NotificationProvider>(
+                  builder: (context, data, child) {
+                    return InkWell(
+                      onTap: () {
+                        Routes.sailor(Routes.notification);
+                      },
+                      child: Stack(
+                        children: [
+                          Container(
+                            child: Icon(
+                              Icons.notifications_outlined,
+                              color: Colors.grey,
+                              size: 25,
+                            ),
+                          ),
+                          if (data.notificationData.length != 0)
+                            Positioned(
+                              right: 8,
+                              top: 2,
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  height: 15,
+                                  width: 15,
+                                  decoration: BoxDecoration(
+                                    color: MainTheme.primaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    data.notificationData.length.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30.sp,
+                                    ),
+                                  )),
+                            )
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            )
+          ],
         ),
         body: WillPopScope(
           onWillPop: () {
@@ -117,61 +173,83 @@ class _HomePageState extends State<HomePage> {
           },
           child: RefreshIndicator(
             onRefresh: _pullRefresh,
-            child:
-                Consumer<SubscriptionProvider>(builder: (context, sub, child) {
-              return sub.subscriptionState == SubscriptionState.Error
-                  ? ErrorCard(
-                      text: sub.errorText,
-                      ontab: () => Routes.sailor(Routes.homePage,
-                          navigationType: NavigationType.pushReplace))
-                  : Consumer<HomeProvider>(builder: (context, data, child) {
-                      return data.homeState == HomeState.Error
-                          ? ErrorCard(
-                              text: data.errorText,
-                              ontab: () => Routes.sailor(Routes.homePage,
-                                  navigationType: NavigationType.pushReplace))
-                          : data.homeState == HomeState.Loaded
-                              ? data.usersSuggestionData.response.length == 0
-                                  ? noResult()
-                                  : data.view == 1
-                                      ? SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                  height: _height / 1.20,
-                                                  width: double.infinity,
-                                                  child: ImageSwiper(
-                                                    itemheight: 460.h,
-                                                    itemwidth: double.infinity,
-                                                    userSuggestionData: data
-                                                        .usersSuggestionData,
-                                                    promos: [
-                                                      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-                                                      "https://us.123rf.com/450wm/vadymvdrobot/vadymvdrobot1803/vadymvdrobot180303570/97983244-happy-asian-woman-in-t-shirt-bites-eyeglasses-and-looking-at-the-camera-over-grey-background.jpg?ver=6",
-                                                      "https://cdn.lifehack.org/wp-content/uploads/2014/03/shutterstock_97566446.jpg",
-                                                      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29ufGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"
-                                                    ],
-                                                    onTap: (dynamic promo) {},
-                                                  )),
-                                              SizedBox(
-                                                height:
-                                                    ScreenUtil().setHeight(15),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      : Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 15),
-                                          child: HomePageGridViewPage(
-                                            usersData: data.usersSuggestionData,
-                                          ),
-                                        )
-                              : Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                    });
-            }),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 0),
+                  child: Container(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                        FittedBox(
+                          child: Container(
+                            child:
+                                Text("Discover", style: _textStyleforHeading),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _showOtpBottomSheet();
+                          },
+                          child: FittedBox(
+                            child: Image.asset(
+                              "assets/icons/adjust.png",
+                              color: Colors.grey,
+                              width: 18.h,
+                            ),
+                          ),
+                        )
+                      ])),
+                ),
+                Expanded(
+                  child: Consumer<SubscriptionProvider>(
+                      builder: (context, sub, child) {
+                    return sub.subscriptionState == SubscriptionState.Error
+                        ? ErrorCard(
+                            text: sub.errorText,
+                            ontab: () => Routes.sailor(Routes.homePage,
+                                navigationType: NavigationType.pushReplace))
+                        : Consumer<HomeProvider>(
+                            builder: (context, data, child) {
+                            return data.homeState == HomeState.Error
+                                ? ErrorCard(
+                                    text: data.errorText,
+                                    ontab: () => Routes.sailor(Routes.homePage,
+                                        navigationType:
+                                            NavigationType.pushReplace))
+                                : data.homeState == HomeState.Loaded
+                                    ? data.usersSuggestionData.response
+                                                .length ==
+                                            0
+                                        ? noResult()
+                                        : data.view == 1
+                                            ? ImageSwiper(
+                                                userSuggestionData:
+                                                    data.usersSuggestionData,
+                                                promos: [
+                                                  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                                                  "https://us.123rf.com/450wm/vadymvdrobot/vadymvdrobot1803/vadymvdrobot180303570/97983244-happy-asian-woman-in-t-shirt-bites-eyeglasses-and-looking-at-the-camera-over-grey-background.jpg?ver=6",
+                                                  "https://cdn.lifehack.org/wp-content/uploads/2014/03/shutterstock_97566446.jpg",
+                                                  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29ufGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"
+                                                ],
+                                                onTap: (dynamic promo) {},
+                                              )
+                                            : Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 15),
+                                                child: HomePageGridViewPage(
+                                                  usersData:
+                                                      data.usersSuggestionData,
+                                                ),
+                                              )
+                                    : Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                          });
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
         floatingActionButton:
@@ -215,6 +293,23 @@ class _HomePageState extends State<HomePage> {
   //     Routes.perfectMatchPage,
   //   );
   // }
+
+  _showOtpBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        // isDismissible: false,
+        // enableDrag: false,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [FilterBottomSheet()]),
+          );
+        });
+  }
 
   Widget _buildWeb() {
     var _height = MediaQuery.of(context).size.height - (kToolbarHeight);
@@ -272,10 +367,10 @@ class _HomePageState extends State<HomePage> {
                                       height: _height - 50,
                                       width: _width * 0.450,
                                       child: ImageSwiper(
-                                        height: _height - 150,
-                                        width: _width * 0.450,
-                                        itemheight: _height - 150,
-                                        itemwidth: _width / 3.2,
+                                        // height: _height - 150,
+                                        // width: _width * 0.450,
+                                        // itemheight: _height - 150,
+                                        // itemwidth: _width / 3.2,
                                         userSuggestionData:
                                             data.usersSuggestionData,
                                         promos: [

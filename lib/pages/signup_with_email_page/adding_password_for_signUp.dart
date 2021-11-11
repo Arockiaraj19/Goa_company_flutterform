@@ -36,7 +36,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -169,6 +169,11 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
             textAlign: TextAlign.left,
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText,
+            style: TextStyle(
+                fontSize: 40.sp,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.w400,
+                color: MainTheme.enterTextColor),
             decoration: InputDecoration(
               suffixIcon: InkWell(
                   onTap: () {
@@ -254,6 +259,11 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
             controller: _password2Ctrl,
             cursorColor: MainTheme.primaryColor,
             textAlign: TextAlign.left,
+            style: TextStyle(
+                fontSize: 40.sp,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.w400,
+                color: MainTheme.enterTextColor),
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText1,
             decoration: InputDecoration(
@@ -363,9 +373,9 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               GradientButton(
                 name: loading ? "Loading.." : "Next",
                 gradient: MainTheme.loginBtnGradient,
-                height: 35,
-                fontSize: 14,
-                width: 150,
+                height: 110.w,
+                fontSize: 40.sp,
+                width: 500.w,
                 active: true,
                 isLoading: loading,
                 borderRadius: BorderRadius.circular(5),

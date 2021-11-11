@@ -45,8 +45,6 @@ class _MatchesCardState extends State<MatchesCard> {
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return widget.onWeb
@@ -63,8 +61,8 @@ class _MatchesCardState extends State<MatchesCard> {
                           margin:
                               EdgeInsetsDirectional.only(end: 10, start: 10),
                           child: SizedBox(
-                            width: 60,
-                            height: 60,
+                            width: 80.r,
+                            height: 80.r,
                             child: FutureBuilder(
                               future: getimage(),
                               builder: (BuildContext context,
@@ -101,7 +99,7 @@ class _MatchesCardState extends State<MatchesCard> {
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 14,
+                                          fontSize: 50.sp,
                                           fontFamily: "Nunito"),
                                     );
                                   } else {
@@ -164,8 +162,8 @@ class _MatchesCardState extends State<MatchesCard> {
                     Container(
                       margin: EdgeInsetsDirectional.only(end: 10, start: 10),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: 180.r,
+                        height: 180.r,
                         child: FutureBuilder(
                           future: getimage(),
                           builder:
@@ -183,6 +181,9 @@ class _MatchesCardState extends State<MatchesCard> {
                           },
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      width: 10.w,
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -202,7 +203,7 @@ class _MatchesCardState extends State<MatchesCard> {
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14,
+                                      fontSize: 50.sp,
                                       fontFamily: "Nunito"),
                                 );
                               } else {

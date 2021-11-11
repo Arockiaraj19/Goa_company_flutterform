@@ -106,7 +106,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -115,6 +115,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   }
 
   DateTime dateofbirth;
+  String _code = "";
+  String _number = "";
   Widget _buildPhone() {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
@@ -306,10 +308,25 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                           style: BorderStyle.solid),
                                     ),
                                   ),
+                                  onChanged: (val) {
+                                    _code = val;
+                                  },
                                   validator: (value) {
                                     if (value.isEmpty) {
-                                      return "* Required";
+                                      return "*";
                                     }
+                                    if (_code.isEmpty) {
+                                      return "*";
+                                    }
+                                    RegExp regex = new RegExp(numberpattern);
+                                    if (!regex.hasMatch(_code)) {
+                                      return '*';
+                                    }
+                                    if (_code.length > 10 ||
+                                        _code.length < 10) {
+                                      return "*";
+                                    }
+
                                     return null;
                                   },
                                   onTap: () {
@@ -379,8 +396,14 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                             style: BorderStyle.solid),
                                       ),
                                     ),
+                                    onChanged: (value) {
+                                      _number = value;
+                                    },
                                     validator: (value) {
                                       if (value.isEmpty) {
+                                        return "* Required";
+                                      }
+                                      if (_number.isEmpty) {
                                         return "* Required";
                                       }
                                       RegExp regex = new RegExp(numberpattern);
@@ -673,13 +696,14 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                         Align(
                           alignment: Alignment.center,
                           child: GradientButton(
-                            height: 40,
+                            height: 110.w,
+                            fontSize: 40.sp,
+                            width: 500.w,
                             name: loading ? "Saving.." : "Continue",
                             gradient: MainTheme.loginBtnGradient,
                             active: true,
                             color: Colors.white,
                             isLoading: loading,
-                            width: ScreenUtil().setWidth(400),
                             fontWeight: FontWeight.w600,
                             onPressed: () {
                               if (_formKey.currentState.validate()) {

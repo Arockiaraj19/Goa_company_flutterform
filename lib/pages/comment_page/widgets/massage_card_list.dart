@@ -44,12 +44,18 @@ class _MassageCardListState extends State<MassageCardList> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[200],
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: Color(0xff8F96AD),
-                  size: 30,
+                prefixIcon: Padding(
+                  padding: EdgeInsets.only(
+                    left: 15.0.w,
+                  ),
+                  child: Icon(
+                    Icons.search,
+                    color: Color(0xff8F96AD),
+                    size: 60.sp,
+                  ),
                 ),
-                contentPadding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                contentPadding: EdgeInsets.only(
+                    left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
                 hintText: "Search messages",
                 hintStyle: TextStyle(
                     fontSize: 35.sp,
@@ -92,8 +98,7 @@ class _MassageCardListState extends State<MassageCardList> {
                             ? Container()
                             : ListView.builder(
                                 itemBuilder: (context, index) => MassageCard(
-                                    height: widget.mcardHeight,
-                                    width: widget.mCardWidth,
+                                  
                                     data: data.chatGroupData[index]),
                                 itemCount: data.chatGroupData.length,
                               )

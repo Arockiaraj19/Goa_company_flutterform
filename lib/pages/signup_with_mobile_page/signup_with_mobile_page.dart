@@ -100,6 +100,8 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
   FocusNode myFocusNode;
   String countrycode;
   CountryCode code;
+  String _code = "";
+  String _number = "";
 
   Widget _commonBuild(BuildContext context, {bool onWeb = false}) {
     var _height = MediaQuery.of(context).size.height;
@@ -192,10 +194,24 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                           style: BorderStyle.solid),
                     ),
                   ),
+                  onChanged: (val) {
+                    _code = val;
+                  },
                   validator: (value) {
                     if (value.isEmpty) {
                       return "*";
                     }
+                    if (_code.isEmpty) {
+                      return "*";
+                    }
+                    RegExp regex = new RegExp(numberpattern);
+                    if (!regex.hasMatch(_code)) {
+                      return '*';
+                    }
+                    if (_code.length > 10 || _code.length < 10) {
+                      return "*";
+                    }
+
                     return null;
                   },
                   onTap: () {
@@ -265,8 +281,14 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                             style: BorderStyle.solid),
                       ),
                     ),
+                    onChanged: (value) {
+                      _number = value;
+                    },
                     validator: (value) {
                       if (value.isEmpty) {
+                        return "* Required";
+                      }
+                      if (_number.isEmpty) {
                         return "* Required";
                       }
                       RegExp regex = new RegExp(numberpattern);

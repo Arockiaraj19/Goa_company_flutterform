@@ -35,7 +35,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -204,12 +204,12 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                 : GradientButton(
                     height: 110.w,
                     fontSize: 40.sp,
+                    width: 500.w,
                     name: "Next",
                     gradient: MainTheme.loginwithBtnGradient,
                     active: true,
                     color: Colors.white,
                     isLoading: loading,
-                    width: 500.w,
                     borderRadius: BorderRadius.circular(20.sp),
                     fontWeight: FontWeight.w500,
                     onPressed: () async {

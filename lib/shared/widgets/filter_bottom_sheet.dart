@@ -1,5 +1,4 @@
-import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
-import 'package:dating_app/pages/detail_page/detail_page.dart';
+
 import 'package:dating_app/providers/home_provider.dart';
 
 import 'package:dating_app/shared/theme/theme.dart';

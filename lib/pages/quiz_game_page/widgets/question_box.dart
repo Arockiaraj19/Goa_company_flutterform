@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QuestionBox extends StatefulWidget {
   String question;
@@ -23,7 +24,7 @@ class _QuestionBoxState extends State<QuestionBox> {
             style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: 14,
+                fontSize: 45.sp,
                 fontFamily: "Nunito"),
           )),
         ]));

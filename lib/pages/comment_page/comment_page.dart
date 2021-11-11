@@ -1,25 +1,18 @@
-import 'package:dating_app/networks/chat_network.dart';
-import 'package:dating_app/networks/client/api_list.dart';
-import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
-import 'package:dating_app/pages/chatting_page/wigets/chatt_box.dart';
-import 'package:dating_app/pages/comment_page/widgets/dates_card.dart';
+
 import 'package:dating_app/pages/comment_page/widgets/dates_card_list.dart';
-import 'package:dating_app/pages/comment_page/widgets/massage_card.dart';
+
 import 'package:dating_app/pages/comment_page/widgets/massage_card_list.dart';
-import 'package:dating_app/pages/comment_page/widgets/request_card.dart';
+
 import 'package:dating_app/pages/comment_page/widgets/request_card_list.dart';
-import 'package:dating_app/providers/chat_provider.dart';
-import 'package:dating_app/routes.dart';
+
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/alert_widget.dart';
 import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/src/provider.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CommentPage extends StatefulWidget {
   CommentPage({Key key}) : super(key: key);
@@ -43,7 +36,7 @@ class _CommentPageState extends State<CommentPage>
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -53,118 +46,96 @@ class _CommentPageState extends State<CommentPage>
 
   Widget _buildPhone() {
     return WillPopScope(
-      onWillPop: (){
-         Alert().showAlertDialog(context);
+      onWillPop: () {
+        Alert().showAlertDialog(context);
       },
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-              backgroundColor: MainTheme.appBarColor,
-              elevation: 0,
-              actions: [
-              
-              ],
-              bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(kToolbarHeight * 1.3),
-                  child: PreferredSize(
-                      preferredSize: const Size.fromHeight(kToolbarHeight),
-                      child: Column(children: [
-                        Stack(children: [
+            backgroundColor: MainTheme.appBarColor,
+            elevation: 0,
+            centerTitle: true,
+            title: Text(
+              "Matches",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 50.sp,
+                  fontFamily: "Nunito"),
+            ),
+            actions: [],
+          ),
+          body: Column(
+            children: [
+              TabBar(
+                controller: _tabController,
+                indicatorColor: Colors.transparent,
+                // indicatorPadding:
+                //     const EdgeInsets.only(left: 25, right: 25, top: 10),
+                labelColor: MainTheme.primaryColor,
+                unselectedLabelColor: Colors.black,
+                labelStyle:
+                    TextStyle(fontSize: 45.sp, fontWeight: FontWeight.bold),
+                unselectedLabelStyle: TextStyle(fontSize: 14),
+                indicatorWeight: 3,
+                tabs: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: Text(
+                      "Message",
+                      style: TextStyle(
+                        fontSize: 45.sp,
+                      ),
+                    ),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(bottom: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
                           Container(
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 40,
-                                child: Text(
-                                  "Matches",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      fontFamily: "Nunito"),
-                                ),
-                              ),
-                            ],
-                          )),
-                          // Positioned(
-                          //     right: 10,
-                          //     child: InkWell(
-                          //         onTap: () {},
-                          //         child: Container(
-                          //           child: Icon(
-                          //             Icons.search,
-                          //             color: Colors.black,
-                          //           ),
-                          //         )))
-                        ]),
-                        TabBar(
-                          controller: _tabController,
-                          indicatorColor: Colors.transparent,
-                          // indicatorPadding:
-                          //     const EdgeInsets.only(left: 25, right: 25, top: 10),
-                          labelColor: MainTheme.primaryColor,
-                          unselectedLabelColor: Colors.black,
-                          labelStyle: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                          unselectedLabelStyle: TextStyle(fontSize: 14),
-                          indicatorWeight: 3,
-                          tabs: <Widget>[
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                "Message",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
+                            width: 1,
+                            color: Colors.grey[300],
+                            height: 20,
+                          ),
+                          Text(
+                            "Dates",
+                            style: TextStyle(
+                              fontSize: 45.sp,
                             ),
-                            Container(
-                                margin: const EdgeInsets.only(bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: 1,
-                                      color: Colors.grey[300],
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      "Dates",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Colors.grey[300],
-                                      width: 1,
-                                      height: 20,
-                                    ),
-                                  ],
-                                )),
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                "Request",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(),
-                      ])))),
-          body: TabBarView(
-              controller: _tabController,
-              physics: ClampingScrollPhysics(),
-              children: <Widget>[
-                Container(child: MassageCardList()),
-                Container(child: DatesCardList()),
-                Container(child: RequestCardList())
-              ]),
+                          ),
+                          Container(
+                            color: Colors.grey[300],
+                            width: 1,
+                            height: 20,
+                          ),
+                        ],
+                      )),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: Text(
+                      "Request",
+                      style: TextStyle(
+                        fontSize: 45.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Divider(),
+              Expanded(
+                child: TabBarView(
+                    controller: _tabController,
+                    physics: ClampingScrollPhysics(),
+                    children: <Widget>[
+                      Container(child: MassageCardList()),
+                      Container(child: DatesCardList()),
+                      Container(child: RequestCardList())
+                    ]),
+              ),
+            ],
+          ),
           bottomNavigationBar: BottomTabBar(
             currentIndex: 1,
           ),
@@ -172,8 +143,6 @@ class _CommentPageState extends State<CommentPage>
       ),
     );
   }
-
-
 
   Widget _buildWeb() {
     var _height = MediaQuery.of(context).size.height;
@@ -261,7 +230,7 @@ class _CommentPageState extends State<CommentPage>
                                     child: Text(
                                       "Message",
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 45.sp,
                                       ),
                                     ),
                                   ),
@@ -279,7 +248,7 @@ class _CommentPageState extends State<CommentPage>
                                           Text(
                                             "Dates",
                                             style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 45.sp,
                                             ),
                                           ),
                                           Container(
@@ -294,7 +263,7 @@ class _CommentPageState extends State<CommentPage>
                                     child: Text(
                                       "Request",
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 45.sp,
                                       ),
                                     ),
                                   ),

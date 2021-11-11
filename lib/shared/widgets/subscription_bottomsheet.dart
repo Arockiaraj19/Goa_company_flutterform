@@ -56,7 +56,6 @@ class BottomsheetWidget extends StatelessWidget {
                                         child: Container(
                                           alignment: Alignment.center,
                                           width: 500.w,
-                                          height: 105.h,
                                           decoration: BoxDecoration(
                                               gradient: index % 2 == 0
                                                   ? MainTheme.subscripeCard1
@@ -140,7 +139,10 @@ class BottomsheetWidget extends StatelessWidget {
                                                               FontWeight.w800),
                                                     ),
                                                   ],
-                                                )
+                                                ),
+                                              SizedBox(
+                                                height: 5.h,
+                                              ),
                                             ],
                                           ),
                                         ),

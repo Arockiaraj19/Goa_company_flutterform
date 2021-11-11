@@ -31,6 +31,7 @@ import 'package:flutter_insta/flutter_insta.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:sailor/sailor.dart';
@@ -64,13 +65,73 @@ class _ProfilePageState extends State<ProfilePage>
     super.initState();
     getData();
     _tabController = TabController(length: 2, vsync: this);
+    _createRewardedAd();
+  }
+
+  static final AdRequest request = AdRequest(
+    keywords: <String>['Book', 'Game'],
+    nonPersonalizedAds: true,
+  );
+
+  RewardedAd _rewardedAd;
+  int _numRewardedLoadAttempts = 0;
+  bool show = false;
+
+  void _createRewardedAd() {
+    RewardedAd.load(
+        adUnitId: "ca-app-pub-3940256099942544/5224354917",
+        request: request,
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          onAdLoaded: (RewardedAd ad) {
+            print('$ad loaded.');
+            _rewardedAd = ad;
+            _numRewardedLoadAttempts = 0;
+
+            // _showRewardedAd();
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            print('RewardedAd failed to load: $error');
+            _rewardedAd = null;
+            _numRewardedLoadAttempts += 1;
+            if (_numRewardedLoadAttempts <= 4) {
+              _createRewardedAd();
+            }
+          },
+        ));
+  }
+
+  void _showRewardedAd() {
+    if (_rewardedAd == null) {
+      print('Warning: attempt to show rewarded before loaded.');
+      return;
+    }
+
+    _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (RewardedAd ad) =>
+          print('ad onAdShowedFullScreenContent.'),
+      onAdDismissedFullScreenContent: (RewardedAd ad) {
+        print('$ad onAdDismissedFullScreenContent.');
+
+        ad.dispose();
+      },
+      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+        print('$ad onAdFailedToShowFullScreenContent: $error');
+
+        ad.dispose();
+      },
+    );
+
+    _rewardedAd.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
+      // _rewardedAd.dispose();
+    });
+    _rewardedAd = null;
   }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -82,6 +143,13 @@ class _ProfilePageState extends State<ProfilePage>
     Token data = await getToken(Constants.APP_ID, Constants.APP_SECRET);
     print("instagram account correct a varuthaa");
     print(data);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _rewardedAd.dispose();
+    _rewardedAd = null;
   }
 
   Widget _buildPhone() {
@@ -192,7 +260,6 @@ class _ProfilePageState extends State<ProfilePage>
               child: Column(
                 children: [
                   Container(
-                      height: 190,
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
                         gradient: MainTheme.ScoreBackgroundGradient,
@@ -210,7 +277,6 @@ class _ProfilePageState extends State<ProfilePage>
                             children: [
                               Stack(children: [
                                 Container(
-                                    height: 130,
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.rectangle,
@@ -222,95 +288,120 @@ class _ProfilePageState extends State<ProfilePage>
                                         bottomRight: Radius.circular(20.0),
                                       ),
                                     ),
-                                    child: Column(children: [
-                                      FutureBuilder(
-                                        future: Persentage()
-                                            .checkPresentage(data.userData),
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot snapshot) {
-                                          if (snapshot.hasData) {
-                                            return PercentageBar(
-                                              image: data
-                                                  .userData.identificationImage,
-                                              percentage: snapshot.data,
-                                            );
-                                          } else {
-                                            return PercentageBar(
-                                              image: data
-                                                  .userData.identificationImage,
-                                              percentage: 0,
-                                            );
-                                          }
-                                        },
-                                      ),
-                                      Row(
+                                    child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                            MainAxisAlignment.spaceAround,
                                         children: [
-                                          Container(
-                                            margin: EdgeInsetsDirectional.only(
-                                                top: 5),
-                                            child: Text(
-                                                "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""} , ${data.userData.age}",
-                                                style: _textStyleforName
-
-                                                // TextStyle(
-                                                //     color: Colors.black,
-                                                //     fontWeight: FontWeight.bold,
-                                                //     fontSize: 16,
-                                                //     fontFamily: "Nunito"),
-
-                                                ),
+                                          SizedBox(
+                                            height: 8.h,
                                           ),
-                                        ],
-                                      ),
-                                    ])),
+                                          FutureBuilder(
+                                            future: Persentage()
+                                                .checkPresentage(data.userData),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
+                                              if (snapshot.hasData) {
+                                                return PercentageBar(
+                                                  image: data.userData
+                                                      .identificationImage,
+                                                  percentage: snapshot.data,
+                                                );
+                                              } else {
+                                                return PercentageBar(
+                                                  image: data.userData
+                                                      .identificationImage,
+                                                  percentage: 0,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                          SizedBox(
+                                            height: 3.h,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                margin:
+                                                    EdgeInsetsDirectional.only(
+                                                        top: 5),
+                                                child: Text(
+                                                    "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""} , ${data.userData.age}",
+                                                    style: _textStyleforName
+
+                                                    // TextStyle(
+                                                    //     color: Colors.black,
+                                                    //     fontWeight: FontWeight.bold,
+                                                    //     fontSize: 16,
+                                                    //     fontFamily: "Nunito"),
+
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 8.h,
+                                          ),
+                                        ])),
                                 Positioned(
                                     right: 10,
                                     top: 40,
-                                    child: Container(
-                                        padding: EdgeInsetsDirectional.only(
-                                            top: 1, start: 1, bottom: 1),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade300,
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: const Radius.circular(5),
-                                            bottomLeft:
-                                                const Radius.circular(5),
-                                          ),
-                                        ),
-                                        child: ClipRRect(
+                                    child: InkWell(
+                                      onTap: () {
+                                        _showRewardedAd();
+                                      },
+                                      child: Container(
+                                          padding: EdgeInsetsDirectional.only(
+                                              top: 1, start: 1, bottom: 1),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade300,
                                             borderRadius:
                                                 const BorderRadius.only(
                                               topLeft: const Radius.circular(5),
                                               bottomLeft:
                                                   const Radius.circular(5),
                                             ),
-                                            child: Container(
-                                                padding: EdgeInsets.all(2),
-                                                color: Colors.white,
-                                                child: Row(children: [
-                                                  Container(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .only(
-                                                        end: 2,
-                                                        start: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        "assets/images/coin.png",
-                                                        width: 10,
-                                                        height: 10,
-                                                      )),
-                                                  Container(
-                                                      child: Text(data.userData
-                                                                  .coin ==
-                                                              null
-                                                          ? "0"
-                                                          : data.userData.coin))
-                                                ])))))
+                                          ),
+                                          child: ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft:
+                                                    const Radius.circular(5),
+                                                bottomLeft:
+                                                    const Radius.circular(5),
+                                              ),
+                                              child: Container(
+                                                  padding: EdgeInsets.all(2),
+                                                  color: Colors.white,
+                                                  child: Row(children: [
+                                                    Container(
+                                                        padding:
+                                                            EdgeInsetsDirectional
+                                                                .only(
+                                                          end: 2,
+                                                          start: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          "assets/images/coin.png",
+                                                          width: 10,
+                                                          height: 10,
+                                                        )),
+                                                    Container(
+                                                        child: Text(data
+                                                                    .userData
+                                                                    .coin ==
+                                                                null
+                                                            ? "0"
+                                                            : data
+                                                                .userData.coin))
+                                                  ])))),
+                                    ))
                               ])
                             ]),
+                        SizedBox(
+                          height: 8.h,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -352,6 +443,9 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                           ],
                         ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
                       ])),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -380,7 +474,7 @@ class _ProfilePageState extends State<ProfilePage>
                   Container(
                     margin: EdgeInsetsDirectional.only(top: 10),
                     padding: EdgeInsetsDirectional.only(start: 20, end: 20),
-                    height: 35,
+                    height: 50.h,
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
@@ -544,17 +638,19 @@ class _ProfilePageState extends State<ProfilePage>
                                         data.userData.userReferralCode),
                                     child: SettingBox(name: "Refer & Earn")),
                             InkWell(
-                                onTap: () {
-                                  Routes.sailor(Routes.meetuppage);
-                                },
-                                child: SettingBox(name: "Booking")),
+                                onTap: () {},
+                                child: SettingBox(name: "Expert Chat")),
                             InkWell(
                                 onTap: () {
                                   Routes.sailor(Routes.subscription);
                                 },
                                 child: SettingBox(name: "Subscription")),
                             SettingBox(name: "Order history"),
-                            SettingBox(name: "About"),
+                            InkWell(
+                                onTap: () {
+                                  Routes.sailor(Routes.aboutus);
+                                },
+                                child: SettingBox(name: "About")),
                             GestureDetector(
                               onTap: () {
                                 showAlertDialog(context);

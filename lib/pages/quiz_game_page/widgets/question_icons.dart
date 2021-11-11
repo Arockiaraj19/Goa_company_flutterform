@@ -36,22 +36,25 @@ class _QuestioniconsState extends State<Questionicons> {
                         backgroundColor: widget.option == widget.answer
                             ? MainTheme.primaryColor
                             : Colors.grey[400],
-                        radius: 20,
+                        minRadius: 30.r,
+                        maxRadius: 50.r,
                         child: Text(
                           widget.index.toString(),
                           style: TextStyle(
+                            fontSize: 55.sp,
                             color: Colors.white,
                           ),
                         ),
                       )),
                   SizedBox(
-                    width: 5,
+                    width: 15.w,
                   ),
                   Container(
                       child: Text(
                     widget.answer,
                     textAlign: TextAlign.center,
                     style: TextStyle(
+                      fontSize: 45.sp,
                       color: widget.option == widget.answer
                           ? MainTheme.primaryColor
                           : Colors.black,

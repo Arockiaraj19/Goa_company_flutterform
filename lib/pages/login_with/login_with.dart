@@ -188,6 +188,11 @@ class _LoginWithState extends State<LoginWith> {
             textAlign: TextAlign.left,
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText,
+            style: TextStyle(
+                fontSize: 40.sp,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.w400,
+                color: MainTheme.enterTextColor),
             decoration: InputDecoration(
               suffixIcon: InkWell(
                   onTap: () {
@@ -290,12 +295,12 @@ class _LoginWithState extends State<LoginWith> {
             child: GradientButton(
               height: 110.w,
               fontSize: 40.sp,
+              width: 500.w,
               name: loading ? "Logging In.." : "Log In",
               gradient: MainTheme.loginwithBtnGradient,
               active: true,
               color: Colors.white,
               isLoading: loading,
-              width: 500.w,
               borderRadius: BorderRadius.circular(20.sp),
               fontWeight: FontWeight.w500,
               onPressed: () async {
@@ -365,6 +370,8 @@ class _LoginWithState extends State<LoginWith> {
   FocusNode myFocusNode;
   String countrycode;
   CountryCode code;
+  String _code = "";
+  String _number = "";
 
   Widget _loginWithNumber({double btnWidth}) {
     return Form(
@@ -448,10 +455,24 @@ class _LoginWithState extends State<LoginWith> {
                           style: BorderStyle.solid),
                     ),
                   ),
+                  onChanged: (val) {
+                    _code = val;
+                  },
                   validator: (value) {
                     if (value.isEmpty) {
-                      return "* Required";
+                      return "*";
                     }
+                    if (_code.isEmpty) {
+                      return "*";
+                    }
+                    RegExp regex = new RegExp(numberpattern);
+                    if (!regex.hasMatch(_code)) {
+                      return '*';
+                    }
+                    if (_code.length > 10 || _code.length < 10) {
+                      return "*";
+                    }
+
                     return null;
                   },
                   onTap: () {
@@ -521,8 +542,14 @@ class _LoginWithState extends State<LoginWith> {
                             style: BorderStyle.solid),
                       ),
                     ),
+                    onChanged: (value) {
+                      _number = value;
+                    },
                     validator: (value) {
                       if (value.isEmpty) {
+                        return "* Required";
+                      }
+                      if (_number.isEmpty) {
                         return "* Required";
                       }
                       RegExp regex = new RegExp(numberpattern);

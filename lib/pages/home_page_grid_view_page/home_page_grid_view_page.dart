@@ -21,7 +21,7 @@ class _HomePageGridViewPageState extends State<HomePageGridViewPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -31,17 +31,16 @@ class _HomePageGridViewPageState extends State<HomePageGridViewPage> {
 
   Widget _buildPhone() {
     return SafeArea(
-      child: Scaffold(backgroundColor: Colors.grey.shade50,
-          body: SingleChildScrollView(
-              child: Column(children: [
-            Container(
-                margin: EdgeInsetsDirectional.only(top: 30),
-                padding: EdgeInsets.all(5),
-                width: MediaQuery.of(context).size.width,
-                height:
-                    MediaQuery.of(context).size.height - (kToolbarHeight + 50),
-                child: HomePageGridViewList(usersData: widget.usersData,)),
-          ]))),
+      child: Scaffold(
+          backgroundColor: Colors.grey.shade50,
+          body: Container(
+          padding: EdgeInsets.all(5),
+          width: MediaQuery.of(context).size.width,
+          height:
+              MediaQuery.of(context).size.height - (kToolbarHeight + 125),
+          child: HomePageGridViewList(
+            usersData: widget.usersData,
+          ))),
     );
   }
 

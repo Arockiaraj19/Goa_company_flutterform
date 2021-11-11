@@ -253,14 +253,16 @@ class _OtpPageState extends State<OtpPage> {
                       start: 35,
                     ),
               child: OtpTextField(
-                textStyle: TextStyle(fontWeight: FontWeight.bold),
+                textStyle:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 45.sp),
                 numberOfFields: 6,
                 autoFocus: false,
                 controller: _otpController,
                 // onSubmit: goVerify,
                 showFieldAsBox: true,
-                fieldWidth: onWeb ? _width / 18 : ScreenUtil().setWidth(100),
-                fieldHeight: onWeb ? 36 : ScreenUtil().setWidth(98),
+                fieldWidth: 100.r,
+                fieldHeight: 100.r,
+
                 focusedBorderColor: MainTheme.primaryColor,
                 enabledBorderColor: Colors.black,
                 borderRadius: BorderRadius.circular(10),
@@ -291,14 +293,14 @@ class _OtpPageState extends State<OtpPage> {
                       child: CircularProgressIndicator(),
                     )
                   : GradientButton(
-                      height: 40,
+                      height: 110.w,
+                      fontSize: 40.sp,
+                      width: 500.w,
                       name: loading ? "Logging In.." : "Log In",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
                       color: Colors.white,
-                      width: onWeb ? _width / 6 : ScreenUtil().setWidth(480),
                       fontWeight: FontWeight.w400,
-                      fontSize: 14,
                       isLoading: loading,
                       onPressed: () {
                         if (_otpController.text.length == 6) {

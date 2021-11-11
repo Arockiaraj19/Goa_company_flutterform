@@ -45,7 +45,7 @@ class _LookingForPageState extends State<LookingForPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 600) {
+      if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -75,13 +75,14 @@ class _LookingForPageState extends State<LookingForPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GradientButton(
-                      height: 40,
+                      height: 110.w,
+                      fontSize: 40.sp,
+                      width: 500.w,
                       name: loading ? "Saving.." : "Continue",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
                       isLoading: loading,
                       color: Colors.white,
-                      width: ScreenUtil().setWidth(400),
                       fontWeight: FontWeight.w600,
                       onPressed: () {
                         goToParterTypePage();

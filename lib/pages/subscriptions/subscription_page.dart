@@ -32,7 +32,9 @@ class _SubscriptionState extends State<Subscription> {
             title: Text(
               "Subscription",
               style: TextStyle(
-                  color: Color(0xff575757), fontWeight: FontWeight.w600),
+                  fontSize: 50.sp,
+                  color: Color(0xff575757),
+                  fontWeight: FontWeight.w600),
             ),
             actions: [
               // Icon(
@@ -71,8 +73,10 @@ class _SubscriptionState extends State<Subscription> {
                                   itemWidth: double.infinity,
                                   itemCount: data.subscriptionData.length,
                                   itemBuilder: (context, index) {
-                                    return SubscriptionCard(
-                                        data.subscriptionData[index], index);
+                                    return SingleChildScrollView(
+                                      child: SubscriptionCard(
+                                          data.subscriptionData[index], index),
+                                    );
                                   }))
                       : Center(
                           child: CircularProgressIndicator(),

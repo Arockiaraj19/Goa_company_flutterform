@@ -97,4 +97,14 @@ class Persentage {
     print(_persentage.toString());
     return _persentage;
   }
+
+  Future<int> interestPercentage(UserModel userdata, Responses data) async {
+    int persentage = 0;
+    await userdata.interests.forEach((element) {
+      if (data.interests.contains(element)) {
+        persentage += 1;
+      }
+    });
+    return persentage;
+  }
 }

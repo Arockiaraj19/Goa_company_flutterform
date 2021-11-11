@@ -64,7 +64,7 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            height: ScreenUtil().setHeight(60),
+                            height: ScreenUtil().setHeight(105),
                           ),
                           Container(
                               child: Text(
@@ -79,7 +79,7 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
                           //   style: _textStyleHeading,
                           // )),
                           SizedBox(
-                            height: ScreenUtil().setHeight(60),
+                            height: ScreenUtil().setHeight(15),
                           ),
                           Row(
                             children: [

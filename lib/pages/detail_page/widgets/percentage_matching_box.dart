@@ -3,6 +3,7 @@ import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class PercentageMatchingBox extends StatefulWidget {
@@ -40,8 +41,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                     start: 40,
                   ),
                   margin: EdgeInsetsDirectional.only(top: 20),
-                  height:
-                      widget.height ?? MediaQuery.of(context).size.height / 7,
+                  height: MediaQuery.of(context).size.height / 7,
                   width: widget.width ?? MediaQuery.of(context).size.width,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -110,8 +110,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                   ),
                   padding: EdgeInsets.all(10),
                   margin: EdgeInsetsDirectional.only(top: 20, bottom: 20),
-                  height:
-                      widget.height ?? MediaQuery.of(context).size.height / 7,
+                  height: 120.h,
                   width: widget.width ?? MediaQuery.of(context).size.width,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,7 +138,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
+                                                  fontSize: 50.sp,
                                                   fontFamily: "Nunito"),
                                             );
                                           } else {
@@ -150,7 +149,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
+                                                  fontSize: 55.sp,
                                                   fontFamily: "Nunito"),
                                             );
                                           }
@@ -161,8 +160,8 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                                 )),
                             Container(
                               color: Colors.transparent,
-                              height: 50,
-                              width: 50,
+                              height: 100.r,
+                              width: 150.r,
                             )
                           ],
                         )),
@@ -172,13 +171,13 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                               'Show me',
                               style: TextStyle(
                                   color: Colors.white70,
-                                  fontSize: 12,
+                                  fontSize: 35.sp,
                                   fontFamily: "Nunito"),
                             ),
                             Icon(
                               Icons.keyboard_arrow_right,
                               color: Colors.white70,
-                              size: 10,
+                              size: 35.sp,
                             ),
                           ],
                         )
@@ -187,8 +186,8 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                   top: -20,
                   right: 5,
                   child: Container(
-                      height: 100,
-                      width: 50,
+                      height: 120.h,
+                      width: 200.w,
                       child: Image.asset(
                         "assets/images/boy_walk.png",
                         fit: BoxFit.cover,

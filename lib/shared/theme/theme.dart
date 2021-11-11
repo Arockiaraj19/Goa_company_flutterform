@@ -117,11 +117,11 @@ class MainTheme {
     fontSize: 18,
   );
 
-  static const TextStyle subHeading = TextStyle(
+  static TextStyle subHeading = TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.w600,
     fontFamily: "OpenSans",
-    fontSize: 13,
+    fontSize: 35.sp,
   );
 
   static const TextStyle primaryContent = TextStyle(

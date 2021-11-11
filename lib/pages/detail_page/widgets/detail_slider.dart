@@ -1,5 +1,6 @@
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class DetailSlider extends StatefulWidget {
@@ -15,8 +16,8 @@ class _DetailSliderState extends State<DetailSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child:Container(
-        height: 258,
+      child: Container(
+        height: 250.h,
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(20),
         child: Swiper(

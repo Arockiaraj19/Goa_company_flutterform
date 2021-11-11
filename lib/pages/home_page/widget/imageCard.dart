@@ -16,18 +16,10 @@ class ImageCard extends StatefulWidget {
   final String image;
   final String name;
   final double rating;
-  final double cardHeight;
-  final double cardWidth;
+
   final EdgeInsetsGeometry cardMargin;
   ImageCard(
-      {Key key,
-      this.data,
-      this.cardHeight,
-      this.cardWidth,
-      this.cardMargin,
-      this.image,
-      this.name,
-      this.rating})
+      {Key key, this.data, this.cardMargin, this.image, this.name, this.rating})
       : super(key: key);
 
   @override
@@ -50,8 +42,6 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    var _height = MediaQuery.of(context).size.height - (kToolbarHeight);
-    var _width = MediaQuery.of(context).size.width - 30;
     return Container(
         // margin: EdgeInsetsDirectional.only(start: 5, end: 5),
         decoration: BoxDecoration(
@@ -62,8 +52,7 @@ class _ImageCardState extends State<ImageCard> {
         ),
         // height: 300,
         // width: 300,
-        height: widget.cardHeight ?? _height * 0.7,
-        width: widget.cardWidth ?? _width * 0.300,
+
         child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child:
@@ -159,7 +148,6 @@ class _ImageCardState extends State<ImageCard> {
                                 AsyncSnapshot<double> snapshot) {
                               if (snapshot.hasData) {
                                 return CircularPercentIndicator(
-                                  
                                     linearGradient:
                                         MainTheme.backgroundGradient,
                                     animation: true,
