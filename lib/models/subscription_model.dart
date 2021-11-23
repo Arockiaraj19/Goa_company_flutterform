@@ -65,7 +65,7 @@ class SubscriptionModel {
         price: map['price'],
         offerPrice: map['discount_price'],
         validity: map['validity'],
-        // currencyType: Currency.fromMap(map['currency_type']),
+        currencyType: Currency.fromMap(map['currency_type']),
         durationType: map['duration_type'],
         subscriptionNo: map['subscription_no'],
         createdAt: DateTime.parse(map['createdAt'].toString()).toLocal(),
@@ -84,6 +84,7 @@ class SubscriptionModel {
 class OptionDetail {
   String id;
   String title;
+
   OptionDetail({
     this.id,
     this.title,

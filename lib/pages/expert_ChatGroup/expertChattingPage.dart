@@ -2,17 +2,20 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chatmessage_model.dart';
+import 'package:dating_app/models/expertchatmessage_model.dart';
 import 'package:dating_app/models/game_request_model.dart';
 import 'package:dating_app/models/games.dart';
 import 'package:dating_app/models/question_model.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
+import 'package:dating_app/networks/expertChat_netword.dart';
 import 'package:dating_app/networks/games_network.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/user_network.dart';
 
 import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -31,40 +34,33 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:web_socket_channel/status.dart' as status;
 
-class ChattingPage extends StatefulWidget {
+class ExpertChattingPage extends StatefulWidget {
   final String groupid;
   final String id;
-  final String image;
   final String name;
   final bool onWeb;
   final double chatBoxWidth;
   final double floatingActionButtonWidth;
-  ChattingPage(
+  final int status;
+  final List<String> image;
+  ExpertChattingPage(
       {Key key,
       this.groupid,
       this.id,
-      this.image,
       this.name,
       this.onWeb = false,
       this.chatBoxWidth,
-      this.floatingActionButtonWidth})
+      this.floatingActionButtonWidth,
+      this.status,
+      this.image})
       : super(key: key);
 
   @override
-  _ChattingPageState createState() => _ChattingPageState();
+  _ExpertChattingPageState createState() => _ExpertChattingPageState();
 }
 
-class _ChattingPageState extends State<ChattingPage> {
+class _ExpertChattingPageState extends State<ExpertChattingPage> {
   TextEditingController _firstNameCtrl = TextEditingController();
-
-  String dropdownValue = null;
-
-  List<String> itemdate = [
-    "View profile",
-    "Block",
-    "Play",
-    "Meetup",
-  ];
 
   IO.Socket socket = IO.io(
       socketUrl,
@@ -85,20 +81,22 @@ class _ChattingPageState extends State<ChattingPage> {
       // print('connect' + data);
     });
     print("subscribe varuthaa");
-    context.read<ChatProvider>().getMessageData(widget.groupid);
+    print("group id correct a varuthuaaa");
+    print(widget.groupid);
+    context.read<ExpertChatProvider>().getMessageData(widget.groupid);
     get();
   }
 
   get() async {
     await createGroupEmit();
-    socket.on("group_${widget.groupid}", (data) {
+    socket.on("expert_group_${widget.groupid}", (data) {
       print(data);
       final result = new Map<String, dynamic>.from(data);
       print("what message i get");
       print(result);
-      ChatMessage chatdata = ChatMessage.fromMap(result);
+      ExpertChatMessage chatdata = ExpertChatMessage.fromMap(result);
       print(chatdata);
-      return context.read<ChatProvider>().addsocketmessage(chatdata);
+      return context.read<ExpertChatProvider>().addsocketmessage(chatdata);
     });
   }
 
@@ -113,7 +111,7 @@ class _ChattingPageState extends State<ChattingPage> {
 
   _sentmessage(List<String> image) async {
     try {
-      ChatNetwork().createMessage(
+      ExpertNetwork().createMessage(
           widget.id, _message.text.toString(), widget.groupid, image);
       _message.text = "";
       selectedUserAvatar = null;
@@ -124,20 +122,6 @@ class _ChattingPageState extends State<ChattingPage> {
 
   TextEditingController _message = TextEditingController();
 
-  blockuser() async {
-    String userid = await getUserId();
-    print("you clicked block user");
-    try {
-      bool result = await ChatNetwork()
-          .blockuser(userid, widget.id, widget.groupid, true);
-      if (result) {
-        showtoast("You blocked successfully");
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void dispose() {
     socket.emit("disconnect", "group_${widget.groupid}");
@@ -147,27 +131,6 @@ class _ChattingPageState extends State<ChattingPage> {
 
   String convertime(now) {
     return DateFormat('KK:mm:a').format(now);
-  }
-
-  gotogame(user1, user2, user1name) async {
-    try {
-      List<GamesModel> games = await Games().getallgames();
-      GameRequest gameRequest =
-          await Games().sendgamerequest(games[0].id, widget.id);
-      List<Getquestion> questions =
-          await Games().getquestion(games[0].id, gameRequest.id);
-      Routes.sailor(Routes.quizGamePage, params: {
-        "questions": questions,
-        "playid": gameRequest.id,
-        "user1": user1,
-        "user2": user2,
-        "istrue": true,
-        "user1name": user1name,
-        "user2name": widget.name,
-      });
-    } catch (e) {
-      print(e);
-    }
   }
 
   @override
@@ -199,11 +162,12 @@ class _ChattingPageState extends State<ChattingPage> {
                   child: Row(
                 children: [
                   Container(
-                      child: CircleAvatar(
-                    backgroundImage: widget.image == null
-                        ? AssetImage("assets/images/placeholder.png")
-                        : NetworkImage(widget.image),
-                  )),
+                      child: widget.image.length == 0
+                          ? CircleAvatar(
+                              backgroundImage:
+                                  AssetImage("assets/images/placeholder.png"))
+                          : CircleAvatar(
+                              backgroundImage: NetworkImage(widget.image[0]))),
                   Container(
                       margin: EdgeInsetsDirectional.only(start: 10),
                       child: widget.name == null
@@ -222,125 +186,20 @@ class _ChattingPageState extends State<ChattingPage> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                   fontFamily: "Nunito"),
-                            ))
+                            )),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  if (widget.status == 1)
+                    Container(
+                      height: 7,
+                      width: 7,
+                      decoration: BoxDecoration(
+                          color: Colors.green, shape: BoxShape.circle),
+                    )
                 ],
               )),
-              actions: [
-                FutureBuilder(
-                  future: Games().checkrequest(widget.id),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      print("inga snapshot data enna varuthu");
-                      print(snapshot.data.questions);
-                      return Consumer<HomeProvider>(
-                          builder: (context, data, child) {
-                        return InkWell(
-                          onTap: () {
-                            Routes.sailor(Routes.quizGamePage, params: {
-                              "questions": snapshot.data.questions,
-                              "playid": snapshot.data.playid,
-                              "user1": data.userData.identificationImage,
-                              "user2": widget.image,
-                              "istrue": false,
-                              "user1name": data.userData.firstName,
-                              "user2name": widget.name,
-                            });
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 25,
-                            width: 25,
-                            child: Stack(
-                              children: [
-                                Container(
-                                    child: Image.asset(
-                                  'assets/images/clock.png',
-                                  width: 25,
-                                  height: 25,
-                                )),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                      height: 7,
-                                      width: 7,
-                                      decoration: BoxDecoration(
-                                          gradient:
-                                              MainTheme.backgroundGradient,
-                                          shape: BoxShape.circle)),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      });
-                    } else {
-                      return Consumer<HomeProvider>(
-                        builder: (context, data, child) {
-                          return InkWell(
-                            onTap: () {
-                              gotogame(data.userData.identificationImage,
-                                  widget.image, data.userData.firstName);
-                            },
-                            child: Container(
-                                child: Image.asset(
-                              'assets/images/clock.png',
-                              width: 25,
-                              height: 25,
-                            )),
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
-                Consumer<HomeProvider>(builder: (context, data, child) {
-                  return Container(
-                      padding: EdgeInsetsDirectional.only(end: 10),
-                      child: PopupMenuButton<String>(
-                        initialValue: dropdownValue,
-                        icon: Container(
-                            child: Image.asset(
-                          'assets/images/3dot.png',
-                          width: 25,
-                          height: 25,
-                        )),
-                        onSelected: (String result) async {
-                          setState(() {
-                            dropdownValue = result;
-                          });
-                          if (result == itemdate[0]) {
-                            try {
-                              await UserNetwork()
-                                  .getMatchedprofiledata(widget.id);
-                            } catch (e) {
-                              print(e);
-                            }
-                          }
-                          if (result == itemdate[1]) {
-                            blockuser();
-                          }
-                          if (result == itemdate[2]) {
-                            gotogame(data.userData.identificationImage,
-                                widget.image, data.userData.firstName);
-                          }
-                        },
-                        itemBuilder: (BuildContext context) => itemdate
-                            .map<PopupMenuEntry<String>>((String value) {
-                          return PopupMenuItem<String>(
-                            height: 45,
-                            padding: EdgeInsets.only(left: 20, right: 15),
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w400),
-                            ),
-                          );
-                        }).toList(),
-                      ));
-                })
-              ],
+              actions: [],
             ),
       body: WillPopScope(
         onWillPop: () {
@@ -355,37 +214,40 @@ class _ChattingPageState extends State<ChattingPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Consumer<ChatProvider>(
+                child: Consumer<ExpertChatProvider>(
                   builder: (context, data, child) {
-                    return data.chatState == ChatState.Error
+                    return data.chatState == ExpertChatState.Error
                         ? ErrorCard(
                             text: data.errorText,
                             ontab: () => context
-                                .read<ChatProvider>()
+                                .read<ExpertChatProvider>()
                                 .getMessageData(widget.groupid))
-                        : data.chatState == ChatState.Loaded
+                        : data.chatState == ExpertChatState.Loaded
                             ? data.chatMessageData.length == 0
                                 ? Container()
-                                : StickyGroupedListView<ChatMessage, DateTime>(
+                                : StickyGroupedListView<ExpertChatMessage,
+                                    DateTime>(
                                     addAutomaticKeepAlives: true,
                                     reverse: true,
                                     addSemanticIndexes: true,
                                     elements: data.chatMessageData,
                                     order: StickyGroupedListOrder.DESC,
-                                    groupBy: (ChatMessage element) => DateTime(
-                                        element.createdAt.year,
-                                        element.createdAt.month,
-                                        element.createdAt.day),
+                                    groupBy: (ExpertChatMessage element) =>
+                                        DateTime(
+                                            element.createdAt.year,
+                                            element.createdAt.month,
+                                            element.createdAt.day),
                                     groupComparator:
                                         (DateTime value1, DateTime value2) =>
                                             value1.compareTo(value2),
-                                    itemComparator: (ChatMessage element1,
-                                            ChatMessage element2) =>
+                                    itemComparator: (ExpertChatMessage element1,
+                                            ExpertChatMessage element2) =>
                                         element1.createdAt
                                             .compareTo(element2.createdAt),
                                     floatingHeader: false,
                                     groupSeparatorBuilder:
-                                        (ChatMessage element) => Container(
+                                        (ExpertChatMessage element) =>
+                                            Container(
                                       color: Colors.white,
                                       height: 50,
                                       child: Align(
@@ -427,11 +289,10 @@ class _ChattingPageState extends State<ChattingPage> {
                                         ),
                                       ),
                                     ),
-                                    itemBuilder: (_, ChatMessage element) {
+                                    itemBuilder:
+                                        (_, ExpertChatMessage element) {
                                       return Align(
-                                        alignment: element.receiverDetails.first
-                                                    .userId ==
-                                                widget.id
+                                        alignment: element.userType == "2"
                                             ? Alignment.centerRight
                                             : Alignment.centerLeft,
                                         child: Padding(
@@ -447,122 +308,98 @@ class _ChattingPageState extends State<ChattingPage> {
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(5),
-                                                  color:
-                                                      element.receiverDetails[0]
-                                                                  .userId ==
-                                                              widget.id
-                                                          ? MainTheme
-                                                              .chatPageColor
-                                                          : Colors.white),
+                                                  color: element.userType == "2"
+                                                      ? MainTheme.chatPageColor
+                                                      : Colors.white),
                                               child: Padding(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 50.w,
                                                     vertical: 15.w,
                                                   ),
-                                                  child:
-                                                      element.images.length == 0
-                                                          ? Column(
-                                                              crossAxisAlignment: element
-                                                                          .receiverDetails[
-                                                                              0]
-                                                                          .userId ==
-                                                                      widget.id
-                                                                  ? CrossAxisAlignment
-                                                                      .end
-                                                                  : CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  element
-                                                                      .message,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: element.receiverDetails[0].userId ==
-                                                                            widget
-                                                                                .id
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Color(
-                                                                            0xff4A4A4A),
-                                                                    fontSize:
-                                                                        40.sp,
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  convertime(element
-                                                                      .createdAt),
-                                                                  textAlign: element
-                                                                              .receiverDetails[
-                                                                                  0]
-                                                                              .userId ==
-                                                                          widget
-                                                                              .id
-                                                                      ? TextAlign
-                                                                          .right
-                                                                      : TextAlign
-                                                                          .left,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: element.receiverDetails[0].userId ==
-                                                                            widget
-                                                                                .id
-                                                                        ? Colors
-                                                                            .white
-                                                                        : MainTheme
-                                                                            .chatPageColor,
-                                                                    fontSize:
-                                                                        25.sp,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : Column(
-                                                              crossAxisAlignment: element
-                                                                          .receiverDetails[
-                                                                              0]
-                                                                          .userId ==
-                                                                      widget.id
-                                                                  ? CrossAxisAlignment
-                                                                      .end
-                                                                  : CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                CachedNetworkImage(
-                                                                  height: 200.h,
-                                                                  width: 500.w,
-                                                                  imageUrl: element
-                                                                      .images[0],
-                                                                  fit: BoxFit
-                                                                      .fill,
-                                                                ),
-                                                                Text(
-                                                                  convertime(element
-                                                                      .createdAt),
-                                                                  textAlign: element
-                                                                              .receiverDetails[
-                                                                                  0]
-                                                                              .userId ==
-                                                                          widget
-                                                                              .id
-                                                                      ? TextAlign
-                                                                          .right
-                                                                      : TextAlign
-                                                                          .left,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: element.receiverDetails[0].userId ==
-                                                                            widget
-                                                                                .id
-                                                                        ? Colors
-                                                                            .white
-                                                                        : MainTheme
-                                                                            .chatPageColor,
-                                                                    fontSize:
-                                                                        25.sp,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )),
+                                                  child: element
+                                                              .images.length ==
+                                                          0
+                                                      ? Column(
+                                                          crossAxisAlignment: element
+                                                                      .userType ==
+                                                                  "2"
+                                                              ? CrossAxisAlignment
+                                                                  .end
+                                                              : CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              element.message,
+                                                              style: TextStyle(
+                                                                color: element.userType ==
+                                                                        "2"
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Color(
+                                                                        0xff4A4A4A),
+                                                                fontSize: 40.sp,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              convertime(element
+                                                                  .createdAt),
+                                                              textAlign: element
+                                                                          .userType ==
+                                                                      "2"
+                                                                  ? TextAlign
+                                                                      .right
+                                                                  : TextAlign
+                                                                      .left,
+                                                              style: TextStyle(
+                                                                color: element.userType ==
+                                                                        "2"
+                                                                    ? Colors
+                                                                        .white
+                                                                    : MainTheme
+                                                                        .chatPageColor,
+                                                                fontSize: 25.sp,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Column(
+                                                          crossAxisAlignment: element
+                                                                      .userType ==
+                                                                  "2"
+                                                              ? CrossAxisAlignment
+                                                                  .end
+                                                              : CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            CachedNetworkImage(
+                                                              height: 200.h,
+                                                              width: 500.w,
+                                                              imageUrl: element
+                                                                  .images[0],
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                            Text(
+                                                              convertime(element
+                                                                  .createdAt),
+                                                              textAlign: element
+                                                                          .userType ==
+                                                                      "2"
+                                                                  ? TextAlign
+                                                                      .right
+                                                                  : TextAlign
+                                                                      .left,
+                                                              style: TextStyle(
+                                                                color: element.userType ==
+                                                                        "2"
+                                                                    ? Colors
+                                                                        .white
+                                                                    : MainTheme
+                                                                        .chatPageColor,
+                                                                fontSize: 25.sp,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )),
                                             ),
                                           ),
                                         ),

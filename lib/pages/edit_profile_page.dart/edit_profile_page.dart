@@ -202,6 +202,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  int getItemCountPerRow(BuildContext context) {
+    double minTileWidth = 100; //in your case
+    double availableWidth = MediaQuery.of(context).size.width;
+
+    int i = availableWidth ~/ minTileWidth;
+    return i;
+  }
+
   Widget _buildPhone() {
     var _leadingHeading = TextStyle(
         color: MainTheme.mainHeadingColors,
@@ -471,7 +479,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           children: [
                             Container(
                                 margin: EdgeInsetsDirectional.only(
-                                    start: 10, top: 5, bottom: 5),
+                                    start: 20, top: 5, bottom: 5),
                                 child: Text(
                                   "Gender",
                                   style: _textForsubHeading,
@@ -495,31 +503,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   print(_selectedGenderid);
                                   print(genderdetail);
                                 }
-                                return GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisSpacing: 0.0,
-                                            mainAxisSpacing: 0.0,
-                                            crossAxisCount: 3,
-                                            childAspectRatio: 2.8),
-                                    itemCount: genderdata.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return GenderEditCard(
-                                        data: genderdata[index],
-                                        id: _selectedGenderid,
-                                        onTap: () async {
-                                          setState(() {
-                                            _selectedGenderid =
-                                                genderdata[index].id;
-                                            genderdetail = genderdata[index];
-                                          });
-                                          time++;
-                                        },
-                                      );
-                                    });
+                                return Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                      start: 10, end: 10),
+                                  child: GridView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisSpacing: 0.0,
+                                              mainAxisSpacing: 0.0,
+                                              crossAxisCount:
+                                                  getItemCountPerRow(context),
+                                              childAspectRatio: 2.8),
+                                      itemCount: genderdata.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return GenderEditCard(
+                                          data: genderdata[index],
+                                          id: _selectedGenderid,
+                                          onTap: () async {
+                                            setState(() {
+                                              _selectedGenderid =
+                                                  genderdata[index].id;
+                                              genderdetail = genderdata[index];
+                                            });
+                                            time++;
+                                          },
+                                        );
+                                      }),
+                                );
                               } else {
                                 return Center(
                                   child: CircularProgressIndicator(),
@@ -558,7 +571,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisSpacing: 0.0,
                                       mainAxisSpacing: 0.0,
-                                      crossAxisCount: 3,
+                                      crossAxisCount:
+                                          getItemCountPerRow(context),
                                       childAspectRatio: 2.8),
                               itemCount: snapshot.data.length,
                               itemBuilder: (BuildContext context, int index) {
@@ -628,7 +642,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisSpacing: 0.0,
                                       mainAxisSpacing: 0.0,
-                                      crossAxisCount: 3,
+                                      crossAxisCount:
+                                          getItemCountPerRow(context),
                                       childAspectRatio: 2.8),
                               itemCount: snapshot.data.length,
                               itemBuilder: (BuildContext context, int index) {
@@ -769,8 +784,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       try {
                         result = selectedUserPic == null
                             ? widget.userdata.identificationImage
-                            : await UploadImage()
-                                .uploadImage(selectedUserPic.path);
+                            : await UploadImage().uploadImage(
+                                selectedUserPic.path, "identification");
+                        if (selectedUserPic != null) {
+                          await UploadImage().deleteImage(
+                              [widget.userdata.identificationImage],
+                              [result],
+                              "identification");
+                        }
                       } on DioError catch (e) {
                         setState(() {
                           loading = false;
@@ -833,14 +854,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
+  List<String> deletedImage = [];
   goToLookingForPagePage() async {
     try {
       var network = UploadImage();
       print("kl1");
       for (int i = 0; i < 6; i++) {
         if (selectedalbumAvatar[i] != null) {
-          String result =
-              await network.uploadImage(selectedalbumAvatar[i].path);
+          String result = await network.uploadImage(
+              selectedalbumAvatar[i].path, "user_gallery");
           print("output velia varuthaaa");
           print(result);
           uploadedImages.add(result);
@@ -849,6 +871,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
             uploadedImages.add(alreadyimage[i]);
           }
         }
+      }
+      if (selectedalbumAvatar.any((element) => element != null)) {
+        // await uploadedImages.forEach((element) {
+        //   if (!widget.userdata.profileImage.contains(element)) {
+        //     deletedImage.add(element);
+        //   }
+        // });
+
+        print("user gallery deleted image call aakuthaa");
+        await UploadImage().deleteImage(
+            widget.userdata.profileImage, uploadedImages, "user_gallery");
       }
     } catch (e) {
       throw e;

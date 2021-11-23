@@ -12,8 +12,9 @@ onboardingCheck(UserModel userData) {
     Routes.sailor(Routes.addAlbumPage);
   } else if (userData.sexualOrientation == null) {
     Routes.sailor(Routes.lookingForPage);
-  } else if (userData.partnerType == null) {
-    Routes.sailor(Routes.partnerTypePage);
+  } else if (userData.partnerType == null ||
+      userData.verificationImage == null) {
+    Routes.sailor(Routes.partnerTypePage, params: {"userData": userData});
   } else {
     Routes.sailor(Routes.findMatchPage);
   }

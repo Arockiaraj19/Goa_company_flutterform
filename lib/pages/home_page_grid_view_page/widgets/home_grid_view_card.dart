@@ -262,7 +262,7 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
             ),
             Container(
                 width: double.infinity,
-                height: 60.h,
+                height: 50,
                 decoration: BoxDecoration(
                   border: Border.all(width: 0.3, color: Colors.grey.shade300),
                   color: Colors.white,

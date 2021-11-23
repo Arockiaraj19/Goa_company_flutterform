@@ -99,7 +99,7 @@ class _MatchesCardState extends State<MatchesCard> {
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 50.sp,
+                                          fontSize: 45.sp,
                                           fontFamily: "Nunito"),
                                     );
                                   } else {
@@ -110,7 +110,7 @@ class _MatchesCardState extends State<MatchesCard> {
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 14,
+                                          fontSize: 45.sp,
                                           fontFamily: "Nunito"),
                                     );
                                   }
@@ -203,7 +203,7 @@ class _MatchesCardState extends State<MatchesCard> {
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 50.sp,
+                                      fontSize: 45.sp,
                                       fontFamily: "Nunito"),
                                 );
                               } else {

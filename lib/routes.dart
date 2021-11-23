@@ -10,8 +10,11 @@ import 'package:dating_app/pages/album_view_page/album_view_page.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
 import 'package:dating_app/pages/comment_page/comment_page.dart';
 import 'package:dating_app/pages/create_profile_page/Create_profile_page.dart';
+import 'package:dating_app/pages/crypto.dart';
 import 'package:dating_app/pages/detail_page/detail_page.dart';
 import 'package:dating_app/pages/edit_profile_page.dart/edit_profile_page.dart';
+import 'package:dating_app/pages/expert_ChatGroup/expertChatGroup.dart';
+import 'package:dating_app/pages/expert_ChatGroup/expertChattingPage.dart';
 import 'package:dating_app/pages/find_match_page/find_match_page.dart';
 import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/pages/home_page/home_page.dart';
@@ -86,7 +89,9 @@ class Routes {
   static String albumview = "albumview";
   static String notification = "notification";
   static String aboutus = "aboutus";
-
+  static String crypto = "crypto";
+  static String expertGroup = "expertGroup";
+  static String expertchat = "expertchat";
   static final sailor = Sailor();
 
   static void createRoutes() {
@@ -430,9 +435,11 @@ class Routes {
 
       SailorRoute(
           name: partnerTypePage,
+          params: [SailorParam<UserModel>(name: 'userData')],
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
-            return PartnerTypePage();
+            UserModel userData = Sailor.param<UserModel>(context, "userData");
+            return PartnerTypePage(userData: userData);
           }),
 
       SailorRoute(
@@ -454,8 +461,10 @@ class Routes {
       SailorRoute(
           name: subscription,
           defaultTransitions: [SailorTransition.fade_in],
+          params: [SailorParam<int>(name: 'swiperIndex')],
           builder: (context, args, params) {
-            return Subscription();
+            int swiperIndex = Sailor.param<int>(context, "swiperIndex");
+            return Subscription(swiperIndex: swiperIndex);
           }),
       SailorRoute(
           name: payment,
@@ -502,6 +511,55 @@ class Routes {
           defaultTransitions: [SailorTransition.fade_in],
           builder: (context, args, params) {
             return AboutUs();
+          }),
+
+      SailorRoute(
+          name: crypto,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return Crypto();
+          }),
+      SailorRoute(
+          name: expertGroup,
+          defaultTransitions: [SailorTransition.fade_in],
+          builder: (context, args, params) {
+            return ExpertGroup();
+          }),
+
+      SailorRoute(
+          name: expertchat,
+          defaultTransitions: [SailorTransition.fade_in],
+          params: [
+            SailorParam<String>(
+              name: 'groupid',
+            ),
+            SailorParam<String>(
+              name: 'id',
+            ),
+            SailorParam<String>(
+              name: 'name',
+            ),
+            SailorParam<int>(
+              name: 'status',
+            ),
+            SailorParam<List<String>>(
+              name: 'image',
+            ),
+          ],
+          builder: (context, args, params) {
+            String groupid = Sailor.param<String>(context, "groupid");
+            String id = Sailor.param<String>(context, "id");
+
+            String name = Sailor.param<String>(context, "name");
+            int status = Sailor.param<int>(context, "status");
+            List<String> image = Sailor.param<List<String>>(context, "image");
+            return ExpertChattingPage(
+              groupid: groupid,
+              id: id,
+              name: name,
+              status: status,
+              image: image,
+            );
           }),
     ]);
   }

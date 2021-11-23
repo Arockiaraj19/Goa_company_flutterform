@@ -6,6 +6,7 @@ import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
     _tabController =
         TabController(length: 2, vsync: this, initialIndex: widget.index);
     context.read<MatchProvider>().getMatchLikeData();
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(milliseconds: 500), () {
       _checkSub();
     });
   }
@@ -52,12 +53,18 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        // isDismissible: false,
-        // enableDrag: false,
+        isDismissible: false,
+        enableDrag: false,
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         builder: (BuildContext context) {
-          return BottomsheetWidget();
+          return WillPopScope(
+              onWillPop: () async {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                return true;
+              },
+              child: BottomsheetWidget());
         });
   }
 
@@ -140,6 +147,8 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
                   matchList: data.matchListData,
                 )),
               ]);
+        } else {
+          return ErrorCard(text: data.errorText, ontab: () {});
         }
       }),
     ));

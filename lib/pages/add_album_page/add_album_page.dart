@@ -200,7 +200,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
       print("kl1");
       for (int i = 0; i < 6; i++) {
         if (selectedUserAvatar[i] != null) {
-          String result = await network.uploadImage(selectedUserAvatar[i].path);
+          String result = await network.uploadImage(selectedUserAvatar[i].path,"user_gallery");
           print("output velia varuthaaa");
           print(result);
           uploadedImages.add(result);

@@ -10,6 +10,9 @@ import 'package:provider/src/provider.dart';
 import 'subscription_Card.dart';
 
 class Subscription extends StatefulWidget {
+  final int swiperIndex;
+  Subscription({this.swiperIndex});
+
   @override
   State<Subscription> createState() => _SubscriptionState();
 }
@@ -63,6 +66,9 @@ class _SubscriptionState extends State<Subscription> {
                               width: double.infinity,
                               height: double.infinity,
                               child: Swiper(
+                                  index: widget.swiperIndex == null
+                                      ? 0
+                                      : widget.swiperIndex,
                                   scrollDirection: Axis.horizontal,
                                   controller: _controller,
                                   viewportFraction: 0.85,

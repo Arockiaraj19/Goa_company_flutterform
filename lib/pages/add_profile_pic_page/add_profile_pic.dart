@@ -158,7 +158,7 @@ class _AddProfilePicState extends State<AddProfilePic> {
     var network = UploadImage();
     var network1 = UserNetwork();
     try {
-      String result = await network.uploadImage(image.path);
+      String result = await network.uploadImage(image.path,"identification");
       var userData = {"identification_image": result};
       UserModel result1 = await network1.patchUserData(userData);
       result1 != null ? onboardingCheck(result1) : null;

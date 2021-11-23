@@ -174,7 +174,7 @@ class _GenderEditCardState extends State<GenderEditCard> {
             child: Container(
                 child: Text(widget.data.title,
                     style: TextStyle(
-                        fontSize: 40.sp,
+                        fontSize: 12,
                         color: widget.id != widget.data.id
                             ? Color.fromRGBO(17, 17, 17, 0.48)
                             : MainTheme.primaryColor))),

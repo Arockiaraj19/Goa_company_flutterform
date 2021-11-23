@@ -3,6 +3,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/providers/blind_provider.dart';
 import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
@@ -87,17 +88,17 @@ Future<void> main() async {
 
   runApp(
     DevicePreview(
-      enabled: true,
+      enabled: false,
       builder: (context) => MyApp(), // Wrap your app
     ),
   );
 }
 
 onselectnotication(String payload) async {
-  print("page 1");
   var data = json.decode(payload);
   print(data);
   if (data["type"] == "1") {
+    print("page 1");
     Routes.sailor(
       Routes.chattingPage,
       params: {
@@ -128,6 +129,16 @@ onselectnotication(String payload) async {
       "istrue": false,
       "user1name": data["user2_first_name"],
       "user2name": data["user1_first_name"],
+    });
+  } else if (data["type"] == "4") {
+    print("four th step kku varuthaa");
+    print(data);
+    Routes.sailor(Routes.expertchat, params: {
+      "groupid": data["group_id"],
+      "id": data["sender_id"],
+      "name": data["first_name"],
+      "status": int.parse(data["online_status"]),
+      "image": List<String>.from([data["identification_image"].toString()]),
     });
   } else {
     print("third scenario");
@@ -294,15 +305,16 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => NotificationProvider()),
           ChangeNotifierProvider(create: (context) => SubscriptionProvider()),
           ChangeNotifierProvider(create: (context) => RefProvider()),
+          ChangeNotifierProvider(create: (context) => ExpertChatProvider()),
         ],
         child: ScreenUtilInit(
             designSize: Size(1000, 690),
             builder: () => MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: 'Sparks',
-                  locale: DevicePreview.locale(context), // Add the locale here
-                  builder: DevicePreview.appBuilder, // Add the builder here
-                  // builder: BotToastInit(),
+                  // locale: DevicePreview.locale(context), // Add the locale here
+                  // builder: DevicePreview.appBuilder, // Add the builder here
+                  builder: BotToastInit(),
                   navigatorObservers: [BotToastNavigatorObserver()],
                   navigatorKey: Routes.sailor.navigatorKey,
                   onGenerateRoute: Routes.sailor.generator(),

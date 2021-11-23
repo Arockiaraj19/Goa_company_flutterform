@@ -48,7 +48,10 @@ class BottomsheetWidget extends StatelessWidget {
                                     watch.subscriptionData.length,
                                     (index) => InkWell(
                                       onTap: () {
-                                        Routes.sailor(Routes.subscription);
+                                        Routes.sailor(Routes.subscription,
+                                            params: {
+                                              "swiperIndex": index,
+                                            });
                                       },
                                       child: Padding(
                                         padding: EdgeInsets.symmetric(
@@ -99,7 +102,9 @@ class BottomsheetWidget extends StatelessWidget {
                                                       .subscriptionType ==
                                                   "Payment")
                                                 Text(
-                                                  "\$" +
+                                                  watch.subscriptionData[index]
+                                                          .currencyType.symbol
+                                                          .toString() +
                                                       watch
                                                           .subscriptionData[
                                                               index]
@@ -139,6 +144,56 @@ class BottomsheetWidget extends StatelessWidget {
                                                               FontWeight.w800),
                                                     ),
                                                   ],
+                                                ),
+                                              if (watch.subscriptionData[index]
+                                                      .durationType ==
+                                                  2)
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 8, 0),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: Text(
+                                                      watch
+                                                              .subscriptionData[
+                                                                  index]
+                                                              .validity
+                                                              .toString() +
+                                                          " " +
+                                                          "days",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 35.sp,
+                                                          fontWeight:
+                                                              FontWeight.w800),
+                                                    ),
+                                                  ),
+                                                ),
+                                              if (watch.subscriptionData[index]
+                                                      .durationType ==
+                                                  1)
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 8, 0),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: Text(
+                                                      watch
+                                                              .subscriptionData[
+                                                                  index]
+                                                              .validity
+                                                              .toString() +
+                                                          " " +
+                                                          "years",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 35.sp,
+                                                          fontWeight:
+                                                              FontWeight.w800),
+                                                    ),
+                                                  ),
                                                 ),
                                               SizedBox(
                                                 height: 5.h,

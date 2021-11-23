@@ -16,7 +16,7 @@ import 'client/apiClient.dart';
 import 'client/api_list.dart';
 
 class UploadImage {
-  Future uploadImage(img64) async {
+  Future uploadImage(img64, String type) async {
     Response response;
     try {
       final _dio = apiClient();
@@ -26,7 +26,7 @@ class UploadImage {
         response = await value.get(
           url_image_upload,
           queryParameters: {
-            "directory": "user_gallery",
+            "directory": type,
             "filename": "IMG_${id}_${DateTime.now().millisecond}.jpg",
             "mimetype": "image/jpeg",
           },
@@ -63,6 +63,31 @@ class UploadImage {
       }
 
       return result;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<bool> deleteImage(
+      List<String> deleteImage, List<String> existingPath, String type) async {
+    print("delete image api call aakutha");
+    Response response;
+    try {
+      final _dio = apiClient();
+      String userId = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.delete("/user/images/", data: {
+          "url": deleteImage,
+          "directory": type,
+          "user": userId,
+          "existing_paths": existingPath
+        });
+
+        if (response.statusCode == 200) {
+          return true;
+        }
+      });
+      return data;
     } catch (e) {
       throw e;
     }

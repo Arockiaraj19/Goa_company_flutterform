@@ -53,18 +53,20 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     FCM().initPushNotification();
-    if (context.read<SubscriptionProvider>().plan == null) {
-      context.read<SubscriptionProvider>().getprofilecount();
-    }
-    if (context.read<HomeProvider>().userData.chatCountUpdate != null) {
-      Duration difference = DateTime.now()
-          .difference(context.read<HomeProvider>().userData.chatCountUpdate);
-      print("difference in days");
-      print(difference.inDays);
-      if (difference.inDays >= 1) {
-        callCountUpdate();
+    Future.delayed(Duration(milliseconds: 500), () {
+      if (context.read<SubscriptionProvider>().plan == null) {
+        context.read<SubscriptionProvider>().getprofilecount();
       }
-    }
+      if (context.read<HomeProvider>().userData.chatCountUpdate != null) {
+        Duration difference = DateTime.now()
+            .difference(context.read<HomeProvider>().userData.chatCountUpdate);
+        print("difference in days");
+        print(difference.inDays);
+        if (difference.inDays >= 1) {
+          callCountUpdate();
+        }
+      }
+    });
   }
 
   callCountUpdate() async {
@@ -140,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                                     data.notificationData.length.toString(),
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 30.sp,
+                                      fontSize: 10,
                                     ),
                                   )),
                             )

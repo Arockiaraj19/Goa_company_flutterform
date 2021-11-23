@@ -42,6 +42,7 @@ class UserModel {
   bool isVerified;
   int subCount;
   DateTime chatCountUpdate;
+  String verificationImage;
 
   UserModel({
     this.id,
@@ -83,6 +84,7 @@ class UserModel {
     this.isVerified,
     this.subCount,
     this.chatCountUpdate,
+    this.verificationImage,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -123,7 +125,7 @@ class UserModel {
     lastName = json['last_name'];
     sexualOrientation =
         json['sexual_orientation'] != null ? json['sexual_orientation'] : null;
-    partnerType = json['partner_type'];
+    partnerType = json['partner_type'] != null ? json['partner_type'] : null;
     identificationImage = json['identification_image'];
     onboardDetailsStatus = json['onboard_details_status'];
     userReferralCode = json['user_referral_code'];
@@ -138,6 +140,7 @@ class UserModel {
     subCount = json["profile_visit_count"];
     chatCountUpdate =
         DateTime.parse(json['chat_count_update'].toString()).toLocal();
+    verificationImage = json['verification_image'];
   }
 
   Map<String, dynamic> toJson() {

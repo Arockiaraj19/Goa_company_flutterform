@@ -6,8 +6,17 @@ class SocialMediaBox extends StatefulWidget {
   final String image;
   final double fontSize;
   final TextStyle style;
+  final String checkname;
+  final String data;
 
-  SocialMediaBox({Key key, this.image, this.name, this.fontSize, this.style})
+  SocialMediaBox(
+      {Key key,
+      this.image,
+      this.name,
+      this.fontSize,
+      this.style,
+      this.checkname,
+      this.data})
       : super(key: key);
 
   @override
@@ -33,7 +42,10 @@ class _SocialMediaBoxState extends State<SocialMediaBox> {
               widget.name,
               style: widget.style ??
                   TextStyle(
-                      color: Colors.black, fontSize: 12, fontFamily: "Nunito"),
+                      color:
+                          widget.data == null ? Colors.grey[300] : Colors.black,
+                      fontSize: 12,
+                      fontFamily: "Nunito"),
             )),
       ],
     ));

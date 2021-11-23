@@ -7,7 +7,13 @@ class InterestBox extends StatefulWidget {
   final Color fillColor;
   final String title;
   final Function onTap;
-  InterestBox({Key key, this.fontSize, this.color, this.onTap, this.title, this.fillColor})
+  InterestBox(
+      {Key key,
+      this.fontSize,
+      this.color,
+      this.onTap,
+      this.title,
+      this.fillColor})
       : super(key: key);
 
   @override
@@ -20,7 +26,6 @@ class _InterestBoxState extends State<InterestBox> {
     return InkWell(
         onTap: widget.onTap,
         child: Container(
-            // width: MediaQuery.of(context).size.width - 30 * 0.3,
             height: 30,
             margin: EdgeInsets.all(5),
             decoration: BoxDecoration(
@@ -29,7 +34,8 @@ class _InterestBoxState extends State<InterestBox> {
                 BoxShadow(color: Colors.grey, blurRadius: 1.0)
               ],
               borderRadius: BorderRadius.circular(5),
-              border: Border.all(width: 0.6, color: widget.color ?? Colors.white),
+              border:
+                  Border.all(width: 0.6, color: widget.color ?? Colors.white),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +49,7 @@ class _InterestBoxState extends State<InterestBox> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: widget.fontSize ?? ScreenUtil().setSp(9),
+                      fontSize: 12,
                       fontFamily: "OpenSans"),
                 ))
               ],

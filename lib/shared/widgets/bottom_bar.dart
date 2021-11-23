@@ -43,7 +43,7 @@ class _BottomTabBar extends State<BottomTabBar> {
         final textcolor =
             isActive ? MainTheme.primaryColor : Colors.transparent;
         return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FittedBox(
               child: Icon(

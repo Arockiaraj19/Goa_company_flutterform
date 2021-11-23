@@ -66,6 +66,14 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
     });
   }
 
+  int getItemCountPerRow(BuildContext context) {
+    double minTileWidth = 100; //in your case
+    double availableWidth = MediaQuery.of(context).size.width;
+
+    int i = availableWidth ~/ minTileWidth;
+    return i;
+  }
+
   Widget _buildPhone() {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
@@ -175,7 +183,8 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisSpacing: 0.0,
                                       mainAxisSpacing: 0.0,
-                                      crossAxisCount: 3,
+                                      crossAxisCount:
+                                          getItemCountPerRow(context),
                                       childAspectRatio: 2.8),
                               itemCount: snapshot.data.length,
                               itemBuilder: (BuildContext context, int index) {
@@ -241,7 +250,8 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisSpacing: 0.0,
                                       mainAxisSpacing: 0.0,
-                                      crossAxisCount: 3,
+                                      crossAxisCount:
+                                          getItemCountPerRow(context),
                                       childAspectRatio: 2.8),
                               itemCount: snapshot.data.length,
                               itemBuilder: (BuildContext context, int index) {

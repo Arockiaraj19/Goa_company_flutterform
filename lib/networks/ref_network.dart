@@ -16,7 +16,28 @@ class Ref {
 
       var data = await _dio.then((value) async {
         response = await value.post("/user/coincredit",
-            data: {"user_referral_code": refId.trim(), "type": "1"});
+            data: {"user_referral_code": refId.trim(), "type":"1"});
+        print("response");
+        print(response.data);
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+   Future coinCredit(String ref) async {
+   
+
+    Response response;
+ 
+
+    try {
+      final _dio = apiClient();
+
+      var data = await _dio.then((value) async {
+        response = await value.post("/user/coincredit",
+            data: {"user_referral_code":ref, "type":"2"});
         print("response");
         print(response.data);
       });

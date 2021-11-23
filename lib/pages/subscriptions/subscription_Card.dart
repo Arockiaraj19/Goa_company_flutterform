@@ -4,6 +4,7 @@ import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/subscription.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:dio/dio.dart';
@@ -70,7 +71,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                     ),
                     if (widget.data.subscriptionType == "Payment")
                       Text(
-                        "\$" + widget.data.price.toString(),
+                        widget.data.currencyType.symbol.toString() +
+                            widget.data.price.toString(),
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 70.sp,
@@ -96,6 +98,34 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                 fontWeight: FontWeight.w800),
                           ),
                         ],
+                      ),
+                    if (widget.data.durationType == 2)
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            widget.data.validity.toString() + " " + "days",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35.sp,
+                                fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ),
+                    if (widget.data.durationType == 1)
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            widget.data.validity.toString() + " " + "years",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35.sp,
+                                fontWeight: FontWeight.w800),
+                          ),
+                        ),
                       ),
                     SizedBox(
                       height: 5.h,
@@ -174,9 +204,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              UserModel result =
-                                  await UserNetwork().getUserData();
-                              onboardingCheck(result);
+                              Routes.sailor(Routes.findMatchPage);
                             },
                             child: Container(
                               height: 30.h,
@@ -211,9 +239,10 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                     widget.data.durationType,
                                     widget.data.coins,
                                     widget.data.subscriptionType);
-                                UserModel result =
-                                    await UserNetwork().getUserData();
-                                onboardingCheck(result);
+                                // UserModel result =
+                                //     await UserNetwork().getUserData();
+                                // onboardingCheck(result);
+                                Routes.sailor(Routes.findMatchPage);
                               } on DioError catch (e) {
                                 print("error enna varuthu");
                                 print(e);

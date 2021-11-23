@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:dating_app/models/like_list.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/instagram.dart';
+import 'package:dating_app/networks/ref_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
+import 'package:dating_app/networks/subscription.dart';
 import 'package:dating_app/networks/user_network.dart';
 
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
@@ -12,12 +14,15 @@ import 'package:dating_app/pages/profile_page/widgets/percentage_bar.dart';
 import 'package:dating_app/pages/profile_page/widgets/scores.dart';
 import 'package:dating_app/pages/profile_page/widgets/setting_box.dart';
 import 'package:dating_app/pages/profile_page/widgets/social_media_box.dart';
+import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/helpers/check_persentage.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/album_card_list.dart';
 import 'package:dating_app/shared/widgets/alert_widget.dart';
+import 'package:dating_app/shared/widgets/bottmsheet.dart';
 import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/interest_card_list.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
@@ -107,12 +112,14 @@ class _ProfilePageState extends State<ProfilePage>
     }
 
     _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (RewardedAd ad) =>
-          print('ad onAdShowedFullScreenContent.'),
-      onAdDismissedFullScreenContent: (RewardedAd ad) {
+      onAdShowedFullScreenContent: (RewardedAd ad) {
+        _createRewardedAd();
+        print('ad onAdShowedFullScreenContent.');
+      },
+      onAdDismissedFullScreenContent: (RewardedAd ad) async {
+        UserModel data = await UserNetwork().getUserData();
+        await context.read<HomeProvider>().replaceData(data);
         print('$ad onAdDismissedFullScreenContent.');
-
-        ad.dispose();
       },
       onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
         print('$ad onAdFailedToShowFullScreenContent: $error');
@@ -121,8 +128,12 @@ class _ProfilePageState extends State<ProfilePage>
       },
     );
 
-    _rewardedAd.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
-      // _rewardedAd.dispose();
+    _rewardedAd.show(
+        onUserEarnedReward: (RewardedAd ad, RewardItem reward) async {
+      await Ref()
+          .coinCredit(context.read<HomeProvider>().userData.userReferralCode);
+      UserModel data = await UserNetwork().getUserData();
+      await context.read<HomeProvider>().replaceData(data);
     });
     _rewardedAd = null;
   }
@@ -150,6 +161,14 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
     _rewardedAd.dispose();
     _rewardedAd = null;
+  }
+
+  int getItemCountPerRow(BuildContext context) {
+    double minTileWidth = 100; //in your case
+    double availableWidth = MediaQuery.of(context).size.width;
+
+    int i = availableWidth ~/ minTileWidth;
+    return i;
   }
 
   Widget _buildPhone() {
@@ -225,13 +244,13 @@ class _ProfilePageState extends State<ProfilePage>
                               child: Icon(
                             Icons.edit_outlined,
                             color: MainTheme.primaryColor,
-                            size: 20,
+                            size: 50.sp,
                           )),
                           Container(
                               child: Text('Edit Profile',
                                   style: TextStyle(
                                       color: MainTheme.primaryColor,
-                                      fontSize: 12,
+                                      fontSize: 35.sp,
                                       fontFamily: "Nunito")))
                         ],
                       ))),
@@ -466,8 +485,11 @@ class _ProfilePageState extends State<ProfilePage>
                             name: data.userData.facebookName == null
                                 ? "Add Facebook"
                                 : data.userData.facebookName,
-                            image: "assets/images/Facebook_icon.png",
+                            image: data.userData.facebookName == null
+                                ? "assets/images/fbnotselect.png"
+                                : "assets/images/Facebook_icon.png",
                             style: socialMediaTextBold,
+                            data: data.userData.facebookName,
                           ),
                         ),
                       ]),
@@ -558,7 +580,8 @@ class _ProfilePageState extends State<ProfilePage>
                                       SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisSpacing: 0.0,
                                           mainAxisSpacing: 0.0,
-                                          crossAxisCount: 3,
+                                          crossAxisCount:
+                                              getItemCountPerRow(context),
                                           childAspectRatio: 2.8),
                                   itemCount:
                                       data.userData.interestDetails.length,
@@ -592,7 +615,8 @@ class _ProfilePageState extends State<ProfilePage>
                                       SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisSpacing: 0.0,
                                           mainAxisSpacing: 0.0,
-                                          crossAxisCount: 3,
+                                          crossAxisCount:
+                                              getItemCountPerRow(context),
                                           childAspectRatio: 2.8),
                                   itemCount: data.userData.hobbyDetails.length,
                                   itemBuilder:
@@ -637,12 +661,44 @@ class _ProfilePageState extends State<ProfilePage>
                                     onTap: () => _createDynamicLink(
                                         data.userData.userReferralCode),
                                     child: SettingBox(name: "Refer & Earn")),
-                            InkWell(
-                                onTap: () {},
-                                child: SettingBox(name: "Expert Chat")),
+                            Consumer<SubscriptionProvider>(
+                                builder: (context, subdata, child) {
+                              return InkWell(
+                                  onTap: () async {
+                                    await context
+                                        .read<ExpertChatProvider>()
+                                        .getGroupCatoData();
+                                    Routes.sailor(Routes.expertGroup);
+                                    // if (subdata.plan == null) {
+                                    //   if (int.parse(subdata.count) >=
+                                    //       data.userData.subCount) {
+                                    //     List<UserModel> data =
+                                    //         await Subscription().updateCount(1);
+                                    //     await context
+                                    //         .read<HomeProvider>()
+                                    //         .replaceData(data[0]);
+                                    //     await context
+                                    //         .read<ExpertChatProvider>()
+                                    //         .getGroupCatoData();
+                                    //     Routes.sailor(Routes.expertGroup);
+                                    //   } else {
+                                    //     if (subdata.subscriptionData.length ==
+                                    //         0) {
+                                    //       subdata.getdata();
+                                    //       BottomSheetClass().showplans(context);
+                                    //     } else {
+                                    //       BottomSheetClass().showplans(context);
+                                    //     }
+                                    //   }
+                                    // }
+                                  },
+                                  child: SettingBox(name: "Expert Chat"));
+                            }),
                             InkWell(
                                 onTap: () {
-                                  Routes.sailor(Routes.subscription);
+                                  Routes.sailor(Routes.subscription, params: {
+                                    "swiperIndex": null,
+                                  });
                                 },
                                 child: SettingBox(name: "Subscription")),
                             SettingBox(name: "Order history"),

@@ -1,19 +1,26 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dating_app/models/user.dart';
+import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
 import 'package:dating_app/pages/looking_for_page/widgets/gender_list.dart';
+import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
+import 'package:dating_app/shared/widgets/upload_verficationImage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/src/provider.dart';
 
 import '../../routes.dart';
 
 class PartnerTypePage extends StatefulWidget {
-  PartnerTypePage({Key key}) : super(key: key);
+  final UserModel userData;
+  PartnerTypePage({Key key, this.userData}) : super(key: key);
 
   @override
   _PartnerTypePageState createState() => _PartnerTypePageState();
@@ -40,6 +47,19 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
       'isActive': false,
     }
   ];
+  @override
+  void initState() {
+    super.initState();
+    print(widget.userData.verificationImage);
+    print(widget.userData.partnerType);
+    if (widget.userData.verificationImage == null &&
+        widget.userData.partnerType != null) {
+      print("init state kku partner type varuthaaa");
+      Future.delayed(Duration(milliseconds: 800), () {
+        selectUserImage();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +105,9 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       onPressed: () {
-                        goToParterTypePage();
+                        Future.delayed(Duration(milliseconds: 500), () {
+                          selectUserImage();
+                        });
                       }),
                 ],
               ),
@@ -170,15 +192,148 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
     setState(() {
       loading = true;
     });
+
     try {
       var network = UserNetwork();
-      var userData = {"partner_type": itemGender[selectedMenuIndex]["gender"]};
+      var network1 = UploadImage();
+      var userData;
+      if (selectedUserAvatar == null) {
+        userData = {
+          "partner_type": widget.userData.partnerType != null
+              ? widget.userData.partnerType
+              : itemGender[selectedMenuIndex]["gender"]
+        };
+      } else {
+        String result = await network1.uploadImage(
+            selectedUserAvatar.path, "verification_image");
+        userData = {
+          "partner_type": widget.userData.partnerType != null
+              ? widget.userData.partnerType
+              : itemGender[selectedMenuIndex]["gender"],
+          "verification_image": result
+        };
+      }
 
       UserModel result = await network.patchUserData(userData);
-      Routes.sailor(Routes.subscription);
+      Routes.sailor(Routes.subscription, params: {
+        "swiperIndex": null,
+      });
     } catch (e) {
       offLoading();
     }
+  }
+
+  XFile selectedUserAvatar;
+  void selectUserImage() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return VerificationUploadAlert(
+            onImagePicked: (XFile imageData) {
+              setState(() {
+                selectedUserAvatar = imageData;
+              });
+              showPopup();
+            },
+            skipImage: () {
+              Navigator.pop(context);
+
+              goToParterTypePage();
+            },
+          );
+        });
+  }
+
+  bool loading1 = false;
+
+  void showPopup() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
+      builder: (context1) => StatefulBuilder(
+        builder: (BuildContext context, setSState) {
+          return Container(
+            padding: EdgeInsets.all(25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                    width: double.infinity,
+                    height: 300.h,
+                    child: Image.file(File(selectedUserAvatar.path))),
+                SizedBox(
+                  height: 5.h,
+                ),
+                loading1
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          setSState(() {
+                            loading1 = !loading1;
+                          });
+                          goToParterTypePage();
+                        },
+                        child: Container(
+                          height: 40,
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border:
+                                  Border.all(color: MainTheme.primaryColor)),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Selfi is readable",
+                            style: TextStyle(
+                                color: MainTheme.primaryColor,
+                                fontSize: 18,
+                                fontFamily: "Nunito"),
+                          ),
+                        ),
+                      ),
+                SizedBox(
+                  height: 25,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    selectUserImage();
+                  },
+                  child: Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: MainTheme.primaryColor)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.camera_alt_outlined,
+                          color: MainTheme.primaryColor,
+                        ),
+                        Text(
+                          "Take a new picture",
+                          style: TextStyle(
+                              color: MainTheme.primaryColor,
+                              fontSize: 18,
+                              fontFamily: "Nunito"),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   offLoading() {

@@ -89,8 +89,8 @@ class _MassageCardState extends State<MassageCard> {
                         );
                       } else {
                         return CircleAvatar(
-                          maxRadius: 80.r,
-                          minRadius: 70.r,
+                            maxRadius: 80.r,
+                            minRadius: 70.r,
                             backgroundImage:
                                 AssetImage("assets/images/placeholder.png"));
                       }
@@ -116,7 +116,7 @@ class _MassageCardState extends State<MassageCard> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 50.sp,
+                                    fontSize: 45.sp,
                                     fontFamily: "Nunito"),
                               );
                             } else {

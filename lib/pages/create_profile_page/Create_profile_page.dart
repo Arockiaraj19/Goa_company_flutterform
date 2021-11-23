@@ -116,7 +116,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
 
   DateTime dateofbirth;
   String _code = "";
-  String _number = "";
+
   Widget _buildPhone() {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
@@ -308,22 +308,19 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                           style: BorderStyle.solid),
                                     ),
                                   ),
-                                  onChanged: (val) {
-                                    _code = val;
-                                  },
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return "*";
                                     }
-                                    if (_code.isEmpty) {
+                                    if (_numberCtrl.text.isEmpty) {
                                       return "*";
                                     }
                                     RegExp regex = new RegExp(numberpattern);
-                                    if (!regex.hasMatch(_code)) {
+                                    if (!regex.hasMatch(_numberCtrl.text)) {
                                       return '*';
                                     }
-                                    if (_code.length > 10 ||
-                                        _code.length < 10) {
+                                    if (_numberCtrl.text.length > 10 ||
+                                        _numberCtrl.text.length < 10) {
                                       return "*";
                                     }
 
@@ -396,15 +393,12 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                             style: BorderStyle.solid),
                                       ),
                                     ),
-                                    onChanged: (value) {
-                                      _number = value;
-                                    },
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return "* Required";
                                       }
-                                      if (_number.isEmpty) {
-                                        return "* Required";
+                                      if (codecontroller.text.isEmpty) {
+                                        return "* Please select country code";
                                       }
                                       RegExp regex = new RegExp(numberpattern);
                                       if (!regex.hasMatch(value)) {
