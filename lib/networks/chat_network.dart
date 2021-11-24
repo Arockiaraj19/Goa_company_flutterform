@@ -72,6 +72,7 @@ class ChatNetwork {
           "searchkey": searchKeyWord,
         });
         final results = List<Map<String, dynamic>>.from(response.data);
+        print("get group data");
         print(response.data);
         List<ChatGroup> chatgroups =
             results.map((movieData) => ChatGroup.fromMap(movieData)).toList();
@@ -161,6 +162,27 @@ class ChatNetwork {
         print("response chat update");
         print(response.data);
         return true;
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future patchUnreadMessage(String groupId) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+      String userId = await getUserId();
+      var data = _dio.then((value) async {
+        response = await value.patch("/user/chatreadstatus", data: {
+          "group_id": groupId,
+          "user_id": userId,
+        });
+        print("response patch unreadmessage");
+        print(response.data);
+
+        return;
       });
       return data;
     } catch (e) {

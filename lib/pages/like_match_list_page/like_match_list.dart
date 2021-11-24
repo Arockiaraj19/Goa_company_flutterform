@@ -81,77 +81,76 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
   }
 
   Widget _buildPhone() {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          bottom: PreferredSize(
-              preferredSize: Size.fromHeight(10),
-              child: PreferredSize(
-                  preferredSize: const Size.fromHeight(kToolbarHeight),
-                  child: Column(children: [
-                    TabBar(
-                      controller: _tabController,
-                      indicatorColor: MainTheme.primaryColor,
-                      indicatorPadding:
-                          const EdgeInsets.only(left: 25, right: 25, top: 10),
-                      labelColor: MainTheme.primaryColor,
-                      unselectedLabelColor: Colors.black,
-                      labelStyle:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                      unselectedLabelStyle: TextStyle(fontSize: 14),
-                      indicatorWeight: 2,
-                      tabs: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 5),
-                          child: Text(
-                            "Likes",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
+      backgroundColor: Colors.white,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      bottom: PreferredSize(
+          preferredSize: Size.fromHeight(10),
+          child: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Column(children: [
+                TabBar(
+                  controller: _tabController,
+                  indicatorColor: MainTheme.primaryColor,
+                  indicatorPadding:
+                      const EdgeInsets.only(left: 25, right: 25, top: 10),
+                  labelColor: MainTheme.primaryColor,
+                  unselectedLabelColor: Colors.black,
+                  labelStyle:
+                      TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: TextStyle(fontSize: 14),
+                  indicatorWeight: 2,
+                  tabs: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        "Likes",
+                        style: TextStyle(
+                          fontSize: 18,
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 5),
-                          child: Text(
-                            "Matches",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                    // Divider(),
-                  ])))),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        "Matches",
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // Divider(),
+              ])))),
       body: Consumer<MatchProvider>(builder: (context, data, child) {
-        if (data.matchState == MatchState.Loading) {
-          return LinearProgressIndicator();
-        } else if (data.matchState == MatchState.Loaded) {
-          return TabBarView(
-              controller: _tabController,
-              physics: ClampingScrollPhysics(),
-              children: <Widget>[
-                Container(
-                    child: LikeList(
-                  likeList: data.likeListData,
-                )),
-                Container(
-                    child: MatchList(
-                  matchList: data.matchListData,
-                )),
-              ]);
-        } else {
-          return ErrorCard(text: data.errorText, ontab: () {});
-        }
+    if (data.matchState == MatchState.Loading) {
+      return LinearProgressIndicator();
+    } else if (data.matchState == MatchState.Loaded) {
+      return TabBarView(
+          controller: _tabController,
+          physics: ClampingScrollPhysics(),
+          children: <Widget>[
+            Container(
+                child: LikeList(
+              likeList: data.likeListData,
+            )),
+            Container(
+                child: MatchList(
+              matchList: data.matchListData,
+            )),
+          ]);
+    } else {
+      return ErrorCard(text: data.errorText, ontab: () {});
+    }
       }),
-    ));
+    );
   }
 
   Widget _buildWeb() {

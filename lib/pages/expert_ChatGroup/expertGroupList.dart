@@ -4,6 +4,7 @@ import 'package:dating_app/pages/expert_ChatGroup/expertlist.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
@@ -102,9 +103,7 @@ class _ExpertGroupListState extends State<ExpertGroupList> {
                                     ExpertCard(data: data.chatGroupData[index]),
                                 itemCount: data.chatGroupData.length,
                               )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          );
+                        : LoadingLottie();
               },
             ),
           ),

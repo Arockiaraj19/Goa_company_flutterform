@@ -18,6 +18,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
@@ -164,9 +165,11 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                   Container(
                       child: widget.image.length == 0
                           ? CircleAvatar(
+                              backgroundColor: Colors.transparent,
                               backgroundImage:
                                   AssetImage("assets/images/placeholder.png"))
                           : CircleAvatar(
+                              backgroundColor: Colors.transparent,
                               backgroundImage: NetworkImage(widget.image[0]))),
                   Container(
                       margin: EdgeInsetsDirectional.only(start: 10),
@@ -406,9 +409,7 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                       );
                                     },
                                   )
-                            : Center(
-                                child: CircularProgressIndicator(),
-                              );
+                            : LoadingLottie();
                   },
                 ),
               ),

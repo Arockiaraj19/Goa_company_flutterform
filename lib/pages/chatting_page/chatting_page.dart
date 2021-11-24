@@ -15,6 +15,7 @@ import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
@@ -100,6 +101,7 @@ class _ChattingPageState extends State<ChattingPage> {
       print(chatdata);
       return context.read<ChatProvider>().addsocketmessage(chatdata);
     });
+    ChatNetwork().patchUnreadMessage(widget.groupid);
   }
 
   createGroupEmit() async {
@@ -172,8 +174,7 @@ class _ChattingPageState extends State<ChattingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: widget.onWeb
           ? null
           : AppBar(
@@ -181,7 +182,11 @@ class _ChattingPageState extends State<ChattingPage> {
                   borderRadius: BorderRadius.circular(20)),
               backgroundColor: Colors.grey[50],
               leading: InkWell(
-                onTap: () => Navigator.pop(context),
+                onTap: () {
+                  ChatNetwork().patchUnreadMessage(widget.groupid);
+                  context.read<ChatProvider>().getGroupData("");
+                  Navigator.pop(context);
+                },
                 child: Container(
                     padding: EdgeInsets.all(15),
                     child: CircleAvatar(
@@ -200,6 +205,7 @@ class _ChattingPageState extends State<ChattingPage> {
                 children: [
                   Container(
                       child: CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     backgroundImage: widget.image == null
                         ? AssetImage("assets/images/placeholder.png")
                         : NetworkImage(widget.image),
@@ -344,8 +350,10 @@ class _ChattingPageState extends State<ChattingPage> {
             ),
       body: WillPopScope(
         onWillPop: () {
+          ChatNetwork().patchUnreadMessage(widget.groupid);
           socket.emit("disconnect", "group_${widget.groupid}");
           socket.onDisconnect((_) => print('disconnect'));
+          context.read<ChatProvider>().getGroupData("");
           Navigator.pop(context);
         },
         child: Container(
@@ -569,9 +577,7 @@ class _ChattingPageState extends State<ChattingPage> {
                                       );
                                     },
                                   )
-                            : Center(
-                                child: CircularProgressIndicator(),
-                              );
+                            : LoadingLottie();
                   },
                 ),
               ),
@@ -636,7 +642,7 @@ class _ChattingPageState extends State<ChattingPage> {
           ),
         ),
       ),
-    ));
+    );
   }
 
   XFile selectedUserAvatar;

@@ -276,581 +276,571 @@ class _EditProfilePageState extends State<EditProfilePage> {
         fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
         fontFamily: "lato");
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                  padding: EdgeInsets.all(15),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey[200],
-                    radius: 10,
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                  ))),
-          titleSpacing: 0,
-          centerTitle: true,
-          title: Text(
-            "Edit Profile Details",
-            style: _leadingHeading,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey[200],
+                  radius: 10,
+                  child: Icon(
+                    Icons.keyboard_arrow_left,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                ))),
+        titleSpacing: 0,
+        centerTitle: true,
+        title: Text(
+          "Edit Profile Details",
+          style: _leadingHeading,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              FutureBuilder(
-                future: Persentage().checkPresentage(widget.userdata),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            FutureBuilder(
+              future: Persentage().checkPresentage(widget.userdata),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return PercentageBar(
+                    percentage: snapshot.data,
+                    onEditProfilePage: true,
+                    onTap: () {
+                      selectUserPic();
+                    },
+                    image: widget.userdata.identificationImage,
+                    selectedUserPic: selectedUserPic,
+                    onTapClose: () {
+                      setState(() {
+                        selectedUserPic = null;
+                      });
+                    },
+                  );
+                } else {
+                  return PercentageBar(
+                    percentage: 0,
+                    onEditProfilePage: true,
+                    onTap: () {
+                      selectUserPic();
+                    },
+                    image: widget.userdata.identificationImage,
+                    selectedUserPic: selectedUserPic,
+                    onTapClose: () {
+                      setState(() {
+                        selectedUserPic = null;
+                      });
+                    },
+                  );
+                }
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsetsDirectional.only(top: 5),
+                  child: Text(
+                    widget.userdata.firstName ?? "Some thing wrong",
+                    style: _textStyleforName,
+                  ),
+                ),
+              ],
+            ),
+            // SocialMediaRowList(),
+            Container(
+                padding:
+                    EdgeInsetsDirectional.only(start: 10, end: 10, top: 10),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      InputField(
+                        onTap: () {},
+                        controller: _firstNameCtrl,
+                        padding: EdgeInsets.all(10),
+                        validators: (String value) {
+                          if (value.isEmpty) return 'Required field';
+                          return null;
+                        },
+                        hintText: 'Your first name',
+                      ),
+                      InputField(
+                        onTap: () {},
+                        controller: _lastNameCtrl,
+                        padding: EdgeInsets.all(10),
+                        validators: (String value) {
+                          if (value.isEmpty) return 'Required field';
+                          return null;
+                        },
+                        hintText: 'Your last name',
+                      ),
+                      // InputField(
+                      //   onTap: () {},
+                      //   controller: _emailCtrl,
+                      //   padding: EdgeInsets.all(10),
+                      //   validators: (String value) {
+                      //     if (value.isEmpty) return 'Required field';
+                      //     return null;
+                      //   },
+                      //   hintText: 'Email',
+                      // ),
+                      InputField(
+                        onTap: () {},
+                        controller: _bioCtrl,
+                        maxLines: 3,
+                        padding: EdgeInsets.all(10),
+                        validators: (String value) {
+                          if (value.isEmpty) return 'Required field';
+                          return null;
+                        },
+                        hintText: 'Bio',
+                      ),
+                      DatePickerInput(
+                        hintText: 'DD-MM-YYYY',
+                        controller: _dobInputCtrl,
+                        onSelect: (DateTime date) {
+                          removeFocus(context);
+                          setState(() {
+                            selectedDate = date;
+                          });
+                        },
+                      ),
+                      Container(
+                          margin: EdgeInsets.all(10),
+                          padding:
+                              EdgeInsetsDirectional.only(start: 10, end: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: Colors.grey.shade200,
+                                blurRadius: 1.0,
+                                offset: Offset(0, 3),
+                              )
+                            ],
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<dynamic>(
+                            isExpanded: true,
+                            value: dropdownProfessionValue,
+                            hint: Text("Profession"),
+                            icon: Icon(Icons.arrow_drop_down),
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black),
+                            underline: Container(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                dropdownProfessionValue = newValue;
+                              });
+                            },
+                            items: itemdate.map<DropdownMenuItem<dynamic>>(
+                                (dynamic value) {
+                              return DropdownMenuItem<dynamic>(
+                                value: value,
+                                child: Text(value
+                                    // style: TextStyle(fontSize: 28.sp),
+                                    ),
+                              );
+                            }).toList(),
+                          )),
+                      InputField(
+                        onTap: () {},
+                        controller: _heightCtrl,
+                        inputType: TextInputType.number,
+                        padding: EdgeInsets.all(10),
+                        validators: (String value) {
+                          if (value.isEmpty) return 'Required field';
+                          return null;
+                        },
+                        hintText: 'Height',
+                        suffixIcon: Text("cm  "),
+                      ),
+                      InputField(
+                        onTap: () {},
+                        controller: _weightCtrl,
+                        padding: EdgeInsets.all(10),
+                        inputType: TextInputType.number,
+                        validators: (String value) {
+                          if (value.isEmpty) return 'Required field';
+                          return null;
+                        },
+                        hintText: 'Weight',
+                        suffixIcon: Text("kg  "),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                              margin: EdgeInsetsDirectional.only(
+                                  start: 20, top: 5, bottom: 5),
+                              child: Text(
+                                "Gender",
+                                style: _textForsubHeading,
+                              )),
+                        ],
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: FutureBuilder(
+                          future: _future,
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              List<GenderModel> genderdata = snapshot.data;
+                              if (time == 0) {
+                                _selectedGenderid = widget.userdata.gender;
+                                genderdetail = genderdata.firstWhere(
+                                    (element) =>
+                                        element.id == widget.userdata.gender);
+                                print("inga na select pannathu varuthaa");
+                                print(_selectedGenderid);
+                                print(genderdetail);
+                              }
+                              return Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                    start: 10, end: 10),
+                                child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisSpacing: 0.0,
+                                            mainAxisSpacing: 0.0,
+                                            crossAxisCount:
+                                                getItemCountPerRow(context),
+                                            childAspectRatio: 2.8),
+                                    itemCount: genderdata.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return GenderEditCard(
+                                        data: genderdata[index],
+                                        id: _selectedGenderid,
+                                        onTap: () async {
+                                          setState(() {
+                                            _selectedGenderid =
+                                                genderdata[index].id;
+                                            genderdetail = genderdata[index];
+                                          });
+                                          time++;
+                                        },
+                                      );
+                                    }),
+                              );
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsetsDirectional.only(
+                        start: 30, top: 5, bottom: 20),
+                    child: Text("Interest", style: _textForsubHeading)),
+              ],
+            ),
+            FutureBuilder(
+                future: interestData,
+                builder:
+                    (context, AsyncSnapshot<List<InterestModel>> snapshot) {
                   if (snapshot.hasData) {
-                    return PercentageBar(
-                      percentage: snapshot.data,
-                      onEditProfilePage: true,
-                      onTap: () {
-                        selectUserPic();
-                      },
-                      image: widget.userdata.identificationImage,
-                      selectedUserPic: selectedUserPic,
-                      onTapClose: () {
-                        setState(() {
-                          selectedUserPic = null;
-                        });
-                      },
+                    addInterestBool(snapshot.data.length);
+                    interestData1 = snapshot.data;
+                    textEditingController1.text = "start";
+                    return Container(
+                        padding: EdgeInsetsDirectional.only(start: 20, end: 20),
+                        child: Column(children: [
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisSpacing: 0.0,
+                                    mainAxisSpacing: 0.0,
+                                    crossAxisCount: getItemCountPerRow(context),
+                                    childAspectRatio: 2.8),
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return InterestBox(
+                                fontSize: ScreenUtil()
+                                    .setSp(MainTheme.mPrimaryContentfontSize),
+                                fillColor: interestBool[index]
+                                    ? MainTheme.primaryColor
+                                    : Colors.white,
+                                color: MainTheme.primaryColor,
+                                title: snapshot.data[index].title,
+                                onTap: () {
+                                  if (interestBool[index] == true) {
+                                    setState(() {
+                                      interestBool[index] = false;
+                                    });
+                                    interestSelected.remove(
+                                        snapshot.data[index].interest_id);
+
+                                    interestSelected1
+                                        .remove(snapshot.data[index].toMap());
+                                  } else {
+                                    setState(() {
+                                      interestBool[index] = true;
+                                    });
+                                    interestSelected
+                                        .add(snapshot.data[index].interest_id);
+
+                                    interestSelected1
+                                        .add(snapshot.data[index].toMap());
+                                  }
+                                },
+                              );
+                            },
+                          )
+                        ]));
+                  } else
+                    return Container(
+                      height: 500,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(),
                     );
-                  } else {
-                    return PercentageBar(
-                      percentage: 0,
-                      onEditProfilePage: true,
-                      onTap: () {
-                        selectUserPic();
-                      },
-                      image: widget.userdata.identificationImage,
-                      selectedUserPic: selectedUserPic,
-                      onTapClose: () {
-                        setState(() {
-                          selectedUserPic = null;
-                        });
-                      },
+                }),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsetsDirectional.only(
+                        start: 30, top: 10, bottom: 20),
+                    child: Text("Hobbies", style: _textForsubHeading)),
+              ],
+            ),
+            FutureBuilder(
+                future: hobbyData,
+                builder: (context, AsyncSnapshot<List<HobbyModel>> snapshot) {
+                  if (snapshot.hasData) {
+                    addHobbyBool(snapshot.data.length);
+                    hobbyData1 = snapshot.data;
+                    textEditingController.text = "start";
+                    return Container(
+                        padding: EdgeInsetsDirectional.only(start: 20, end: 20),
+                        child: Column(children: [
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisSpacing: 0.0,
+                                    mainAxisSpacing: 0.0,
+                                    crossAxisCount: getItemCountPerRow(context),
+                                    childAspectRatio: 2.8),
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return InterestBox(
+                                fontSize: ScreenUtil()
+                                    .setSp(MainTheme.mPrimaryContentfontSize),
+                                fillColor: hobbieBool[index]
+                                    ? MainTheme.primaryColor
+                                    : Colors.white,
+                                color: MainTheme.primaryColor,
+                                title: snapshot.data[index].title,
+                                onTap: () {
+                                  if (hobbieBool[index] == true) {
+                                    setState(() {
+                                      hobbieBool[index] = false;
+                                    });
+                                    hobbieSelected
+                                        .remove(snapshot.data[index].hobby_id);
+                                    var val = {
+                                      "hobby_id": snapshot.data[index].hobby_id,
+                                      "title": snapshot.data[index].title
+                                    };
+                                    hobbieSelected1.remove(val);
+                                  } else {
+                                    setState(() {
+                                      hobbieBool[index] = true;
+                                    });
+                                    hobbieSelected
+                                        .add(snapshot.data[index].hobby_id);
+                                    var val = {
+                                      "hobby_id": snapshot.data[index].hobby_id,
+                                      "title": snapshot.data[index].title
+                                    };
+                                    hobbieSelected1.add(val);
+                                  }
+                                },
+                              );
+                            },
+                          )
+                        ]));
+                  } else
+                    return Container(
+                      height: 500,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(),
                     );
+                }),
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Container(
+                      child: Text("Album", style: _textForsubHeading)),
+                )
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Container(
+                  color: Colors.grey[200],
+                  height: MediaQuery.of(context).size.height / 2.7,
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(10),
+                  child: StaggeredGridView.countBuilder(
+                    crossAxisCount: 3,
+                    itemCount: 6,
+                    itemBuilder: (BuildContext context, int index) {
+                      return AlbumImageCard(
+                        alreadyimage: alreadyimage[index],
+                        onTap: () async {
+                          selectalbumImage(index);
+                        },
+                        selectedUserAvatar: selectedalbumAvatar[index],
+                        onTapClose: () {
+                          setState(() {
+                            alreadyimage[index] = null;
+                            selectedalbumAvatar[index] = null;
+                          });
+                        },
+                      );
+                    },
+                    staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                    mainAxisSpacing: 0,
+                    crossAxisSpacing: 0,
+                  )),
+            ),
+            SizedBox(
+              height: 20,
+            )
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+          height: 60,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GradientButton(
+                margin: EdgeInsets.all(0),
+                height: MediaQuery.of(context).size.height / 20,
+                name: "Cancel",
+                buttonColor: Colors.white,
+                active: true,
+                color: MainTheme.primaryColor,
+                width: ScreenUtil().setWidth(300),
+                borderRadius: BorderRadius.circular(5),
+                fontWeight: FontWeight.bold,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              GradientButton(
+                margin: EdgeInsets.all(0),
+                height: MediaQuery.of(context).size.height / 20,
+                name: loading ? "Loading..." : "Confirm",
+                gradient: MainTheme.loginBtnGradient,
+                active: true,
+                isLoading: loading,
+                color: Colors.white,
+                width: ScreenUtil().setWidth(300),
+                fontWeight: FontWeight.bold,
+                borderRadius: BorderRadius.circular(5),
+                onPressed: () async {
+                  if (hobbieSelected.length < 2 &&
+                      interestSelected.length < 2) {
+                    showtoast("Please choose minimum 2 interests & hobbies");
+                  }
+                  if (_formKey.currentState.validate() &&
+                      interestSelected.length > 1 &&
+                      hobbieSelected.length > 1) {
+                    setState(() {
+                      loading = true;
+                    });
+                    String result;
+                    try {
+                      result = selectedUserPic == null
+                          ? widget.userdata.identificationImage
+                          : await UploadImage().uploadImage(
+                              selectedUserPic.path, "identification");
+                      if (selectedUserPic != null) {
+                        await UploadImage().deleteImage(
+                            [widget.userdata.identificationImage],
+                            [result],
+                            "identification");
+                      }
+                    } on DioError catch (e) {
+                      setState(() {
+                        loading = false;
+                      });
+                    }
+                    try {
+                      await goToLookingForPagePage();
+                    } on DioError catch (e) {
+                      setState(() {
+                        loading = false;
+                      });
+                    }
+
+                    print("album enna varuthu");
+                    print(uploadedImages);
+                    List<String> albumimage = uploadedImages.length == 0
+                        ? widget.userdata.profileImage
+                        : uploadedImages;
+                    var userData = {
+                      "first_name": _firstNameCtrl.text,
+                      "last_name":
+                          _lastNameCtrl.text, //"email":_emailCtrl.text,
+                      "profession": ["$dropdownProfessionValue"],
+                      "dob": selectedDate.toString(),
+                      "gender_id": _selectedGenderid.toString(),
+                      "gender_details": [genderdetail.toMap()],
+                      "height": int.parse(_heightCtrl.text),
+                      "weight": int.parse(_weightCtrl.text),
+                      "bio": _bioCtrl.text,
+                      "interests": interestSelected,
+                      "hobbies": hobbieSelected,
+                      "hobby_details": hobbieSelected1,
+                      "interest_details": interestSelected1,
+                      "identification_image": result,
+                      "profile_image": albumimage,
+                    };
+                    print("edit profile userdata");
+                    print(userData);
+                    try {
+                      UserModel data =
+                          await UserNetwork().patchUserData(userData);
+                      data != null
+                          ? await context.read<HomeProvider>().replaceData(data)
+                          : null;
+                      print("ool");
+                      Navigator.pop(context);
+                    } on DioError catch (e) {
+                      setState(() {
+                        loading = false;
+                      });
+                    }
                   }
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsetsDirectional.only(top: 5),
-                    child: Text(
-                      widget.userdata.firstName ?? "Some thing wrong",
-                      style: _textStyleforName,
-                    ),
-                  ),
-                ],
-              ),
-              // SocialMediaRowList(),
-              Container(
-                  padding:
-                      EdgeInsetsDirectional.only(start: 10, end: 10, top: 10),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        InputField(
-                          onTap: () {},
-                          controller: _firstNameCtrl,
-                          padding: EdgeInsets.all(10),
-                          validators: (String value) {
-                            if (value.isEmpty) return 'Required field';
-                            return null;
-                          },
-                          hintText: 'Your first name',
-                        ),
-                        InputField(
-                          onTap: () {},
-                          controller: _lastNameCtrl,
-                          padding: EdgeInsets.all(10),
-                          validators: (String value) {
-                            if (value.isEmpty) return 'Required field';
-                            return null;
-                          },
-                          hintText: 'Your last name',
-                        ),
-                        // InputField(
-                        //   onTap: () {},
-                        //   controller: _emailCtrl,
-                        //   padding: EdgeInsets.all(10),
-                        //   validators: (String value) {
-                        //     if (value.isEmpty) return 'Required field';
-                        //     return null;
-                        //   },
-                        //   hintText: 'Email',
-                        // ),
-                        InputField(
-                          onTap: () {},
-                          controller: _bioCtrl,
-                          maxLines: 3,
-                          padding: EdgeInsets.all(10),
-                          validators: (String value) {
-                            if (value.isEmpty) return 'Required field';
-                            return null;
-                          },
-                          hintText: 'Bio',
-                        ),
-                        DatePickerInput(
-                          hintText: 'DD-MM-YYYY',
-                          controller: _dobInputCtrl,
-                          onSelect: (DateTime date) {
-                            removeFocus(context);
-                            setState(() {
-                              selectedDate = date;
-                            });
-                          },
-                        ),
-                        Container(
-                            margin: EdgeInsets.all(10),
-                            padding:
-                                EdgeInsetsDirectional.only(start: 10, end: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                  color: Colors.grey.shade200,
-                                  blurRadius: 1.0,
-                                  offset: Offset(0, 3),
-                                )
-                              ],
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: DropdownButton<dynamic>(
-                              isExpanded: true,
-                              value: dropdownProfessionValue,
-                              hint: Text("Profession"),
-                              icon: Icon(Icons.arrow_drop_down),
-                              elevation: 16,
-                              style: TextStyle(color: Colors.black),
-                              underline: Container(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  dropdownProfessionValue = newValue;
-                                });
-                              },
-                              items: itemdate.map<DropdownMenuItem<dynamic>>(
-                                  (dynamic value) {
-                                return DropdownMenuItem<dynamic>(
-                                  value: value,
-                                  child: Text(value
-                                      // style: TextStyle(fontSize: 28.sp),
-                                      ),
-                                );
-                              }).toList(),
-                            )),
-                        InputField(
-                          onTap: () {},
-                          controller: _heightCtrl,
-                          inputType: TextInputType.number,
-                          padding: EdgeInsets.all(10),
-                          validators: (String value) {
-                            if (value.isEmpty) return 'Required field';
-                            return null;
-                          },
-                          hintText: 'Height',
-                          suffixIcon: Text("cm  "),
-                        ),
-                        InputField(
-                          onTap: () {},
-                          controller: _weightCtrl,
-                          padding: EdgeInsets.all(10),
-                          inputType: TextInputType.number,
-                          validators: (String value) {
-                            if (value.isEmpty) return 'Required field';
-                            return null;
-                          },
-                          hintText: 'Weight',
-                          suffixIcon: Text("kg  "),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                                margin: EdgeInsetsDirectional.only(
-                                    start: 20, top: 5, bottom: 5),
-                                child: Text(
-                                  "Gender",
-                                  style: _textForsubHeading,
-                                )),
-                          ],
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: FutureBuilder(
-                            future: _future,
-                            builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
-                              if (snapshot.hasData) {
-                                List<GenderModel> genderdata = snapshot.data;
-                                if (time == 0) {
-                                  _selectedGenderid = widget.userdata.gender;
-                                  genderdetail = genderdata.firstWhere(
-                                      (element) =>
-                                          element.id == widget.userdata.gender);
-                                  print("inga na select pannathu varuthaa");
-                                  print(_selectedGenderid);
-                                  print(genderdetail);
-                                }
-                                return Padding(
-                                  padding: EdgeInsetsDirectional.only(
-                                      start: 10, end: 10),
-                                  child: GridView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisSpacing: 0.0,
-                                              mainAxisSpacing: 0.0,
-                                              crossAxisCount:
-                                                  getItemCountPerRow(context),
-                                              childAspectRatio: 2.8),
-                                      itemCount: genderdata.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return GenderEditCard(
-                                          data: genderdata[index],
-                                          id: _selectedGenderid,
-                                          onTap: () async {
-                                            setState(() {
-                                              _selectedGenderid =
-                                                  genderdata[index].id;
-                                              genderdetail = genderdata[index];
-                                            });
-                                            time++;
-                                          },
-                                        );
-                                      }),
-                                );
-                              } else {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsetsDirectional.only(
-                          start: 30, top: 5, bottom: 20),
-                      child: Text("Interest", style: _textForsubHeading)),
-                ],
-              ),
-              FutureBuilder(
-                  future: interestData,
-                  builder:
-                      (context, AsyncSnapshot<List<InterestModel>> snapshot) {
-                    if (snapshot.hasData) {
-                      addInterestBool(snapshot.data.length);
-                      interestData1 = snapshot.data;
-                      textEditingController1.text = "start";
-                      return Container(
-                          padding:
-                              EdgeInsetsDirectional.only(start: 20, end: 20),
-                          child: Column(children: [
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisSpacing: 0.0,
-                                      mainAxisSpacing: 0.0,
-                                      crossAxisCount:
-                                          getItemCountPerRow(context),
-                                      childAspectRatio: 2.8),
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return InterestBox(
-                                  fontSize: ScreenUtil()
-                                      .setSp(MainTheme.mPrimaryContentfontSize),
-                                  fillColor: interestBool[index]
-                                      ? MainTheme.primaryColor
-                                      : Colors.white,
-                                  color: MainTheme.primaryColor,
-                                  title: snapshot.data[index].title,
-                                  onTap: () {
-                                    if (interestBool[index] == true) {
-                                      setState(() {
-                                        interestBool[index] = false;
-                                      });
-                                      interestSelected.remove(
-                                          snapshot.data[index].interest_id);
-
-                                      interestSelected1
-                                          .remove(snapshot.data[index].toMap());
-                                    } else {
-                                      setState(() {
-                                        interestBool[index] = true;
-                                      });
-                                      interestSelected.add(
-                                          snapshot.data[index].interest_id);
-
-                                      interestSelected1
-                                          .add(snapshot.data[index].toMap());
-                                    }
-                                  },
-                                );
-                              },
-                            )
-                          ]));
-                    } else
-                      return Container(
-                        height: 500,
-                        alignment: Alignment.center,
-                        child: CircularProgressIndicator(),
-                      );
-                  }),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsetsDirectional.only(
-                          start: 30, top: 10, bottom: 20),
-                      child: Text("Hobbies", style: _textForsubHeading)),
-                ],
-              ),
-              FutureBuilder(
-                  future: hobbyData,
-                  builder: (context, AsyncSnapshot<List<HobbyModel>> snapshot) {
-                    if (snapshot.hasData) {
-                      addHobbyBool(snapshot.data.length);
-                      hobbyData1 = snapshot.data;
-                      textEditingController.text = "start";
-                      return Container(
-                          padding:
-                              EdgeInsetsDirectional.only(start: 20, end: 20),
-                          child: Column(children: [
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisSpacing: 0.0,
-                                      mainAxisSpacing: 0.0,
-                                      crossAxisCount:
-                                          getItemCountPerRow(context),
-                                      childAspectRatio: 2.8),
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return InterestBox(
-                                  fontSize: ScreenUtil()
-                                      .setSp(MainTheme.mPrimaryContentfontSize),
-                                  fillColor: hobbieBool[index]
-                                      ? MainTheme.primaryColor
-                                      : Colors.white,
-                                  color: MainTheme.primaryColor,
-                                  title: snapshot.data[index].title,
-                                  onTap: () {
-                                    if (hobbieBool[index] == true) {
-                                      setState(() {
-                                        hobbieBool[index] = false;
-                                      });
-                                      hobbieSelected.remove(
-                                          snapshot.data[index].hobby_id);
-                                      var val = {
-                                        "hobby_id":
-                                            snapshot.data[index].hobby_id,
-                                        "title": snapshot.data[index].title
-                                      };
-                                      hobbieSelected1.remove(val);
-                                    } else {
-                                      setState(() {
-                                        hobbieBool[index] = true;
-                                      });
-                                      hobbieSelected
-                                          .add(snapshot.data[index].hobby_id);
-                                      var val = {
-                                        "hobby_id":
-                                            snapshot.data[index].hobby_id,
-                                        "title": snapshot.data[index].title
-                                      };
-                                      hobbieSelected1.add(val);
-                                    }
-                                  },
-                                );
-                              },
-                            )
-                          ]));
-                    } else
-                      return Container(
-                        height: 500,
-                        alignment: Alignment.center,
-                        child: CircularProgressIndicator(),
-                      );
-                  }),
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: Container(
-                        child: Text("Album", style: _textForsubHeading)),
-                  )
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Container(
-                    color: Colors.grey[200],
-                    height: MediaQuery.of(context).size.height / 2.7,
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.all(10),
-                    child: StaggeredGridView.countBuilder(
-                      crossAxisCount: 3,
-                      itemCount: 6,
-                      itemBuilder: (BuildContext context, int index) {
-                        return AlbumImageCard(
-                          alreadyimage: alreadyimage[index],
-                          onTap: () async {
-                            selectalbumImage(index);
-                          },
-                          selectedUserAvatar: selectedalbumAvatar[index],
-                          onTapClose: () {
-                            setState(() {
-                              alreadyimage[index] = null;
-                              selectedalbumAvatar[index] = null;
-                            });
-                          },
-                        );
-                      },
-                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                      mainAxisSpacing: 0,
-                      crossAxisSpacing: 0,
-                    )),
-              ),
-              SizedBox(
-                height: 20,
-              )
             ],
-          ),
-        ),
-        bottomNavigationBar: Container(
-            height: 60,
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GradientButton(
-                  margin: EdgeInsets.all(0),
-                  height: MediaQuery.of(context).size.height / 20,
-                  name: "Cancel",
-                  buttonColor: Colors.white,
-                  active: true,
-                  color: MainTheme.primaryColor,
-                  width: ScreenUtil().setWidth(300),
-                  borderRadius: BorderRadius.circular(5),
-                  fontWeight: FontWeight.bold,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                GradientButton(
-                  margin: EdgeInsets.all(0),
-                  height: MediaQuery.of(context).size.height / 20,
-                  name: loading ? "Loading..." : "Confirm",
-                  gradient: MainTheme.loginBtnGradient,
-                  active: true,
-                  isLoading: loading,
-                  color: Colors.white,
-                  width: ScreenUtil().setWidth(300),
-                  fontWeight: FontWeight.bold,
-                  borderRadius: BorderRadius.circular(5),
-                  onPressed: () async {
-                    if (hobbieSelected.length < 2 &&
-                        interestSelected.length < 2) {
-                      showtoast("Please choose minimum 2 interests & hobbies");
-                    }
-                    if (_formKey.currentState.validate() &&
-                        interestSelected.length > 1 &&
-                        hobbieSelected.length > 1) {
-                      setState(() {
-                        loading = true;
-                      });
-                      String result;
-                      try {
-                        result = selectedUserPic == null
-                            ? widget.userdata.identificationImage
-                            : await UploadImage().uploadImage(
-                                selectedUserPic.path, "identification");
-                        if (selectedUserPic != null) {
-                          await UploadImage().deleteImage(
-                              [widget.userdata.identificationImage],
-                              [result],
-                              "identification");
-                        }
-                      } on DioError catch (e) {
-                        setState(() {
-                          loading = false;
-                        });
-                      }
-                      try {
-                        await goToLookingForPagePage();
-                      } on DioError catch (e) {
-                        setState(() {
-                          loading = false;
-                        });
-                      }
-
-                      print("album enna varuthu");
-                      print(uploadedImages);
-                      List<String> albumimage = uploadedImages.length == 0
-                          ? widget.userdata.profileImage
-                          : uploadedImages;
-                      var userData = {
-                        "first_name": _firstNameCtrl.text,
-                        "last_name":
-                            _lastNameCtrl.text, //"email":_emailCtrl.text,
-                        "profession": ["$dropdownProfessionValue"],
-                        "dob": selectedDate.toString(),
-                        "gender_id": _selectedGenderid.toString(),
-                        "gender_details": [genderdetail.toMap()],
-                        "height": int.parse(_heightCtrl.text),
-                        "weight": int.parse(_weightCtrl.text),
-                        "bio": _bioCtrl.text,
-                        "interests": interestSelected,
-                        "hobbies": hobbieSelected,
-                        "hobby_details": hobbieSelected1,
-                        "interest_details": interestSelected1,
-                        "identification_image": result,
-                        "profile_image": albumimage,
-                      };
-                      print("edit profile userdata");
-                      print(userData);
-                      try {
-                        UserModel data =
-                            await UserNetwork().patchUserData(userData);
-                        data != null
-                            ? await context
-                                .read<HomeProvider>()
-                                .replaceData(data)
-                            : null;
-                        print("ool");
-                        Navigator.pop(context);
-                      } on DioError catch (e) {
-                        setState(() {
-                          loading = false;
-                        });
-                      }
-                    }
-                  },
-                ),
-              ],
-            )),
-      ),
+          )),
     );
   }
 

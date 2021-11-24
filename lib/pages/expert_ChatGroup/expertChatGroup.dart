@@ -49,64 +49,62 @@ class _ExpertGroupState extends State<ExpertGroup>
   }
 
   Widget _buildPhone() {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: MainTheme.appBarColor,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "Choose the Experts",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 50.sp,
-                fontFamily: "Nunito"),
-          ),
-          actions: [],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: MainTheme.appBarColor,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "Choose the Experts",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 50.sp,
+              fontFamily: "Nunito"),
         ),
-        body: Consumer<ExpertChatProvider>(builder: (context, data, child) {
-          return Column(
-            children: [
-              TabBar(
-                controller: _tabController,
-                indicatorColor: Colors.transparent,
-                // indicatorPadding:
-                //     const EdgeInsets.only(left: 25, right: 25, top: 10),
-                labelColor: MainTheme.primaryColor,
-                unselectedLabelColor: Colors.black,
-                labelStyle:
-                    TextStyle(fontSize: 45.sp, fontWeight: FontWeight.bold),
-                unselectedLabelStyle: TextStyle(fontSize: 14),
-                indicatorWeight: 3,
-                tabs: <Widget>[
-                  for (var i in data.chatGroupCato)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 5),
-                      child: Text(
-                        i.title,
-                        style: TextStyle(
-                          fontSize: 45.sp,
-                        ),
+        actions: [],
+      ),
+      body: Consumer<ExpertChatProvider>(builder: (context, data, child) {
+        return Column(
+          children: [
+            TabBar(
+              controller: _tabController,
+              indicatorColor: Colors.transparent,
+              // indicatorPadding:
+              //     const EdgeInsets.only(left: 25, right: 25, top: 10),
+              labelColor: MainTheme.primaryColor,
+              unselectedLabelColor: Colors.black,
+              labelStyle:
+                  TextStyle(fontSize: 45.sp, fontWeight: FontWeight.bold),
+              unselectedLabelStyle: TextStyle(fontSize: 14),
+              indicatorWeight: 3,
+              tabs: <Widget>[
+                for (var i in data.chatGroupCato)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: Text(
+                      i.title,
+                      style: TextStyle(
+                        fontSize: 45.sp,
                       ),
                     ),
-                ],
-              ),
-              Divider(),
-              Expanded(
-                child: TabBarView(
-                    controller: _tabController,
-                    physics: ClampingScrollPhysics(),
-                    children: <Widget>[
-                      for (var i in data.chatGroupCato)
-                        Container(child: ExpertGroupList(groupdata: i)),
-                    ]),
-              ),
-            ],
-          );
-        }),
-      ),
+                  ),
+              ],
+            ),
+            Divider(),
+            Expanded(
+              child: TabBarView(
+                  controller: _tabController,
+                  physics: ClampingScrollPhysics(),
+                  children: <Widget>[
+                    for (var i in data.chatGroupCato)
+                      Container(child: ExpertGroupList(groupdata: i)),
+                  ]),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

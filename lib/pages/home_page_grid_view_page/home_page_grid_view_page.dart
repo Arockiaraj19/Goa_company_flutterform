@@ -30,18 +30,16 @@ class _HomePageGridViewPageState extends State<HomePageGridViewPage> {
   }
 
   Widget _buildPhone() {
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: Colors.grey.shade50,
-          body: Container(
-          padding: EdgeInsets.all(5),
-          width: MediaQuery.of(context).size.width,
-          height:
-              MediaQuery.of(context).size.height - (kToolbarHeight + 125),
-          child: HomePageGridViewList(
-            usersData: widget.usersData,
-          ))),
-    );
+    return Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        body: Container(
+        padding: EdgeInsets.all(5),
+        width: MediaQuery.of(context).size.width,
+        height:
+            MediaQuery.of(context).size.height - (kToolbarHeight + 125),
+        child: HomePageGridViewList(
+          usersData: widget.usersData,
+        )));
   }
 
   Widget _buildWeb() {

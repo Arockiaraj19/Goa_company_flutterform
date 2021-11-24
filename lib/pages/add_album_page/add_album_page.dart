@@ -65,130 +65,128 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
         fontSize: ScreenUtil().setSp(MainTheme.mSecondaryContentfontSize),
         fontFamily: "lato");
 
-    return SafeArea(
-        child: Scaffold(
-            appBar: AppBar(
-              leading: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Icons.keyboard_arrow_left,
-                    color: Colors.black,
-                    size: 25,
-                  )),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              title: Container(
-                  child: Text("Add your Profile Pic",
-                      style: _textStyleforHeading)),
-            ),
-            body: SingleChildScrollView(
-                child: Column(children: [
-              Row(
-                children: [
-                  Container(
-                    margin: EdgeInsetsDirectional.only(start: 10, end: 10),
-                    width: 200,
-                    color: MainTheme.primaryColor,
-                    height: 2,
-                  ),
-                ],
-              ),
+    return Scaffold(
+        appBar: AppBar(
+          leading: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+                size: 25,
+              )),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          title: Container(
+              child: Text("Add your Profile Pic", style: _textStyleforHeading)),
+        ),
+        body: SingleChildScrollView(
+            child: Column(children: [
+          Row(
+            children: [
               Container(
                 margin: EdgeInsetsDirectional.only(start: 10, end: 10),
-                width: MediaQuery.of(context).size.width,
-                color: Colors.grey.shade300,
-                height: 1,
+                width: 200,
+                color: MainTheme.primaryColor,
+                height: 2,
               ),
-              Container(
-                  margin: EdgeInsetsDirectional.only(
-                      start: 60, end: 60, top: 20, bottom: 40),
-                  child: Row(children: [
-                    Expanded(
-                        child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          text: "Flash that sleek ",
-                          style: _textForsubHeading,
-                          children: [
-                            TextSpan(text: "smile ", style: _textForSmail
+            ],
+          ),
+          Container(
+            margin: EdgeInsetsDirectional.only(start: 10, end: 10),
+            width: MediaQuery.of(context).size.width,
+            color: Colors.grey.shade300,
+            height: 1,
+          ),
+          Container(
+              margin: EdgeInsetsDirectional.only(
+                  start: 60, end: 60, top: 20, bottom: 40),
+              child: Row(children: [
+                Expanded(
+                    child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      text: "Flash that sleek ",
+                      style: _textForsubHeading,
+                      children: [
+                        TextSpan(text: "smile ", style: _textForSmail
 
-                                // TextStyle(
-                                //     color: MainTheme.primaryColor,
-                                //     fontWeight: FontWeight.bold,
-                                //     fontSize: ScreenUtil().setSp(45),
-                                //     fontFamily: "Inter"),
+                            // TextStyle(
+                            //     color: MainTheme.primaryColor,
+                            //     fontWeight: FontWeight.bold,
+                            //     fontSize: ScreenUtil().setSp(45),
+                            //     fontFamily: "Inter"),
 
-                                ),
-                            TextSpan(
-                                text: "yours to decorate your profile",
-                                style: _textForsubHeading)
-                          ]),
-                    )),
-                  ])),
-              Container(
-                  color: Colors.grey[200],
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                              "Hold and drag your photos to change the order",
-                              style: _textForHold)),
-                    ],
-                  )),
-              Container(
-                  color: Colors.grey[200],
-                  height: MediaQuery.of(context).size.height / 2.7,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.all(10),
-                  child: StaggeredGridView.countBuilder(
-                    crossAxisCount: 3,
-                    itemCount: 6,
-                    itemBuilder: (BuildContext context, int index) {
-                      return AlbumImageCard(
-                        alreadyimage: null,
-                        onTap: () async {
-                          selectUserImage(index);
-                        },
-                        selectedUserAvatar: selectedUserAvatar[index],
-                        onTapClose: () {
-                          setState(() {
-                            selectedUserAvatar[index] = null;
-                          });
-                        },
-                      );
-                    },
-                    staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-                    mainAxisSpacing: 0,
-                    crossAxisSpacing: 0,
-                  )),
-              Container(
-                height: MediaQuery.of(context).size.height / 5,
-              ),
-              Row(
+                            ),
+                        TextSpan(
+                            text: "yours to decorate your profile",
+                            style: _textForsubHeading)
+                      ]),
+                )),
+              ])),
+          Container(
+              color: Colors.grey[200],
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GradientButton(
-                    height: 110.w,
-                    fontSize: 40.sp,
-                    width: 500.w,
-                    name: loading ? "Loading.." : "Continue",
-                    gradient: MainTheme.loginBtnGradient,
-                    active: true,
-                    isLoading: loading,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    onPressed: () {
-                      goToLookingForPagePage();
-                    },
-                  ),
+                  Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                          "Hold and drag your photos to change the order",
+                          style: _textForHold)),
                 ],
+              )),
+          Container(
+              color: Colors.grey[200],
+              height: MediaQuery.of(context).size.height / 2.7,
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(10),
+              child: StaggeredGridView.countBuilder(
+                crossAxisCount: 3,
+                itemCount: 6,
+                itemBuilder: (BuildContext context, int index) {
+                  return AlbumImageCard(
+                    alreadyimage: null,
+                    onTap: () async {
+                      selectUserImage(index);
+                    },
+                    selectedUserAvatar: selectedUserAvatar[index],
+                    onTapClose: () {
+                      setState(() {
+                        selectedUserAvatar[index] = null;
+                      });
+                    },
+                  );
+                },
+                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+              )),
+          Container(
+            height: MediaQuery.of(context).size.height / 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GradientButton(
+                height: 110.w,
+                fontSize: 40.sp,
+                width: 500.w,
+                name: loading ? "Loading.." : "Continue",
+                gradient: MainTheme.loginBtnGradient,
+                active: true,
+                isLoading: loading,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                onPressed: () {
+                  goToLookingForPagePage();
+                },
               ),
-            ]))));
+            ],
+          ),
+        ])));
   }
 
   goToLookingForPagePage() async {
@@ -200,7 +198,8 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
       print("kl1");
       for (int i = 0; i < 6; i++) {
         if (selectedUserAvatar[i] != null) {
-          String result = await network.uploadImage(selectedUserAvatar[i].path,"user_gallery");
+          String result = await network.uploadImage(
+              selectedUserAvatar[i].path, "user_gallery");
           print("output velia varuthaaa");
           print(result);
           uploadedImages.add(result);

@@ -15,6 +15,7 @@ class ChatGroup {
 
   List<ChatMessage> chat_details;
   List<dynamic> block_details;
+  int unreadCount;
   ChatGroup({
     this.id,
     this.user_id_1,
@@ -26,24 +27,25 @@ class ChatGroup {
     this.user_id_2_details,
     this.chat_details,
     this.block_details,
+    this.unreadCount,
   });
 
   factory ChatGroup.fromMap(Map<String, dynamic> map) {
     return ChatGroup(
-      id: map['_id'],
-      user_id_1: map['user_id_1'],
-      user_id_2: map['user_id_2'],
-      type: map['type'],
-      chat_count: map['chat_count'],
-      chat_time: map['chat_time'],
-      user_id_1_details: List<UserDetail>.from(
-          map['user_id_1_details']?.map((x) => UserDetail.fromMap(x))),
-      user_id_2_details: List<UserDetail>.from(
-          map['user_id_2_details']?.map((x) => UserDetail.fromMap(x))),
-      chat_details: List<ChatMessage>.from(
-          map['chat_entries']?.map((x) => ChatMessage.fromMap(x))),
-      block_details: List<dynamic>.from(map['block_details']),
-    );
+        id: map['_id'],
+        user_id_1: map['user_id_1'],
+        user_id_2: map['user_id_2'],
+        type: map['type'],
+        chat_count: map['chat_count'],
+        chat_time: map['chat_time'],
+        user_id_1_details: List<UserDetail>.from(
+            map['user_id_1_details']?.map((x) => UserDetail.fromMap(x))),
+        user_id_2_details: List<UserDetail>.from(
+            map['user_id_2_details']?.map((x) => UserDetail.fromMap(x))),
+        chat_details: List<ChatMessage>.from(
+            map['chat_entries']?.map((x) => ChatMessage.fromMap(x))),
+        block_details: List<dynamic>.from(map['block_details']),
+        unreadCount: map["unreadCount"] == null ? 0 : map["unreadCount"]);
   }
 
   factory ChatGroup.fromJson(String source) =>

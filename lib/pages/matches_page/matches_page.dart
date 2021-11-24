@@ -44,72 +44,69 @@ class _MatchesPageState extends State<MatchesPage>
       onWillPop: () {
         Alert().showAlertDialog(context);
       },
-      child: SafeArea(
-        child: Scaffold(
-          bottomNavigationBar: BottomTabBar(
-            currentIndex: 2,
+      child: Scaffold(
+        bottomNavigationBar: BottomTabBar(
+          currentIndex: 2,
+        ),
+        appBar: AppBar(
+          backgroundColor: MainTheme.appBarColor,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            "Matches",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 50.sp,
+                fontFamily: "Nunito"),
           ),
-          appBar: AppBar(
-            backgroundColor: MainTheme.appBarColor,
-            elevation: 0,
-            centerTitle: true,
-            title: Text(
-              "Matches",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 50.sp,
-                  fontFamily: "Nunito"),
+          actions: [],
+        ),
+        body: Column(
+          children: [
+            TabBar(
+              controller: _tabController,
+              indicatorColor: Colors.transparent,
+              indicatorPadding:
+                  const EdgeInsets.only(left: 25, right: 25, top: 10),
+              labelColor: MainTheme.primaryColor,
+              unselectedLabelColor: Colors.black,
+              labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              unselectedLabelStyle: TextStyle(fontSize: 14),
+              indicatorWeight: 2,
+              tabs: <Widget>[
+                Container(
+                  margin: const EdgeInsets.only(bottom: 5),
+                  child: Text(
+                    "Matches",
+                    style: TextStyle(
+                      fontSize: 45.sp,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 5),
+                  child: Text(
+                    "Blind",
+                    style: TextStyle(
+                      fontSize: 45.sp,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            actions: [],
-          ),
-          body: Column(
-            children: [
-              TabBar(
-                controller: _tabController,
-                indicatorColor: Colors.transparent,
-                indicatorPadding:
-                    const EdgeInsets.only(left: 25, right: 25, top: 10),
-                labelColor: MainTheme.primaryColor,
-                unselectedLabelColor: Colors.black,
-                labelStyle:
-                    TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                unselectedLabelStyle: TextStyle(fontSize: 14),
-                indicatorWeight: 2,
-                tabs: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 5),
-                    child: Text(
-                      "Matches",
-                      style: TextStyle(
-                        fontSize: 45.sp,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 5),
-                    child: Text(
-                      "Blind",
-                      style: TextStyle(
-                        fontSize: 45.sp,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Divider(),
-              Expanded(
-                child: TabBarView(
-                    controller: _tabController,
-                    physics: ClampingScrollPhysics(),
-                    children: <Widget>[
-                      Container(child: MatchesCardList()),
-                      Container(child: BlindsCardList()),
-                    ]),
-              ),
-            ],
-          ),
+            Divider(),
+            Expanded(
+              child: TabBarView(
+                  controller: _tabController,
+                  physics: ClampingScrollPhysics(),
+                  children: <Widget>[
+                    Container(child: MatchesCardList()),
+                    Container(child: BlindsCardList()),
+                  ]),
+            ),
+          ],
         ),
       ),
     );

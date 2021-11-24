@@ -32,7 +32,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:flutter_insta/flutter_insta.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -224,8 +224,7 @@ class _ProfilePageState extends State<ProfilePage>
       onWillPop: () {
         return Alert().showAlertDialog(context);
       },
-      child: SafeArea(
-          child: Consumer<HomeProvider>(builder: (context, data, child) {
+      child: Consumer<HomeProvider>(builder: (context, data, child) {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -698,6 +697,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 onTap: () {
                                   Routes.sailor(Routes.subscription, params: {
                                     "swiperIndex": null,
+                                    "onboard": false,
                                   });
                                 },
                                 child: SettingBox(name: "Subscription")),
@@ -727,7 +727,7 @@ class _ProfilePageState extends State<ProfilePage>
             currentIndex: 3,
           ),
         );
-      })),
+      }),
     );
   }
 

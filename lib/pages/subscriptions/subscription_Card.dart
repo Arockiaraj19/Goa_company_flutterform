@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 class SubscriptionCard extends StatefulWidget {
   SubscriptionModel data;
   int index;
-  SubscriptionCard(this.data, this.index);
+  bool onboard;
+  SubscriptionCard(this.data, this.index, this.onboard);
   @override
   _SubscriptionCardState createState() => _SubscriptionCardState();
 }
@@ -204,7 +205,11 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              Routes.sailor(Routes.findMatchPage);
+                              if (widget.onboard) {
+                                Routes.sailor(Routes.findMatchPage);
+                              } else {
+                                Navigator.pop(context);
+                              }
                             },
                             child: Container(
                               height: 30.h,

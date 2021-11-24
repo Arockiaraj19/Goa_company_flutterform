@@ -1,4 +1,5 @@
 import 'package:dating_app/providers/subscription_provider.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,8 @@ import 'subscription_Card.dart';
 
 class Subscription extends StatefulWidget {
   final int swiperIndex;
-  Subscription({this.swiperIndex});
+  final bool onboard;
+  Subscription({this.swiperIndex, this.onboard});
 
   @override
   State<Subscription> createState() => _SubscriptionState();
@@ -27,68 +29,80 @@ class _SubscriptionState extends State<Subscription> {
   SwiperController _controller = SwiperController();
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            title: Text(
-              "Subscription",
-              style: TextStyle(
-                  fontSize: 50.sp,
-                  color: Color(0xff575757),
-                  fontWeight: FontWeight.w600),
-            ),
-            actions: [
-              // Icon(
-              //   Icons.notifications_none,
-              //   color: Color(0xff575757),
-              //   size: 30,
-              // ),
-              // SizedBox(
-              //   width: 15.w,
-              // ),
-            ],
+    return Scaffold(
+        appBar: AppBar(
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+                padding: EdgeInsets.all(15),
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey[200],
+                  radius: 10,
+                  child: Icon(
+                    Icons.keyboard_arrow_left,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                )),
           ),
           backgroundColor: Colors.white,
-          body: Consumer<SubscriptionProvider>(
-            builder: (context, data, child) {
-              return data.subscriptionState == SubscriptionState.Error
-                  ? ErrorCard(
-                      text: data.errorText,
-                      ontab: () {
-                        context.read<SubscriptionProvider>().getdata();
-                      })
-                  : data.subscriptionState == SubscriptionState.Loaded
-                      ? data.subscriptionData.length == 0
-                          ? noResult()
-                          : Container(
-                              width: double.infinity,
-                              height: double.infinity,
-                              child: Swiper(
-                                  index: widget.swiperIndex == null
-                                      ? 0
-                                      : widget.swiperIndex,
-                                  scrollDirection: Axis.horizontal,
-                                  controller: _controller,
-                                  viewportFraction: 0.85,
-                                  scale: 0.9,
-                                  loop: false,
-                                  outer: true,
-                                  itemHeight: 480.h,
-                                  itemWidth: double.infinity,
-                                  itemCount: data.subscriptionData.length,
-                                  itemBuilder: (context, index) {
-                                    return SingleChildScrollView(
-                                      child: SubscriptionCard(
-                                          data.subscriptionData[index], index),
-                                    );
-                                  }))
-                      : Center(
-                          child: CircularProgressIndicator(),
-                        );
-            },
-          )),
-    );
+          elevation: 0,
+          title: Text(
+            "Subscription",
+            style: TextStyle(
+                fontSize: 50.sp,
+                color: Color(0xff575757),
+                fontWeight: FontWeight.w600),
+          ),
+          actions: [
+            // Icon(
+            //   Icons.notifications_none,
+            //   color: Color(0xff575757),
+            //   size: 30,
+            // ),
+            // SizedBox(
+            //   width: 15.w,
+            // ),
+          ],
+        ),
+        backgroundColor: Colors.white,
+        body: Consumer<SubscriptionProvider>(
+          builder: (context, data, child) {
+            return data.subscriptionState == SubscriptionState.Error
+                ? ErrorCard(
+                    text: data.errorText,
+                    ontab: () {
+                      context.read<SubscriptionProvider>().getdata();
+                    })
+                : data.subscriptionState == SubscriptionState.Loaded
+                    ? data.subscriptionData.length == 0
+                        ? noResult()
+                        : Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Swiper(
+                                index: widget.swiperIndex == null
+                                    ? 0
+                                    : widget.swiperIndex,
+                                scrollDirection: Axis.horizontal,
+                                controller: _controller,
+                                viewportFraction: 0.85,
+                                scale: 0.9,
+                                loop: false,
+                                outer: true,
+                                itemHeight: 480.h,
+                                itemWidth: double.infinity,
+                                itemCount: data.subscriptionData.length,
+                                itemBuilder: (context, index) {
+                                  return SingleChildScrollView(
+                                    child: SubscriptionCard(
+                                        data.subscriptionData[index],
+                                        index,
+                                        widget.onboard),
+                                  );
+                                }))
+                    : LoadingLottie();
+          },
+        ));
   }
 }

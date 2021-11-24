@@ -1,10 +1,12 @@
 import 'package:dating_app/pages/comment_page/widgets/massage_card.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 
@@ -98,13 +100,10 @@ class _MassageCardListState extends State<MassageCardList> {
                             ? Container()
                             : ListView.builder(
                                 itemBuilder: (context, index) => MassageCard(
-                                  
                                     data: data.chatGroupData[index]),
                                 itemCount: data.chatGroupData.length,
                               )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          );
+                        : LoadingLottie();
               },
             ),
           ),

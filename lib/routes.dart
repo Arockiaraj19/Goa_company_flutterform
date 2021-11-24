@@ -461,10 +461,11 @@ class Routes {
       SailorRoute(
           name: subscription,
           defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<int>(name: 'swiperIndex')],
+          params: [SailorParam<int>(name: 'swiperIndex'),SailorParam<bool>(name: 'onboard')],
           builder: (context, args, params) {
             int swiperIndex = Sailor.param<int>(context, "swiperIndex");
-            return Subscription(swiperIndex: swiperIndex);
+            bool onboard= Sailor.param<bool>(context, "onboard");
+            return Subscription(swiperIndex: swiperIndex,onboard: onboard,);
           }),
       SailorRoute(
           name: payment,

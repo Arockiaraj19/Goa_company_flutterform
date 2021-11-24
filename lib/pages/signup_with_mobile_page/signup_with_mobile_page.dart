@@ -4,12 +4,13 @@ import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/countryCode_provider.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -441,9 +442,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                                 },
                               )
                             : data.chatState == ChatState.Loading
-                                ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
+                                ? LoadingLottie()
                                 : data.codeData.length == 0
                                     ? Center(
                                         child: Text("no data"),
@@ -492,6 +491,13 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
         });
   }
 
+  void getcallback(String data) {
+    print("call back funtion la correct a varuthaa");
+    setState(() {
+      loading = false;
+    });
+  }
+
   goToOtpPage() async {
     setState(() {
       loading = true;
@@ -501,7 +507,8 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
       var result = await network.verifyMobileNoForSignup(
           codecontroller.text + _numberCtrl.text, code.id);
       result
-          ? registerUser(codecontroller.text + _numberCtrl.text, context, true)
+          ? registerUser(codecontroller.text + _numberCtrl.text, context, true,
+              getcallback)
           : null;
     } catch (e) {
       setState(() {

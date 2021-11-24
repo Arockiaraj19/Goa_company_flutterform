@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chatgroup_model.dart';
 import 'package:dating_app/models/expertGroup_model.dart';
 import 'package:dating_app/networks/expertChat_netword.dart';
@@ -52,16 +53,29 @@ class _ExpertCardState extends State<ExpertCard> {
                 Container(
                   margin: EdgeInsetsDirectional.only(end: 10, start: 10),
                   child: widget.data.profileImage.length == 0
-                      ? CircleAvatar(
-                          maxRadius: 80.r,
-                          minRadius: 70.r,
-                          backgroundImage:
-                              AssetImage("assets/images/placeholder.png"))
-                      : CircleAvatar(
-                          maxRadius: 80.r,
-                          minRadius: 70.r,
-                          backgroundImage:
-                              NetworkImage(widget.data.profileImage[0])),
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(100.0),
+                          child: Image.asset(
+                            "assets/images/placeholder.png",
+                            width: 160.r,
+                            height: 160.r,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(100.0),
+                          child: CachedNetworkImage(
+                              fit: BoxFit.fill,
+                              width: 160.r,
+                              height: 160.r,
+                              placeholder: (context, url) => Image.asset(
+                                    "assets/images/placeholder.png",
+                                    width: 160.r,
+                                    height: 160.r,
+                                    fit: BoxFit.cover,
+                                  ),
+                              imageUrl: widget.data.profileImage[0]),
+                        ),
                 ),
                 Expanded(
                   child: Container(

@@ -3,6 +3,7 @@
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/matches_page/widgets/blind_card.dart';
 import 'package:dating_app/providers/blind_provider.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/filter_bottom_sheet1.dart';
@@ -51,7 +52,7 @@ class _BlindsCardListState extends State<BlindsCardList> {
           },
         );
       } else if (data.blindState == BlindState.Loading) {
-        return Center(child: CircularProgressIndicator());
+        return LoadingLottie();
       } else if (data.blindState == BlindState.Loaded) {
         if (data.blindData?.length == 0 || data.blindData == null) {
           return Column(

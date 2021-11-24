@@ -16,7 +16,7 @@ import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -347,6 +347,11 @@ class _LoginWithState extends State<LoginWith> {
     });
   }
 
+  void getcallback(String data) {
+    print("call back funtion la correct a varuthaa");
+    offLoading();
+  }
+
   goToLoginOtpPage() async {
     setState(() {
       loading = true;
@@ -354,7 +359,7 @@ class _LoginWithState extends State<LoginWith> {
     try {
       var network1 = UserNetwork();
       await registerUser(
-          codecontroller.text + _numberCtrl.text, context, false);
+          codecontroller.text + _numberCtrl.text, context, false, getcallback);
     } catch (e) {
       offLoading();
     }

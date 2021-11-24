@@ -74,7 +74,7 @@ class _ImageCardState extends State<ImageCard> {
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
                     useOldImageOnUrlChange: true,
-                    placeholder: (context, url) => shimmerEffects(context),
+                  
                     errorWidget: (context, url, error) => Icon(
                       FontAwesomeIcons.earlybirds,
                       size: 100,

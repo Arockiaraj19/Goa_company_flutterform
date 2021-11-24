@@ -116,7 +116,7 @@ class _OtpPageState extends State<OtpPage> {
               centerTitle: true,
               title: Container(
                   child:
-                      Text("Verify Phone Number", style: _textStyleforHeading)),
+                      Text("Verify your account", style: _textStyleforHeading)),
             ),
             body: Container(
               height: MediaQuery.of(context).size.height,
@@ -166,6 +166,12 @@ class _OtpPageState extends State<OtpPage> {
     });
   }
 
+  void getcallback(String data) {
+    print("call back funtion la correct a varuthaa");
+    
+    offLoading();
+  }
+
   goToAddingPasswordPage() async {
     setState(() {
       loading = true;
@@ -173,18 +179,26 @@ class _OtpPageState extends State<OtpPage> {
     try {
       if (widget.otpData.isMob == false) {
         var network = EmailSignUpNetwork();
-        ResponseData result = await network.verifyOtpForSignup(
-            widget.otpData.value, _otpController.text);
-        showtoast(result.msg.toString());
-        result.statusDetails == 2
-            ? Routes.sailor(Routes.addingPasswordPage,
-                params: {"email": widget.otpData.value, "isforget": false})
-            : Routes.sailor(Routes.loginPage);
+        try {
+          ResponseData result = await network.verifyOtpForSignup(
+              widget.otpData.value, _otpController.text);
+          showtoast(result.msg.toString());
+          result.statusDetails == 2
+              ? Routes.sailor(Routes.addingPasswordPage,
+                  params: {"email": widget.otpData.value, "isforget": false})
+              : Routes.sailor(Routes.loginPage);
+        } catch (e) {
+          offLoading();
+        }
       } else {
-        var _credential = PhoneAuthProvider.credential(
-            verificationId: widget.otpData.id, smsCode: _otpController.text);
-        await Master_function(context, _credential, widget.otpData.value,
-            widget.otpData.isSignUp);
+        try {
+          var _credential = PhoneAuthProvider.credential(
+              verificationId: widget.otpData.id, smsCode: _otpController.text);
+          await Master_function(context, _credential, widget.otpData.value,
+              widget.otpData.isSignUp, getcallback);
+        } catch (e) {
+          offLoading();
+        }
       }
     } catch (e) {
       offLoading();

@@ -1,5 +1,6 @@
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -217,9 +218,7 @@ class BottomsheetWidget extends StatelessWidget {
                               child: Image.asset("assets/images/salyImage.png"))
                         ],
                       )
-                : Center(
-                    child: CircularProgressIndicator(),
-                  );
+                : LoadingLottie();
       },
     );
   }

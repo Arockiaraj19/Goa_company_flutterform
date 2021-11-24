@@ -2,6 +2,7 @@ import 'package:dating_app/models/match_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/providers/match_provider.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +113,7 @@ class _MatchesCardListState extends State<MatchesCardList> {
                     },
                   );
                 } else if (data.matchState == MatchState.Loading) {
-                  return Center(child: CircularProgressIndicator());
+                  return LoadingLottie();
                 } else if (data.matchState == MatchState.Loaded) {
                   return data.matchListData.length == 0
                       ? noResult()

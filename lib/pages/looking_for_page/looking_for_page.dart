@@ -66,106 +66,105 @@ class _LookingForPageState extends State<LookingForPage> {
         fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
 
-    return SafeArea(
-        child: Scaffold(
-            bottomSheet: Container(
-              height: 100,
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GradientButton(
-                      height: 110.w,
-                      fontSize: 40.sp,
-                      width: 500.w,
-                      name: loading ? "Saving.." : "Continue",
-                      gradient: MainTheme.loginBtnGradient,
-                      active: true,
-                      isLoading: loading,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      onPressed: () {
-                        goToParterTypePage();
-                      }),
-                ],
-              ),
-            ),
-            appBar: AppBar(
-              leading: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Icons.keyboard_arrow_left,
-                    color: Colors.black,
-                    size: 25,
-                  )),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              title: Container(
-                  child: Text("Looking for", style: _textStyleforHeading)),
-            ),
-            body: SingleChildScrollView(
-                child: Column(children: [
-              Row(
-                children: [
-                  Container(
-                    margin: EdgeInsetsDirectional.only(start: 10, end: 10),
-                    width: 250,
-                    color: MainTheme.primaryColor,
-                    height: 2,
-                  ),
-                ],
-              ),
+    return Scaffold(
+        bottomSheet: Container(
+          height: 100,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GradientButton(
+                  height: 110.w,
+                  fontSize: 40.sp,
+                  width: 500.w,
+                  name: loading ? "Saving.." : "Continue",
+                  gradient: MainTheme.loginBtnGradient,
+                  active: true,
+                  isLoading: loading,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  onPressed: () {
+                    goToParterTypePage();
+                  }),
+            ],
+          ),
+        ),
+        appBar: AppBar(
+          leading: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+                size: 25,
+              )),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          title: Container(
+              child: Text("Looking for", style: _textStyleforHeading)),
+        ),
+        body: SingleChildScrollView(
+            child: Column(children: [
+          Row(
+            children: [
               Container(
                 margin: EdgeInsetsDirectional.only(start: 10, end: 10),
-                width: MediaQuery.of(context).size.width,
-                color: Colors.grey.shade300,
-                height: 1,
+                width: 250,
+                color: MainTheme.primaryColor,
+                height: 2,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      padding: EdgeInsetsDirectional.only(top: 40, bottom: 30),
-                      child: Text("Who are you looking for?",
-                          style: _textStyleforLookingFor)),
-                ],
-              ),
-              SizedBox(height: ScreenUtil().setHeight(60)),
+            ],
+          ),
+          Container(
+            margin: EdgeInsetsDirectional.only(start: 10, end: 10),
+            width: MediaQuery.of(context).size.width,
+            color: Colors.grey.shade300,
+            height: 1,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               Container(
-                  width: MediaQuery.of(context).size.width * 0.588,
-                  child: ListView.builder(
-                      physics: ClampingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: itemGender.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        dynamic item = itemGender[index];
-                        return Container(
-                            height: 80,
-                            width: 60,
-                            child: GenderCard(
-                              name: item["gender"],
-                              image: item["image"],
-                              isActive: item["isActive"],
-                              onTap: () {
-                                if (mounted) {
-                                  setState(() {
-                                    selectedMenuIndex = index;
-                                    itemGender = itemGender
-                                        .map<Map<String, dynamic>>(
-                                            (Map<String, dynamic> item) {
-                                      item['isActive'] = false;
-                                      return item;
-                                    }).toList();
-                                    itemGender[index]['isActive'] = true;
-                                  });
-                                }
-                              },
-                            ));
-                      })),
-            ]))));
+                  padding: EdgeInsetsDirectional.only(top: 40, bottom: 30),
+                  child: Text("Who are you looking for?",
+                      style: _textStyleforLookingFor)),
+            ],
+          ),
+          SizedBox(height: ScreenUtil().setHeight(60)),
+          Container(
+              width: MediaQuery.of(context).size.width * 0.588,
+              child: ListView.builder(
+                  physics: ClampingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: itemGender.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    dynamic item = itemGender[index];
+                    return Container(
+                        height: 80,
+                        width: 60,
+                        child: GenderCard(
+                          name: item["gender"],
+                          image: item["image"],
+                          isActive: item["isActive"],
+                          onTap: () {
+                            if (mounted) {
+                              setState(() {
+                                selectedMenuIndex = index;
+                                itemGender = itemGender
+                                    .map<Map<String, dynamic>>(
+                                        (Map<String, dynamic> item) {
+                                  item['isActive'] = false;
+                                  return item;
+                                }).toList();
+                                itemGender[index]['isActive'] = true;
+                              });
+                            }
+                          },
+                        ));
+                  })),
+        ])));
   }
 
   goToParterTypePage() async {
