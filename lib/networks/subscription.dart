@@ -102,7 +102,11 @@ class Subscription {
       var data = _dio.then((value) async {
         response = await value.get("/user/subscriptions/" + userId);
         print("response check plans ");
-        return response.data;
+        print(response.data);
+        if (response.data == null) {
+          return response.data;
+        }
+        return response.data["plan"];
       });
       return data;
     } catch (e) {

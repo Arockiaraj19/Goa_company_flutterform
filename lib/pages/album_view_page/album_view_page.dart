@@ -24,6 +24,7 @@ class _AlbumViewState extends State<AlbumView> {
     return Scaffold(
       body: Container(
           child: PhotoViewGallery.builder(
+            
         scrollPhysics: const BouncingScrollPhysics(),
         builder: (BuildContext context, int index) {
           return PhotoViewGalleryPageOptions(

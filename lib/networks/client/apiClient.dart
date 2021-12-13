@@ -37,6 +37,8 @@ Future<Dio> apiClient() async {
     // Do something with response data
     return handler.next(response); // continue
   }, onError: (DioError error, handler) async {
+    print(error.response);
+    // print(error.response.statusCode);
     showtoast(DioException.fromDioError(error).toString());
     // Do something with response error
     if (error.response != null) {
@@ -79,7 +81,7 @@ Future<Dio> apiClient() async {
   }));
   _dio.options.baseUrl = baseUrl;
   _dio.options.connectTimeout = 60000;
-  _dio.options.receiveTimeout = 3000;
+  _dio.options.receiveTimeout = 60000;
 
   return _dio;
 }
@@ -108,7 +110,7 @@ Future<Dio> authClient() async {
     }));
   _dio.options.baseUrl = baseUrl;
   _dio.options.connectTimeout = 60000;
-  _dio.options.receiveTimeout = 3000;
+  _dio.options.receiveTimeout = 60000;
 
   return _dio;
 }

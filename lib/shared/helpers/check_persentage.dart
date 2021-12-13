@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
 
@@ -108,3 +110,30 @@ class Persentage {
     return persentage;
   }
 }
+
+
+  Future<String> getdistance(location,location1) async {
+    print("location");
+
+
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((double.parse(location.coordinates[0]) -
+                    double.parse(location1.coordinates[0])) *
+                p) /
+            2 +
+        c(double.parse(location1.coordinates[0]) * p) *
+            c(double.parse(location.coordinates[0]) * p) *
+            (1 -
+                c((double.parse(location.coordinates[1]) -
+                        double.parse(location1.coordinates[1])) *
+                    p)) /
+            2;
+
+    double distanceInMeters = 1000 * 12742 * asin(sqrt(a));
+
+    String miles = (distanceInMeters / 1609.34).round().toString();
+    print(miles);
+    return miles;
+  }

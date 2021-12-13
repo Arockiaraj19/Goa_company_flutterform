@@ -11,10 +11,13 @@ class ExpertNetwork {
   Future createGroup(String expertid, UserModel userdata) async {
     print("user data correct a varuthaa");
     print(userdata.firstName);
+    print(expertid);
+
     Response response;
     try {
       final _dio = apiClient();
       String id = await getUserId();
+      print("user Id" + id);
       var data = _dio.then((value) async {
         response = await value.post("/chats/expertgroup", data: {
           "user_id": id,
@@ -22,8 +25,8 @@ class ExpertNetwork {
           "type": "personal",
           "user_details": userdata,
         });
-        print("response create method");
-        print(response.data["response"]);
+        print("group aakuthaa  create method");
+        print(response.data);
 
         return response.data["response"]["_id"].toString();
       });
@@ -76,7 +79,7 @@ class ExpertNetwork {
           "searchkey": searchKey
         });
         final results = List<Map<String, dynamic>>.from(response.data);
-
+        print("get group data");
         print(response.data);
         List<ExpertGroup> chatgroups =
             results.map((movieData) => ExpertGroup.fromMap(movieData)).toList();

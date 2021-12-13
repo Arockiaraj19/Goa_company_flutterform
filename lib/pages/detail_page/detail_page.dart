@@ -42,19 +42,6 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
-  Future<String> getdistance(location) async {
-    print("location");
-
-    double distanceInMeters = await Geolocator.distanceBetween(
-        widget.userDetails.location.coordinates[0],
-        widget.userDetails.location.coordinates[1],
-        location.coordinates[0],
-        location.coordinates[1]);
-    print("location in miles");
-    String miles = (distanceInMeters / 1609.34).round().toString();
-    return miles;
-  }
-
   bool loadingstar = true;
   bool loadingheart = true;
 
@@ -134,7 +121,8 @@ class _DetailPageState extends State<DetailPage> {
                         child: Consumer<HomeProvider>(
                             builder: (context, data, child) {
                           return FutureBuilder(
-                            future: getdistance(data.userData.location),
+                            future: getdistance(data.userData.location,
+                                widget.userDetails.location),
                             builder:
                                 (BuildContext context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData) {

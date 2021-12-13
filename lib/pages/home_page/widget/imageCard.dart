@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
@@ -27,18 +29,7 @@ class ImageCard extends StatefulWidget {
 }
 
 class _ImageCardState extends State<ImageCard> {
-  Future<String> getdistance(location) async {
-    print("location");
 
-    double distanceInMeters = await Geolocator.distanceBetween(
-        widget.data.location.coordinates[0],
-        widget.data.location.coordinates[1],
-        location.coordinates[0],
-        location.coordinates[1]);
-    print("location in miles");
-    String miles = (distanceInMeters / 1609.34).round().toString();
-    return miles;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +65,6 @@ class _ImageCardState extends State<ImageCard> {
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
                     useOldImageOnUrlChange: true,
-                  
                     errorWidget: (context, url, error) => Icon(
                       FontAwesomeIcons.earlybirds,
                       size: 100,
@@ -109,7 +99,7 @@ class _ImageCardState extends State<ImageCard> {
                                   builder: (context, data, child) {
                                 return Container(
                                   child: FutureBuilder(
-                                    future: getdistance(data.userData.location),
+                                    future: getdistance(data.userData.location,widget.data.location),
                                     builder: (BuildContext context,
                                         AsyncSnapshot snapshot) {
                                       if (snapshot.hasData) {

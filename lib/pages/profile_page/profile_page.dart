@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dating_app/models/like_list.dart';
+import 'package:dating_app/models/subscription_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/instagram.dart';
 import 'package:dating_app/networks/ref_network.dart';
@@ -18,6 +19,7 @@ import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/helpers/check_persentage.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/album_card_list.dart';
@@ -664,32 +666,55 @@ class _ProfilePageState extends State<ProfilePage>
                                 builder: (context, subdata, child) {
                               return InkWell(
                                   onTap: () async {
+                                    if (subdata.plan != null) {
+                                      if (subdata.subscriptionData.length ==
+                                          0) {
+                                        await subdata.getdata();
+                                      }
+                                      SubscriptionModel sdata = subdata
+                                          .subscriptionData
+                                          .firstWhere((element) =>
+                                              element.id == subdata.plan);
+                                      print("id correct varuthaa");
+                                      print(subdata.checklistData[5].title);
+                                      if (sdata.checklists.any((element) =>
+                                          element.id !=
+                                          subdata.checklistData[5].id)) {
+                                        return BottomSheetClass()
+                                            .showplans(context);
+                                      }
+                                    }
+
+                                    if (subdata.plan == null) {
+                                      if (int.parse(subdata.count) >=
+                                          data.userData.subCount) {
+                                        List<UserModel> data =
+                                            await Subscription().updateCount(1);
+                                        await context
+                                            .read<HomeProvider>()
+                                            .replaceData(data[0]);
+                                        await context
+                                            .read<ExpertChatProvider>()
+                                            .getGroupCatoData();
+                                        return Routes.sailor(
+                                            Routes.expertGroup);
+                                      } else {
+                                        if (subdata.subscriptionData.length ==
+                                            0) {
+                                          subdata.getdata();
+                                          return BottomSheetClass()
+                                              .showplans(context);
+                                        } else {
+                                          return BottomSheetClass()
+                                              .showplans(context);
+                                        }
+                                      }
+                                    }
                                     await context
                                         .read<ExpertChatProvider>()
                                         .getGroupCatoData();
+
                                     Routes.sailor(Routes.expertGroup);
-                                    // if (subdata.plan == null) {
-                                    //   if (int.parse(subdata.count) >=
-                                    //       data.userData.subCount) {
-                                    //     List<UserModel> data =
-                                    //         await Subscription().updateCount(1);
-                                    //     await context
-                                    //         .read<HomeProvider>()
-                                    //         .replaceData(data[0]);
-                                    //     await context
-                                    //         .read<ExpertChatProvider>()
-                                    //         .getGroupCatoData();
-                                    //     Routes.sailor(Routes.expertGroup);
-                                    //   } else {
-                                    //     if (subdata.subscriptionData.length ==
-                                    //         0) {
-                                    //       subdata.getdata();
-                                    //       BottomSheetClass().showplans(context);
-                                    //     } else {
-                                    //       BottomSheetClass().showplans(context);
-                                    //     }
-                                    //   }
-                                    // }
                                   },
                                   child: SettingBox(name: "Expert Chat"));
                             }),

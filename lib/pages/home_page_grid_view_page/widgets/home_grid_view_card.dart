@@ -22,18 +22,7 @@ class HomeGridViewcard extends StatefulWidget {
 }
 
 class _HomeGridViewcardState extends State<HomeGridViewcard> {
-  Future<String> getdistance(location) async {
-    print("location");
 
-    double distanceInMeters = await Geolocator.distanceBetween(
-        widget.userData.location.coordinates[0],
-        widget.userData.location.coordinates[1],
-        location.coordinates[0],
-        location.coordinates[1]);
-    print("location in miles");
-    String miles = (distanceInMeters / 1609.34).round().toString();
-    return miles;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +155,7 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                                             return Container(
                                               child: FutureBuilder(
                                                 future: getdistance(
-                                                    data.userData.location),
+                                                    data.userData.location,widget.userData.location),
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot snapshot) {
                                                   if (snapshot.hasData) {
@@ -352,7 +341,7 @@ class _HomeGridViewcardState extends State<HomeGridViewcard> {
                                       return Container(
                                         child: FutureBuilder(
                                           future: getdistance(
-                                              data.userData.location),
+                                              data.userData.location,widget.userData.location),
                                           builder: (BuildContext context,
                                               AsyncSnapshot snapshot) {
                                             if (snapshot.hasData) {

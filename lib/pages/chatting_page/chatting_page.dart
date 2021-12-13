@@ -1,12 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chatmessage_model.dart';
 import 'package:dating_app/models/game_request_model.dart';
 import 'package:dating_app/models/games.dart';
+import 'package:dating_app/models/imageCheckModel.dart';
 import 'package:dating_app/models/question_model.dart';
+import 'package:dating_app/networks/ImageCheck.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/client/api_list.dart';
+import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/games_network.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
@@ -20,6 +24,7 @@ import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -743,6 +748,22 @@ class _ChattingPageState extends State<ChattingPage> {
   }
 
   goToAlbumPage(XFile image) async {
+    List<int> imageBytes = File(image.path).readAsBytesSync();
+
+    String base64Image = base64Encode(imageBytes);
+    try {
+      ImageCheckModel resultsafe = await ImageCheckNetwork().check(base64Image);
+      if (resultsafe.safe < resultsafe.unsafe) {
+        setState(() {
+          loading = false;
+        });
+        Navigator.pop(context);
+        showtoast("your image is restricted");
+        return ImageCheckNetwork().addBadCount();
+      }
+    } on DioError catch (e) {
+      return showtoast(DioException.fromDioError(e).toString());
+    }
     var network = UploadImage();
 
     String result = await network.uploadImage(image.path, "user_chat_images");

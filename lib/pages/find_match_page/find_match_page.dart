@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dating_app/models/subscription_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/user_network.dart';
@@ -34,18 +35,52 @@ class _FindMatchPageState extends State<FindMatchPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    myBanner.load();
-    adWidget = AdWidget(ad: myBanner);
+
     saveLoginStatus(2);
+    allCall();
+  }
 
-    getdata();
-
+  allCall() async {
+    await getdata();
+    await checkAds();
+    getnotifi();
     getLoc();
   }
 
-  getdata() {
+  checkAds() async {
+    if (context.read<SubscriptionProvider>().plan != null) {
+      print("en plan varutha");
+      print(context.read<SubscriptionProvider>().plan);
+      if (context.read<SubscriptionProvider>().subscriptionData.length == 0) {
+        await context.read<SubscriptionProvider>().getdata();
+      }
+      SubscriptionModel sdata = context
+          .read<SubscriptionProvider>()
+          .subscriptionData
+          .firstWhere((element) =>
+              element.id == context.read<SubscriptionProvider>().plan);
+
+      if (sdata.checklists.any((element) =>
+          element.id !=
+          context.read<SubscriptionProvider>().checklistData[4].id)) {
+        print("ads load aakuthaa");
+        myBanner.load();
+        adWidget = AdWidget(ad: myBanner);
+      }
+    } else {
+      print("else part aavathu run aakuthaa");
+      myBanner.load();
+      adWidget = AdWidget(ad: myBanner);
+    }
+  }
+
+  getdata() async {
+    await context.read<SubscriptionProvider>().checkplans();
+  }
+
+  getnotifi() async {
     context.read<HomeProvider>().getData();
-    context.read<SubscriptionProvider>().checkplans();
+
     context.read<NotificationProvider>().getData();
   }
 
@@ -326,12 +361,13 @@ class _FindMatchPageState extends State<FindMatchPage> {
                         );
                 },
               ),
-              Container(
-                alignment: Alignment.center,
-                child: adWidget,
-                width: myBanner.size.width.toDouble(),
-                height: myBanner.size.height.toDouble(),
-              ),
+              if (adWidget != null)
+                Container(
+                  alignment: Alignment.center,
+                  child: adWidget,
+                  width: myBanner.size.width.toDouble(),
+                  height: myBanner.size.height.toDouble(),
+                ),
             ],
           )),
     );

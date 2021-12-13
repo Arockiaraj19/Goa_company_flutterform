@@ -192,14 +192,14 @@ class UserModel {
 
 class Location {
   String type;
-  List<double> coordinates;
+  List<String> coordinates;
 
   Location({this.type, this.coordinates});
 
   Location.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     coordinates =
-        (json['coordinates'] as List).map((e) => e as double).toList();
+        (json['coordinates'] as List).map((e) => e.toString()).toList();
   }
 
   Map<String, dynamic> toJson() {

@@ -21,5 +21,6 @@ class FCM {
     print("user id");
     print(id);
     await FirebaseMessaging.instance.subscribeToTopic(id);
+    await FirebaseMessaging.instance.subscribeToTopic("broadcast_user");
   }
 }

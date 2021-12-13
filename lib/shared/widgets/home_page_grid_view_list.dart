@@ -1,3 +1,4 @@
+import 'package:dating_app/models/subscription_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/subscription.dart';
@@ -55,18 +56,35 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                         List<UserModel> data =
                             await Subscription().updateCount(1);
                         await context.read<HomeProvider>().replaceData(data[0]);
-                        Routes.sailor(Routes.detailPage, params: {
+                        return Routes.sailor(Routes.detailPage, params: {
                           "userDetails": widget.usersData.response[index]
                         });
                       } else {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context);
                         } else {
-                          BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context);
                         }
                       }
                     }
+                    if (subdata.plan != null) {
+                      print("en plan varutha");
+                      print(subdata.plan);
+                      if (subdata.subscriptionData.length == 0) {
+                        await subdata.getdata();
+                      }
+                      SubscriptionModel sdata = subdata.subscriptionData
+                          .firstWhere((element) => element.id == subdata.plan);
+
+                      if (sdata.checklists.any((element) =>
+                          element.id != subdata.checklistData[6].id)) {
+                        return BottomSheetClass().showplans(context);
+                      }
+                    }
+                    Routes.sailor(Routes.detailPage, params: {
+                      "userDetails": widget.usersData.response[index]
+                    });
                   },
                   child: HomeGridViewcard(
                     userData: widget.usersData.response[index],

@@ -1,3 +1,4 @@
+import 'package:dating_app/models/subscription_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/chat_network.dart';
@@ -7,6 +8,7 @@ import 'package:dating_app/pages/home_page/widget/imageCard.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/widgets/animation_button.dart';
 import 'package:dating_app/shared/widgets/bottmsheet.dart';
 import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
@@ -63,6 +65,20 @@ class _ImageSwiperState extends State<ImageSwiper> {
                             BottomSheetClass().showplans(context);
                           }
                         }
+                      } else {
+                        print("en plan varutha");
+                        print(subdata.plan);
+                        if (subdata.subscriptionData.length == 0) {
+                          await subdata.getdata();
+                        }
+                        SubscriptionModel sdata = subdata.subscriptionData
+                            .firstWhere(
+                                (element) => element.id == subdata.plan);
+
+                        if (sdata.checklists.any((element) =>
+                            element.id != subdata.checklistData[6].id)) {
+                          return BottomSheetClass().showplans(context);
+                        }
                       }
                     },
                     controller: _controller,
@@ -93,6 +109,20 @@ class _ImageSwiperState extends State<ImageSwiper> {
                             BottomSheetClass().showplans(context);
                           }
                         }
+                      } else {
+                        print("en plan varutha");
+                        print(subdata.plan);
+                        if (subdata.subscriptionData.length == 0) {
+                          await subdata.getdata();
+                        }
+                        SubscriptionModel sdata = subdata.subscriptionData
+                            .firstWhere(
+                                (element) => element.id == subdata.plan);
+
+                        if (sdata.checklists.any(
+                            (element) => element.title != checkListData[6])) {
+                          BottomSheetClass().showplans(context);
+                        }
                       }
                     },
                     layout: SwiperLayout.TINDER,
@@ -106,27 +136,43 @@ class _ImageSwiperState extends State<ImageSwiper> {
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           onTap: () async {
+                            if (subdata.plan != null) {
+                              print("en plan varutha");
+                              print(subdata.plan);
+                              if (subdata.subscriptionData.length == 0) {
+                                await subdata.getdata();
+                              }
+                              SubscriptionModel sdata = subdata.subscriptionData
+                                  .firstWhere(
+                                      (element) => element.id == subdata.plan);
+
+                              if (sdata.checklists.any((element) =>
+                                  element.id != subdata.checklistData[6].id)) {
+                                return BottomSheetClass().showplans(context);
+                              }
+                            }
+
+                            if (subdata.plan == null) {
+                              if (int.parse(subdata.count) >=
+                                  data.userData.subCount) {
+                                List<UserModel> data =
+                                    await Subscription().updateCount(1);
+                                await context
+                                    .read<HomeProvider>()
+                                    .replaceData(data[0]);
+                                return goToDetailPage(
+                                    widget.userSuggestionData.response[index]);
+                              } else {
+                                if (subdata.subscriptionData.length == 0) {
+                                  subdata.getdata();
+                                  return BottomSheetClass().showplans(context);
+                                } else {
+                                  return BottomSheetClass().showplans(context);
+                                }
+                              }
+                            }
                             goToDetailPage(
                                 widget.userSuggestionData.response[index]);
-                            // if (subdata.plan == null) {
-                            //   if (int.parse(subdata.count) >=
-                            //       data.userData.subCount) {
-                            //     List<UserModel> data =
-                            //         await Subscription().updateCount(1);
-                            //     await context
-                            //         .read<HomeProvider>()
-                            //         .replaceData(data[0]);
-                            //     goToDetailPage(
-                            //         widget.userSuggestionData.response[index]);
-                            //   } else {
-                            //     if (subdata.subscriptionData.length == 0) {
-                            //       subdata.getdata();
-                            //       BottomSheetClass().showplans(context);
-                            //     } else {
-                            //       BottomSheetClass().showplans(context);
-                            //     }
-                            //   }
-                            // }
                           },
                           child: ImageCard(
                             data: widget.userSuggestionData.response[index],
@@ -194,9 +240,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context);
                         } else {
-                          BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context);
                         }
                       }
                     }
@@ -214,9 +260,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context);
                         } else {
-                          BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context);
                         }
                       }
                     }

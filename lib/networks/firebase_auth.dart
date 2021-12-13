@@ -24,13 +24,13 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp,
                 context, authcredential, mobile, isSignUp, callback);
           },
           verificationFailed: (FirebaseAuthException exception) {
-            if (exception.code == "invalid-phone-number") {
-              print("exception la correct a varuthaa");
-              print(exception.message);
-            }
-            print("verify phone number la enna error varuthu");
-            print(exception);
-            print(exception.code);
+            // if (exception.code == "invalid-phone-number") {
+            //   print("exception la correct a varuthaa");
+            //   print(exception.message);
+            // }
+            // print("verify phone number la enna error varuthu");
+            // print(exception);
+            // print(exception.code);
             showtoast(exception.message);
             callback(exception.message);
             throw Exception(exception.message);

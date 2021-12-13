@@ -1,3 +1,4 @@
+import 'package:dating_app/models/subscription_model.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/pages/like_match_list_page/widgets/like_list.dart';
 import 'package:dating_app/pages/like_match_list_page/widgets/match_list.dart';
@@ -42,9 +43,27 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
     if (context.read<SubscriptionProvider>().plan == null) {
       if (context.read<SubscriptionProvider>().subscriptionData.length == 0) {
         context.read<SubscriptionProvider>().getdata();
-        _showplans();
+        return _showplans();
       } else {
-        _showplans();
+        return _showplans();
+      }
+    }
+    if (context.read<SubscriptionProvider>().plan != null) {
+      print("en plan varutha");
+      print(context.read<SubscriptionProvider>().plan);
+      if (context.read<SubscriptionProvider>().subscriptionData.length == 0) {
+        await context.read<SubscriptionProvider>().getdata();
+      }
+      SubscriptionModel sdata = context
+          .read<SubscriptionProvider>()
+          .subscriptionData
+          .firstWhere((element) =>
+              element.id == context.read<SubscriptionProvider>().plan);
+
+      if (sdata.checklists.any((element) =>
+          element.id !=
+          context.read<SubscriptionProvider>().checklistData[6].id)) {
+        return _showplans();
       }
     }
   }
@@ -83,72 +102,72 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
   Widget _buildPhone() {
     return Scaffold(
       appBar: AppBar(
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-      bottom: PreferredSize(
-          preferredSize: Size.fromHeight(10),
-          child: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: Column(children: [
-                TabBar(
-                  controller: _tabController,
-                  indicatorColor: MainTheme.primaryColor,
-                  indicatorPadding:
-                      const EdgeInsets.only(left: 25, right: 25, top: 10),
-                  labelColor: MainTheme.primaryColor,
-                  unselectedLabelColor: Colors.black,
-                  labelStyle:
-                      TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  unselectedLabelStyle: TextStyle(fontSize: 14),
-                  indicatorWeight: 2,
-                  tabs: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 5),
-                      child: Text(
-                        "Likes",
-                        style: TextStyle(
-                          fontSize: 18,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          bottom: PreferredSize(
+              preferredSize: Size.fromHeight(10),
+              child: PreferredSize(
+                  preferredSize: const Size.fromHeight(kToolbarHeight),
+                  child: Column(children: [
+                    TabBar(
+                      controller: _tabController,
+                      indicatorColor: MainTheme.primaryColor,
+                      indicatorPadding:
+                          const EdgeInsets.only(left: 25, right: 25, top: 10),
+                      labelColor: MainTheme.primaryColor,
+                      unselectedLabelColor: Colors.black,
+                      labelStyle:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      unselectedLabelStyle: TextStyle(fontSize: 14),
+                      indicatorWeight: 2,
+                      tabs: <Widget>[
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            "Likes",
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 5),
-                      child: Text(
-                        "Matches",
-                        style: TextStyle(
-                          fontSize: 18,
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            "Matches",
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-                // Divider(),
-              ])))),
+                    // Divider(),
+                  ])))),
       body: Consumer<MatchProvider>(builder: (context, data, child) {
-    if (data.matchState == MatchState.Loading) {
-      return LinearProgressIndicator();
-    } else if (data.matchState == MatchState.Loaded) {
-      return TabBarView(
-          controller: _tabController,
-          physics: ClampingScrollPhysics(),
-          children: <Widget>[
-            Container(
-                child: LikeList(
-              likeList: data.likeListData,
-            )),
-            Container(
-                child: MatchList(
-              matchList: data.matchListData,
-            )),
-          ]);
-    } else {
-      return ErrorCard(text: data.errorText, ontab: () {});
-    }
+        if (data.matchState == MatchState.Loading) {
+          return LinearProgressIndicator();
+        } else if (data.matchState == MatchState.Loaded) {
+          return TabBarView(
+              controller: _tabController,
+              physics: ClampingScrollPhysics(),
+              children: <Widget>[
+                Container(
+                    child: LikeList(
+                  likeList: data.likeListData,
+                )),
+                Container(
+                    child: MatchList(
+                  matchList: data.matchListData,
+                )),
+              ]);
+        } else {
+          return ErrorCard(text: data.errorText, ontab: () {});
+        }
       }),
     );
   }
