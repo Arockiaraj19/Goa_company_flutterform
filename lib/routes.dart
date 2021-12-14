@@ -461,11 +461,17 @@ class Routes {
       SailorRoute(
           name: subscription,
           defaultTransitions: [SailorTransition.fade_in],
-          params: [SailorParam<int>(name: 'swiperIndex'),SailorParam<bool>(name: 'onboard')],
+          params: [
+            SailorParam<int>(name: 'swiperIndex'),
+            SailorParam<bool>(name: 'onboard')
+          ],
           builder: (context, args, params) {
             int swiperIndex = Sailor.param<int>(context, "swiperIndex");
-            bool onboard= Sailor.param<bool>(context, "onboard");
-            return Subscription(swiperIndex: swiperIndex,onboard: onboard,);
+            bool onboard = Sailor.param<bool>(context, "onboard");
+            return Subscription(
+              swiperIndex: swiperIndex,
+              onboard: onboard,
+            );
           }),
       SailorRoute(
           name: payment,
@@ -514,12 +520,12 @@ class Routes {
             return AboutUs();
           }),
 
-      SailorRoute(
-          name: crypto,
-          defaultTransitions: [SailorTransition.fade_in],
-          builder: (context, args, params) {
-            return Crypto();
-          }),
+      // SailorRoute(
+      //     name: crypto,
+      //     defaultTransitions: [SailorTransition.fade_in],
+      //     builder: (context, args, params) {
+      //       return Crypto();
+      //     }),
       SailorRoute(
           name: expertGroup,
           defaultTransitions: [SailorTransition.fade_in],

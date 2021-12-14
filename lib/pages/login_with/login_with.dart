@@ -10,6 +10,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/countryCode_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
@@ -46,14 +47,14 @@ class _LoginWithState extends State<LoginWith> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth < 1100) {
-        return _buildPhone();
+        return _buildPhone(false);
       } else {
-        return _buildWeb();
+        return _buildWeb(true);
       }
     });
   }
 
-  Widget _buildPhone() {
+  Widget _buildPhone(onWeb) {
     var _textStyleforSpark = TextStyle(
         color: MainTheme.sparksTextColor,
         fontWeight: FontWeight.w900,
@@ -111,21 +112,21 @@ class _LoginWithState extends State<LoginWith> {
                         SizedBox(
                           height: 110.h,
                         ),
-                        loginItem(widget.name),
+                        loginItem(widget.name, onWeb),
                       ]),
                 ))));
   }
 
-  Widget loginItem(String item, {double btnWidth}) {
+  Widget loginItem(String item, bool onWeb, {double btnWidth}) {
     switch (item) {
       case 'MOBILE':
-        return _loginWithNumber(btnWidth: btnWidth);
+        return _loginWithNumber(onWeb, btnWidth: btnWidth);
       case 'EMAIL':
-        return _loginWithEmail(btnWidth: btnWidth);
+        return _loginWithEmail(onWeb, btnWidth: btnWidth);
     }
   }
 
-  Widget _loginWithEmail({double btnWidth}) {
+  Widget _loginWithEmail(onWeb, {double btnWidth}) {
     var _passwordTextColor = TextStyle(
         color: MainTheme.forgotPassTextColor,
         fontWeight: FontWeight.w400,
@@ -142,7 +143,7 @@ class _LoginWithState extends State<LoginWith> {
             "Enter your email",
             style: TextStyle(
                 color: MainTheme.enterTextColor,
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 fontFamily: "lato",
                 fontWeight: FontWeight.w400),
           ),
@@ -175,7 +176,7 @@ class _LoginWithState extends State<LoginWith> {
             "Enter your password",
             style: TextStyle(
                 color: MainTheme.enterTextColor,
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 fontFamily: "lato",
                 fontWeight: FontWeight.w400),
           ),
@@ -189,7 +190,7 @@ class _LoginWithState extends State<LoginWith> {
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText,
             style: TextStyle(
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 letterSpacing: 1.0,
                 fontWeight: FontWeight.w400,
                 color: MainTheme.enterTextColor),
@@ -210,23 +211,25 @@ class _LoginWithState extends State<LoginWith> {
                           ? Icon(
                               Icons.remove_red_eye_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 45.sp,
+                              size: onWeb ? inputFont : 45.sp,
                             )
                           : Icon(
                               Icons.visibility_off_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 45.sp,
+                              size: onWeb ? inputFont : 45.sp,
                             ))),
-              contentPadding: EdgeInsets.only(
-                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              contentPadding: onWeb
+                  ? null
+                  : EdgeInsets.only(
+                      left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
               hintText: "Password",
               hintStyle: TextStyle(
-                  fontSize: 40.sp,
+                  fontSize: onWeb ? inputFont : 40.sp,
                   letterSpacing: 1.0,
                   fontWeight: FontWeight.w400,
                   color: Color(0xffC4C4C4)),
               errorStyle: TextStyle(
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 fontWeight: FontWeight.w400,
                 color: MainTheme.primaryColor,
               ),
@@ -277,7 +280,7 @@ class _LoginWithState extends State<LoginWith> {
                 "Forgot password ?",
                 textAlign: TextAlign.end,
                 style: TextStyle(
-                    fontSize: 40.sp,
+                    fontSize: onWeb ? inputFont : 40.sp,
                     letterSpacing: 1.0,
                     fontWeight: FontWeight.w400,
                     color: Color(0xffC4C4C4)),
@@ -293,15 +296,15 @@ class _LoginWithState extends State<LoginWith> {
           Align(
             alignment: Alignment.center,
             child: GradientButton(
-              height: 110.w,
-              fontSize: 40.sp,
-              width: 500.w,
+              height: onWeb ? 35 : 110.w,
+              fontSize: onWeb ? inputFont : 40.sp,
+              width: onWeb ? 130 : 500.w,
               name: loading ? "Logging In.." : "Log In",
               gradient: MainTheme.loginwithBtnGradient,
               active: true,
               color: Colors.white,
               isLoading: loading,
-              borderRadius: BorderRadius.circular(20.sp),
+              borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
               fontWeight: FontWeight.w500,
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
@@ -378,7 +381,7 @@ class _LoginWithState extends State<LoginWith> {
   String _code = "";
   String _number = "";
 
-  Widget _loginWithNumber({double btnWidth}) {
+  Widget _loginWithNumber(onWeb, {double btnWidth}) {
     return Form(
       key: _formKey,
       child: Column(
@@ -394,7 +397,7 @@ class _LoginWithState extends State<LoginWith> {
             "Enter your mobile number",
             style: TextStyle(
                 color: MainTheme.enterTextColor,
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 fontFamily: "lato",
                 fontWeight: FontWeight.w400),
           ),
@@ -404,7 +407,7 @@ class _LoginWithState extends State<LoginWith> {
           Row(
             children: [
               Container(
-                width: 180.w,
+                width: onWeb ? 65 : 180.w,
                 child: TextFormField(
                   readOnly: true,
                   controller: codecontroller,
@@ -412,25 +415,27 @@ class _LoginWithState extends State<LoginWith> {
                   textAlign: TextAlign.left,
                   keyboardType: TextInputType.number,
                   style: TextStyle(
-                      fontSize: 40.sp,
+                      fontSize: onWeb ? inputFont : 40.sp,
                       letterSpacing: 1.0,
                       fontWeight: FontWeight.w400,
                       color: MainTheme.enterTextColor),
                   decoration: InputDecoration(
                     isDense: true,
-                    contentPadding: EdgeInsets.only(
-                        left: 18.0.w,
-                        bottom: 12.0.h,
-                        top: 12.0.h,
-                        right: 2.0.w),
+                    contentPadding: onWeb
+                        ? null
+                        : EdgeInsets.only(
+                            left: 18.0.w,
+                            bottom: 12.0.h,
+                            top: 12.0.h,
+                            right: 2.0.w),
                     hintText: '+91',
                     hintStyle: TextStyle(
-                        fontSize: 40.sp,
+                        fontSize: onWeb ? inputFont : 40.sp,
                         letterSpacing: 1.0,
                         fontWeight: FontWeight.w400,
                         color: Color(0xffC4C4C4)),
                     errorStyle: TextStyle(
-                      fontSize: 40.sp,
+                      fontSize: onWeb ? inputFont : 40.sp,
                       fontWeight: FontWeight.w400,
                       color: MainTheme.primaryColor,
                     ),
@@ -487,7 +492,7 @@ class _LoginWithState extends State<LoginWith> {
                 ),
               ),
               SizedBox(
-                width: 10.w,
+                width: onWeb ? 5 : 10.w,
               ),
               Expanded(
                 child: Container(
@@ -497,25 +502,27 @@ class _LoginWithState extends State<LoginWith> {
                     textAlign: TextAlign.left,
                     keyboardType: TextInputType.number,
                     style: TextStyle(
-                        fontSize: 40.sp,
+                        fontSize: onWeb ? inputFont : 40.sp,
                         letterSpacing: 1.0,
                         fontWeight: FontWeight.w400,
                         color: MainTheme.enterTextColor),
                     decoration: InputDecoration(
                       isDense: true,
-                      contentPadding: EdgeInsets.only(
-                          left: 18.0.w,
-                          bottom: 12.0.h,
-                          top: 12.0.h,
-                          right: 2.0.w),
+                      contentPadding: onWeb
+                          ? null
+                          : EdgeInsets.only(
+                              left: 18.0.w,
+                              bottom: 12.0.h,
+                              top: 12.0.h,
+                              right: 2.0.w),
                       hintText: 'Mobile number',
                       hintStyle: TextStyle(
-                          fontSize: 40.sp,
+                          fontSize: onWeb ? inputFont : 40.sp,
                           letterSpacing: 1.0,
                           fontWeight: FontWeight.w400,
                           color: Color(0xffC4C4C4)),
                       errorStyle: TextStyle(
-                        fontSize: 40.sp,
+                        fontSize: onWeb ? inputFont : 40.sp,
                         fontWeight: FontWeight.w400,
                         color: MainTheme.primaryColor,
                       ),
@@ -573,15 +580,15 @@ class _LoginWithState extends State<LoginWith> {
           Align(
             alignment: Alignment.center,
             child: GradientButton(
-              height: 110.w,
-              fontSize: 40.sp,
+              height: onWeb ? 35 : 110.w,
+              fontSize: onWeb ? inputFont : 40.sp,
               name: loading ? "Logging In.." : "Log In",
               gradient: MainTheme.loginwithBtnGradient,
               active: true,
               color: Colors.white,
               isLoading: loading,
-              width: 500.w,
-              borderRadius: BorderRadius.circular(20.sp),
+              width: onWeb ? 130 : 500.w,
+              borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
               fontWeight: FontWeight.w500,
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
@@ -732,7 +739,7 @@ class _LoginWithState extends State<LoginWith> {
         });
   }
 
-  Widget _buildWeb() {
+  Widget _buildWeb(onWeb) {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width / 2;
 
@@ -839,10 +846,10 @@ class _LoginWithState extends State<LoginWith> {
                         ),
                       )
                     ])),
-                SizedBox(height: ScreenUtil().setHeight(100)),
+                SizedBox(height: ScreenUtil().setHeight(30)),
                 Container(
                     width: _width / 2,
-                    child: loginItem(widget.name, btnWidth: _width / 5)),
+                    child: loginItem(widget.name, onWeb, btnWidth: _width / 5)),
               ],
             )))
       ]),

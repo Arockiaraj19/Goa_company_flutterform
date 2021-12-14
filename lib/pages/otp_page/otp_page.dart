@@ -6,6 +6,7 @@ import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/otp_text_field.dart';
@@ -168,7 +169,7 @@ class _OtpPageState extends State<OtpPage> {
 
   void getcallback(String data) {
     print("call back funtion la correct a varuthaa");
-    
+
     offLoading();
   }
 
@@ -267,15 +268,16 @@ class _OtpPageState extends State<OtpPage> {
                       start: 35,
                     ),
               child: OtpTextField(
-                textStyle:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 45.sp),
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: onWeb ? inputFont : 45.sp),
                 numberOfFields: 6,
                 autoFocus: false,
                 controller: _otpController,
                 // onSubmit: goVerify,
                 showFieldAsBox: true,
-                fieldWidth: 100.r,
-                fieldHeight: 100.r,
+                fieldWidth: onWeb ? 40 : 100.r,
+                fieldHeight: onWeb ? 40 : 100.r,
 
                 focusedBorderColor: MainTheme.primaryColor,
                 enabledBorderColor: Colors.black,
@@ -299,6 +301,10 @@ class _OtpPageState extends State<OtpPage> {
                         )
                       : SizedBox(),
                 ),
+          if (onWeb)
+            SizedBox(
+              height: 30,
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -307,14 +313,15 @@ class _OtpPageState extends State<OtpPage> {
                       child: CircularProgressIndicator(),
                     )
                   : GradientButton(
-                      height: 110.w,
-                      fontSize: 40.sp,
-                      width: 500.w,
+                      height: onWeb ? 35 : 110.w,
+                      fontSize: onWeb ? inputFont : 40.sp,
+                      width: onWeb ? 130 : 500.w,
                       name: loading ? "Logging In.." : "Log In",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
+                      borderRadius: BorderRadius.circular(onWeb ? 5 : 15.sp),
                       isLoading: loading,
                       onPressed: () {
                         if (_otpController.text.length == 6) {
@@ -535,10 +542,6 @@ class _OtpPageState extends State<OtpPage> {
                         width: _width * 0.72,
                         child: _commonBuild(context, onWeb: true)),
                   ],
-                ),
-                Container(
-                  height: 69,
-                  width: _width,
                 ),
               ],
             )))

@@ -23,7 +23,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'models/question_model.dart';
 import 'providers/countryCode_provider.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'fun', // id
@@ -89,7 +89,7 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: onselectnotication);
-  await MobileAds.instance.initialize();
+  // await MobileAds.instance.initialize();
 
   runApp(
     DevicePreview(

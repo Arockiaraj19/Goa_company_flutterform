@@ -38,7 +38,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:sailor/sailor.dart';
@@ -72,73 +72,73 @@ class _ProfilePageState extends State<ProfilePage>
     super.initState();
     getData();
     _tabController = TabController(length: 2, vsync: this);
-    _createRewardedAd();
+    // _createRewardedAd();
   }
 
-  static final AdRequest request = AdRequest(
-    keywords: <String>['Book', 'Game'],
-    nonPersonalizedAds: true,
-  );
+  // static final AdRequest request = AdRequest(
+  //   keywords: <String>['Book', 'Game'],
+  //   nonPersonalizedAds: true,
+  // );
 
-  RewardedAd _rewardedAd;
-  int _numRewardedLoadAttempts = 0;
-  bool show = false;
+  // RewardedAd _rewardedAd;
+  // int _numRewardedLoadAttempts = 0;
+  // bool show = false;
 
-  void _createRewardedAd() {
-    RewardedAd.load(
-        adUnitId: "ca-app-pub-3940256099942544/5224354917",
-        request: request,
-        rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (RewardedAd ad) {
-            print('$ad loaded.');
-            _rewardedAd = ad;
-            _numRewardedLoadAttempts = 0;
+  // void _createRewardedAd() {
+  //   RewardedAd.load(
+  //       adUnitId: "ca-app-pub-3940256099942544/5224354917",
+  //       request: request,
+  //       rewardedAdLoadCallback: RewardedAdLoadCallback(
+  //         onAdLoaded: (RewardedAd ad) {
+  //           print('$ad loaded.');
+  //           _rewardedAd = ad;
+  //           _numRewardedLoadAttempts = 0;
 
-            // _showRewardedAd();
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('RewardedAd failed to load: $error');
-            _rewardedAd = null;
-            _numRewardedLoadAttempts += 1;
-            if (_numRewardedLoadAttempts <= 4) {
-              _createRewardedAd();
-            }
-          },
-        ));
-  }
+  //           // _showRewardedAd();
+  //         },
+  //         onAdFailedToLoad: (LoadAdError error) {
+  //           print('RewardedAd failed to load: $error');
+  //           _rewardedAd = null;
+  //           _numRewardedLoadAttempts += 1;
+  //           if (_numRewardedLoadAttempts <= 4) {
+  //             _createRewardedAd();
+  //           }
+  //         },
+  //       ));
+  // }
 
-  void _showRewardedAd() {
-    if (_rewardedAd == null) {
-      print('Warning: attempt to show rewarded before loaded.');
-      return;
-    }
+  // void _showRewardedAd() {
+  //   if (_rewardedAd == null) {
+  //     print('Warning: attempt to show rewarded before loaded.');
+  //     return;
+  //   }
 
-    _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (RewardedAd ad) {
-        _createRewardedAd();
-        print('ad onAdShowedFullScreenContent.');
-      },
-      onAdDismissedFullScreenContent: (RewardedAd ad) async {
-        UserModel data = await UserNetwork().getUserData();
-        await context.read<HomeProvider>().replaceData(data);
-        print('$ad onAdDismissedFullScreenContent.');
-      },
-      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
+  //   _rewardedAd.fullScreenContentCallback = FullScreenContentCallback(
+  //     onAdShowedFullScreenContent: (RewardedAd ad) {
+  //       _createRewardedAd();
+  //       print('ad onAdShowedFullScreenContent.');
+  //     },
+  //     onAdDismissedFullScreenContent: (RewardedAd ad) async {
+  //       UserModel data = await UserNetwork().getUserData();
+  //       await context.read<HomeProvider>().replaceData(data);
+  //       print('$ad onAdDismissedFullScreenContent.');
+  //     },
+  //     onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+  //       print('$ad onAdFailedToShowFullScreenContent: $error');
 
-        ad.dispose();
-      },
-    );
+  //       ad.dispose();
+  //     },
+  //   );
 
-    _rewardedAd.show(
-        onUserEarnedReward: (RewardedAd ad, RewardItem reward) async {
-      await Ref()
-          .coinCredit(context.read<HomeProvider>().userData.userReferralCode);
-      UserModel data = await UserNetwork().getUserData();
-      await context.read<HomeProvider>().replaceData(data);
-    });
-    _rewardedAd = null;
-  }
+  //   _rewardedAd.show(
+  //       onUserEarnedReward: (RewardedAd ad, RewardItem reward) async {
+  //     await Ref()
+  //         .coinCredit(context.read<HomeProvider>().userData.userReferralCode);
+  //     UserModel data = await UserNetwork().getUserData();
+  //     await context.read<HomeProvider>().replaceData(data);
+  //   });
+  //   _rewardedAd = null;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -161,8 +161,8 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   void dispose() {
     super.dispose();
-    _rewardedAd.dispose();
-    _rewardedAd = null;
+    // _rewardedAd.dispose();
+    // _rewardedAd = null;
   }
 
   int getItemCountPerRow(BuildContext context) {
@@ -369,7 +369,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     top: 40,
                                     child: InkWell(
                                       onTap: () {
-                                        _showRewardedAd();
+                                        // _showRewardedAd();
                                       },
                                       child: Container(
                                           padding: EdgeInsetsDirectional.only(

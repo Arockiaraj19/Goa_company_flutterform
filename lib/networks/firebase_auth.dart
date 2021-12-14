@@ -8,54 +8,70 @@ import 'package:flutter/material.dart';
 import '../routes.dart';
 import 'signup_network.dart';
 import 'user_network.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 FirebaseAuth _auth = FirebaseAuth.instance;
 
 Future registerUser(String mobile, BuildContext context, bool isSignUp,
     Function callback) async {
   TextEditingController _codeController = TextEditingController();
-
-  _auth
-      .verifyPhoneNumber(
-          phoneNumber: mobile,
-          timeout: Duration(seconds: 60),
-          verificationCompleted: (AuthCredential authcredential) {
-            Master_function(
-                context, authcredential, mobile, isSignUp, callback);
-          },
-          verificationFailed: (FirebaseAuthException exception) {
-            // if (exception.code == "invalid-phone-number") {
-            //   print("exception la correct a varuthaa");
-            //   print(exception.message);
-            // }
-            // print("verify phone number la enna error varuthu");
-            // print(exception);
-            // print(exception.code);
-            showtoast(exception.message);
-            callback(exception.message);
-            throw Exception(exception.message);
-          },
-          codeSent: (String verificationId, [int forceResendingToken]) {
-            // var dataa=jsonEncode({"value":"+91$mobile","id":verificationId,
-            //   "isMob":true,"isSignUp":true });
-            OtpModel data = OtpModel.fromJson({
-              "value": mobile,
-              "id": verificationId,
-              "isMob": true,
-              "isSignUp": isSignUp
-            });
-            Routes.sailor(Routes.otpPage,
-                params: {"otpData": data, "isforget": false});
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {
-            verificationId = verificationId;
-            print(verificationId);
-            print("Timout");
-          })
-      .catchError((e) {
-    print("inga yaachum enna varuthu");
-    throw Exception("Some thing wrong");
-  });
+  if (kIsWeb) {
+    _auth.signInWithPhoneNumber(mobile).then((value) {
+      OtpModel data = OtpModel.fromJson({
+        "value": mobile,
+        "id": value.verificationId.toString(),
+        "isMob": true,
+        "isSignUp": isSignUp
+      });
+      Routes.sailor(Routes.otpPage,
+          params: {"otpData": data, "isforget": false});
+    }).catchError((exception) {
+      showtoast(exception.toString());
+      callback(exception.toString());
+    });
+  } else {
+    _auth
+        .verifyPhoneNumber(
+            phoneNumber: mobile,
+            timeout: Duration(seconds: 60),
+            verificationCompleted: (AuthCredential authcredential) {
+              Master_function(
+                  context, authcredential, mobile, isSignUp, callback);
+            },
+            verificationFailed: (FirebaseAuthException exception) {
+              // if (exception.code == "invalid-phone-number") {
+              //   print("exception la correct a varuthaa");
+              //   print(exception.message);
+              // }
+              // print("verify phone number la enna error varuthu");
+              // print(exception);
+              // print(exception.code);
+              showtoast(exception.message);
+              callback(exception.message);
+              throw Exception(exception.message);
+            },
+            codeSent: (String verificationId, [int forceResendingToken]) {
+              // var dataa=jsonEncode({"value":"+91$mobile","id":verificationId,
+              //   "isMob":true,"isSignUp":true });
+              OtpModel data = OtpModel.fromJson({
+                "value": mobile,
+                "id": verificationId,
+                "isMob": true,
+                "isSignUp": isSignUp
+              });
+              Routes.sailor(Routes.otpPage,
+                  params: {"otpData": data, "isforget": false});
+            },
+            codeAutoRetrievalTimeout: (String verificationId) {
+              verificationId = verificationId;
+              print(verificationId);
+              print("Timout");
+            })
+        .catchError((e) {
+      print("inga yaachum enna varuthu");
+      throw Exception("Some thing wrong");
+    });
+  }
 }
 
 Future Master_function(BuildContext context, var cred, String mob,

@@ -4,6 +4,7 @@ import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/Forminput.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -163,69 +164,89 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
 
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Enter your email",
-            style: TextStyle(
-                color: MainTheme.enterTextColor,
-                fontSize: 40.sp,
-                fontFamily: "lato",
-                fontWeight: FontWeight.w400),
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
-          Forminput(
-            emailController: _emailCtrl,
-            placeholder: "Email",
-            validation: (val) {
-              if (val.isEmpty) {
-                return "Please enter email id";
-              }
-              RegExp regex = new RegExp(emailpatttern.toString());
-              if (!regex.hasMatch(val)) {
-                return 'Please enter valid email id';
-              }
-              if (val.length > 50) {
-                return "Please enter less than 50 letters";
-              }
-              // return null;
-            },
-          ),
-          SizedBox(
-            height: 50.h,
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: loading
-                ? CircularProgressIndicator()
-                : GradientButton(
-                    height: 110.w,
-                    fontSize: 40.sp,
-                    width: 500.w,
-                    name: "Next",
-                    gradient: MainTheme.loginwithBtnGradient,
-                    active: true,
-                    color: Colors.white,
-                    isLoading: loading,
-                    borderRadius: BorderRadius.circular(20.sp),
-                    fontWeight: FontWeight.w500,
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        if (widget.isforget) {
-                          gotoForgetOtpPage();
-                        } else {
-                          goToOtpPage();
+      child: Padding(
+        padding: onWeb ? EdgeInsets.fromLTRB(50, 0, 50, 0) : null,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: onWeb
+                  ? EdgeInsetsDirectional.only(
+                      top: _height / 18,
+                      bottom: _height / 25,
+                      start: _width * 0.1,
+                    )
+                  : EdgeInsets.all(0),
+              child: Text(
+                "Enter your email",
+                style: TextStyle(
+                    color: MainTheme.enterTextColor,
+                    fontSize: onWeb ? inputFont : 40.sp,
+                    fontFamily: "lato",
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+            SizedBox(
+              height: onWeb ? 7 : 8.h,
+            ),
+            Container(
+              padding: onWeb
+                  ? EdgeInsetsDirectional.only(
+                      start: _width * 0.1,
+                    )
+                  : EdgeInsets.all(0),
+              width: onWeb ? _width / 1.5 : null,
+              child: Forminput(
+                emailController: _emailCtrl,
+                placeholder: "Email",
+                validation: (val) {
+                  if (val.isEmpty) {
+                    return "Please enter email id";
+                  }
+                  RegExp regex = new RegExp(emailpatttern.toString());
+                  if (!regex.hasMatch(val)) {
+                    return 'Please enter valid email id';
+                  }
+                  if (val.length > 50) {
+                    return "Please enter less than 50 letters";
+                  }
+                  // return null;
+                },
+              ),
+            ),
+            SizedBox(
+              height: 50.h,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: loading
+                  ? CircularProgressIndicator()
+                  : GradientButton(
+                      height: onWeb ? 35 : 110.w,
+                      fontSize: onWeb ? inputFont : 40.sp,
+                      width: onWeb ? 130 : 500.w,
+                      name: "Next",
+                      gradient: MainTheme.loginwithBtnGradient,
+                      active: true,
+                      color: Colors.white,
+                      isLoading: loading,
+                      borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
+                      fontWeight: FontWeight.w500,
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          if (widget.isforget) {
+                            gotoForgetOtpPage();
+                          } else {
+                            goToOtpPage();
+                          }
                         }
-                      }
-                      // var dto = {"password": "123456", "email": "asd@mail.com"};
-                      // _authStore.onLogin(dto);
-                    },
-                  ),
-          ),
-        ],
+                        // var dto = {"password": "123456", "email": "asd@mail.com"};
+                        // _authStore.onLogin(dto);
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -350,10 +371,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                           ])),
                     ]),
                 commonPart(context, onWeb: true),
-                Container(
-                  height: 110,
-                  width: _width,
-                ),
+
                 // Container(
                 //     child: Row(
                 //         mainAxisAlignment: MainAxisAlignment.center,

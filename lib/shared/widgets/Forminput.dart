@@ -1,6 +1,8 @@
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class Forminput extends StatelessWidget {
   const Forminput(
@@ -22,21 +24,24 @@ class Forminput extends StatelessWidget {
           cursorColor: MainTheme.primaryColor,
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontSize: 40.sp,
+              fontSize: kIsWeb ? inputFont : 40.sp,
               letterSpacing: 1.0,
               fontWeight: FontWeight.w400,
               color: MainTheme.enterTextColor),
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(
-                left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+            isDense: kIsWeb ? true : false,
+            contentPadding: kIsWeb
+                ? null
+                : EdgeInsets.only(
+                    left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
             hintText: (placeholder),
             hintStyle: TextStyle(
-                fontSize: 40.sp,
+                fontSize: kIsWeb ? inputFont : 40.sp,
                 letterSpacing: 1.0,
                 fontWeight: FontWeight.w400,
                 color: Color(0xff8F96AD)),
             errorStyle: TextStyle(
-              fontSize: 40.sp,
+              fontSize: kIsWeb ? inputFont : 40.sp,
               fontWeight: FontWeight.w400,
               color: MainTheme.primaryColor,
             ),
