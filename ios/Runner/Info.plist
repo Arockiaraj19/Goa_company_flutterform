@@ -83,5 +83,35 @@
     <string>This app needs access to location when in the background.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>microphone<string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location when in the background.</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<key>com.apple.security.network.client</key>
+    <true/>
+    <key>CFBundleURLTypes</key>
+       <array>
+          <dict>
+             <key>CFBundleURLSchemes</key>
+                <array>
+                  <string>fb1221922428312879</string>
+                </array>
+          </dict>
+       </array>
+    <key>FacebookAppID</key>
+    <string>1221922428312879</string>
+    <key>FacebookClientToken</key>
+    <string>CLIENT-TOKEN</string>
+    <key>FacebookDisplayName</key>
+    <string>Sparks</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+    <string>fbapi</string>
+    <string>fb-messenger-share-api</string>
+    <string>fbauth2</string>
+    <string>fbshareextension</string>
+    </array>
+ 
 </dict>
 </plist>

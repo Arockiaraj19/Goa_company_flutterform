@@ -14,3 +14,5 @@ List<String> checkListData = [
   "Expert Support",
   "Unlimited Profile Visit"
 ];
+
+const String razorpayKey = "c7N2K2JTXE7dOj7tVCzsHSQF";

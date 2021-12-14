@@ -3,14 +3,19 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/subscription.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/onboarding_check.dart';
+import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class SubscriptionCard extends StatefulWidget {
   SubscriptionModel data;
@@ -23,6 +28,65 @@ class SubscriptionCard extends StatefulWidget {
 
 class _SubscriptionCardState extends State<SubscriptionCard> {
   bool loading = false;
+  Razorpay _razorpay;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    showtoast("SUCCESS: " + response.paymentId);
+    print("success");
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    showtoast(
+      "ERROR: " + response.code.toString() + " - " + response.message,
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    showtoast("EXTERNAL_WALLET: " + response.walletName);
+  }
+
+  void openCheckout(UserModel data) async {
+    print("email correct a varutha");
+    print(data.email);
+
+    var options = {
+      'key': "jGSNzmgHnMrqaob7fgFmZTuZ",
+      'amount': double.parse(widget.data.price.toString()) * 100,
+      "currency": "INR",
+      'name': data.firstName + " " + data.lastName,
+      'description': 'Payment',
+      'prefill': {
+        'contact': "0000000000",
+        'email': "testemail@gmail.com",
+      },
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -199,91 +263,100 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              if (widget.onboard) {
-                                Routes.sailor(Routes.findMatchPage);
-                              } else {
-                                Navigator.pop(context);
-                              }
-                            },
-                            child: Container(
-                              height: 30.h,
-                              width: 300.w,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      color: MainTheme.primaryColor, width: 1),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Text(
-                                "Skip",
-                                style: TextStyle(
-                                    color: MainTheme.primaryColor,
-                                    fontSize: 40.sp,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 100.w,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              try {
-                                setState(() {
-                                  loading = true;
-                                });
-                                await Subscription().addPlan(
-                                    widget.data.id,
-                                    widget.data.validity,
-                                    widget.data.durationType,
-                                    widget.data.coins,
-                                    widget.data.subscriptionType);
-                                // UserModel result =
-                                //     await UserNetwork().getUserData();
-                                // onboardingCheck(result);
-                                Routes.sailor(Routes.findMatchPage);
-                              } on DioError catch (e) {
-                                print("error enna varuthu");
-                                print(e);
-                                setState(() {
-                                  loading = false;
-                                });
-                                // if (e.response.statusCode == 409) {
-                                //   print("ithukulla error varuthaaa");
-                                //   setState(() {
-                                //     loading = false;
-                                //   });
-                                //   UserModel result =
-                                //       await UserNetwork().getUserData();
-                                //   onboardingCheck(result);
-                                // }
-                              }
-                            },
-                            child: Container(
-                              height: 30.h,
-                              width: 300.w,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  gradient: MainTheme.backgroundGradient,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Text(
-                                "Upgrade",
-                                style: TextStyle(
+                  : Consumer<HomeProvider>(builder: (context, data, child) {
+                      return Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                if (widget.onboard) {
+                                  Routes.sailor(Routes.findMatchPage);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Container(
+                                height: 30.h,
+                                width: 300.w,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
                                     color: Colors.white,
-                                    fontSize: 40.sp,
-                                    fontWeight: FontWeight.w600),
+                                    border: Border.all(
+                                        color: MainTheme.primaryColor,
+                                        width: 1),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Text(
+                                  "Skip",
+                                  style: TextStyle(
+                                      color: MainTheme.primaryColor,
+                                      fontSize: 40.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
+                            SizedBox(
+                              width: 100.w,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                try {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  if (widget.data.subscriptionType == "Coins") {
+                                    await Subscription().addPlan(
+                                        widget.data.id,
+                                        widget.data.validity,
+                                        widget.data.durationType,
+                                        widget.data.coins,
+                                        widget.data.subscriptionType);
+                                    Routes.sailor(Routes.findMatchPage);
+                                  } else {
+                                    openCheckout(data.userData);
+                                  }
+
+                                  // UserModel result =
+                                  //     await UserNetwork().getUserData();
+                                  // onboardingCheck(result);
+
+                                } on DioError catch (e) {
+                                  print("error enna varuthu");
+                                  print(e);
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                  // if (e.response.statusCode == 409) {
+                                  //   print("ithukulla error varuthaaa");
+                                  //   setState(() {
+                                  //     loading = false;
+                                  //   });
+                                  //   UserModel result =
+                                  //       await UserNetwork().getUserData();
+                                  //   onboardingCheck(result);
+                                  // }
+                                }
+                              },
+                              child: Container(
+                                height: 30.h,
+                                width: 300.w,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    gradient: MainTheme.backgroundGradient,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Text(
+                                  "Upgrade",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 40.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    })
             ],
           ),
         ),
