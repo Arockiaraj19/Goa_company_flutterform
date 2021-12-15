@@ -5,6 +5,7 @@ import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
@@ -170,7 +171,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
             keyboardType: TextInputType.emailAddress,
             obscureText: obscureText,
             style: TextStyle(
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 letterSpacing: 1.0,
                 fontWeight: FontWeight.w400,
                 color: MainTheme.enterTextColor),
@@ -192,23 +193,25 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                           ? Icon(
                               Icons.remove_red_eye_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 45.sp,
+                              size: onWeb ? inputFont : 45.sp,
                             )
                           : Icon(
                               Icons.visibility_off_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 45.sp,
+                              size: onWeb ? inputFont : 45.sp,
                             ))),
-              contentPadding: EdgeInsets.only(
-                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              contentPadding: onWeb
+                  ? null
+                  : EdgeInsets.only(
+                      left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
               hintText: 'New password',
               hintStyle: TextStyle(
-                  fontSize: 40.sp,
+                  fontSize: onWeb ? inputFont : 40.sp,
                   letterSpacing: 1.0,
                   fontWeight: FontWeight.w400,
                   color: Color(0xffC4C4C4)),
               errorStyle: TextStyle(
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 fontWeight: FontWeight.w400,
                 color: MainTheme.primaryColor,
               ),
@@ -260,7 +263,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
             cursorColor: MainTheme.primaryColor,
             textAlign: TextAlign.left,
             style: TextStyle(
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 letterSpacing: 1.0,
                 fontWeight: FontWeight.w400,
                 color: MainTheme.enterTextColor),
@@ -283,23 +286,25 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                           ? Icon(
                               Icons.remove_red_eye_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 45.sp,
+                              size: onWeb ? inputFont : 45.sp,
                             )
                           : Icon(
                               Icons.visibility_off_outlined,
                               color: Color(0xffC4C4C4),
-                              size: 45.sp,
+                              size: onWeb ? inputFont : 45.sp,
                             ))),
-              contentPadding: EdgeInsets.only(
-                  left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              contentPadding: onWeb
+                  ? null
+                  : EdgeInsets.only(
+                      left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
               hintText: 'Re-enter the new password',
               hintStyle: TextStyle(
-                  fontSize: 40.sp,
+                  fontSize: onWeb ? inputFont : 40.sp,
                   letterSpacing: 1.0,
                   fontWeight: FontWeight.w400,
                   color: Color(0xffC4C4C4)),
               errorStyle: TextStyle(
-                fontSize: 40.sp,
+                fontSize: onWeb ? inputFont : 40.sp,
                 fontWeight: FontWeight.w400,
                 color: MainTheme.primaryColor,
               ),
@@ -373,9 +378,9 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               GradientButton(
                 name: loading ? "Loading.." : "Next",
                 gradient: MainTheme.loginBtnGradient,
-                height: 110.w,
-                fontSize: 40.sp,
-                width: 500.w,
+                height: onWeb ? 35 : 110.w,
+                fontSize: onWeb ? inputFont : 40.sp,
+                width: onWeb ? 130 : 500.w,
                 active: true,
                 isLoading: loading,
                 borderRadius: BorderRadius.circular(5),
@@ -522,10 +527,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                       //     ])),
                     ]),
                 commonPart(context, onWeb: true),
-                Container(
-                  height: 110,
-                  width: _width,
-                ),
+
                 // Container(
                 //     child: Row(
                 //         mainAxisAlignment: MainAxisAlignment.center,

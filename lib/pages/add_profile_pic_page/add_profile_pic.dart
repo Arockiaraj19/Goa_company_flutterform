@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
@@ -11,6 +12,7 @@ import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AddProfilePic extends StatefulWidget {
   const AddProfilePic({
@@ -23,6 +25,7 @@ class AddProfilePic extends StatefulWidget {
 
 class _AddProfilePicState extends State<AddProfilePic> {
   XFile selectedUserAvatar;
+  Uint8List selectedWebAvatar;
   bool loading = false;
   @override
   void initState() {
@@ -36,13 +39,21 @@ class _AddProfilePicState extends State<AddProfilePic> {
         context: context,
         builder: (BuildContext context) {
           return ImageUploadAlert(
-            onImagePicked: (XFile imageData) {
-              setState(() {
-                selectedUserAvatar = imageData;
-              });
-              showPopup();
-            },
-          );
+              onImagePicked: !kIsWeb
+                  ? (XFile imageData) {
+                      setState(() {
+                        selectedUserAvatar = imageData;
+                      });
+                      showPopup();
+                    }
+                  : (Uint8List imageData) {
+                      setState(() {
+                        selectedWebAvatar = imageData;
+                        print("bytes inga varuthaa");
+                      });
+
+                      showPopup();
+                    });
         });
   }
 
@@ -70,7 +81,11 @@ class _AddProfilePicState extends State<AddProfilePic> {
                           setSState(() {
                             loading = !loading;
                           });
-                          goToAlbumPage(selectedUserAvatar);
+                          if (kIsWeb) {
+                            goToAlbumPageWeb(selectedWebAvatar);
+                          } else {
+                            goToAlbumPage(selectedUserAvatar);
+                          }
                         },
                         child: Container(
                           height: 40,
@@ -131,34 +146,68 @@ class _AddProfilePicState extends State<AddProfilePic> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: selectedUserAvatar != null
-            ? Container(
-                height: MediaQuery.of(context).size.height,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: selectedUserAvatar != null
-                        ? Platform.isAndroid
-                            ? Image.file(
-                                File(selectedUserAvatar.path),
+    return kIsWeb
+        ? Scaffold(
+            body: selectedWebAvatar != null
+                ? Center(
+                    child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: selectedWebAvatar != null
+                                ? Image.memory(
+                                    selectedWebAvatar,
+                                  )
+                                : Image.asset(
+                                    "assets/images/Add_image.png",
+                                    fit: BoxFit.fill,
+                                  ))),
+                  )
+                : Container())
+        : Scaffold(
+            body: selectedUserAvatar != null
+                ? Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: selectedUserAvatar != null
+                            ? Platform.isAndroid
+                                ? Image.file(
+                                    File(selectedUserAvatar.path),
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.network(
+                                    selectedUserAvatar.path,
+                                    fit: BoxFit.fill,
+                                  )
+                            : Image.asset(
+                                "assets/images/Add_image.png",
                                 fit: BoxFit.fill,
-                              )
-                            : Image.network(
-                                selectedUserAvatar.path,
-                                fit: BoxFit.fill,
-                              )
-                        : Image.asset(
-                            "assets/images/Add_image.png",
-                            fit: BoxFit.fill,
-                          )))
-            : Container());
+                              )))
+                : Container());
   }
 
   goToAlbumPage(XFile image) async {
     var network = UploadImage();
     var network1 = UserNetwork();
+
     try {
-      String result = await network.uploadImage(image.path,"identification");
+      String result = await network.uploadImage(image.path, "identification");
+      var userData = {"identification_image": result};
+      UserModel result1 = await network1.patchUserData(userData);
+      result1 != null ? onboardingCheck(result1) : null;
+    } catch (e) {
+      offLoading();
+    }
+  }
+
+  goToAlbumPageWeb(Uint8List image) async {
+    var network = UploadImageWeb();
+    var network1 = UserNetwork();
+
+    try {
+      String result = await network.uploadImage(image, "identification");
       var userData = {"identification_image": result};
       UserModel result1 = await network1.patchUserData(userData);
       result1 != null ? onboardingCheck(result1) : null;
@@ -173,3 +222,5 @@ class _AddProfilePicState extends State<AddProfilePic> {
     });
   }
 }
+
+class Unit8List {}

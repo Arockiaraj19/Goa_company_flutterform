@@ -196,7 +196,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
               child: Form(
                 key: _formKey,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.r, vertical: 0),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: onWeb ? 100 : 30.r, vertical: 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -258,7 +259,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                         Row(
                           children: [
                             Container(
-                              width: 180.w,
+                              width: onWeb ? 65 : 180.w,
                               child: TextFormField(
                                 readOnly: true,
                                 controller: codecontroller,
@@ -606,7 +607,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                             // Create the SelectionScreen in the next step.
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    GenderPage(snapshot.data)),
+                                                    GenderPage(snapshot.data,onWeb)),
                                           );
                                           _selectedGender =
                                               result.title.toString();

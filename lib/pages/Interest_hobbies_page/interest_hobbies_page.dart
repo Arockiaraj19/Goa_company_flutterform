@@ -5,6 +5,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/interest_card_list.dart';
@@ -59,7 +60,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth < 1100) {
-        return _buildPhone();
+        return _buildPhone(false);
       } else {
         return _buildWeb();
       }
@@ -74,16 +75,20 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
     return i;
   }
 
-  Widget _buildPhone() {
+  Widget _buildPhone(onWeb) {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
         fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontSize: onWeb
+            ? 18
+            : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
     var _textForsubHeading = TextStyle(
         color: MainTheme.leadingHeadings,
         fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontSize: onWeb
+            ? 16
+            : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
     return Scaffold(
         bottomSheet: Container(
@@ -93,14 +98,15 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GradientButton(
-                height: 110.w,
-                fontSize: 40.sp,
-                width: 500.w,
+                height: onWeb ? 35 : 110.w,
+                fontSize: onWeb ? inputFont : 40.sp,
+                width: onWeb ? 130 : 500.w,
                 name: loading ? "Saving.." : "Continue",
                 gradient: MainTheme.loginBtnGradient,
                 active: true,
                 isLoading: loading,
                 color: Colors.white,
+                borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
                 fontWeight: FontWeight.w600,
                 onPressed: () {
                   if (hobbieSelected.length < 2 &&
@@ -180,13 +186,16 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisSpacing: 0.0,
                                   mainAxisSpacing: 0.0,
-                                  crossAxisCount: getItemCountPerRow(context),
+                                  crossAxisCount:
+                                      onWeb ? 4 : getItemCountPerRow(context),
                                   childAspectRatio: 2.8),
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
                             return InterestBox(
-                              fontSize: ScreenUtil()
-                                  .setSp(MainTheme.mPrimaryContentfontSize),
+                              fontSize: onWeb
+                                  ? inputFont
+                                  : ScreenUtil()
+                                      .setSp(MainTheme.mPrimaryContentfontSize),
                               fillColor: interestBool[index]
                                   ? MainTheme.primaryColor
                                   : Colors.white,
@@ -245,14 +254,17 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisSpacing: 0.0,
                                   mainAxisSpacing: 0.0,
-                                  crossAxisCount: getItemCountPerRow(context),
+                                  crossAxisCount:
+                                      onWeb ? 4 : getItemCountPerRow(context),
                                   childAspectRatio: 2.8),
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
                             HobbyModel hoppydata = snapshot.data[index];
                             return InterestBox(
-                              fontSize: ScreenUtil()
-                                  .setSp(MainTheme.mPrimaryContentfontSize),
+                              fontSize: onWeb
+                                  ? inputFont
+                                  : ScreenUtil()
+                                      .setSp(MainTheme.mPrimaryContentfontSize),
                               fillColor: hobbieBool[index]
                                   ? MainTheme.primaryColor
                                   : Colors.white,
@@ -386,224 +398,224 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
               end: _width / 30,
               start: _width / 30,
             ),
-            child: Scaffold(
-                backgroundColor: Colors.white,
-                appBar: AppBar(
-                  leading: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.keyboard_arrow_left,
-                        color: Colors.black,
-                        size: ScreenUtil().setWidth(20),
-                      )),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                ),
-                body: SingleChildScrollView(
-                    padding: EdgeInsetsDirectional.only(
-                      end: _width / 6,
-                      start: _width / 6,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Text(
-                              "Add your Interest & Hobbies",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  fontFamily: "Inter"),
-                            )),
-                          ],
-                        ),
-                        Container(
-                          height: _height / 45,
-                          width: _width,
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              width: _width / 4,
-                              color: MainTheme.primaryColor,
-                              height: 2,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          width: _width,
-                          color: Colors.grey.shade300,
-                          height: 1,
-                        ),
-
-                        Row(
-                          children: [
-                            Container(
-                                padding: EdgeInsetsDirectional.only(
-                                    top: 10, bottom: 20),
-                                child: Text(
-                                  "Interest",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      fontFamily: "Inter"),
-                                )),
-                          ],
-                        ),
-
-                        // Container(
-                        //     height: 210,
-                        //     width: _width,
-                        //     child:
-
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 0.0,
-                                  mainAxisSpacing: 0.0,
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 2.8),
-                          itemCount: 5,
-                          itemBuilder: (BuildContext context, int index) {
-                            return InterestBox(
-                              fontSize: ScreenUtil()
-                                  .setSp(MainTheme.mPrimaryContentfontSize),
-                              color: MainTheme.primaryColor,
-                              title: "snapshot.data[index].title",
-                              onTap: () {},
-                            );
-                          },
-                        )
-
-                        // StaggeredGridView.countBuilder(
-                        //   crossAxisCount: 4,
-                        //   itemCount: 18,
-                        //   itemBuilder: (BuildContext context, int index) {
-                        //     return InterestBox(
-                        //       fontSize: 12,
-                        //     );
-                        //   },
-                        //   staggeredTileBuilder: (int index) =>
-                        //       StaggeredTile.fit(1),
-                        //   mainAxisSpacing: 10.0,
-                        //   crossAxisSpacing: 10.0,
-                        // )
-                        // )
-                        ,
-
-                        Row(
-                          children: [
-                            Container(
-                                padding: EdgeInsetsDirectional.only(
-                                    top: 5, bottom: 20),
-                                child: Text(
-                                  "Hobbies",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      fontFamily: "Inter"),
-                                )),
-                          ],
-                        ),
-
-                        // Container(
-                        //     height: 200,
-                        //     width: _width,
-                        //     child:
-
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 0.0,
-                                  mainAxisSpacing: 0.0,
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 2.8),
-                          itemCount: 10,
-                          itemBuilder: (BuildContext context, int index) {
-                            return InterestBox(
-                              fontSize: ScreenUtil()
-                                  .setSp(MainTheme.mPrimaryContentfontSize),
-                              color: MainTheme.primaryColor,
-                              title: "snapshot.data[index].title",
-                              onTap: () {},
-                            );
-                          },
-                        )
-
-                        // StaggeredGridView.countBuilder(
-                        //   crossAxisCount: 4,
-                        //   itemCount: 18,
-                        //   itemBuilder: (BuildContext context, int index) {
-                        //     return InterestBox(
-                        //       fontSize: 12,
-                        //     );
-                        //   },
-                        //   staggeredTileBuilder: (int index) =>
-                        //       StaggeredTile.fit(1),
-                        //   mainAxisSpacing: 10.0,
-                        //   crossAxisSpacing: 10.0,
-                        // )
-
-                        // )
-
-                        ,
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                              name: loading ? "Saving.." : "Continue",
-                              gradient: MainTheme.loginBtnGradient,
-                              height: 35,
-                              fontSize: 14,
-                              isLoading: loading,
-                              width: _width / 6,
-                              active: true,
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5),
-                              onPressed: () {
-                                if (hobbieSelected.length == 0 &&
-                                    interestSelected.length == 0) {
-                                  showtoast(
-                                      "Please choose your interests & hobbies");
-                                } else if (hobbieSelected.length == 0) {
-                                  showtoast("Please choose your hobbies");
-                                } else if (interestSelected.length == 0) {
-                                  showtoast("Please choose your interests");
-                                } else {
-                                  goToAddYourProfilePicPage();
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        // Container(
-                        //     padding: EdgeInsetsDirectional.only(
-                        //       top: 10,
-                        //     ),
-                        //     child: Row(
-                        //         mainAxisAlignment: MainAxisAlignment.center,
-                        //         children: [
-                        //           Container(
-                        //               child: Text("Already have account?",
-                        //                   style: _textStyleforAlreadyHave)),
-                        //           Text("Log In", style: _textStyleforLogin),
-                        //         ])),
-                      ],
-                    ))))
+            child: _buildPhone(true)),
       ]),
     ));
+  }
+
+  Scaffold webpart(double _width, double _height) {
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+                size: ScreenUtil().setWidth(20),
+              )),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+            padding: EdgeInsetsDirectional.only(
+              end: _width / 6,
+              start: _width / 6,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                        child: Text(
+                      "Add your Interest & Hobbies",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          fontFamily: "Inter"),
+                    )),
+                  ],
+                ),
+                Container(
+                  height: _height / 45,
+                  width: _width,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      width: _width / 4,
+                      color: MainTheme.primaryColor,
+                      height: 2,
+                    ),
+                  ],
+                ),
+                Container(
+                  width: _width,
+                  color: Colors.grey.shade300,
+                  height: 1,
+                ),
+
+                Row(
+                  children: [
+                    Container(
+                        padding:
+                            EdgeInsetsDirectional.only(top: 10, bottom: 20),
+                        child: Text(
+                          "Interest",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              fontFamily: "Inter"),
+                        )),
+                  ],
+                ),
+
+                // Container(
+                //     height: 210,
+                //     width: _width,
+                //     child:
+
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisSpacing: 0.0,
+                      mainAxisSpacing: 0.0,
+                      crossAxisCount: 3,
+                      childAspectRatio: 2.8),
+                  itemCount: 5,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InterestBox(
+                      fontSize:
+                          ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
+                      color: MainTheme.primaryColor,
+                      title: "snapshot.data[index].title",
+                      onTap: () {},
+                    );
+                  },
+                )
+
+                // StaggeredGridView.countBuilder(
+                //   crossAxisCount: 4,
+                //   itemCount: 18,
+                //   itemBuilder: (BuildContext context, int index) {
+                //     return InterestBox(
+                //       fontSize: 12,
+                //     );
+                //   },
+                //   staggeredTileBuilder: (int index) =>
+                //       StaggeredTile.fit(1),
+                //   mainAxisSpacing: 10.0,
+                //   crossAxisSpacing: 10.0,
+                // )
+                // )
+                ,
+
+                Row(
+                  children: [
+                    Container(
+                        padding: EdgeInsetsDirectional.only(top: 5, bottom: 20),
+                        child: Text(
+                          "Hobbies",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              fontFamily: "Inter"),
+                        )),
+                  ],
+                ),
+
+                // Container(
+                //     height: 200,
+                //     width: _width,
+                //     child:
+
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisSpacing: 0.0,
+                      mainAxisSpacing: 0.0,
+                      crossAxisCount: 3,
+                      childAspectRatio: 2.8),
+                  itemCount: 10,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InterestBox(
+                      fontSize:
+                          ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
+                      color: MainTheme.primaryColor,
+                      title: "snapshot.data[index].title",
+                      onTap: () {},
+                    );
+                  },
+                )
+
+                // StaggeredGridView.countBuilder(
+                //   crossAxisCount: 4,
+                //   itemCount: 18,
+                //   itemBuilder: (BuildContext context, int index) {
+                //     return InterestBox(
+                //       fontSize: 12,
+                //     );
+                //   },
+                //   staggeredTileBuilder: (int index) =>
+                //       StaggeredTile.fit(1),
+                //   mainAxisSpacing: 10.0,
+                //   crossAxisSpacing: 10.0,
+                // )
+
+                // )
+
+                ,
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      name: loading ? "Saving.." : "Continue",
+                      gradient: MainTheme.loginBtnGradient,
+                      height: 35,
+                      fontSize: 14,
+                      isLoading: loading,
+                      width: _width / 6,
+                      active: true,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      onPressed: () {
+                        if (hobbieSelected.length == 0 &&
+                            interestSelected.length == 0) {
+                          showtoast("Please choose your interests & hobbies");
+                        } else if (hobbieSelected.length == 0) {
+                          showtoast("Please choose your hobbies");
+                        } else if (interestSelected.length == 0) {
+                          showtoast("Please choose your interests");
+                        } else {
+                          goToAddYourProfilePicPage();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                // Container(
+                //     padding: EdgeInsetsDirectional.only(
+                //       top: 10,
+                //     ),
+                //     child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Container(
+                //               child: Text("Already have account?",
+                //                   style: _textStyleforAlreadyHave)),
+                //           Text("Log In", style: _textStyleforLogin),
+                //         ])),
+              ],
+            )));
   }
 }

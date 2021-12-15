@@ -1,12 +1,14 @@
 import 'package:dating_app/models/gender_model.dart';
 import 'package:dating_app/networks/gender_network.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GenderPage extends StatefulWidget {
   List<GenderModel> data;
-  GenderPage(this.data);
+  bool onWeb;
+  GenderPage(this.data, this.onWeb);
   @override
   _GenderPageState createState() => _GenderPageState();
 }
@@ -21,7 +23,7 @@ class _GenderPageState extends State<GenderPage> {
         leading: Icon(
           Icons.arrow_back_ios,
           color: Color(0xff181725),
-          size: 60.sp,
+          size: widget.onWeb ? 18 : 60.sp,
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -29,7 +31,7 @@ class _GenderPageState extends State<GenderPage> {
           "Choose gender",
           style: TextStyle(
             color: Color(0xff181725),
-            fontSize: 60.sp,
+            fontSize: widget.onWeb ? 18 : 60.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -54,10 +56,10 @@ class _GenderPageState extends State<GenderPage> {
                     child: Padding(
                       padding: EdgeInsets.all(20.0.w),
                       child: Card(
-                        elevation: 1,
+                        elevation: 3,
                         child: Container(
                           height: 50.h,
-                          width: double.infinity,
+                          width: widget.onWeb ? 300 : double.infinity,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10.w),
@@ -72,7 +74,7 @@ class _GenderPageState extends State<GenderPage> {
                               color: choosenvalue == index
                                   ? MainTheme.primaryColor
                                   : Colors.grey[400],
-                              fontSize: 40.sp,
+                              fontSize: widget.onWeb ? inputFont : 40.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

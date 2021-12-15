@@ -9,7 +9,8 @@ onboardingCheck(UserModel userData) {
   } else if (userData.identificationImage == null) {
     Routes.sailor(Routes.addProfilePicPage);
   } else if (userData.profileImage.length == 0) {
-    Routes.sailor(Routes.addAlbumPage);
+    Routes.sailor(Routes.addProfilePicPage);
+    // Routes.sailor(Routes.addAlbumPage);
   } else if (userData.sexualOrientation == null) {
     Routes.sailor(Routes.lookingForPage);
   } else if (userData.partnerType == null ||

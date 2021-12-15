@@ -1,17 +1,21 @@
-import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:universal_io/io.dart';
+import 'dart:typed_data';
 
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ImageUploadAlert extends StatefulWidget {
   const ImageUploadAlert({
     Key key,
     this.onImagePicked,
   }) : super(key: key);
-  final Function(XFile) onImagePicked;
+  final Function onImagePicked;
 
   @override
   _ImageUploadAlertState createState() => _ImageUploadAlertState();
@@ -87,31 +91,41 @@ class _ImageUploadAlertState extends State<ImageUploadAlert> {
 
     try {
       Navigator.of(context).pop();
-      if (source == ImageSource.camera) {
-        if (await Permission.camera.request().isGranted) {
-          pickedFile = await _picker.pickImage(
-            source: ImageSource.camera,
-            // imageQuality: 10,
-            // preferredCameraDevice: CameraDevice.rear
-          );
-          _imageData = pickedFile;
-        } else {
-          openAppSettings();
-        }
+      if (kIsWeb) {
+        FilePickerResult result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['jpg', 'png'],
+        );
+        print("image convert aakuthaa");
+        Uint8List uploadfile = result.files.first.bytes;
+        widget.onImagePicked(uploadfile);
       } else {
-        if (await Permission.storage.request().isGranted) {
-          final pickedFile = await _picker.pickImage(
-            source: ImageSource.gallery,
-            imageQuality: 10,
-          );
-
-          print("dasds");
-          _imageData = pickedFile;
+        if (source == ImageSource.camera) {
+          if (await Permission.camera.request().isGranted) {
+            pickedFile = await _picker.pickImage(
+              source: ImageSource.camera,
+              // imageQuality: 10,
+              // preferredCameraDevice: CameraDevice.rear
+            );
+            _imageData = pickedFile;
+          } else {
+            openAppSettings();
+          }
         } else {
-          openAppSettings();
+          if (await Permission.storage.request().isGranted) {
+            final pickedFile = await _picker.pickImage(
+              source: ImageSource.gallery,
+              imageQuality: 10,
+            );
+
+            print("dasds");
+            _imageData = pickedFile;
+          } else {
+            openAppSettings();
+          }
         }
+        widget.onImagePicked(_imageData);
       }
-      widget.onImagePicked(_imageData);
     } catch (e) {
       print(e.toString());
       showtoast(source.toString());
