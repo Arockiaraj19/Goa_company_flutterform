@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/upload_verficationImage.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../routes.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class PartnerTypePage extends StatefulWidget {
   final UserModel userData;
@@ -61,24 +64,28 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth < 1100) {
-        return _buildPhone();
+        return _buildPhone(false);
       } else {
         return _buildWeb();
       }
     });
   }
 
-  Widget _buildPhone() {
+  Widget _buildPhone(onWeb) {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
         fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontSize: onWeb
+            ? 18
+            : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
 
     var _textStyleforLookingFor = TextStyle(
         color: MainTheme.leadingHeadings,
         fontWeight: FontWeight.w500,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontSize: onWeb
+            ? 16
+            : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
 
     return Scaffold(
@@ -89,14 +96,15 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GradientButton(
-                  height: 110.w,
-                  fontSize: 40.sp,
-                  width: 500.w,
+                  height: onWeb ? 35 : 110.w,
+                  fontSize: onWeb ? inputFont : 40.sp,
+                  width: onWeb ? 130 : 500.w,
                   name: loading ? "Saving.." : "Continue",
                   gradient: MainTheme.loginBtnGradient,
                   active: true,
                   isLoading: loading,
                   color: Colors.white,
+                  borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
                   fontWeight: FontWeight.w600,
                   onPressed: () {
                     Future.delayed(Duration(milliseconds: 500), () {
@@ -159,28 +167,32 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
                   itemBuilder: (BuildContext context, int index) {
                     dynamic item = itemGender[index];
                     return Container(
+                        width: onWeb
+                            ? MediaQuery.of(context).size.width / 4
+                            : null,
                         child: PartnerCard(
-                      name: item["gender"],
-                      image: item["image"],
-                      isActive: widget.userData.partnerType == null
-                          ? item["isActive"]
-                          : widget.userData.partnerType == item["gender"]
-                              ? true
-                              : false,
-                      onTap: () {
-                        if (mounted) {
-                          setState(() {
-                            selectedMenuIndex = index;
-                            itemGender = itemGender.map<Map<String, dynamic>>(
-                                (Map<String, dynamic> item) {
-                              item['isActive'] = false;
-                              return item;
-                            }).toList();
-                            itemGender[index]['isActive'] = true;
-                          });
-                        }
-                      },
-                    ));
+                          name: item["gender"],
+                          image: item["image"],
+                          isActive: widget.userData.partnerType == null
+                              ? item["isActive"]
+                              : widget.userData.partnerType == item["gender"]
+                                  ? true
+                                  : false,
+                          onTap: () {
+                            if (mounted) {
+                              setState(() {
+                                selectedMenuIndex = index;
+                                itemGender = itemGender
+                                    .map<Map<String, dynamic>>(
+                                        (Map<String, dynamic> item) {
+                                  item['isActive'] = false;
+                                  return item;
+                                }).toList();
+                                itemGender[index]['isActive'] = true;
+                              });
+                            }
+                          },
+                        ));
                   })),
         ])));
   }
@@ -221,18 +233,63 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
     }
   }
 
+  goToParterTypePageWeb() async {
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      var network = UserNetwork();
+      var network1 = UploadImageWeb();
+      var userData;
+      if (selectedWebAvatar == null) {
+        userData = {
+          "partner_type": widget.userData.partnerType != null
+              ? widget.userData.partnerType
+              : itemGender[selectedMenuIndex]["gender"]
+        };
+      } else {
+        String result =
+            await network1.uploadImage(selectedWebAvatar, "verification_image");
+        userData = {
+          "partner_type": widget.userData.partnerType != null
+              ? widget.userData.partnerType
+              : itemGender[selectedMenuIndex]["gender"],
+          "verification_image": result
+        };
+      }
+
+      UserModel result = await network.patchUserData(userData);
+      Routes.sailor(Routes.subscription, params: {
+        "swiperIndex": null,
+        "onboard": true,
+      });
+    } catch (e) {
+      offLoading();
+    }
+  }
+
   XFile selectedUserAvatar;
+  Uint8List selectedWebAvatar;
   void selectUserImage() async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return VerificationUploadAlert(
-            onImagePicked: (XFile imageData) {
-              setState(() {
-                selectedUserAvatar = imageData;
-              });
-              showPopup();
-            },
+            onImagePicked: !kIsWeb
+                ? (XFile imageData) {
+                    setState(() {
+                      selectedUserAvatar = imageData;
+                    });
+                    showPopup();
+                  }
+                : (Uint8List imageData) {
+                    setState(() {
+                      selectedWebAvatar = imageData;
+                      print("bytes inga varuthaa");
+                    });
+                    showPopup();
+                  },
             skipImage: () {
               Navigator.pop(context);
 
@@ -262,7 +319,9 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
                 Container(
                     width: double.infinity,
                     height: 300.h,
-                    child: Image.file(File(selectedUserAvatar.path))),
+                    child: kIsWeb
+                        ? Image.memory(selectedWebAvatar)
+                        : Image.file(File(selectedUserAvatar.path))),
                 SizedBox(
                   height: 5.h,
                 ),
@@ -275,7 +334,11 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
                           setSState(() {
                             loading1 = !loading1;
                           });
-                          goToParterTypePage();
+                          if (kIsWeb) {
+                            goToParterTypePageWeb();
+                          } else {
+                            goToParterTypePage();
+                          }
                         },
                         child: Container(
                           height: 40,
@@ -408,143 +471,146 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
               end: _width / 30,
               start: _width / 30,
             ),
-            child: Scaffold(
-                backgroundColor: Colors.white,
-                appBar: AppBar(
-                  leading: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.keyboard_arrow_left,
-                        color: Colors.black,
-                        size: ScreenUtil().setWidth(20),
-                      )),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                ),
-                body: SingleChildScrollView(
-                    padding: EdgeInsetsDirectional.only(
-                      end: _width / 6,
-                      start: _width / 6,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Text(
-                              "Looking for",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: MainTheme.leadingHeadings,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  fontFamily: "Inter"),
-                            )),
-                          ],
-                        ),
-                        Container(
-                          height: _height / 45,
-                          width: _width,
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              width: _width / 2,
-                              color: MainTheme.primaryColor,
-                              height: 2,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          width: _width,
-                          color: Colors.grey.shade300,
-                          height: 1,
-                        ),
-                        Container(
-                          height: _height / 18,
-                          width: _width,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: Text(
-                              "Who are you looking for?",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: MainTheme.leadingHeadings,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  fontFamily: "Inter"),
-                            )),
-                          ],
-                        ),
-                        Container(
-                          height: _height / 15,
-                          width: _width,
-                        ),
-                        Container(
-                          width: _width / 2.5,
-                          child: ListView.builder(
-                              physics: ClampingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: itemGender.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                dynamic item = itemGender[index];
-                                return Container(
-                                    height: 80,
-                                    width: 60,
-                                    child: GenderCard(
-                                      name: item["gender"],
-                                      image: item["image"],
-                                      isActive: item["isActive"],
-                                      onTap: () {
-                                        if (mounted) {
-                                          setState(() {
-                                            selectedMenuIndex = index;
-                                            itemGender = itemGender.map<
-                                                    Map<String, dynamic>>(
-                                                (Map<String, dynamic> item) {
-                                              item['isActive'] = false;
-                                              return item;
-                                            }).toList();
-                                            itemGender[index]['isActive'] =
-                                                true;
-                                          });
-                                        }
-                                      },
-                                    ));
-                              }),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                              name: loading ? "Saving.." : "Continue",
-                              gradient: MainTheme.loginBtnGradient,
-                              height: 35,
-                              fontSize: 14,
-                              isLoading: loading,
-                              width: _width / 6,
-                              active: true,
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5),
-                              onPressed: () {
-                                goToParterTypePage();
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ))))
+            child: _buildPhone(true))
       ]),
     ));
+  }
+
+  Scaffold webpart(double _width, double _height) {
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+                size: ScreenUtil().setWidth(20),
+              )),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+            padding: EdgeInsetsDirectional.only(
+              end: _width / 6,
+              start: _width / 6,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                        child: Text(
+                      "Looking for",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: MainTheme.leadingHeadings,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          fontFamily: "Inter"),
+                    )),
+                  ],
+                ),
+                Container(
+                  height: _height / 45,
+                  width: _width,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      width: _width / 2,
+                      color: MainTheme.primaryColor,
+                      height: 2,
+                    ),
+                  ],
+                ),
+                Container(
+                  width: _width,
+                  color: Colors.grey.shade300,
+                  height: 1,
+                ),
+                Container(
+                  height: _height / 18,
+                  width: _width,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: Text(
+                      "Who are you looking for?",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: MainTheme.leadingHeadings,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          fontFamily: "Inter"),
+                    )),
+                  ],
+                ),
+                Container(
+                  height: _height / 15,
+                  width: _width,
+                ),
+                Container(
+                  width: _width / 2.5,
+                  child: ListView.builder(
+                      physics: ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: itemGender.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        dynamic item = itemGender[index];
+                        return Container(
+                            height: 80,
+                            width: 60,
+                            child: GenderCard(
+                              name: item["gender"],
+                              image: item["image"],
+                              isActive: item["isActive"],
+                              onTap: () {
+                                if (mounted) {
+                                  setState(() {
+                                    selectedMenuIndex = index;
+                                    itemGender = itemGender
+                                        .map<Map<String, dynamic>>(
+                                            (Map<String, dynamic> item) {
+                                      item['isActive'] = false;
+                                      return item;
+                                    }).toList();
+                                    itemGender[index]['isActive'] = true;
+                                  });
+                                }
+                              },
+                            ));
+                      }),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      name: loading ? "Saving.." : "Continue",
+                      gradient: MainTheme.loginBtnGradient,
+                      height: 35,
+                      fontSize: 14,
+                      isLoading: loading,
+                      width: _width / 6,
+                      active: true,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      onPressed: () {
+                        goToParterTypePage();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            )));
   }
 }

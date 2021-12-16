@@ -141,6 +141,13 @@ class _NavigationMenuState extends State<NavigationMenu> {
 
           break;
         }
+      case 3:
+        {
+          Routes.sailor(Routes.matchPage,
+              navigationType: NavigationType.pushReplace);
+
+          break;
+        }
     }
   }
 }

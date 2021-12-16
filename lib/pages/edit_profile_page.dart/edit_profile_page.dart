@@ -19,10 +19,13 @@ import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/shared/date_picker_input.dart';
 import 'package:dating_app/shared/helpers.dart';
 import 'package:dating_app/shared/helpers/check_persentage.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
+import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
+import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:dating_app/shared/widgets/social_media_row_list.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
@@ -197,7 +200,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
-        return _buildWeb();
+        return _buildWeb(true);
       }
     });
   }
@@ -931,9 +934,693 @@ class _EditProfilePageState extends State<EditProfilePage> {
         });
   }
 
-  Widget _buildWeb() {
-    return SafeArea(
-      child: Scaffold(),
-    );
+  Widget _buildWeb(onWeb) {
+    var _leadingHeading = TextStyle(
+        color: MainTheme.mainHeadingColors,
+        fontWeight: FontWeight.w500,
+        fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
+        fontFamily: "lato");
+
+    var _textStyleforName = TextStyle(
+        color: MainTheme.profileNameColors,
+        fontWeight: FontWeight.w700,
+        fontSize: 16,
+        fontFamily: "lato");
+
+    var _textStyleforHeading = TextStyle(
+        color: MainTheme.leadingHeadings,
+        fontWeight: FontWeight.w600,
+        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontFamily: "lato");
+    var _textForsubHeading = TextStyle(
+        color: MainTheme.leadingHeadings,
+        fontWeight: FontWeight.w600,
+        fontSize: 16,
+        fontFamily: "lato");
+
+    var profileValue = TextStyle(
+        color: MainTheme.profileValue,
+        fontWeight: FontWeight.w700,
+        fontSize: ScreenUtil().setSp(43),
+        fontFamily: "lato");
+
+    var profileScoreName = TextStyle(
+        color: MainTheme.profileValue,
+        fontWeight: FontWeight.w500,
+        fontSize: ScreenUtil().setSp(MainTheme.mPrimaryContentfontSize),
+        fontFamily: "lato");
+
+    var socialMediaText = TextStyle(
+        color: MainTheme.socialMediaText,
+        fontWeight: FontWeight.w400,
+        fontSize: ScreenUtil().setSp(MainTheme.mSecondaryContentfontSize),
+        fontFamily: "lato");
+
+    var socialMediaTextBold = TextStyle(
+        color: MainTheme.socialMediaTextBold,
+        fontWeight: FontWeight.w400,
+        fontSize: ScreenUtil().setSp(MainTheme.mSecondaryContentfontSize),
+        fontFamily: "lato");
+
+    var tabFont = TextStyle(
+        color: MainTheme.socialMediaTextBold,
+        fontWeight: FontWeight.w600,
+        fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
+        fontFamily: "lato");
+
+    var tabFontDesable = TextStyle(
+        color: Colors.grey,
+        fontWeight: FontWeight.w600,
+        fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
+        fontFamily: "lato");
+
+    var subHeading = TextStyle(
+        color: MainTheme.socialMediaTextBold,
+        fontWeight: FontWeight.w500,
+        fontSize: ScreenUtil().setSp(MainTheme.mTertiarySubHeadingfontSize),
+        fontFamily: "lato");
+    return Scaffold(
+        body: BaseLayout(
+            navigationRail: NavigationMenu(
+              currentTabIndex: 2,
+            ),
+            body: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 0),
+                          child: Column(children: [
+                            FutureBuilder(
+                              future:
+                                  Persentage().checkPresentage(widget.userdata),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  return PercentageBar(
+                                    percentage: snapshot.data,
+                                    onEditProfilePage: true,
+                                    onTap: () {
+                                      selectUserPic();
+                                    },
+                                    image: widget.userdata.identificationImage,
+                                    selectedUserPic: selectedUserPic,
+                                    onTapClose: () {
+                                      setState(() {
+                                        selectedUserPic = null;
+                                      });
+                                    },
+                                  );
+                                } else {
+                                  return PercentageBar(
+                                    percentage: 0,
+                                    onEditProfilePage: true,
+                                    onTap: () {
+                                      selectUserPic();
+                                    },
+                                    image: widget.userdata.identificationImage,
+                                    selectedUserPic: selectedUserPic,
+                                    onTapClose: () {
+                                      setState(() {
+                                        selectedUserPic = null;
+                                      });
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsetsDirectional.only(top: 5),
+                                  child: Text(
+                                    widget.userdata.firstName ??
+                                        "Some thing wrong",
+                                    style: _textStyleforName,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // SocialMediaRowList(),
+                            Container(
+                                padding: EdgeInsetsDirectional.only(
+                                    start: 10, end: 10, top: 10),
+                                child: Column(
+                                  children: [
+                                    InputField(
+                                      onTap: () {},
+                                      controller: _firstNameCtrl,
+                                      padding: EdgeInsets.all(10),
+                                      validators: (String value) {
+                                        if (value.isEmpty)
+                                          return 'Required field';
+                                        return null;
+                                      },
+                                      hintText: 'Your first name',
+                                    ),
+                                    InputField(
+                                      onTap: () {},
+                                      controller: _lastNameCtrl,
+                                      padding: EdgeInsets.all(10),
+                                      validators: (String value) {
+                                        if (value.isEmpty)
+                                          return 'Required field';
+                                        return null;
+                                      },
+                                      hintText: 'Your last name',
+                                    ),
+                                    // InputField(
+                                    //   onTap: () {},
+                                    //   controller: _emailCtrl,
+                                    //   padding: EdgeInsets.all(10),
+                                    //   validators: (String value) {
+                                    //     if (value.isEmpty) return 'Required field';
+                                    //     return null;
+                                    //   },
+                                    //   hintText: 'Email',
+                                    // ),
+                                    InputField(
+                                      onTap: () {},
+                                      controller: _bioCtrl,
+                                      maxLines: 3,
+                                      padding: EdgeInsets.all(10),
+                                      validators: (String value) {
+                                        if (value.isEmpty)
+                                          return 'Required field';
+                                        return null;
+                                      },
+                                      hintText: 'Bio',
+                                    ),
+                                    DatePickerInput(
+                                      hintText: 'DD-MM-YYYY',
+                                      controller: _dobInputCtrl,
+                                      onSelect: (DateTime date) {
+                                        removeFocus(context);
+                                        setState(() {
+                                          selectedDate = date;
+                                        });
+                                      },
+                                    ),
+                                    Container(
+                                        margin: EdgeInsets.all(10),
+                                        padding: EdgeInsetsDirectional.only(
+                                            start: 10, end: 10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: <BoxShadow>[
+                                            BoxShadow(
+                                              color: Colors.grey.shade200,
+                                              blurRadius: 1.0,
+                                              offset: Offset(0, 3),
+                                            )
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: DropdownButton<dynamic>(
+                                          isExpanded: true,
+                                          value: dropdownProfessionValue,
+                                          hint: Text("Profession"),
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          elevation: 16,
+                                          style: TextStyle(color: Colors.black),
+                                          underline: Container(),
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              dropdownProfessionValue =
+                                                  newValue;
+                                            });
+                                          },
+                                          items: itemdate
+                                              .map<DropdownMenuItem<dynamic>>(
+                                                  (dynamic value) {
+                                            return DropdownMenuItem<dynamic>(
+                                              value: value,
+                                              child: Text(value
+                                                  // style: TextStyle(fontSize: 28.sp),
+                                                  ),
+                                            );
+                                          }).toList(),
+                                        )),
+                                    InputField(
+                                      onTap: () {},
+                                      controller: _heightCtrl,
+                                      inputType: TextInputType.number,
+                                      padding: EdgeInsets.all(10),
+                                      validators: (String value) {
+                                        if (value.isEmpty)
+                                          return 'Required field';
+                                        return null;
+                                      },
+                                      hintText: 'Height',
+                                      suffixIcon: Text("cm  "),
+                                    ),
+                                    InputField(
+                                      onTap: () {},
+                                      controller: _weightCtrl,
+                                      padding: EdgeInsets.all(10),
+                                      inputType: TextInputType.number,
+                                      validators: (String value) {
+                                        if (value.isEmpty)
+                                          return 'Required field';
+                                        return null;
+                                      },
+                                      hintText: 'Weight',
+                                      suffixIcon: Text("kg  "),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Container(
+                                            margin: EdgeInsetsDirectional.only(
+                                                start: 20, top: 5, bottom: 5),
+                                            child: Text(
+                                              "Gender",
+                                              style: _textForsubHeading,
+                                            )),
+                                      ],
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: FutureBuilder(
+                                        future: _future,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData) {
+                                            List<GenderModel> genderdata =
+                                                snapshot.data;
+                                            if (time == 0) {
+                                              _selectedGenderid =
+                                                  widget.userdata.gender;
+                                              genderdetail = genderdata
+                                                  .firstWhere((element) =>
+                                                      element.id ==
+                                                      widget.userdata.gender);
+                                              print(
+                                                  "inga na select pannathu varuthaa");
+                                              print(_selectedGenderid);
+                                              print(genderdetail);
+                                            }
+                                            return Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                      start: 10, end: 10),
+                                              child: GridView.builder(
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  gridDelegate:
+                                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisSpacing: 0.0,
+                                                          mainAxisSpacing: 0.0,
+                                                          crossAxisCount: 5,
+                                                          childAspectRatio:
+                                                              2.8),
+                                                  itemCount: genderdata.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return GenderEditCard(
+                                                      data: genderdata[index],
+                                                      id: _selectedGenderid,
+                                                      onTap: () async {
+                                                        setState(() {
+                                                          _selectedGenderid =
+                                                              genderdata[index]
+                                                                  .id;
+                                                          genderdetail =
+                                                              genderdata[index];
+                                                        });
+                                                        time++;
+                                                      },
+                                                    );
+                                                  }),
+                                            );
+                                          } else {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ]),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 0),
+                          child: Column(children: [
+                            Row(
+                              children: [
+                                Container(
+                                    padding: EdgeInsetsDirectional.only(
+                                        start: 30, top: 5, bottom: 20),
+                                    child: Text("Interest",
+                                        style: _textForsubHeading)),
+                              ],
+                            ),
+                            FutureBuilder(
+                                future: interestData,
+                                builder: (context,
+                                    AsyncSnapshot<List<InterestModel>>
+                                        snapshot) {
+                                  if (snapshot.hasData) {
+                                    addInterestBool(snapshot.data.length);
+                                    interestData1 = snapshot.data;
+                                    textEditingController1.text = "start";
+                                    return Container(
+                                        height: 200,
+                                        padding: EdgeInsetsDirectional.only(
+                                            start: 20, end: 20),
+                                        child: GridView.builder(
+                                          shrinkWrap: true,
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisSpacing: 0.0,
+                                                  mainAxisSpacing: 0.0,
+                                                  crossAxisCount: 5,
+                                                  childAspectRatio: 2.8),
+                                          itemCount: snapshot.data.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return InterestBox(
+                                              fontSize: ScreenUtil().setSp(
+                                                  MainTheme
+                                                      .mPrimaryContentfontSize),
+                                              fillColor: interestBool[index]
+                                                  ? MainTheme.primaryColor
+                                                  : Colors.white,
+                                              color: MainTheme.primaryColor,
+                                              title: snapshot.data[index].title,
+                                              onTap: () {
+                                                if (interestBool[index] ==
+                                                    true) {
+                                                  setState(() {
+                                                    interestBool[index] = false;
+                                                  });
+                                                  interestSelected.remove(
+                                                      snapshot.data[index]
+                                                          .interest_id);
+
+                                                  interestSelected1.remove(
+                                                      snapshot.data[index]
+                                                          .toMap());
+                                                } else {
+                                                  setState(() {
+                                                    interestBool[index] = true;
+                                                  });
+                                                  interestSelected.add(snapshot
+                                                      .data[index].interest_id);
+
+                                                  interestSelected1.add(snapshot
+                                                      .data[index]
+                                                      .toMap());
+                                                }
+                                              },
+                                            );
+                                          },
+                                        ));
+                                  } else
+                                    return Container(
+                                      height: 200,
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator(),
+                                    );
+                                }),
+                            Row(
+                              children: [
+                                Container(
+                                    padding: EdgeInsetsDirectional.only(
+                                        start: 30, top: 10, bottom: 20),
+                                    child: Text("Hobbies",
+                                        style: _textForsubHeading)),
+                              ],
+                            ),
+                            FutureBuilder(
+                                future: hobbyData,
+                                builder: (context,
+                                    AsyncSnapshot<List<HobbyModel>> snapshot) {
+                                  if (snapshot.hasData) {
+                                    addHobbyBool(snapshot.data.length);
+                                    hobbyData1 = snapshot.data;
+                                    textEditingController.text = "start";
+                                    return Container(
+                                        height: 200,
+                                        padding: EdgeInsetsDirectional.only(
+                                            start: 20, end: 20),
+                                        child: GridView.builder(
+                                          shrinkWrap: true,
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisSpacing: 0.0,
+                                                  mainAxisSpacing: 0.0,
+                                                  crossAxisCount: 5,
+                                                  childAspectRatio: 2.8),
+                                          itemCount: snapshot.data.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return InterestBox(
+                                              fontSize: ScreenUtil().setSp(
+                                                  MainTheme
+                                                      .mPrimaryContentfontSize),
+                                              fillColor: hobbieBool[index]
+                                                  ? MainTheme.primaryColor
+                                                  : Colors.white,
+                                              color: MainTheme.primaryColor,
+                                              title: snapshot.data[index].title,
+                                              onTap: () {
+                                                if (hobbieBool[index] == true) {
+                                                  setState(() {
+                                                    hobbieBool[index] = false;
+                                                  });
+                                                  hobbieSelected.remove(snapshot
+                                                      .data[index].hobby_id);
+                                                  var val = {
+                                                    "hobby_id": snapshot
+                                                        .data[index].hobby_id,
+                                                    "title": snapshot
+                                                        .data[index].title
+                                                  };
+                                                  hobbieSelected1.remove(val);
+                                                } else {
+                                                  setState(() {
+                                                    hobbieBool[index] = true;
+                                                  });
+                                                  hobbieSelected.add(snapshot
+                                                      .data[index].hobby_id);
+                                                  var val = {
+                                                    "hobby_id": snapshot
+                                                        .data[index].hobby_id,
+                                                    "title": snapshot
+                                                        .data[index].title
+                                                  };
+                                                  hobbieSelected1.add(val);
+                                                }
+                                              },
+                                            );
+                                          },
+                                        ));
+                                  } else
+                                    return Container(
+                                      height: 200,
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator(),
+                                    );
+                                }),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  child: Container(
+                                      child: Text("Album",
+                                          style: _textForsubHeading)),
+                                )
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: Container(
+                                  color: Colors.grey[200],
+                                  height:
+                                      MediaQuery.of(context).size.height / 2.7,
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: EdgeInsets.all(10),
+                                  child: StaggeredGridView.countBuilder(
+                                    crossAxisCount: 3,
+                                    itemCount: 6,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return AlbumImageCard(
+                                        alreadyimage: alreadyimage[index],
+                                        onTap: () async {
+                                          selectalbumImage(index);
+                                        },
+                                        selectedUserAvatar:
+                                            selectedalbumAvatar[index],
+                                        onTapClose: () {
+                                          setState(() {
+                                            alreadyimage[index] = null;
+                                            selectedalbumAvatar[index] = null;
+                                          });
+                                        },
+                                      );
+                                    },
+                                    staggeredTileBuilder: (int index) =>
+                                        StaggeredTile.fit(1),
+                                    mainAxisSpacing: 0,
+                                    crossAxisSpacing: 0,
+                                  )),
+                            ),
+                            Container(
+                                height: 60,
+                                color: Colors.white,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    GradientButton(
+                                      height: onWeb ? 35 : 110.w,
+                                      fontSize: onWeb ? inputFont : 40.sp,
+                                      width: onWeb ? 130 : 500.w,
+                                      borderRadius: BorderRadius.circular(
+                                          onWeb ? 5 : 20.sp),
+                                      margin: EdgeInsets.all(0),
+                                      name: "Cancel",
+                                      buttonColor: Colors.white,
+                                      active: true,
+                                      color: MainTheme.primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    GradientButton(
+                                      margin: EdgeInsets.all(0),
+                                      height: onWeb ? 35 : 110.w,
+                                      fontSize: onWeb ? inputFont : 40.sp,
+                                      width: onWeb ? 130 : 500.w,
+                                      borderRadius: BorderRadius.circular(
+                                          onWeb ? 5 : 20.sp),
+                                      name: loading ? "Loading..." : "Confirm",
+                                      gradient: MainTheme.loginBtnGradient,
+                                      active: true,
+                                      isLoading: loading,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      onPressed: () async {
+                                        if (hobbieSelected.length < 2 &&
+                                            interestSelected.length < 2) {
+                                          showtoast(
+                                              "Please choose minimum 2 interests & hobbies");
+                                        }
+                                        if (_formKey.currentState.validate() &&
+                                            interestSelected.length > 1 &&
+                                            hobbieSelected.length > 1) {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          String result;
+                                          try {
+                                            result = selectedUserPic == null
+                                                ? widget.userdata
+                                                    .identificationImage
+                                                : await UploadImage()
+                                                    .uploadImage(
+                                                        selectedUserPic.path,
+                                                        "identification");
+                                            if (selectedUserPic != null) {
+                                              await UploadImage().deleteImage([
+                                                widget.userdata
+                                                    .identificationImage
+                                              ], [
+                                                result
+                                              ], "identification");
+                                            }
+                                          } on DioError catch (e) {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          }
+                                          try {
+                                            await goToLookingForPagePage();
+                                          } on DioError catch (e) {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          }
+
+                                          print("album enna varuthu");
+                                          print(uploadedImages);
+                                          List<String> albumimage =
+                                              uploadedImages.length == 0
+                                                  ? widget.userdata.profileImage
+                                                  : uploadedImages;
+                                          var userData = {
+                                            "first_name": _firstNameCtrl.text,
+                                            "last_name": _lastNameCtrl
+                                                .text, //"email":_emailCtrl.text,
+                                            "profession": [
+                                              "$dropdownProfessionValue"
+                                            ],
+                                            "dob": selectedDate.toString(),
+                                            "gender_id":
+                                                _selectedGenderid.toString(),
+                                            "gender_details": [
+                                              genderdetail.toMap()
+                                            ],
+                                            "height":
+                                                int.parse(_heightCtrl.text),
+                                            "weight":
+                                                int.parse(_weightCtrl.text),
+                                            "bio": _bioCtrl.text,
+                                            "interests": interestSelected,
+                                            "hobbies": hobbieSelected,
+                                            "hobby_details": hobbieSelected1,
+                                            "interest_details":
+                                                interestSelected1,
+                                            "identification_image": result,
+                                            "profile_image": albumimage,
+                                          };
+                                          print("edit profile userdata");
+                                          print(userData);
+                                          try {
+                                            UserModel data = await UserNetwork()
+                                                .patchUserData(userData);
+                                            data != null
+                                                ? await context
+                                                    .read<HomeProvider>()
+                                                    .replaceData(data)
+                                                : null;
+                                            print("ool");
+                                            Navigator.pop(context);
+                                          } on DioError catch (e) {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                )),
+                          ]),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )));
   }
 }

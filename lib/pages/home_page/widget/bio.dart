@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Bio extends StatefulWidget {
-  Bio({Key key}) : super(key: key);
+  final String bio;
+  Bio({Key key, this.bio}) : super(key: key);
 
   @override
   _BioState createState() => _BioState();
@@ -46,7 +47,7 @@ class _BioState extends State<Bio> {
                   children: [
                     Expanded(
                       child: Text(
-                        "An artist of considerable range, Jessica i am  mondatht artist for the nmality conensce jessica super valuename taken by Melbourne …",
+                        widget.bio == null ? "" : widget.bio,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

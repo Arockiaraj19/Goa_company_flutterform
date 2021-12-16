@@ -1,4 +1,5 @@
 import 'package:dating_app/pages/detail_page/detail_page.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,7 +22,7 @@ class _SettingBoxState extends State<SettingBox> {
     return Column(
       children: [
         SizedBox(
-          height: 5.h,
+          height: 5,
         ),
         Container(
           width: double.infinity,
@@ -36,7 +37,7 @@ class _SettingBoxState extends State<SettingBox> {
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontFamily: "OpenSans",
-                      fontSize: 38.sp,
+                      fontSize: widget.fontSize ?? 38.sp,
                     ),
                   )),
               !widget.activeIcon
@@ -44,14 +45,14 @@ class _SettingBoxState extends State<SettingBox> {
                       child: Icon(
                       Icons.keyboard_arrow_right,
                       color: Colors.grey,
-                      size: 60.sp,
+                      size: inputFont,
                     ))
                   : Container()
             ],
           ),
         ),
         SizedBox(
-          height: 5.h,
+          height: 5,
         ),
         Divider()
       ],

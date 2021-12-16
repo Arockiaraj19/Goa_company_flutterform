@@ -81,6 +81,7 @@ dependencies:
   image_picker_web: ^2.1.0
   universal_io: ^2.0.4
   file_picker: ^4.2.7
+  get_ip_address: ^0.0.5
  
 
 dev_dependencies:

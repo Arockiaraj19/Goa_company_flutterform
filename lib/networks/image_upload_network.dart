@@ -129,11 +129,13 @@ class UploadImageWeb {
     try {
       Response result = await Dio().put(
         uploadUrl,
-        data: File.fromRawPath(image).openRead(),
+        data: Stream.value(
+          List<int>.from(image),
+        ),
         options: Options(
           contentType: "image/jpeg",
           headers: {
-            "Content-Length": File.fromRawPath(image).lengthSync(),
+            "Content-Length": image.length,
           },
         ),
       );

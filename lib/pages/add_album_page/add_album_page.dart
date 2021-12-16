@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../routes.dart';
 import 'widgets/album_image_card.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AddAlbumPicPage extends StatefulWidget {
   AddAlbumPicPage({Key key}) : super(key: key);
@@ -24,6 +26,7 @@ class AddAlbumPicPage extends StatefulWidget {
 
 class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
   List<XFile> selectedUserAvatar = [null, null, null, null, null, null];
+  List<Uint8List> selectedWebAvatar = [null, null, null, null, null, null];
   List<String> uploadedImages = [];
   bool loading = false;
   // Uint8List  selectedUser = null;
@@ -32,37 +35,45 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth < 1100) {
-        return _buildPhone();
+        return _buildPhone(false);
       } else {
         return _buildWeb();
       }
     });
   }
 
-  Widget _buildPhone() {
+  Widget _buildPhone(onWeb) {
     final ImagePicker picker = ImagePicker();
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
         fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontSize: onWeb
+            ? 18
+            : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
 
     var _textForsubHeading = TextStyle(
         color: MainTheme.leadingHeadings,
         fontWeight: FontWeight.w500,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontSize: onWeb
+            ? 16
+            : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
 
     var _textForSmail = TextStyle(
         color: MainTheme.primaryColor,
         fontWeight: FontWeight.w600,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
+        fontSize: onWeb
+            ? inputFont
+            : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
 
     var _textForHold = TextStyle(
         color: MainTheme.holdAndDrageTextColors,
         fontWeight: FontWeight.w400,
-        fontSize: ScreenUtil().setSp(MainTheme.mSecondaryContentfontSize),
+        fontSize: onWeb
+            ? 16
+            : ScreenUtil().setSp(MainTheme.mSecondaryContentfontSize),
         fontFamily: "lato");
 
     return Scaffold(
@@ -127,6 +138,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                 )),
               ])),
           Container(
+              width: onWeb ? MediaQuery.of(context).size.width / 3.7 : null,
               color: Colors.grey[200],
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +153,9 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
           Container(
               color: Colors.grey[200],
               height: MediaQuery.of(context).size.height / 2.7,
-              width: MediaQuery.of(context).size.width,
+              width: onWeb
+                  ? MediaQuery.of(context).size.width / 3.7
+                  : MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(10),
               child: StaggeredGridView.countBuilder(
                 crossAxisCount: 3,
@@ -152,11 +166,19 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                     onTap: () async {
                       selectUserImage(index);
                     },
-                    selectedUserAvatar: selectedUserAvatar[index],
+                    selectedUserAvatar: kIsWeb
+                        ? selectedWebAvatar[index]
+                        : selectedUserAvatar[index],
                     onTapClose: () {
-                      setState(() {
-                        selectedUserAvatar[index] = null;
-                      });
+                      if (kIsWeb) {
+                        setState(() {
+                          selectedWebAvatar[index] = null;
+                        });
+                      } else {
+                        setState(() {
+                          selectedUserAvatar[index] = null;
+                        });
+                      }
                     },
                   );
                 },
@@ -171,9 +193,10 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GradientButton(
-                height: 110.w,
-                fontSize: 40.sp,
-                width: 500.w,
+                height: onWeb ? 35 : 110.w,
+                fontSize: onWeb ? inputFont : 40.sp,
+                width: onWeb ? 130 : 500.w,
+                borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
                 name: loading ? "Loading.." : "Continue",
                 gradient: MainTheme.loginBtnGradient,
                 active: true,
@@ -181,7 +204,11 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
                 onPressed: () {
-                  goToLookingForPagePage();
+                  if (!kIsWeb) {
+                    goToLookingForPagePage();
+                  } else {
+                    goToLookingForPagePageWeb();
+                  }
                 },
               ),
             ],
@@ -219,6 +246,36 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
     }
   }
 
+  goToLookingForPagePageWeb() async {
+    setState(() {
+      loading = true;
+    });
+    try {
+      var network = UploadImageWeb();
+      print("kl1");
+      for (int i = 0; i < 6; i++) {
+        if (selectedWebAvatar[i] != null) {
+          String result =
+              await network.uploadImage(selectedWebAvatar[i], "user_gallery");
+          print("output velia varuthaaa");
+          print(result);
+          uploadedImages.add(result);
+        }
+      }
+
+      var network1 = UserNetwork();
+      var userData = {
+        "profile_image": uploadedImages,
+        "onboard_details_status": 1
+      };
+      UserModel result1 = await network1.patchUserData(userData);
+      // Timer(Duration(seconds: 2), () => offLoading());
+      result1 != null ? onboardingCheck(result1) : null;
+    } catch (e) {
+      offLoading();
+    }
+  }
+
   offLoading() {
     setState(() {
       loading = false;
@@ -230,15 +287,22 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
         context: context,
         builder: (BuildContext context) {
           return ImageUploadAlert(
-            onImagePicked: (XFile imageData) {
-              setState(() {
-                selectedUserAvatar[index] = imageData;
-              });
+            onImagePicked: !kIsWeb
+                ? (XFile imageData) {
+                    setState(() {
+                      selectedUserAvatar[index] = imageData;
+                    });
 
-              // if (imageData.status == 'success') {
-              // _authStore.onAvatarSelected(imageData.image);
-              // }
-            },
+                    // if (imageData.status == 'success') {
+                    // _authStore.onAvatarSelected(imageData.image);
+                    // }
+                  }
+                : (Uint8List imageData) {
+                    setState(() {
+                      selectedWebAvatar[index] = imageData;
+                      print("bytes inga varuthaa");
+                    });
+                  },
           );
         });
   }
@@ -311,171 +375,171 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
               end: _width / 30,
               start: _width / 30,
             ),
-            child: Scaffold(
-                backgroundColor: Colors.white,
-                appBar: AppBar(
-                  leading: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.keyboard_arrow_left,
-                        color: Colors.black,
-                        size: ScreenUtil().setWidth(20),
-                      )),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                ),
-                body: SingleChildScrollView(
-                    padding: EdgeInsetsDirectional.only(
-                      end: _width / 6,
-                      start: _width / 6,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Text(
-                              "Add your Profile Pic",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  fontFamily: "Inter"),
-                            )),
-                          ],
-                        ),
-                        Container(
-                          height: _height / 45,
-                          width: _width,
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              width: _width / 3,
-                              color: MainTheme.primaryColor,
-                              height: 2,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          width: _width,
-                          color: Colors.grey.shade300,
-                          height: 1,
-                        ),
-                        Container(
-                            margin:
-                                EdgeInsetsDirectional.only(top: 20, bottom: 40),
-                            child: Row(children: [
-                              Expanded(
-                                  child: RichText(
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                    text: "Flash that sleek ",
-                                    style: TextStyle(
-                                        height: 2,
-                                        color: MainTheme.leadingHeadings,
-                                        // fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        fontFamily: "Inter"),
-                                    children: [
-                                      TextSpan(
-                                        text: "smile ",
-                                        style: TextStyle(
-                                            color: MainTheme.primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                            fontFamily: "Inter"),
-                                      ),
-                                      TextSpan(
-                                        text: "yours to decorate your profile",
-                                        style: TextStyle(
-                                            color: MainTheme.leadingHeadings,
-                                            // fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                            fontFamily: "Inter"),
-                                      )
-                                    ]),
-                              )),
-                            ])),
-                        Container(
-                            color: Colors.grey[200],
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Text(
-                                          "Hold and drag your photos to change the order",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: MainTheme
-                                                  .holdAndDrageTextColors,
-                                              fontSize: 12,
-                                              fontFamily: "Inter"),
-                                        ))),
-                              ],
-                            )),
-                        Container(
-                            color: Colors.grey[200],
-                            height: 250,
-                            width: _width,
-                            padding: EdgeInsets.all(10),
-                            child: StaggeredGridView.countBuilder(
-                              crossAxisCount: 3,
-                              itemCount: 6,
-                              itemBuilder: (BuildContext context, int index) {
-                                return AlbumImageCard(
-                                    onTap: () async {
-                                      selectUserImage(index);
-                                    },
-                                    selectedUserAvatar:
-                                        selectedUserAvatar[index],
-                                    onTapClose: () {
-                                      setState(() {
-                                        selectedUserAvatar[index] = null;
-                                      });
-                                    });
-                              },
-                              staggeredTileBuilder: (int index) =>
-                                  StaggeredTile.fit(1),
-                              mainAxisSpacing: 0,
-                              crossAxisSpacing: 0,
-                            )),
-                        Container(
-                          height: _height / 8,
-                          width: _width,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GradientButton(
-                              name: loading ? "Loading.." : "Continue",
-                              gradient: MainTheme.loginBtnGradient,
-                              height: 35,
-                              fontSize: 14,
-                              width: _width / 6,
-                              active: true,
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5),
-                              onPressed: () {
-                                goToLookingForPagePage();
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ))))
+            child: _buildPhone(true))
       ]),
     ));
+  }
+
+  Scaffold webpart(double _width, double _height) {
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+                size: ScreenUtil().setWidth(20),
+              )),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+            padding: EdgeInsetsDirectional.only(
+              end: _width / 6,
+              start: _width / 6,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                        child: Text(
+                      "Add your Profile Pic",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          fontFamily: "Inter"),
+                    )),
+                  ],
+                ),
+                Container(
+                  height: _height / 45,
+                  width: _width,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      width: _width / 3,
+                      color: MainTheme.primaryColor,
+                      height: 2,
+                    ),
+                  ],
+                ),
+                Container(
+                  width: _width,
+                  color: Colors.grey.shade300,
+                  height: 1,
+                ),
+                Container(
+                    margin: EdgeInsetsDirectional.only(top: 20, bottom: 40),
+                    child: Row(children: [
+                      Expanded(
+                          child: RichText(
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: "Flash that sleek ",
+                            style: TextStyle(
+                                height: 2,
+                                color: MainTheme.leadingHeadings,
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                fontFamily: "Inter"),
+                            children: [
+                              TextSpan(
+                                text: "smile ",
+                                style: TextStyle(
+                                    color: MainTheme.primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    fontFamily: "Inter"),
+                              ),
+                              TextSpan(
+                                text: "yours to decorate your profile",
+                                style: TextStyle(
+                                    color: MainTheme.leadingHeadings,
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    fontFamily: "Inter"),
+                              )
+                            ]),
+                      )),
+                    ])),
+                Container(
+                    color: Colors.grey[200],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  "Hold and drag your photos to change the order",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: MainTheme.holdAndDrageTextColors,
+                                      fontSize: 12,
+                                      fontFamily: "Inter"),
+                                ))),
+                      ],
+                    )),
+                Container(
+                    color: Colors.grey[200],
+                    height: 250,
+                    width: _width,
+                    padding: EdgeInsets.all(10),
+                    child: StaggeredGridView.countBuilder(
+                      crossAxisCount: 3,
+                      itemCount: 6,
+                      itemBuilder: (BuildContext context, int index) {
+                        return AlbumImageCard(
+                            onTap: () async {
+                              selectUserImage(index);
+                            },
+                            selectedUserAvatar: selectedUserAvatar[index],
+                            onTapClose: () {
+                              setState(() {
+                                selectedUserAvatar[index] = null;
+                              });
+                            });
+                      },
+                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                      mainAxisSpacing: 0,
+                      crossAxisSpacing: 0,
+                    )),
+                Container(
+                  height: _height / 8,
+                  width: _width,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GradientButton(
+                      name: loading ? "Loading.." : "Continue",
+                      gradient: MainTheme.loginBtnGradient,
+                      height: 35,
+                      fontSize: 14,
+                      width: _width / 6,
+                      active: true,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      onPressed: () {
+                        goToLookingForPagePage();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            )));
   }
 }

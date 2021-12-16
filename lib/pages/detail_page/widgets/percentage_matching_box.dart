@@ -43,49 +43,103 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                   margin: EdgeInsetsDirectional.only(top: 20),
                   height: MediaQuery.of(context).size.height / 7,
                   width: widget.width ?? MediaQuery.of(context).size.width,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                            child: Text(
-                          "You and Adrianne have",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              fontFamily: "Nunito"),
-                        )),
-                        Container(
-                          child: Text(
-                            "85% of matching",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                fontFamily: "Nunito"),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsetsDirectional.only(top: 5),
-                          child: Text(
-                            'Show me',
-                            style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12,
-                                fontFamily: "Nunito"),
-                          ),
-                          // Icon(
-                          //   Icons.keyboard_arrow_right,
-                          //   color: Colors.white70,
-                          //   size: 10,
-                          // ),
-                        )
-                      ])),
+                  child:
+                      Consumer<HomeProvider>(builder: (context, data, child) {
+                    return FutureBuilder(
+                        future: Persentage().checkSuggestionPresentage(
+                            data.userData, widget.userSuggestionData),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      child: Text(
+                                    "You and ${widget.userSuggestionData.firstName}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        fontFamily: "Nunito"),
+                                  )),
+                                  Container(
+                                    child: Text(
+                                      "${(snapshot.data * 100).round().toString()}% of matching",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          fontFamily: "Nunito"),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsetsDirectional.only(top: 5),
+                                    child: Text(
+                                      'Show me',
+                                      style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                          fontFamily: "Nunito"),
+                                    ),
+                                    // Icon(
+                                    //   Icons.keyboard_arrow_right,
+                                    //   color: Colors.white70,
+                                    //   size: 10,
+                                    // ),
+                                  )
+                                ]);
+                          } else {
+                            return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      child: Text(
+                                    "You and ${widget.userSuggestionData.firstName}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        fontFamily: "Nunito"),
+                                  )),
+                                  Container(
+                                    child: Text(
+                                      "0% of matching",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          fontFamily: "Nunito"),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsetsDirectional.only(top: 5),
+                                    child: Text(
+                                      'Show me',
+                                      style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                          fontFamily: "Nunito"),
+                                    ),
+                                    // Icon(
+                                    //   Icons.keyboard_arrow_right,
+                                    //   color: Colors.white70,
+                                    //   size: 10,
+                                    // ),
+                                  )
+                                ]);
+                          }
+                        });
+                  })),
               Positioned(
                   top: -20,
                   right: 40,

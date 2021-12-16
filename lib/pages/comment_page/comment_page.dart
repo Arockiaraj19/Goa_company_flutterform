@@ -1,3 +1,5 @@
+import 'package:dating_app/models/chatgroup_model.dart';
+import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/chatting_page/chatting_page.dart';
 
 import 'package:dating_app/pages/comment_page/widgets/dates_card_list.dart';
@@ -5,7 +7,9 @@ import 'package:dating_app/pages/comment_page/widgets/dates_card_list.dart';
 import 'package:dating_app/pages/comment_page/widgets/massage_card_list.dart';
 
 import 'package:dating_app/pages/comment_page/widgets/request_card_list.dart';
-
+import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/alert_widget.dart';
@@ -13,6 +17,7 @@ import 'package:dating_app/shared/widgets/bottom_bar.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class CommentPage extends StatefulWidget {
   CommentPage({Key key}) : super(key: key);
@@ -24,12 +29,21 @@ class CommentPage extends StatefulWidget {
 class _CommentPageState extends State<CommentPage>
     with TickerProviderStateMixin {
   TabController _tabController;
-
+  String userid;
   @override
   void initState() {
     super.initState();
+    if (kIsWeb) {
+      context.read<ChatProvider>().getGroupData("");
+    }
+
+    getId();
     _tabController = TabController(length: 3, vsync: this);
     print("init socket state");
+  }
+
+  getId() async {
+    userid = await getUserId();
   }
 
   @override
@@ -142,6 +156,16 @@ class _CommentPageState extends State<CommentPage>
     );
   }
 
+  int cardIndex = 0;
+  onChanged(index, List<ChatGroup> data) async {
+    print("onclick la index enna varutha");
+    print(index);
+    setState(() {
+      cardIndex = index;
+    });
+    context.read<ChatProvider>().getMessageData(data[cardIndex].id);
+  }
+
   Widget _buildWeb() {
     var _height = MediaQuery.of(context).size.height;
     var _width = MediaQuery.of(context).size.width - 30;
@@ -228,7 +252,7 @@ class _CommentPageState extends State<CommentPage>
                                     child: Text(
                                       "Message",
                                       style: TextStyle(
-                                        fontSize: 45.sp,
+                                        fontSize: inputFont,
                                       ),
                                     ),
                                   ),
@@ -246,7 +270,7 @@ class _CommentPageState extends State<CommentPage>
                                           Text(
                                             "Dates",
                                             style: TextStyle(
-                                              fontSize: 45.sp,
+                                              fontSize: inputFont,
                                             ),
                                           ),
                                           Container(
@@ -261,7 +285,7 @@ class _CommentPageState extends State<CommentPage>
                                     child: Text(
                                       "Request",
                                       style: TextStyle(
-                                        fontSize: 45.sp,
+                                        fontSize: inputFont,
                                       ),
                                     ),
                                   ),
@@ -270,42 +294,75 @@ class _CommentPageState extends State<CommentPage>
                               // Divider(),
                             ])))),
                 body: TabBarView(controller: _tabController, children: <Widget>[
-                  Container(
-                      child: Row(
-                    children: [
-                      Container(
-                          color: Colors.white,
-                          height: _height,
-                          width: _width * 0.333,
-                          padding: EdgeInsetsDirectional.only(top: 30),
-                          child: MassageCardList(
-                            onWeb: true,
-                            mcardHeight: 60,
-                            mCardWidth: _width / 5.5,
-                          )),
-                      Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              left: BorderSide(
-                                width: 1,
-                                color: Colors.grey[300],
-                              ),
-                              top: BorderSide(
-                                width: 1,
-                                color: Colors.grey[300],
-                              ),
-                            ),
-                            color: Colors.grey[50],
-                          ),
-                          height: _height,
-                          width: _width * 0.570,
-                          child: ChattingPage(
-                            chatBoxWidth: _width / 3.8,
-                            floatingActionButtonWidth: _width * 0.500,
-                            onWeb: true,
+                  Consumer<ChatProvider>(builder: (context, data, child) {
+                    return data.chatState == ChatState.Loaded
+                        ? Container(
+                            child: Row(
+                            children: [
+                              Container(
+                                  color: Colors.white,
+                                  height: _height,
+                                  width: _width * 0.333,
+                                  padding: EdgeInsetsDirectional.only(top: 30),
+                                  child: MassageCardList(
+                                    onChanged: (index) {
+                                      onChanged(index, data.chatGroupData);
+                                    },
+                                    onWeb: true,
+                                    mcardHeight: 60,
+                                    mCardWidth: _width / 5.5,
+                                  )),
+                              Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(
+                                        width: 1,
+                                        color: Colors.grey[300],
+                                      ),
+                                      top: BorderSide(
+                                        width: 1,
+                                        color: Colors.grey[300],
+                                      ),
+                                    ),
+                                    color: Colors.grey[50],
+                                  ),
+                                  height: _height,
+                                  width: _width * 0.570,
+                                  child: ChattingPage(
+                                    groupid: data.chatGroupData[cardIndex].id,
+                                    id: data.chatGroupData[cardIndex]
+                                                .user_id_1_details[0].userid !=
+                                            userid
+                                        ? data.chatGroupData[cardIndex]
+                                            .user_id_1_details[0].userid
+                                        : data.chatGroupData[cardIndex]
+                                            .user_id_2_details[0].userid,
+                                    image: data.chatGroupData[cardIndex]
+                                                .user_id_1_details[0].userid !=
+                                            userid
+                                        ? data
+                                            .chatGroupData[cardIndex]
+                                            .user_id_1_details[0]
+                                            .identificationImage
+                                        : data
+                                            .chatGroupData[cardIndex]
+                                            .user_id_2_details[0]
+                                            .identificationImage,
+                                    name: data.chatGroupData[cardIndex]
+                                                .user_id_1_details[0].userid !=
+                                            userid
+                                        ? data.chatGroupData[cardIndex]
+                                            .user_id_1_details[0].firstname
+                                        : data.chatGroupData[cardIndex]
+                                            .user_id_2_details[0].firstname,
+                                    chatBoxWidth: _width / 3.8,
+                                    floatingActionButtonWidth: _width * 0.500,
+                                    onWeb: true,
+                                  )),
+                            ],
                           ))
-                    ],
-                  )),
+                        : Container();
+                  }),
                   Container(
                       decoration: BoxDecoration(
                         border: Border(

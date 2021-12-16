@@ -20,6 +20,7 @@ import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/loadingLottie.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
@@ -370,13 +371,13 @@ class _ChattingPageState extends State<ChattingPage> {
               Expanded(
                 child: Consumer<ChatProvider>(
                   builder: (context, data, child) {
-                    return data.chatState == ChatState.Error
+                    return data.chatMessageState == ChatMessageState.Error
                         ? ErrorCard(
                             text: data.errorText,
                             ontab: () => context
                                 .read<ChatProvider>()
                                 .getMessageData(widget.groupid))
-                        : data.chatState == ChatState.Loaded
+                        : data.chatMessageState == ChatMessageState.Loaded
                             ? data.chatMessageData.length == 0
                                 ? Container()
                                 : StickyGroupedListView<ChatMessage, DateTime>(
@@ -449,9 +450,12 @@ class _ChattingPageState extends State<ChattingPage> {
                                             : Alignment.centerLeft,
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 30.w, vertical: 30.w),
+                                              horizontal:
+                                                  widget.onWeb ? 22 : 30.w,
+                                              vertical:
+                                                  widget.onWeb ? 5 : 30.w),
                                           child: Card(
-                                            elevation: 2,
+                                            elevation: widget.onWeb ? 5 : 2,
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5),
@@ -469,8 +473,12 @@ class _ChattingPageState extends State<ChattingPage> {
                                                           : Colors.white),
                                               child: Padding(
                                                   padding: EdgeInsets.symmetric(
-                                                    horizontal: 50.w,
-                                                    vertical: 15.w,
+                                                    horizontal: widget.onWeb
+                                                        ? 20
+                                                        : 50.w,
+                                                    vertical: widget.onWeb
+                                                        ? inputFont
+                                                        : 15.w,
                                                   ),
                                                   child:
                                                       element.images.length == 0
@@ -497,8 +505,10 @@ class _ChattingPageState extends State<ChattingPage> {
                                                                             .white
                                                                         : Color(
                                                                             0xff4A4A4A),
-                                                                    fontSize:
-                                                                        40.sp,
+                                                                    fontSize: widget
+                                                                            .onWeb
+                                                                        ? inputFont
+                                                                        : 40.sp,
                                                                   ),
                                                                 ),
                                                                 Text(
@@ -523,8 +533,10 @@ class _ChattingPageState extends State<ChattingPage> {
                                                                             .white
                                                                         : MainTheme
                                                                             .chatPageColor,
-                                                                    fontSize:
-                                                                        25.sp,
+                                                                    fontSize: widget
+                                                                            .onWeb
+                                                                        ? 10
+                                                                        : 25.sp,
                                                                   ),
                                                                 ),
                                                               ],

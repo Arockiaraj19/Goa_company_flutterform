@@ -42,7 +42,7 @@ class _FindMatchPageState extends State<FindMatchPage> {
 
   allCall() async {
     await getdata();
-    await checkAds();
+    // await checkAds();
     getnotifi();
     getLoc();
   }
@@ -85,13 +85,13 @@ class _FindMatchPageState extends State<FindMatchPage> {
   }
 
   getLoc() async {
-    if (await Permission.location.request().isGranted) {
-      try {
-        location = await GoogleMapDisplay().createState().currentLocation();
-      } catch (e) {
-        print(e);
-      }
-    }
+    // if (await Permission.location.request().isGranted) {
+    //   try {
+    //     location = await GoogleMapDisplay().createState().currentLocation();
+    //   } catch (e) {
+    //     print(e);
+    //   }
+    // }
 
     var network = UserNetwork();
     var userData = {
@@ -108,6 +108,7 @@ class _FindMatchPageState extends State<FindMatchPage> {
           context.read<NotificationProvider>().notificationState !=
               NotificationState.Error) {
         // myBanner.dispose();
+        print("home page kku pothaaa");
         goToHomePage();
       }
     }
@@ -150,7 +151,7 @@ class _FindMatchPageState extends State<FindMatchPage> {
       if (constraints.maxWidth < 1100) {
         return _buildPhone();
       } else {
-        return _buildWeb();
+        return _buildPhone();
       }
     });
   }

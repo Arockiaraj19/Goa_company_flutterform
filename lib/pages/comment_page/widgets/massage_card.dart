@@ -2,14 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chatgroup_model.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MassageCard extends StatefulWidget {
+  final int index;
+  final Function(int) onChanged;
   final Function onTap;
   final ChatGroup data;
-  MassageCard({Key key, this.onTap, this.data}) : super(key: key);
+  final bool onWeb;
+  MassageCard(
+      {Key key, this.onTap, this.data, this.onWeb = false, this.onChanged,this.index})
+      : super(key: key);
 
   @override
   _MassageCardState createState() => _MassageCardState();
@@ -70,7 +76,11 @@ class _MassageCardState extends State<MassageCard> {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          gopage();
+          if (widget.onWeb) {
+            widget.onChanged(widget.index);
+          } else {
+            gopage();
+          }
         },
         child: Container(
             margin: EdgeInsets.all(7),
@@ -87,12 +97,12 @@ class _MassageCardState extends State<MassageCard> {
                           borderRadius: BorderRadius.circular(100.0),
                           child: CachedNetworkImage(
                               fit: BoxFit.fill,
-                              width: 160.r,
-                              height: 160.r,
+                              width: widget.onWeb ? 50 : 160.r,
+                              height: widget.onWeb ? 50 : 160.r,
                               placeholder: (context, url) => Image.asset(
                                     "assets/images/placeholder.png",
-                                    width: 160.r,
-                                    height: 160.r,
+                                    width: widget.onWeb ? 50 : 160.r,
+                                    height: widget.onWeb ? 50 : 160.r,
                                     fit: BoxFit.cover,
                                   ),
                               imageUrl: snapshot.data),
@@ -102,8 +112,8 @@ class _MassageCardState extends State<MassageCard> {
                           borderRadius: BorderRadius.circular(100.0),
                           child: Image.asset(
                             "assets/images/placeholder.png",
-                            width: 160.r,
-                            height: 160.r,
+                            width: widget.onWeb ? 50 : 160.r,
+                            height: widget.onWeb ? 50 : 160.r,
                             fit: BoxFit.cover,
                           ),
                         );
@@ -130,7 +140,7 @@ class _MassageCardState extends State<MassageCard> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 45.sp,
+                                    fontSize: widget.onWeb ? inputFont : 45.sp,
                                     fontFamily: "Nunito"),
                               );
                             } else {
@@ -157,7 +167,7 @@ class _MassageCardState extends State<MassageCard> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 40.sp,
+                              fontSize: widget.onWeb ? 14 : 40.sp,
                               fontFamily: "Nunito"),
                         ),
                       ),
@@ -177,7 +187,7 @@ class _MassageCardState extends State<MassageCard> {
                           widget.data.unreadCount.toString(),
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 45.sp,
+                            fontSize: widget.onWeb ? inputFont : 45.sp,
                           ),
                         ),
                       )),

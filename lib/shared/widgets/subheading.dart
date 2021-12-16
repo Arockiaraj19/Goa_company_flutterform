@@ -17,7 +17,13 @@ class _SubHeadingState extends State<SubHeading> {
       children: [
         Container(
             margin: EdgeInsetsDirectional.only(top: 10, bottom: 10),
-            child: Text(widget.name, style: MainTheme.subHeading))
+            child: Text(widget.name,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "OpenSans",
+                  fontSize: 12,
+                )))
       ],
     );
   }

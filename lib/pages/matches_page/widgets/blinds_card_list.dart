@@ -4,6 +4,7 @@ import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/matches_page/widgets/blind_card.dart';
 import 'package:dating_app/providers/blind_provider.dart';
 import 'package:dating_app/shared/helpers/loadingLottie.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/filter_bottom_sheet1.dart';
@@ -67,13 +68,13 @@ class _BlindsCardListState extends State<BlindsCardList> {
                       fontSize: 18,
                     )),
                 GradientButton(
-                  margin: EdgeInsets.all(0),
-                  height: MediaQuery.of(context).size.height / 20,
+                  height: widget.onWeb ? 35 : 110.w,
+                  fontSize: widget.onWeb ? inputFont : 40.sp,
+                  width: widget.onWeb ? 150 : 500.w,
                   name: "Find me date",
                   gradient: MainTheme.loginBtnGradient,
                   active: true,
                   color: Colors.white,
-                  width: ScreenUtil().setWidth(400),
                   fontWeight: FontWeight.bold,
                   borderRadius: BorderRadius.circular(5),
                   onPressed: () async {

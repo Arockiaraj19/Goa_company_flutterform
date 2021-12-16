@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dating_app/pages/add_profile_pic_page/add_profile_pic.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +12,7 @@ class AlbumImageCard extends StatefulWidget {
   final Color colors;
   final Function onTap;
   final bool isFile;
-  final XFile selectedUserAvatar;
+  final selectedUserAvatar;
   final Function onTapClose;
 
   AlbumImageCard(
@@ -37,6 +38,7 @@ class _AlbumImageCardState extends State<AlbumImageCard> {
         Container(
             padding: EdgeInsets.all(10),
             height: MediaQuery.of(context).size.height / 6,
+            width: double.infinity,
             child: InkWell(
                 onTap: () {
                   widget.onTap();
@@ -44,25 +46,40 @@ class _AlbumImageCardState extends State<AlbumImageCard> {
                 },
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: widget.selectedUserAvatar != null
-                        ? Platform.isAndroid
-                            ? Image.file(
-                                File(widget.selectedUserAvatar.path),
+                    child: kIsWeb
+                        ? widget.selectedUserAvatar != null
+                            ? Image.memory(
+                                widget.selectedUserAvatar,
                                 fit: BoxFit.fill,
                               )
-                            : Image.network(
-                                widget.selectedUserAvatar.path,
-                                fit: BoxFit.fill,
-                              )
-                        : widget.alreadyimage == null
-                            ? Image.asset(
-                                "assets/images/Add_image.png",
-                                fit: BoxFit.fill,
-                              )
-                            : Image.network(
-                                widget.alreadyimage,
-                                fit: BoxFit.fill,
-                              )))),
+                            : widget.alreadyimage == null
+                                ? Image.asset(
+                                    "assets/images/Add_image.png",
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.network(
+                                    widget.alreadyimage,
+                                    fit: BoxFit.fill,
+                                  )
+                        : widget.selectedUserAvatar != null
+                            ? Platform.isAndroid
+                                ? Image.file(
+                                    File(widget.selectedUserAvatar.path),
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.network(
+                                    widget.selectedUserAvatar.path,
+                                    fit: BoxFit.fill,
+                                  )
+                            : widget.alreadyimage == null
+                                ? Image.asset(
+                                    "assets/images/Add_image.png",
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.network(
+                                    widget.alreadyimage,
+                                    fit: BoxFit.fill,
+                                  )))),
         Positioned(
             top: 0,
             right: 0,

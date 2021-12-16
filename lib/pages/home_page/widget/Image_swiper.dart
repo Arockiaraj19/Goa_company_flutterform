@@ -23,11 +23,13 @@ class ImageSwiper extends StatefulWidget {
       {Key key,
       this.onTap,
       this.promos = const <dynamic>[],
-      this.userSuggestionData})
+      this.userSuggestionData,
+      this.onChanged})
       : super(key: key);
   final Function(dynamic) onTap;
   final List<dynamic> promos;
   final UsersSuggestionModel userSuggestionData;
+  final Function(int) onChanged;
 
   @override
   _ImageSwiperState createState() => _ImageSwiperState();
@@ -85,6 +87,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
                     loop: false,
                     outer: true,
                     onIndexChanged: (int ind) async {
+                      widget.onChanged(ind);
                       currentIndex = ind;
                       print("change index enna varuthu");
                       print(ind);

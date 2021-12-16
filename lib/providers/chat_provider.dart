@@ -11,13 +11,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 enum ChatState { Initial, Loading, Loaded, Error }
+enum ChatMessageState { Initial, Loading, Loaded, Error }
 
 class ChatProvider extends ChangeNotifier {
   ChatState _chatState = ChatState.Initial;
+  ChatState get chatState => _chatState;
+
+  ChatMessageState _chatMessageState = ChatMessageState.Initial;
+  ChatMessageState get chatMessageState => _chatMessageState;
 
   List<ChatGroup> _chatGroupData;
-
-  ChatState get chatState => _chatState;
 
   List<ChatGroup> get chatGroupData => _chatGroupData;
 
@@ -39,7 +42,7 @@ class ChatProvider extends ChangeNotifier {
   }
 
   getMessageData(id) async {
-    _chatState = ChatState.Loading;
+    _chatMessageState = ChatMessageState.Loading;
 
     try {
       _chatMessageData = await ChatNetwork().getMessagelist(id);
@@ -49,11 +52,16 @@ class ChatProvider extends ChangeNotifier {
       return error();
     }
 
-    loaded();
+    loaded1();
   }
 
   loaded() {
     _chatState = ChatState.Loaded;
+    notifyListeners();
+  }
+
+  loaded1() {
+    _chatMessageState = ChatMessageState.Loaded;
     notifyListeners();
   }
 

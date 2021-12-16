@@ -8,6 +8,7 @@ import 'package:dating_app/pages/detail_page/widgets/percentage_matching_box.dar
 import 'package:dating_app/pages/home_page/widget/Image_swiper.dart';
 import 'package:dating_app/pages/home_page/widget/bio.dart';
 import 'package:dating_app/pages/home_page_grid_view_page/home_page_grid_view_page.dart';
+import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
@@ -38,6 +39,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:sailor/sailor.dart';
 
+import 'widget/interest_box.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
 
@@ -53,6 +56,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+   
+    print("home page kku varuthaa");
     FCM().initPushNotification();
     Future.delayed(Duration(milliseconds: 500), () {
       if (context.read<SubscriptionProvider>().plan == null) {
@@ -290,6 +295,7 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+  int cardIndex = 0;
   Widget _buildWeb() {
     var _height = MediaQuery.of(context).size.height - (kToolbarHeight);
     var _width = MediaQuery.of(context).size.width - 30;
@@ -320,18 +326,19 @@ class _HomePageState extends State<HomePage> {
                 ),
                 body: Consumer<HomeProvider>(builder: (context, data, child) {
                   return data.homeState == HomeState.Loaded
-                      ? SingleChildScrollView(
-                          child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
                                 children: [
                                   Container(
                                       height: 20,
                                       width: _width * 0.29,
                                       child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Discover",
@@ -346,6 +353,14 @@ class _HomePageState extends State<HomePage> {
                                       height: _height - 50,
                                       width: _width * 0.450,
                                       child: ImageSwiper(
+                                        onChanged: (int index) {
+                                          print(
+                                              "initiala home page kku index varutha web la");
+                                          print(index);
+                                          setState(() {
+                                            cardIndex = index;
+                                          });
+                                        },
                                         // height: _height - 150,
                                         // width: _width * 0.450,
                                         // itemheight: _height - 150,
@@ -362,97 +377,99 @@ class _HomePageState extends State<HomePage> {
                                       )),
                                 ],
                               ),
-                              Column(
+                            ),
+                            Expanded(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
                                     height: 110,
                                     width: _width * 0.355,
-                                    child: Bio(),
+                                    child: Bio(
+                                      bio: data.usersSuggestionData
+                                          .response[cardIndex].bio,
+                                    ),
                                   ),
                                   PercentageMatchingBox(
                                     width: _width * 0.355,
                                     height: 80,
                                     onWeb: true,
+                                    userSuggestionData: data.usersSuggestionData
+                                        .response[cardIndex],
                                   ),
                                   SubHeading(name: "Intersest"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 75,
-                                        width: _width * 0.355,
-                                        // child: InterestcardList(
-                                        //   mainAxisSpacing: 0.0,
-                                        //   crossAxisSpacing: 0.0,
-                                        //   crossAxisCount: 4,
-                                        //   childAspectRatio: 3,
-                                        //   itemCount: 8,
-                                        // )
-                                      )
-                                    ],
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisSpacing: 0.0,
+                                            mainAxisSpacing: 0.0,
+                                            crossAxisCount: 5,
+                                            childAspectRatio: 2.8),
+                                    itemCount: data
+                                        .usersSuggestionData
+                                        .response[cardIndex]
+                                        .interestDetails
+                                        .length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return InterestBox(
+                                        fillColor: Colors.white,
+                                        fontSize: ScreenUtil().setSp(MainTheme
+                                            .mSecondaryContentfontSize),
+                                        color: MainTheme.primaryColor,
+                                        title: data
+                                                .usersSuggestionData
+                                                .response[cardIndex]
+                                                .interestDetails[index]
+                                                .title ??
+                                            "",
+                                        onTap: () {},
+                                      );
+                                    },
                                   ),
-                                  Container(
-                                      margin: EdgeInsetsDirectional.only(
-                                          top: 5, start: _width / 3.2),
-                                      child: Text(
-                                        'Show me',
-                                        style: TextStyle(
-                                            color: MainTheme.primaryColor,
-                                            fontSize: 12,
-                                            fontFamily: "Nunito"),
-                                      )),
-                                  SubHeading(name: "Album"),
-                                  Container(
-                                      height: 180,
-                                      width: _width * 0.355,
-                                      child: AlbumCardList(
-                                        childAspectRatio: 1.9,
-                                        mainAxisSpacing: 15,
-                                        crossAxisSpacing: 15,
-                                        crossAxisCount: 3,
-                                        itemCount: 10,
-                                      )),
-                                  Container(
-                                    margin: EdgeInsetsDirectional.only(
-                                        top: 5, start: _width / 3.2),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          'Show me',
-                                          textAlign: TextAlign.end,
-                                          style: TextStyle(
-                                              color: MainTheme.primaryColor,
-                                              fontSize: 12,
-                                              fontFamily: "Nunito"),
-                                        )
-                                      ],
-                                    ),
-                                  )
+                                  SubHeading(name: "Hobbies"),
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisSpacing: 0.0,
+                                            mainAxisSpacing: 0.0,
+                                            crossAxisCount: 5,
+                                            childAspectRatio: 2.8),
+                                    itemCount: data
+                                        .usersSuggestionData
+                                        .response[cardIndex]
+                                        .hobbyDetails
+                                        .length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return InterestBox(
+                                        fillColor: Colors.white,
+                                        fontSize: ScreenUtil().setSp(MainTheme
+                                            .mSecondaryContentfontSize),
+                                        color: MainTheme.primaryColor,
+                                        title: data
+                                                .usersSuggestionData
+                                                .response[cardIndex]
+                                                .hobbyDetails[index]
+                                                .title ??
+                                            "",
+                                        onTap: () {},
+                                      );
+                                    },
+                                  ),
                                 ],
-                              )
-                            ],
-                          )
-                        ]))
+                              ),
+                            )
+                          ],
+                        )
                       : Center(
                           child: CircularProgressIndicator(),
                         );
                 }))));
   }
-
-  // _showOtpBottomSheet() {
-  //   showModalBottomSheet(
-  //       context: context,
-  //       isScrollControlled: true,
-  //       isDismissible: false,
-  //       enableDrag: false,
-  //       // shape: RoundedRectangleBorder(
-  //       //     borderRadius: BorderRadius.only(
-  //       //         topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-  //       builder: (BuildContext context) {
-  //         return FilterBottomSheet();
-  //       });
-  // }
 }
