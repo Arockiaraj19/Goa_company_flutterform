@@ -4,17 +4,21 @@ import 'package:dating_app/models/expertGroup_model.dart';
 import 'package:dating_app/networks/expertChat_netword.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/expert_ChatGroup/expertChattingPage.dart';
+import 'package:dating_app/pages/home_page/widget/circularBtn.dart';
 import 'package:dating_app/providers/home_provider.dart';
 
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/src/provider.dart';
 
 class ExpertCard extends StatefulWidget {
   final Function onTap;
   final ExpertGroup data;
-  ExpertCard({Key key, this.onTap, this.data}) : super(key: key);
+  final bool onWeb;
+  ExpertCard({Key key, this.onTap, this.data, this.onWeb}) : super(key: key);
 
   @override
   _ExpertCardState createState() => _ExpertCardState();
@@ -30,6 +34,7 @@ class _ExpertCardState extends State<ExpertCard> {
       "name": widget.data.firstname,
       "status": widget.data.onlinestatus,
       "image": widget.data.profileImage,
+      "onWeb": widget.onWeb,
     });
   }
 
@@ -44,7 +49,9 @@ class _ExpertCardState extends State<ExpertCard> {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          goToChatPage();
+          if (!widget.onWeb) {
+            goToChatPage();
+          }
         },
         child: Container(
             margin: EdgeInsets.all(7),
@@ -57,8 +64,8 @@ class _ExpertCardState extends State<ExpertCard> {
                           borderRadius: BorderRadius.circular(100.0),
                           child: Image.asset(
                             "assets/images/placeholder.png",
-                            width: 160.r,
-                            height: 160.r,
+                            width: widget.onWeb ? 50 : 160.r,
+                            height: widget.onWeb ? 50 : 160.r,
                             fit: BoxFit.cover,
                           ),
                         )
@@ -66,12 +73,12 @@ class _ExpertCardState extends State<ExpertCard> {
                           borderRadius: BorderRadius.circular(100.0),
                           child: CachedNetworkImage(
                               fit: BoxFit.fill,
-                              width: 160.r,
-                              height: 160.r,
+                              width: widget.onWeb ? 50 : 160.r,
+                              height: widget.onWeb ? 50 : 160.r,
                               placeholder: (context, url) => Image.asset(
                                     "assets/images/placeholder.png",
-                                    width: 160.r,
-                                    height: 160.r,
+                                    width: widget.onWeb ? 50 : 160.r,
+                                    height: widget.onWeb ? 50 : 160.r,
                                     fit: BoxFit.cover,
                                   ),
                               imageUrl: widget.data.profileImage[0]),
@@ -93,7 +100,7 @@ class _ExpertCardState extends State<ExpertCard> {
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 45.sp,
+                                  fontSize: widget.onWeb ? inputFont : 45.sp,
                                   fontFamily: "Nunito"),
                             ),
                           ),
@@ -122,7 +129,20 @@ class _ExpertCardState extends State<ExpertCard> {
                       // ),
                     ],
                   )),
-                )
+                ),
+                if (widget.onWeb)
+                  CircularBtn(
+                      icon: FontAwesomeIcons.solidPaperPlane,
+                      btnColor: Color(0xffF85565),
+                      ontap: () {
+                        if (widget.onWeb) {
+                          goToChatPage();
+                        }
+                      }),
+                if (widget.onWeb)
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                  )
               ],
             )));
   }

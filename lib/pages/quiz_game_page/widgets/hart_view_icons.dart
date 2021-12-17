@@ -8,6 +8,7 @@ class HartViewicons extends StatefulWidget {
   final PageController controller;
   final int index;
   final int position;
+  final bool onweb;
 
   HartViewicons(
       {Key key,
@@ -16,7 +17,8 @@ class HartViewicons extends StatefulWidget {
       this.onTap,
       this.controller,
       this.index,
-      this.position})
+      this.position,
+      this.onweb = false})
       : super(key: key);
 
   @override

@@ -21,7 +21,8 @@ class SubscriptionCard extends StatefulWidget {
   SubscriptionModel data;
   int index;
   bool onboard;
-  SubscriptionCard(this.data, this.index, this.onboard);
+  final bool onWeb;
+  SubscriptionCard(this.data, this.index, this.onboard, this.onWeb);
   @override
   _SubscriptionCardState createState() => _SubscriptionCardState();
 }
@@ -92,114 +93,124 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     return Stack(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 0.w),
+          padding: EdgeInsets.symmetric(
+              vertical: widget.onWeb ? 0 : 10.h, horizontal: 0.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                height: 30.h,
+                height: widget.onWeb ? 0 : 30.h,
               ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                decoration: BoxDecoration(
-                    gradient: widget.index % 2 == 0
-                        ? MainTheme.subscripeCard1
-                        : MainTheme.subscripeCard,
-                    borderRadius: BorderRadius.circular(30.w)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Text(
-                      widget.data.title,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 50.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Text(
-                      "Unlock all our features to be in complete control of your experiance.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40.sp,
-                          fontWeight: FontWeight.w400),
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    if (widget.data.subscriptionType == "Payment")
-                      Text(
-                        widget.data.currencyType.symbol.toString() +
-                            widget.data.price.toString(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 70.sp,
-                            fontWeight: FontWeight.w800),
-                      ),
-                    if (widget.data.subscriptionType == "Coins")
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "assets/images/coin.png",
-                            width: 25,
-                            height: 25,
-                          ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: widget.onWeb
+                      ? MediaQuery.of(context).size.width * 0.235
+                      : MediaQuery.of(context).size.width * 0.9,
+                  decoration: BoxDecoration(
+                      gradient: widget.index % 2 == 0
+                          ? MainTheme.subscripeCard1
+                          : MainTheme.subscripeCard,
+                      borderRadius:
+                          BorderRadius.circular(widget.onWeb ? 7 : 30.w)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: widget.onWeb ? 0 : 5.h,
+                        ),
+                        Text(
+                          widget.data.title,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: widget.onWeb ? 15 : 50.sp,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(
+                          height: widget.onWeb ? 2.5 : 5.h,
+                        ),
+                        Text(
+                          "Unlock all our features to be in complete control of your experiance.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: widget.onWeb ? 12 : 40.sp,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(
+                          height: widget.onWeb ? 2.5 : 5.h,
+                        ),
+                        if (widget.data.subscriptionType == "Payment")
                           Text(
-                            widget.data.coins.toString(),
+                            widget.data.currencyType.symbol.toString() +
+                                widget.data.price.toString(),
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 70.sp,
+                                fontSize: widget.onWeb ? 15 : 70.sp,
                                 fontWeight: FontWeight.w800),
                           ),
-                        ],
-                      ),
-                    if (widget.data.durationType == 2)
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            widget.data.validity.toString() + " " + "days",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35.sp,
-                                fontWeight: FontWeight.w800),
+                        if (widget.data.subscriptionType == "Coins")
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/coin.png",
+                                width: 25,
+                                height: 25,
+                              ),
+                              SizedBox(
+                                width: 5.w,
+                              ),
+                              Text(
+                                widget.data.coins.toString(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: widget.onWeb ? 15 : 70.sp,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                            ],
                           ),
+                        if (widget.data.durationType == 2)
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                widget.data.validity.toString() + " " + "days",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: widget.onWeb ? 10 : 35.sp,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ),
+                        if (widget.data.durationType == 1)
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                widget.data.validity.toString() + " " + "years",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: widget.onWeb ? 10 : 35.sp,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ),
+                        SizedBox(
+                          height: widget.onWeb ? 0 : 5.h,
                         ),
-                      ),
-                    if (widget.data.durationType == 1)
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            widget.data.validity.toString() + " " + "years",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35.sp,
-                                fontWeight: FontWeight.w800),
-                          ),
-                        ),
-                      ),
-                    SizedBox(
-                      height: 5.h,
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               SizedBox(
-                height: 30.h,
+                height: widget.onWeb ? 10 : 30.h,
               ),
               Consumer<SubscriptionProvider>(
                 builder: (context, data, child) {
@@ -208,32 +219,37 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                     child: Stack(
                       children: [
                         Padding(
-                          padding: EdgeInsets.all(40.w),
+                          padding: EdgeInsets.all(widget.onWeb ? 10 : 40.w),
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 1,
+                            width: widget.onWeb
+                                ? MediaQuery.of(context).size.width * 0.22
+                                : MediaQuery.of(context).size.width * 1,
                             child: Table(columnWidths: <int, TableColumnWidth>{
-                              0: FixedColumnWidth(500.w),
-                              1: FlexColumnWidth(100.w),
+                              0: FixedColumnWidth(widget.onWeb ? 170 : 500.w),
+                              1: FlexColumnWidth(widget.onWeb ? 50 : 100.w),
                             }, children: [
                               TableRow(children: [
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      bottom: 30.0.w, top: 30.w),
-                                  child: tableHeading(
-                                      'What you get:', TextAlign.start),
+                                      bottom: widget.onWeb ? 10 : 30.0.w,
+                                      top: widget.onWeb ? 10 : 30.w),
+                                  child: tableHeading('What you get:',
+                                      TextAlign.start, widget.onWeb),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      bottom: 30.0.w, top: 30.w),
-                                  child:
-                                      tableHeading('Silver', TextAlign.center),
+                                      bottom: widget.onWeb ? 5 : 30.0.w,
+                                      top: widget.onWeb ? 5 : 30.w),
+                                  child: tableHeading(
+                                      'Silver', TextAlign.center, widget.onWeb),
                                 ),
                               ]),
                               for (var plan in data.checklistData)
                                 tablerow(
                                     plan.title,
                                     widget.data.checklists.any(
-                                        (element) => element.id == plan.id)),
+                                        (element) => element.id == plan.id),
+                                    widget.onWeb),
                             ]),
                           ),
                         ),
@@ -257,7 +273,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                 },
               ),
               SizedBox(
-                height: 40.h,
+                height: widget.onWeb ? 10 : 40.h,
               ),
               loading
                   ? Center(
@@ -268,36 +284,38 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            InkWell(
-                              onTap: () async {
-                                if (widget.onboard) {
-                                  Routes.sailor(Routes.findMatchPage);
-                                } else {
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: Container(
-                                height: 30.h,
-                                width: 300.w,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
+                            if (!widget.onWeb)
+                              InkWell(
+                                onTap: () async {
+                                  if (widget.onboard) {
+                                    Routes.sailor(Routes.findMatchPage);
+                                  } else {
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                child: Container(
+                                  height: widget.onWeb ? 35 : 30.h,
+                                  width: widget.onWeb ? 130 : 300.w,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: MainTheme.primaryColor,
+                                          width: 1),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Text(
+                                    "Skip",
+                                    style: TextStyle(
                                         color: MainTheme.primaryColor,
-                                        width: 1),
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Text(
-                                  "Skip",
-                                  style: TextStyle(
-                                      color: MainTheme.primaryColor,
-                                      fontSize: 40.sp,
-                                      fontWeight: FontWeight.w600),
+                                        fontSize: widget.onWeb ? 14 : 40.sp,
+                                        fontWeight: FontWeight.w600),
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 100.w,
-                            ),
+                            if (!widget.onWeb)
+                              SizedBox(
+                                width: widget.onWeb ? 25 : 100.w,
+                              ),
                             InkWell(
                               onTap: () async {
                                 try {
@@ -338,8 +356,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                 }
                               },
                               child: Container(
-                                height: 30.h,
-                                width: 300.w,
+                                height: widget.onWeb ? 35 : 30.h,
+                                width: widget.onWeb ? 130 : 300.w,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                     gradient: MainTheme.backgroundGradient,
@@ -348,7 +366,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                   "Upgrade",
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 40.sp,
+                                      fontSize: widget.onWeb ? 14 : 40.sp,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
@@ -367,7 +385,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   }
 }
 
-TableRow tablerow(data, istrue) {
+TableRow tablerow(data, istrue, onWeb) {
   return TableRow(decoration: BoxDecoration(), children: [
     Padding(
       padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 0),
@@ -381,7 +399,7 @@ TableRow tablerow(data, istrue) {
           SizedBox(
             width: 3.w,
           ),
-          tablecontent(data),
+          tablecontent(data, onWeb),
         ],
       ),
     ),
@@ -409,26 +427,26 @@ Widget access() {
   );
 }
 
-Text tableHeading(text, textalin) {
+Text tableHeading(text, textalin, onWeb) {
   return Text(
     text,
     textAlign: textalin,
     style: TextStyle(
       color: Color(0xff353535),
       fontWeight: FontWeight.w600,
-      fontSize: 40.sp,
+      fontSize: onWeb ? 14 : 40.sp,
     ),
   );
 }
 
-Text tablecontent(text) {
+Text tablecontent(text, onWeb) {
   return Text(
     text,
     textAlign: TextAlign.start,
     style: TextStyle(
       color: Color(0xff353535),
       fontWeight: FontWeight.w400,
-      fontSize: 40.sp,
+      fontSize: onWeb ? 14 : 40.sp,
     ),
   );
 }

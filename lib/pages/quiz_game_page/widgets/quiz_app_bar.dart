@@ -1,10 +1,13 @@
+import 'package:dating_app/networks/games_network.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class QuizAppBar extends StatefulWidget {
+  String playid;
   String user1;
   String user2;
-  QuizAppBar(this.user1, this.user2);
+  final bool onWeb;
+  QuizAppBar(this.user1, this.user2, this.onWeb, this.playid);
 
   @override
   _QuizAppBarState createState() => _QuizAppBarState();
@@ -22,8 +25,15 @@ class _QuizAppBarState extends State<QuizAppBar> {
         children: [
           Row(children: [
             InkWell(
-              onTap: () {
-                Navigator.pop(context);
+              onTap: () async {
+                try {
+                  bool istrue = await Games().leavegame(widget.playid);
+                  if (istrue) {
+                    Navigator.pop(context);
+                  }
+                } catch (e) {
+                  print(e);
+                }
               },
               child: Container(
                   padding: EdgeInsets.all(15),
@@ -70,7 +80,7 @@ class _QuizAppBarState extends State<QuizAppBar> {
                 Container(
                     margin: EdgeInsetsDirectional.only(end: 10, start: 5),
                     child: CircleAvatar(
-                      radius: 25,
+                      radius: widget.onWeb ? 40 : 25,
                       backgroundImage: NetworkImage(widget.user2),
                     )),
             ],

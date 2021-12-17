@@ -1,5 +1,5 @@
-
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 
 class FilterBottomSheet extends StatefulWidget {
-  FilterBottomSheet({Key key}) : super(key: key);
+  final bool onWeb;
+  FilterBottomSheet({Key key, this.onWeb = false}) : super(key: key);
 
   @override
   _FilterBottomSheetState createState() => _FilterBottomSheetState();
@@ -44,7 +45,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   children: [
                     Container(
                       padding: EdgeInsetsDirectional.only(start: 20),
-                      child: Text("Age", style: MainTheme.subHeading),
+                      child: Text("Age",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "OpenSans",
+                            fontSize: widget.onWeb ? inputFont : 35.sp,
+                          )),
                     ),
                     Container(
                       padding: EdgeInsetsDirectional.only(end: 50),
@@ -91,7 +98,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       padding: EdgeInsetsDirectional.only(
                         start: 20,
                       ),
-                      child: Text("Distance", style: MainTheme.subHeading),
+                      child: Text("Distance",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "OpenSans",
+                            fontSize: widget.onWeb ? inputFont : 35.sp,
+                          )),
                     ),
                     Container(
                       padding: EdgeInsetsDirectional.only(end: 50),
@@ -123,7 +136,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     padding: EdgeInsetsDirectional.only(start: 20),
-                    child: Text("Location", style: MainTheme.subHeading),
+                    child: Text("Location",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "OpenSans",
+                          fontSize: widget.onWeb ? inputFont : 35.sp,
+                        )),
                   ),
                 ),
                 Container(
@@ -141,12 +160,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GradientButton(
-                      height: MediaQuery.of(context).size.height / 20,
+                      height: widget.onWeb ? 35 : 110.w,
+                      fontSize: widget.onWeb ? inputFont : 40.sp,
+                      width: widget.onWeb ? 130 : 500.w,
                       name: "Cancel",
                       buttonColor: Colors.white,
                       active: true,
                       color: MainTheme.primaryColor,
-                      width: ScreenUtil().setWidth(300),
                       borderRadius: BorderRadius.circular(5),
                       fontWeight: FontWeight.bold,
                       onPressed: () async {
@@ -154,12 +174,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       },
                     ),
                     GradientButton(
-                      height: MediaQuery.of(context).size.height / 20,
+                      height: widget.onWeb ? 35 : 110.w,
+                      fontSize: widget.onWeb ? inputFont : 40.sp,
+                      width: widget.onWeb ? 130 : 500.w,
                       name: "Confirm",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
                       color: Colors.white,
-                      width: ScreenUtil().setWidth(300),
                       fontWeight: FontWeight.bold,
                       borderRadius: BorderRadius.circular(5),
                       onPressed: () async {

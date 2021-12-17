@@ -1,3 +1,4 @@
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,8 +7,9 @@ class Questionicons extends StatefulWidget {
   String option;
   String answer;
   String index;
+  final bool onWeb;
 
-  Questionicons({Key key, this.option, this.answer, this.index})
+  Questionicons({Key key, this.option, this.answer, this.index, this.onWeb})
       : super(key: key);
 
   @override
@@ -36,12 +38,12 @@ class _QuestioniconsState extends State<Questionicons> {
                         backgroundColor: widget.option == widget.answer
                             ? MainTheme.primaryColor
                             : Colors.grey[400],
-                        minRadius: 30.r,
-                        maxRadius: 50.r,
+                        minRadius: widget.onWeb ? 10 : 30.r,
+                        maxRadius: widget.onWeb ? 20 : 50.r,
                         child: Text(
                           widget.index.toString(),
                           style: TextStyle(
-                            fontSize: 55.sp,
+                            fontSize: widget.onWeb ? inputFont : 55.sp,
                             color: Colors.white,
                           ),
                         ),
@@ -54,7 +56,7 @@ class _QuestioniconsState extends State<Questionicons> {
                     widget.answer,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 45.sp,
+                      fontSize: widget.onWeb ? inputFont : 45.sp,
                       color: widget.option == widget.answer
                           ? MainTheme.primaryColor
                           : Colors.black,

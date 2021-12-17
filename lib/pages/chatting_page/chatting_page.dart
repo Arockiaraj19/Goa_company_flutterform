@@ -181,13 +181,14 @@ class _ChattingPageState extends State<ChattingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.onWeb
-          ? null
-          : AppBar(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              backgroundColor: Colors.grey[50],
-              leading: InkWell(
+      appBar: AppBar(
+        shape: widget.onWeb
+            ? null
+            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Colors.grey[50],
+        leading: widget.onWeb
+            ? null
+            : InkWell(
                 onTap: () {
                   ChatNetwork().patchUnreadMessage(widget.groupid);
                   context.read<ChatProvider>().getGroupData("");
@@ -205,155 +206,153 @@ class _ChattingPageState extends State<ChattingPage> {
                       ),
                     )),
               ),
-              titleSpacing: 0,
-              title: Container(
-                  child: Row(
-                children: [
-                  Container(
-                      child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: widget.image == null
-                        ? AssetImage("assets/images/placeholder.png")
-                        : NetworkImage(widget.image),
-                  )),
-                  Container(
-                      margin: EdgeInsetsDirectional.only(start: 10),
-                      child: widget.name == null
-                          ? Text(
-                              'Some One',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  fontFamily: "Nunito"),
-                            )
-                          : Text(
-                              widget.name,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  fontFamily: "Nunito"),
-                            ))
-                ],
-              )),
-              actions: [
-                FutureBuilder(
-                  future: Games().checkrequest(widget.id),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      print("inga snapshot data enna varuthu");
-                      print(snapshot.data.questions);
-                      return Consumer<HomeProvider>(
-                          builder: (context, data, child) {
-                        return InkWell(
-                          onTap: () {
-                            Routes.sailor(Routes.quizGamePage, params: {
-                              "questions": snapshot.data.questions,
-                              "playid": snapshot.data.playid,
-                              "user1": data.userData.identificationImage,
-                              "user2": widget.image,
-                              "istrue": false,
-                              "user1name": data.userData.firstName,
-                              "user2name": widget.name,
-                            });
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 25,
-                            width: 25,
-                            child: Stack(
-                              children: [
-                                Container(
-                                    child: Image.asset(
-                                  'assets/images/clock.png',
-                                  width: 25,
-                                  height: 25,
-                                )),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                      height: 7,
-                                      width: 7,
-                                      decoration: BoxDecoration(
-                                          gradient:
-                                              MainTheme.backgroundGradient,
-                                          shape: BoxShape.circle)),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
+        titleSpacing: 0,
+        title: Container(
+            child: Row(
+          children: [
+            if (widget.onWeb) SizedBox(width: 5),
+            Container(
+                child: CircleAvatar(
+              backgroundColor: Colors.transparent,
+              backgroundImage: widget.image == null
+                  ? AssetImage("assets/images/placeholder.png")
+                  : NetworkImage(widget.image),
+            )),
+            Container(
+                margin: EdgeInsetsDirectional.only(start: 10),
+                child: widget.name == null
+                    ? Text(
+                        'Some One',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            fontFamily: "Nunito"),
+                      )
+                    : Text(
+                        widget.name,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            fontFamily: "Nunito"),
+                      ))
+          ],
+        )),
+        actions: [
+          FutureBuilder(
+            future: Games().checkrequest(widget.id),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                print("inga snapshot data enna varuthu");
+                print(snapshot.data.questions);
+                return Consumer<HomeProvider>(builder: (context, data, child) {
+                  return InkWell(
+                    onTap: () {
+                      Routes.sailor(Routes.quizGamePage, params: {
+                        "questions": snapshot.data.questions,
+                        "playid": snapshot.data.playid,
+                        "user1": data.userData.identificationImage,
+                        "user2": widget.image,
+                        "istrue": false,
+                        "user1name": data.userData.firstName,
+                        "user2name": widget.name,
                       });
-                    } else {
-                      return Consumer<HomeProvider>(
-                        builder: (context, data, child) {
-                          return InkWell(
-                            onTap: () {
-                              gotogame(data.userData.identificationImage,
-                                  widget.image, data.userData.firstName);
-                            },
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 25,
+                      width: 25,
+                      child: Stack(
+                        children: [
+                          Container(
+                              child: Image.asset(
+                            'assets/images/clock.png',
+                            width: 25,
+                            height: 25,
+                          )),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
                             child: Container(
-                                child: Image.asset(
-                              'assets/images/clock.png',
-                              width: 25,
-                              height: 25,
-                            )),
-                          );
-                        },
-                      );
+                                height: 7,
+                                width: 7,
+                                decoration: BoxDecoration(
+                                    gradient: MainTheme.backgroundGradient,
+                                    shape: BoxShape.circle)),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                });
+              } else {
+                return Consumer<HomeProvider>(
+                  builder: (context, data, child) {
+                    return InkWell(
+                      onTap: () {
+                        gotogame(data.userData.identificationImage,
+                            widget.image, data.userData.firstName);
+                      },
+                      child: Container(
+                          child: Image.asset(
+                        'assets/images/clock.png',
+                        width: 25,
+                        height: 25,
+                      )),
+                    );
+                  },
+                );
+              }
+            },
+          ),
+          Consumer<HomeProvider>(builder: (context, data, child) {
+            return Container(
+                padding: EdgeInsetsDirectional.only(end: 10),
+                child: PopupMenuButton<String>(
+                  initialValue: dropdownValue,
+                  icon: Container(
+                      child: Image.asset(
+                    'assets/images/3dot.png',
+                    width: 25,
+                    height: 25,
+                  )),
+                  onSelected: (String result) async {
+                    setState(() {
+                      dropdownValue = result;
+                    });
+                    if (result == itemdate[0]) {
+                      try {
+                        await UserNetwork().getMatchedprofiledata(widget.id);
+                      } catch (e) {
+                        print(e);
+                      }
+                    }
+                    if (result == itemdate[1]) {
+                      blockuser();
+                    }
+                    if (result == itemdate[2]) {
+                      gotogame(data.userData.identificationImage, widget.image,
+                          data.userData.firstName);
                     }
                   },
-                ),
-                Consumer<HomeProvider>(builder: (context, data, child) {
-                  return Container(
-                      padding: EdgeInsetsDirectional.only(end: 10),
-                      child: PopupMenuButton<String>(
-                        initialValue: dropdownValue,
-                        icon: Container(
-                            child: Image.asset(
-                          'assets/images/3dot.png',
-                          width: 25,
-                          height: 25,
-                        )),
-                        onSelected: (String result) async {
-                          setState(() {
-                            dropdownValue = result;
-                          });
-                          if (result == itemdate[0]) {
-                            try {
-                              await UserNetwork()
-                                  .getMatchedprofiledata(widget.id);
-                            } catch (e) {
-                              print(e);
-                            }
-                          }
-                          if (result == itemdate[1]) {
-                            blockuser();
-                          }
-                          if (result == itemdate[2]) {
-                            gotogame(data.userData.identificationImage,
-                                widget.image, data.userData.firstName);
-                          }
-                        },
-                        itemBuilder: (BuildContext context) => itemdate
-                            .map<PopupMenuEntry<String>>((String value) {
-                          return PopupMenuItem<String>(
-                            height: 45,
-                            padding: EdgeInsets.only(left: 20, right: 15),
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w400),
-                            ),
-                          );
-                        }).toList(),
-                      ));
-                })
-              ],
-            ),
+                  itemBuilder: (BuildContext context) =>
+                      itemdate.map<PopupMenuEntry<String>>((String value) {
+                    return PopupMenuItem<String>(
+                      height: 45,
+                      padding: EdgeInsets.only(left: 20, right: 15),
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w400),
+                      ),
+                    );
+                  }).toList(),
+                ));
+          })
+        ],
+      ),
       body: WillPopScope(
         onWillPop: () {
           ChatNetwork().patchUnreadMessage(widget.groupid);

@@ -8,6 +8,7 @@ import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/helpers/google_map.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -149,14 +150,14 @@ class _FindMatchPageState extends State<FindMatchPage> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth < 1100) {
-        return _buildPhone();
+        return _buildPhone(false);
       } else {
-        return _buildPhone();
+        return _buildPhone(true);
       }
     });
   }
 
-  Widget _buildPhone() {
+  Widget _buildPhone(onWeb) {
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -227,8 +228,9 @@ class _FindMatchPageState extends State<FindMatchPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                fontSize:
-                                                                    ScreenUtil()
+                                                                fontSize: onWeb
+                                                                    ? inputFont
+                                                                    : ScreenUtil()
                                                                         .setSp(
                                                                             45),
                                                                 fontFamily:
@@ -237,20 +239,32 @@ class _FindMatchPageState extends State<FindMatchPage> {
                                                               TextSpan(
                                                                 text:
                                                                     " let’s perfect that profile ",
-                                                                style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    // fontWeight: FontWeight.bold,
-                                                                    fontSize: ScreenUtil().setSp(45),
-                                                                    fontFamily: "Inter"),
+                                                                style:
+                                                                    TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        // fontWeight: FontWeight.bold,
+                                                                        fontSize: onWeb
+                                                                            ? inputFont
+                                                                            : ScreenUtil().setSp(
+                                                                                45),
+                                                                        fontFamily:
+                                                                            "Inter"),
                                                               ),
                                                               TextSpan(
                                                                 text:
                                                                     "of yours!",
-                                                                style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    // fontWeight: FontWeight.bold,
-                                                                    fontSize: ScreenUtil().setSp(45),
-                                                                    fontFamily: "Inter"),
+                                                                style:
+                                                                    TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        // fontWeight: FontWeight.bold,
+                                                                        fontSize: onWeb
+                                                                            ? inputFont
+                                                                            : ScreenUtil().setSp(
+                                                                                45),
+                                                                        fontFamily:
+                                                                            "Inter"),
                                                               )
                                                             ]),
                                                       )),
@@ -278,8 +292,10 @@ class _FindMatchPageState extends State<FindMatchPage> {
                                                                       .width)),
                                                     ]),
                                                 SizedBox(
-                                                    height: ScreenUtil()
-                                                        .setHeight(40)),
+                                                    height: onWeb
+                                                        ? inputFont
+                                                        : ScreenUtil()
+                                                            .setHeight(40)),
                                                 Container(
                                                     margin:
                                                         EdgeInsetsDirectional
@@ -300,8 +316,9 @@ class _FindMatchPageState extends State<FindMatchPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                fontSize:
-                                                                    ScreenUtil()
+                                                                fontSize: onWeb
+                                                                    ? inputFont
+                                                                    : ScreenUtil()
                                                                         .setSp(
                                                                             45),
                                                                 fontFamily:
@@ -310,19 +327,31 @@ class _FindMatchPageState extends State<FindMatchPage> {
                                                               TextSpan(
                                                                 text:
                                                                     " Parnter ",
-                                                                style: TextStyle(
-                                                                    color: MainTheme.primaryColor,
-                                                                    // fontWeight: FontWeight.bold,
-                                                                    fontSize: ScreenUtil().setSp(45),
-                                                                    fontFamily: "Inter"),
+                                                                style:
+                                                                    TextStyle(
+                                                                        color: MainTheme
+                                                                            .primaryColor,
+                                                                        // fontWeight: FontWeight.bold,
+                                                                        fontSize: onWeb
+                                                                            ? inputFont
+                                                                            : ScreenUtil().setSp(
+                                                                                45),
+                                                                        fontFamily:
+                                                                            "Inter"),
                                                               ),
                                                               TextSpan(
                                                                 text: "With Us",
-                                                                style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    // fontWeight: FontWeight.bold,
-                                                                    fontSize: ScreenUtil().setSp(45),
-                                                                    fontFamily: "Inter"),
+                                                                style:
+                                                                    TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        // fontWeight: FontWeight.bold,
+                                                                        fontSize: onWeb
+                                                                            ? inputFont
+                                                                            : ScreenUtil().setSp(
+                                                                                45),
+                                                                        fontFamily:
+                                                                            "Inter"),
                                                               )
                                                             ]),
                                                       )),
@@ -343,8 +372,9 @@ class _FindMatchPageState extends State<FindMatchPage> {
                                                             style: TextStyle(
                                                                 color:
                                                                     Colors.grey,
-                                                                fontSize:
-                                                                    ScreenUtil()
+                                                                fontSize: onWeb
+                                                                    ? 10
+                                                                    : ScreenUtil()
                                                                         .setSp(
                                                                             28),
                                                                 fontFamily:

@@ -226,8 +226,11 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                       onTap: () {
                         myFocusNode.requestFocus();
                         context.read<CodeProvider>().getdata(null);
-
-                        _showbottom();
+                        if (onWeb) {
+                          showsub(context);
+                        } else {
+                          _showbottom();
+                        }
                       },
                     ),
                   ),
@@ -389,6 +392,19 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
 
   TextEditingController codecontroller = TextEditingController();
   TextEditingController bottomsheetcontroller = TextEditingController();
+  showsub(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+                width: 300,
+                height: 400,
+                child: countryCodesheet(context, true)),
+          );
+        });
+  }
+
   _showbottom() {
     return showModalBottomSheet(
         isScrollControlled: true,
@@ -399,129 +415,125 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
             child: Container(
               height: MediaQuery.of(context).size.height / 2,
               width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    TextFormField(
-                      focusNode: myFocusNode,
-                      controller: bottomsheetcontroller,
-                      cursorColor: MainTheme.primaryColor,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.number,
-                      style: TextStyle(
-                          fontSize: 40.sp,
-                          letterSpacing: 1.0,
-                          fontWeight: FontWeight.w400,
-                          color: MainTheme.enterTextColor),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: EdgeInsets.only(
-                            left: 18.0.w,
-                            bottom: 12.0.h,
-                            top: 12.0.h,
-                            right: 2.0.w),
-                        hintText: 'Enter your country code',
-                        hintStyle: TextStyle(
-                            fontSize: 40.sp,
-                            letterSpacing: 1.0,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xffC4C4C4)),
-                        errorStyle: TextStyle(
-                          fontSize: 40.sp,
-                          fontWeight: FontWeight.w400,
-                          color: MainTheme.primaryColor,
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          gapPadding: 0,
-                          borderSide: BorderSide(
-                              color: MainTheme.primaryColor,
-                              width: 1,
-                              style: BorderStyle.solid),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: MainTheme.primaryColor,
-                              width: 1,
-                              style: BorderStyle.solid),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color(0xffC4C4C4),
-                              width: 1,
-                              style: BorderStyle.solid),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: MainTheme.primaryColor,
-                              width: 1,
-                              style: BorderStyle.solid),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        print(value);
-                        context.read<CodeProvider>().getdata(value);
-                      },
-                      validator: (value) {},
-                    ),
-                    Expanded(child: Consumer<CodeProvider>(
-                      builder: (context, data, child) {
-                        return data.chatState == ChatState.Error
-                            ? ErrorCard(
-                                text: data.errorText,
-                                ontab: () {
-                                  context.read<CodeProvider>().getdata("");
-                                },
-                              )
-                            : data.chatState == ChatState.Loading
-                                ? LoadingLottie()
-                                : data.codeData.length == 0
-                                    ? Center(
-                                        child: Text("no data"),
-                                      )
-                                    : SingleChildScrollView(
-                                        child: Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: List.generate(
-                                                  data.codeData.length,
-                                                  (index) => InkWell(
-                                                        onTap: () {
-                                                          codecontroller.text =
-                                                              data
-                                                                  .codeData[
-                                                                      index]
-                                                                  .telephonecode;
-                                                          code = data
-                                                              .codeData[index];
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: Container(
-                                                          width:
-                                                              double.infinity,
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          height: 40.h,
-                                                          child: Text(data
-                                                              .codeData[index]
-                                                              .telephonecode),
-                                                        ),
-                                                      )),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                      },
-                    ))
-                  ],
-                ),
-              ),
+              child: countryCodesheet(context, false),
             ),
           );
         });
+  }
+
+  Padding countryCodesheet(BuildContext context, onWeb) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          TextFormField(
+            focusNode: myFocusNode,
+            controller: bottomsheetcontroller,
+            cursorColor: MainTheme.primaryColor,
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.number,
+            style: TextStyle(
+                fontSize: onWeb ? inputFont : 40.sp,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.w400,
+                color: MainTheme.enterTextColor),
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: onWeb
+                  ? null
+                  : EdgeInsets.only(
+                      left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
+              hintText: 'Enter your country code',
+              hintStyle: TextStyle(
+                  fontSize: onWeb ? inputFont : 40.sp,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffC4C4C4)),
+              errorStyle: TextStyle(
+                fontSize: onWeb ? inputFont : 40.sp,
+                fontWeight: FontWeight.w400,
+                color: MainTheme.primaryColor,
+              ),
+              errorBorder: OutlineInputBorder(
+                gapPadding: 0,
+                borderSide: BorderSide(
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Color(0xffC4C4C4),
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: MainTheme.primaryColor,
+                    width: 1,
+                    style: BorderStyle.solid),
+              ),
+            ),
+            onChanged: (value) {
+              print(value);
+              context.read<CodeProvider>().getdata(value);
+            },
+            validator: (value) {},
+          ),
+          Expanded(child: Consumer<CodeProvider>(
+            builder: (context, data, child) {
+              return data.chatState == ChatState.Error
+                  ? ErrorCard(
+                      text: data.errorText,
+                      ontab: () {
+                        context.read<CodeProvider>().getdata("");
+                      },
+                    )
+                  : data.chatState == ChatState.Loading
+                      ? LoadingLottie()
+                      : data.codeData.length == 0
+                          ? Center(
+                              child: Text("no data"),
+                            )
+                          : SingleChildScrollView(
+                              child: Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: List.generate(
+                                        data.codeData.length,
+                                        (index) => InkWell(
+                                              onTap: () {
+                                                codecontroller.text = data
+                                                    .codeData[index]
+                                                    .telephonecode;
+                                                code = data.codeData[index];
+                                                Navigator.pop(context);
+                                              },
+                                              child: Container(
+                                                width: double.infinity,
+                                                alignment: Alignment.centerLeft,
+                                                height: 40.h,
+                                                child: Text(data.codeData[index]
+                                                    .telephonecode),
+                                              ),
+                                            )),
+                                  ),
+                                ),
+                              ),
+                            );
+            },
+          ))
+        ],
+      ),
+    );
   }
 
   void getcallback(String data) {

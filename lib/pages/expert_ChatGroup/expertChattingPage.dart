@@ -19,9 +19,12 @@ import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/loadingLottie.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
+import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
+import 'package:dating_app/shared/widgets/navigation_rail.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -136,6 +139,33 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth < 1100) {
+        return _buildPhone(context);
+      } else {
+        return _buildWeb(context);
+      }
+    });
+  }
+
+  Widget _buildWeb(context) {
+    var _height = MediaQuery.of(context).size.height;
+    var _width = MediaQuery.of(context).size.width - 30;
+
+    return Scaffold(
+      body: BaseLayout(
+          navigationRail: NavigationMenu(
+            currentTabIndex: 1,
+          ),
+          body: Container(
+              color: Colors.grey[200],
+              padding: EdgeInsetsDirectional.only(start: 2),
+              child: _buildPhone(context))),
+    );
+  }
+
+  SafeArea _buildPhone(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: widget.onWeb
@@ -300,9 +330,12 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                             : Alignment.centerLeft,
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 30.w, vertical: 30.w),
+                                              horizontal:
+                                                  widget.onWeb ? 22 : 30.w,
+                                              vertical:
+                                                  widget.onWeb ? 5 : 30.w),
                                           child: Card(
-                                            elevation: 2,
+                                            elevation: widget.onWeb ? 5 : 2,
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5),
@@ -316,8 +349,12 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                                       : Colors.white),
                                               child: Padding(
                                                   padding: EdgeInsets.symmetric(
-                                                    horizontal: 50.w,
-                                                    vertical: 15.w,
+                                                    horizontal: widget.onWeb
+                                                        ? 20
+                                                        : 50.w,
+                                                    vertical: widget.onWeb
+                                                        ? inputFont
+                                                        : 15.w,
                                                   ),
                                                   child: element
                                                               .images.length ==
@@ -340,7 +377,10 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                                                         .white
                                                                     : Color(
                                                                         0xff4A4A4A),
-                                                                fontSize: 40.sp,
+                                                                fontSize: widget
+                                                                        .onWeb
+                                                                    ? inputFont
+                                                                    : 40.sp,
                                                               ),
                                                             ),
                                                             Text(
@@ -360,7 +400,10 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                                                         .white
                                                                     : MainTheme
                                                                         .chatPageColor,
-                                                                fontSize: 25.sp,
+                                                                fontSize:
+                                                                    widget.onWeb
+                                                                        ? 10
+                                                                        : 25.sp,
                                                               ),
                                                             ),
                                                           ],
@@ -417,8 +460,9 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                 child: Row(
                   children: [
                     Container(
-                        width: widget.floatingActionButtonWidth ??
-                            MediaQuery.of(context).size.width - 55,
+                        width: !widget.onWeb
+                            ? MediaQuery.of(context).size.width - 55
+                            : MediaQuery.of(context).size.width - 135,
                         height: 70,
                         padding: EdgeInsets.all(10),
                         child: Container(

@@ -7,6 +7,7 @@ import 'package:dating_app/pages/comment_page/widgets/massage_card_list.dart';
 import 'package:dating_app/pages/comment_page/widgets/request_card_list.dart';
 import 'package:dating_app/pages/expert_ChatGroup/expertGroupList.dart';
 import 'package:dating_app/providers/expertChat_provider.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -44,11 +45,15 @@ class _ExpertGroupState extends State<ExpertGroup>
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      return _buildPhone();
+      if (constraints.maxWidth < 1100) {
+        return _buildPhone(false);
+      } else {
+        return _buildWeb();
+      }
     });
   }
 
-  Widget _buildPhone() {
+  Widget _buildPhone(onWeb) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MainTheme.appBarColor,
@@ -60,7 +65,7 @@ class _ExpertGroupState extends State<ExpertGroup>
           style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
-              fontSize: 50.sp,
+              fontSize: onWeb ? 18 : 50.sp,
               fontFamily: "Nunito"),
         ),
         actions: [],
@@ -75,8 +80,9 @@ class _ExpertGroupState extends State<ExpertGroup>
               //     const EdgeInsets.only(left: 25, right: 25, top: 10),
               labelColor: MainTheme.primaryColor,
               unselectedLabelColor: Colors.black,
-              labelStyle:
-                  TextStyle(fontSize: 45.sp, fontWeight: FontWeight.bold),
+              labelStyle: TextStyle(
+                  fontSize: onWeb ? inputFont : 45.sp,
+                  fontWeight: FontWeight.bold),
               unselectedLabelStyle: TextStyle(fontSize: 14),
               indicatorWeight: 3,
               tabs: <Widget>[
@@ -86,7 +92,7 @@ class _ExpertGroupState extends State<ExpertGroup>
                     child: Text(
                       i.title,
                       style: TextStyle(
-                        fontSize: 45.sp,
+                        fontSize: onWeb ? inputFont : 45.sp,
                       ),
                     ),
                   ),
@@ -99,12 +105,32 @@ class _ExpertGroupState extends State<ExpertGroup>
                   physics: ClampingScrollPhysics(),
                   children: <Widget>[
                     for (var i in data.chatGroupCato)
-                      Container(child: ExpertGroupList(groupdata: i)),
+                      Container(
+                          child: ExpertGroupList(
+                        groupdata: i,
+                        onWeb: onWeb,
+                      )),
                   ]),
             ),
           ],
         );
       }),
+    );
+  }
+
+  Widget _buildWeb() {
+    var _height = MediaQuery.of(context).size.height;
+    var _width = MediaQuery.of(context).size.width - 30;
+
+    return Scaffold(
+      body: BaseLayout(
+          navigationRail: NavigationMenu(
+            currentTabIndex: 1,
+          ),
+          body: Container(
+              color: Colors.grey[200],
+              padding: EdgeInsetsDirectional.only(start: 2),
+              child: _buildPhone(true))),
     );
   }
 }

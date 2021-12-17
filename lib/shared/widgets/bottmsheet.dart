@@ -28,6 +28,7 @@ class BottomSheetClass {
               child: Subscription(
                 onboard: false,
                 swiperIndex: 1,
+                onWeb: true,
               ),
             ),
           );

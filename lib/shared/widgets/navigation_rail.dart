@@ -1,4 +1,5 @@
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/filter_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sailor/sailor.dart';
@@ -94,6 +95,18 @@ class _NavigationMenuState extends State<NavigationMenu> {
                         ),
                         label: Text('four'),
                       ),
+                      NavigationRailDestination(
+                        icon: Image.asset(
+                          "assets/icons/menu.png",
+                          width: ScreenUtil().setWidth(25),
+                          height: ScreenUtil().setHeight(25),
+                          color: Colors.grey,
+                        ),
+                        selectedIcon: _buildActiveIcon(
+                          "assets/icons/menu.png",
+                        ),
+                        label: Text('four'),
+                      ),
                     ],
                   ),
                 ))));
@@ -148,6 +161,27 @@ class _NavigationMenuState extends State<NavigationMenu> {
 
           break;
         }
+      case 4:
+        {
+          showsub(context);
+
+          break;
+        }
     }
+  }
+
+  showsub(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+                width: 400,
+                height: 310,
+                child: FilterBottomSheet(
+                  onWeb: true,
+                )),
+          );
+        });
   }
 }

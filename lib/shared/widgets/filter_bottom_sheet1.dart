@@ -2,6 +2,7 @@ import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/pages/detail_page/detail_page.dart';
 import 'package:dating_app/providers/blind_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -15,7 +16,8 @@ import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 
 class FilterBottomSheet1 extends StatefulWidget {
-  FilterBottomSheet1({Key key}) : super(key: key);
+  final bool onWeb;
+  FilterBottomSheet1({Key key, this.onWeb = false}) : super(key: key);
 
   @override
   _FilterBottomSheet1State createState() => _FilterBottomSheet1State();
@@ -45,7 +47,13 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                   children: [
                     Container(
                       padding: EdgeInsetsDirectional.only(start: 20),
-                      child: Text("Age", style: MainTheme.subHeading),
+                      child: Text("Age",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "OpenSans",
+                            fontSize: widget.onWeb ? 14 : 35.sp,
+                          )),
                     ),
                     Container(
                       padding: EdgeInsetsDirectional.only(end: 50),
@@ -92,7 +100,13 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                       padding: EdgeInsetsDirectional.only(
                         start: 20,
                       ),
-                      child: Text("Distance", style: MainTheme.subHeading),
+                      child: Text("Distance",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "OpenSans",
+                            fontSize: widget.onWeb ? 14 : 35.sp,
+                          )),
                     ),
                     Container(
                       padding: EdgeInsetsDirectional.only(end: 50),
@@ -132,7 +146,13 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsetsDirectional.only(start: 20),
-                  child: Text("Type", style: MainTheme.subHeading),
+                  child: Text("Type",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "OpenSans",
+                        fontSize: widget.onWeb ? 14 : 35.sp,
+                      )),
                 ),
                 Container(
                   height: 60.h,
@@ -164,7 +184,7 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: "OpenSans",
-                                    fontSize: 35.sp,
+                                    fontSize: widget.onWeb ? 14 : 35.sp,
                                   ),
                                 ),
                               ],
@@ -188,7 +208,7 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: "OpenSans",
-                                    fontSize: 35.sp,
+                                    fontSize: widget.onWeb ? 14 : 35.sp,
                                   ),
                                 ),
                               ],
@@ -212,7 +232,7 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                                     color: Colors.grey,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: "OpenSans",
-                                    fontSize: 35.sp,
+                                    fontSize: widget.onWeb ? 14 : 35.sp,
                                   ),
                                 ),
                               ],
@@ -227,12 +247,13 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GradientButton(
-                      height: MediaQuery.of(context).size.height / 20,
+                      height: widget.onWeb ? 35 : 110.w,
+                      fontSize: widget.onWeb ? inputFont : 40.sp,
+                      width: widget.onWeb ? 130 : 500.w,
                       name: "Cancel",
                       buttonColor: Colors.white,
                       active: true,
                       color: MainTheme.primaryColor,
-                      width: ScreenUtil().setWidth(300),
                       borderRadius: BorderRadius.circular(5),
                       fontWeight: FontWeight.bold,
                       onPressed: () {
@@ -240,12 +261,13 @@ class _FilterBottomSheet1State extends State<FilterBottomSheet1> {
                       },
                     ),
                     GradientButton(
-                      height: MediaQuery.of(context).size.height / 20,
+                      height: widget.onWeb ? 35 : 110.w,
+                      fontSize: widget.onWeb ? inputFont : 40.sp,
+                      width: widget.onWeb ? 130 : 500.w,
                       name: "Find",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
                       color: Colors.white,
-                      width: ScreenUtil().setWidth(300),
                       fontWeight: FontWeight.bold,
                       borderRadius: BorderRadius.circular(5),
                       onPressed: () async {

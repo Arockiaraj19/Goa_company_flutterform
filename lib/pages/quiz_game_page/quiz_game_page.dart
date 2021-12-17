@@ -1,3 +1,4 @@
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -76,7 +77,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth < 1100) {
-        return _buildPhone();
+        return _buildPhone(false);
       } else {
         return _buildWeb();
       }
@@ -89,7 +90,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
   String option;
   FuntionModel answer;
   String playid;
-  Widget _buildPhone() {
+  Widget _buildPhone(onweb) {
     return WillPopScope(
       onWillPop: () async {
         try {
@@ -108,7 +109,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
               width: double.infinity,
               decoration: BoxDecoration(gradient: MainTheme.backgroundGradient),
               child: Column(children: [
-                QuizAppBar(widget.user1, widget.user2),
+                QuizAppBar(widget.user1, widget.user2, onweb, widget.playid),
                 Container(
                   margin: EdgeInsetsDirectional.only(top: 10),
                   decoration: BoxDecoration(
@@ -144,30 +145,34 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                 child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width -
-                                              70,
-                                          child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              physics: ClampingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount:
-                                                  widget.questions.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return HartViewicons(
-                                                  istrue: heartbool[index],
-                                                  len: widget.questions.length,
-                                                  onTap: () {},
-                                                  controller: controller,
-                                                  index: index,
-                                                  position: position,
-                                                );
-                                              })),
+                                      Expanded(
+                                        child: Container(
+                                            child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                physics:
+                                                    ClampingScrollPhysics(),
+                                                shrinkWrap: true,
+                                                itemCount:
+                                                    widget.questions.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return HartViewicons(
+                                                    onweb: onweb,
+                                                    istrue: heartbool[index],
+                                                    len:
+                                                        widget.questions.length,
+                                                    onTap: () {},
+                                                    controller: controller,
+                                                    index: index,
+                                                    position: position,
+                                                  );
+                                                })),
+                                      ),
                                       Container(
                                           child: CircularPercentIndicator(
                                               linearGradient:
@@ -191,6 +196,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                                       .toString()))))
                                     ]))),
                         Container(
+                          height: onweb ? 300 : 450,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border(
@@ -201,7 +207,6 @@ class _QuizGamePageState extends State<QuizGamePage> {
                             ),
                           ),
                           width: double.infinity,
-                          height: 450,
                           child: PageView.builder(
                               allowImplicitScrolling: false,
                               physics: new NeverScrollableScrollPhysics(),
@@ -214,8 +219,10 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     QuestionBox(
-                                        question:
-                                            widget.questions[index].question),
+                                      question:
+                                          widget.questions[index].question,
+                                      onWeb: onweb,
+                                    ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
@@ -236,10 +243,12 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                             });
                                           },
                                           child: Questionicons(
-                                              option: option,
-                                              answer: widget
-                                                  .questions[index].option1,
-                                              index: "A"),
+                                            option: option,
+                                            answer:
+                                                widget.questions[index].option1,
+                                            index: "A",
+                                            onWeb: onweb,
+                                          ),
                                         ),
                                         InkWell(
                                           onTap: () {
@@ -264,10 +273,12 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                             //     widget.playid);
                                           },
                                           child: Questionicons(
-                                              option: option,
-                                              answer: widget
-                                                  .questions[index].option2,
-                                              index: "B"),
+                                            option: option,
+                                            answer:
+                                                widget.questions[index].option2,
+                                            index: "B",
+                                            onWeb: onweb,
+                                          ),
                                         ),
                                         InkWell(
                                           onTap: () {
@@ -285,10 +296,12 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                             });
                                           },
                                           child: Questionicons(
-                                              option: option,
-                                              answer: widget
-                                                  .questions[index].option3,
-                                              index: "C"),
+                                            option: option,
+                                            answer:
+                                                widget.questions[index].option3,
+                                            index: "C",
+                                            onWeb: onweb,
+                                          ),
                                         ),
                                         InkWell(
                                           onTap: () {
@@ -306,10 +319,12 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                             });
                                           },
                                           child: Questionicons(
-                                              option: option,
-                                              answer: widget
-                                                  .questions[index].option4,
-                                              index: "D"),
+                                            option: option,
+                                            answer:
+                                                widget.questions[index].option4,
+                                            index: "D",
+                                            onWeb: onweb,
+                                          ),
                                         ),
                                       ],
                                     )
@@ -323,35 +338,11 @@ class _QuizGamePageState extends State<QuizGamePage> {
                   child: Container(
                     color: Colors.white,
                     child: Padding(
-                      padding: EdgeInsets.all(40.0.w),
+                      padding:
+                          onweb ? EdgeInsets.all(10) : EdgeInsets.all(40.0.w),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // InkWell(
-                          //   onTap: () {
-                          //     setState(() {
-                          //       controller.previousPage(
-                          //           duration: Duration(milliseconds: 1000),
-                          //           curve: Curves.easeIn);
-                          //       position -= 1;
-                          //     });
-                          //     print(controller.page);
-                          //   },
-                          //   child: Container(
-                          //     height: 150.r,
-                          //     width: 150.r,
-                          //     decoration: BoxDecoration(
-                          //         shape: BoxShape.circle,
-                          //         gradient: MainTheme.backgroundGradient,
-                          //         color: Colors.grey,
-                          //         border:
-                          //             Border.all(width: 1, color: MainTheme.primaryColor)),
-                          //     child: Icon(
-                          //       Icons.arrow_back_ios_new,
-                          //       color: Colors.white,
-                          //     ),
-                          //   ),
-                          // ),
                           InkWell(
                             onTap: () async {
                               if (answer == null) {
@@ -400,8 +391,8 @@ class _QuizGamePageState extends State<QuizGamePage> {
                               }
                             },
                             child: Container(
-                              width: 450.r,
-                              height: 150.r,
+                              width: onweb ? 180 : 450.r,
+                              height: onweb ? 45 : 150.r,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                   gradient: option == null
@@ -416,7 +407,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                   color: option == null
                                       ? MainTheme.primaryColor
                                       : Colors.white,
-                                  fontSize: 45.sp,
+                                  fontSize: onweb ? inputFont : 45.sp,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -493,7 +484,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
     return Scaffold(
         body: BaseLayout(
             navigationRail: NavigationMenu(
-              currentTabIndex: 0,
+              currentTabIndex: 1,
             ),
             body: Container(
                 decoration: BoxDecoration(
@@ -505,237 +496,230 @@ class _QuizGamePageState extends State<QuizGamePage> {
                   ),
                   color: Colors.grey[50],
                 ),
-                child: Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: MainTheme.appBarColor,
-                    elevation: 0,
-                    automaticallyImplyLeading: false,
-                    titleSpacing: 0,
-                    actions: [
-                      Container(
-                          margin: EdgeInsetsDirectional.only(
-                            end: 20,
-                          ),
-                          child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.notifications_outlined,
-                                color: Colors.grey,
-                                // size: 20,
-                              )))
-                    ],
-                    bottom: PreferredSize(
-                        preferredSize: Size.fromHeight(kToolbarHeight - 50),
-                        child: PreferredSize(
-                            preferredSize:
-                                const Size.fromHeight(kToolbarHeight),
-                            child: Row(children: [
-                              Container(
-                                  padding: EdgeInsetsDirectional.only(
-                                      start: 10, bottom: 10),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.grey[200],
-                                    radius: 10,
-                                    child: Icon(
-                                      Icons.keyboard_arrow_left,
-                                      color: Colors.black,
-                                      size: 20,
-                                    ),
-                                  )),
-                              Container(
-                                  padding: EdgeInsetsDirectional.only(
-                                      start: _width / 7, bottom: 10),
-                                  child: Text(
-                                    "Matching Buddy",
-                                    style: MainTheme.secondaryHeading,
-                                  )),
-                            ]))),
-                  ),
-                  body: SingleChildScrollView(
-                      child: Column(children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 1.0,
-                            offset: Offset(0, 3),
-                          )
-                        ],
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.zero,
-                          topRight: Radius.zero,
-                          bottomLeft: Radius.zero,
-                          bottomRight: Radius.circular(20.0),
+                child: _buildPhone(true))));
+  }
+
+  Scaffold webpart(double _width, double _height) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: MainTheme.appBarColor,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        titleSpacing: 0,
+        actions: [
+          Container(
+              margin: EdgeInsetsDirectional.only(
+                end: 20,
+              ),
+              child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.grey,
+                    // size: 20,
+                  )))
+        ],
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight - 50),
+            child: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: Row(children: [
+                  Container(
+                      padding:
+                          EdgeInsetsDirectional.only(start: 10, bottom: 10),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey[200],
+                        radius: 10,
+                        child: Icon(
+                          Icons.keyboard_arrow_left,
+                          color: Colors.black,
+                          size: 20,
                         ),
-                      ),
-                      height: 110,
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                  // width: MediaQuery.of(context).size.width - 70,
-                                  child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      physics: ClampingScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: 7,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return HartViewicons(
-                                          onTap: () {},
-                                        );
-                                      })),
-                              Container(
-                                width: _width / 30,
-                                height: _height / 20,
-                              ),
-                              Container(
-                                  child: CircularPercentIndicator(
-                                      linearGradient:
-                                          MainTheme.backgroundGradient,
-                                      animation: true,
-                                      backgroundColor: Colors.grey[50],
-                                      animationDuration: 1200,
-                                      radius: 40.0,
-                                      lineWidth: 6,
-                                      percent: 1,
-                                      center: Container(child: Text('50')))),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                  margin: EdgeInsetsDirectional.only(
-                                      end: 5, start: 5),
-                                  child: CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage: NetworkImage(
-                                      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-                                    ),
-                                  )),
-                              CircleAvatar(
-                                backgroundColor: Colors.grey[200],
-                                radius: 10,
-                                child: Icon(
-                                  Icons.forward,
-                                  color: MainTheme.primaryColor,
-                                  size: 12,
-                                ),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                      margin: EdgeInsetsDirectional.only(
-                                          end: 10, start: 5),
-                                      child: CircleAvatar(
-                                        radius: 35,
-                                        backgroundImage: NetworkImage(
-                                          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-                                        ),
-                                      )),
-                                  Container(
-                                    margin: EdgeInsetsDirectional.only(
-                                        top: 2, bottom: 2),
-                                    child: Text(
-                                      "Adrianne Rico",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 500,
+                      )),
+                  Container(
+                      padding: EdgeInsetsDirectional.only(
+                          start: _width / 7, bottom: 10),
+                      child: Text(
+                        "Matching Buddy",
+                        style: MainTheme.secondaryHeading,
+                      )),
+                ]))),
+      ),
+      body: SingleChildScrollView(
+          child: Column(children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.grey.shade300,
+                blurRadius: 1.0,
+                offset: Offset(0, 3),
+              )
+            ],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.zero,
+              topRight: Radius.zero,
+              bottomLeft: Radius.zero,
+              bottomRight: Radius.circular(20.0),
+            ),
+          ),
+          height: 110,
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                children: [
+                  Container(
+                      // width: MediaQuery.of(context).size.width - 70,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
+                          physics: ClampingScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: 3,
+                          itemCount: 7,
                           itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                QuestionBox(),
-                                Container(
-                                    height: 300,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: 3,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Questionicons();
-                                        }))
-                              ],
+                            return HartViewicons(
+                              onTap: () {},
                             );
-                          }),
-                    )
-                  ])),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerDocked,
-                  floatingActionButton: Container(
-                      padding: EdgeInsetsDirectional.only(
-                          end: 20, start: 20, bottom: 10),
-                      height: 50,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                              child: CircleAvatar(
-                                  backgroundColor: MainTheme.primaryColor,
-                                  radius: 20,
-                                  child: Icon(
-                                    Icons.keyboard_arrow_left,
-                                    color: Colors.white,
-                                  ))),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                  width: 1, color: MainTheme.primaryColor),
-                            ),
-                            child: MaterialButton(
-                              padding: EdgeInsets.only(left: 50, right: 50),
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                    height: 2, color: MainTheme.primaryColor),
-                              ),
-                              textColor: Colors.red,
-                              onPressed: () {
-                                goToQuizgamePage();
-                              },
-                            ),
-                          ),
-                          Container(
-                              child: CircleAvatar(
-                                  backgroundColor: Colors.grey[400],
-                                  radius: 20,
-                                  child: InkWell(
-                                      onTap: () {},
-                                      child: Icon(
-                                        Icons.keyboard_arrow_right,
-                                        color: Colors.white,
-                                      )))),
-                        ],
+                          })),
+                  Container(
+                    width: _width / 30,
+                    height: _height / 20,
+                  ),
+                  Container(
+                      child: CircularPercentIndicator(
+                          linearGradient: MainTheme.backgroundGradient,
+                          animation: true,
+                          backgroundColor: Colors.grey[50],
+                          animationDuration: 1200,
+                          radius: 40.0,
+                          lineWidth: 6,
+                          percent: 1,
+                          center: Container(child: Text('50')))),
+                ],
+              ),
+              Row(
+                children: [
+                  Container(
+                      margin: EdgeInsetsDirectional.only(end: 5, start: 5),
+                      child: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
+                          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                        ),
                       )),
-                ))));
+                  CircleAvatar(
+                    backgroundColor: Colors.grey[200],
+                    radius: 10,
+                    child: Icon(
+                      Icons.forward,
+                      color: MainTheme.primaryColor,
+                      size: 12,
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                          margin: EdgeInsetsDirectional.only(end: 10, start: 5),
+                          child: CircleAvatar(
+                            radius: 35,
+                            backgroundImage: NetworkImage(
+                              "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                            ),
+                          )),
+                      Container(
+                        margin: EdgeInsetsDirectional.only(top: 2, bottom: 2),
+                        child: Text(
+                          "Adrianne Rico",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 500,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: 3,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    QuestionBox(),
+                    Container(
+                        height: 300,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: 3,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Questionicons();
+                            }))
+                  ],
+                );
+              }),
+        )
+      ])),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+          padding: EdgeInsetsDirectional.only(end: 20, start: 20, bottom: 10),
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                  child: CircleAvatar(
+                      backgroundColor: MainTheme.primaryColor,
+                      radius: 20,
+                      child: Icon(
+                        Icons.keyboard_arrow_left,
+                        color: Colors.white,
+                      ))),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(width: 1, color: MainTheme.primaryColor),
+                ),
+                child: MaterialButton(
+                  padding: EdgeInsets.only(left: 50, right: 50),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(height: 2, color: MainTheme.primaryColor),
+                  ),
+                  textColor: Colors.red,
+                  onPressed: () {
+                    goToQuizgamePage();
+                  },
+                ),
+              ),
+              Container(
+                  child: CircleAvatar(
+                      backgroundColor: Colors.grey[400],
+                      radius: 20,
+                      child: InkWell(
+                          onTap: () {},
+                          child: Icon(
+                            Icons.keyboard_arrow_right,
+                            color: Colors.white,
+                          )))),
+            ],
+          )),
+    );
   }
 }

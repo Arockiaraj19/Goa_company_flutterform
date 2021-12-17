@@ -28,7 +28,7 @@ class SignInNetwork {
       });
       return data;
     } catch (e) {
-   throw e;
+      throw e;
     }
   }
 
@@ -51,7 +51,7 @@ class SignInNetwork {
       });
       return data;
     } catch (e) {
-    throw e;
+      throw e;
     }
   }
 }

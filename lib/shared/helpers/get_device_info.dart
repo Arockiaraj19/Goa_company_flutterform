@@ -7,10 +7,11 @@ import 'package:get_ip_address/get_ip_address.dart';
 
 Future<DeviceInfo> getDeviceInfo() async {
   Future<String> getLocalIpAddress() async {
-    var ipAddress = IpAddress(type: RequestType.json);
-    var ip = await ipAddress.getIp();
+    // var ipAddress = IpAddress(type: RequestType.json);
+    // var ip = await ipAddress.getIp();
 
-    return ip["ip"].toString();
+    // return ip["ip"].toString();
+    return "sfdsdfsdf";
   }
 
   DeviceInfo deviceInfo;

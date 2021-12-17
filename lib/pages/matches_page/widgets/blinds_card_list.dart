@@ -78,7 +78,11 @@ class _BlindsCardListState extends State<BlindsCardList> {
                   fontWeight: FontWeight.bold,
                   borderRadius: BorderRadius.circular(5),
                   onPressed: () async {
-                    _showOtpBottomSheet();
+                    if (widget.onWeb) {
+                      showsub(context);
+                    } else {
+                      _showOtpBottomSheet();
+                    }
                   },
                 ),
               ]);
@@ -110,6 +114,21 @@ class _BlindsCardListState extends State<BlindsCardList> {
         builder: (BuildContext context) {
           return Column(
               mainAxisSize: MainAxisSize.min, children: [FilterBottomSheet1()]);
+        });
+  }
+
+  showsub(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+                width: 400,
+                height: 280,
+                child: FilterBottomSheet1(
+                  onWeb: true,
+                )),
+          );
         });
   }
 }

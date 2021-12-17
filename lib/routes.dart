@@ -552,6 +552,9 @@ class Routes {
             SailorParam<List<String>>(
               name: 'image',
             ),
+            SailorParam<bool>(
+              name: 'onWeb',
+            ),
           ],
           builder: (context, args, params) {
             String groupid = Sailor.param<String>(context, "groupid");
@@ -560,12 +563,14 @@ class Routes {
             String name = Sailor.param<String>(context, "name");
             int status = Sailor.param<int>(context, "status");
             List<String> image = Sailor.param<List<String>>(context, "image");
+            bool onWeb = Sailor.param<bool>(context, "onWeb");
             return ExpertChattingPage(
               groupid: groupid,
               id: id,
               name: name,
               status: status,
               image: image,
+              onWeb: onWeb,
             );
           }),
     ]);
