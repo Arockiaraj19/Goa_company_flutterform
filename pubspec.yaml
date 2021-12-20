@@ -82,6 +82,7 @@ dependencies:
   universal_io: ^2.0.4
   file_picker: ^4.2.7
   get_ip_address: ^0.0.5
+  flutter_modular: ^4.3.0  
  
 
 dev_dependencies:

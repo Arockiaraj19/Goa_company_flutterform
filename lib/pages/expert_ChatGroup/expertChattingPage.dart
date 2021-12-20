@@ -125,6 +125,12 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
   }
 
   TextEditingController _message = TextEditingController();
+  @override
+  void didUpdateWidget(ExpertChattingPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("didUpdateWidget");
+    print(oldWidget.groupid);
+  }
 
   @override
   void dispose() {
