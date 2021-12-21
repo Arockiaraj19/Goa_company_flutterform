@@ -6,6 +6,7 @@ import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/get_device_info.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'api_list.dart';
 
 Future<Dio> apiClient() async {
@@ -39,7 +40,7 @@ Future<Dio> apiClient() async {
   }, onError: (DioError error, handler) async {
     print(error.response);
     // print(error.response.statusCode);
-    showtoast(DioException.fromDioError(error).toString());
+
     // Do something with response error
     if (error.response != null) {
       // print(error.response);
@@ -71,10 +72,10 @@ Future<Dio> apiClient() async {
           return handler.resolve(cloneReq);
         } catch (e) {
           saveLoginStatus(0);
-          Routes.sailor(Routes.loginPage);
+          Modular.to.navigate(Navigate.loginPage);
         }
       } else {
-        // showtoast("Network Failed");
+        showtoast(DioException.fromDioError(error).toString());
       }
     } else {}
     return handler.next(error);

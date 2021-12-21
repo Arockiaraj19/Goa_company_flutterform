@@ -1,6 +1,7 @@
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/loadingLottie.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,9 +11,8 @@ import 'error_card.dart';
 import 'no_result.dart';
 
 class BottomsheetWidget extends StatelessWidget {
-  const BottomsheetWidget({
-    Key key,
-  }) : super(key: key);
+  final bool onWeb;
+  const BottomsheetWidget({Key key, this.onWeb = true}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,175 +36,233 @@ class BottomsheetWidget extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 40.sp,
+                                  fontSize: onWeb ? inputFont : 40.sp,
                                 ),
                               ),
                               SizedBox(
-                                height: 10.h,
+                                height: onWeb ? 5 : 10.h,
                               ),
                               Expanded(
                                 child: Container(
+                                  alignment: Alignment.center,
                                   child: ListView(
+                                      shrinkWrap: true,
                                       children: List.generate(
-                                    watch.subscriptionData.length,
-                                    (index) => InkWell(
-                                      onTap: () {
-                                        Routes.sailor(Routes.subscription,
-                                            params: {
-                                              "swiperIndex": index,
-                                            });
-                                      },
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 5.h, horizontal: 40.w),
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          width: 500.w,
-                                          decoration: BoxDecoration(
-                                              gradient: index % 2 == 0
-                                                  ? MainTheme.subscripeCard1
-                                                  : MainTheme.subscripeCard,
-                                              borderRadius:
-                                                  BorderRadius.circular(30.w)),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                height: 5.h,
+                                        watch.subscriptionData.length,
+                                        (index) => Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 5.h,
                                               ),
-                                              Text(
-                                                watch.subscriptionData[index]
-                                                    .title,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 45.sp,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              Text(
-                                                "Unlock all our features to be in complete control \n of your experiance.",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 35.sp,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-                                              SizedBox(
-                                                height: 5.h,
-                                              ),
-                                              if (watch.subscriptionData[index]
-                                                      .subscriptionType ==
-                                                  "Payment")
-                                                Text(
-                                                  watch.subscriptionData[index]
-                                                          .currencyType.symbol
-                                                          .toString() +
-                                                      watch
-                                                          .subscriptionData[
-                                                              index]
-                                                          .price
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 70.sp,
-                                                      fontWeight:
-                                                          FontWeight.w800),
-                                                ),
-                                              if (watch.subscriptionData[index]
-                                                      .subscriptionType ==
-                                                  "Coins")
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      "assets/images/coin.png",
-                                                      width: 25,
-                                                      height: 25,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 5.w,
-                                                    ),
-                                                    Text(
-                                                      watch
-                                                          .subscriptionData[
-                                                              index]
-                                                          .coins
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 70.sp,
-                                                          fontWeight:
-                                                              FontWeight.w800),
-                                                    ),
-                                                  ],
-                                                ),
-                                              if (watch.subscriptionData[index]
-                                                      .durationType ==
-                                                  2)
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 8, 0),
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerRight,
-                                                    child: Text(
-                                                      watch
+                                              child: InkWell(
+                                                onTap: () {
+                                                  NavigateFunction().withquery(
+                                                      Navigate.subscription +
+                                                          "?swiperIndex= $index");
+                                                },
+                                                child: Container(
+                                                  width: 400,
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      gradient: index % 2 == 0
+                                                          ? MainTheme
+                                                              .subscripeCard1
+                                                          : MainTheme
+                                                              .subscripeCard,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 5.h,
+                                                        ),
+                                                        Text(
+                                                          watch
                                                               .subscriptionData[
                                                                   index]
-                                                              .validity
-                                                              .toString() +
-                                                          " " +
-                                                          "days",
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 35.sp,
-                                                          fontWeight:
-                                                              FontWeight.w800),
+                                                              .title,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: onWeb
+                                                                  ? inputFont
+                                                                  : 45.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5.h,
+                                                        ),
+                                                        Text(
+                                                          "Unlock all our features to be in complete control \n of your experiance.",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: onWeb
+                                                                  ? 13
+                                                                  : 35.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5.h,
+                                                        ),
+                                                        if (watch
+                                                                .subscriptionData[
+                                                                    index]
+                                                                .subscriptionType ==
+                                                            "Payment")
+                                                          Text(
+                                                            watch
+                                                                    .subscriptionData[
+                                                                        index]
+                                                                    .currencyType
+                                                                    .symbol
+                                                                    .toString() +
+                                                                watch
+                                                                    .subscriptionData[
+                                                                        index]
+                                                                    .price
+                                                                    .toString(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: onWeb
+                                                                    ? 22
+                                                                    : 70.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800),
+                                                          ),
+                                                        if (watch
+                                                                .subscriptionData[
+                                                                    index]
+                                                                .subscriptionType ==
+                                                            "Coins")
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Image.asset(
+                                                                "assets/images/coin.png",
+                                                                width: 25,
+                                                                height: 25,
+                                                              ),
+                                                              SizedBox(
+                                                                width: 5.w,
+                                                              ),
+                                                              Text(
+                                                                watch
+                                                                    .subscriptionData[
+                                                                        index]
+                                                                    .coins
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize: onWeb
+                                                                        ? 22
+                                                                        : 70.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w800),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        if (watch
+                                                                .subscriptionData[
+                                                                    index]
+                                                                .durationType ==
+                                                            2)
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .fromLTRB(
+                                                                    0, 0, 8, 0),
+                                                            child: Align(
+                                                              alignment: Alignment
+                                                                  .centerRight,
+                                                              child: Text(
+                                                                watch
+                                                                        .subscriptionData[
+                                                                            index]
+                                                                        .validity
+                                                                        .toString() +
+                                                                    " " +
+                                                                    "days",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize: onWeb
+                                                                        ? 13
+                                                                        : 35.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w800),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        if (watch
+                                                                .subscriptionData[
+                                                                    index]
+                                                                .durationType ==
+                                                            1)
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .fromLTRB(
+                                                                    0, 0, 8, 0),
+                                                            child: Align(
+                                                              alignment: Alignment
+                                                                  .centerRight,
+                                                              child: Text(
+                                                                watch
+                                                                        .subscriptionData[
+                                                                            index]
+                                                                        .validity
+                                                                        .toString() +
+                                                                    " " +
+                                                                    "years",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        35.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w800),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        SizedBox(
+                                                          height: 5.h,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
-                                              if (watch.subscriptionData[index]
-                                                      .durationType ==
-                                                  1)
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 8, 0),
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerRight,
-                                                    child: Text(
-                                                      watch
-                                                              .subscriptionData[
-                                                                  index]
-                                                              .validity
-                                                              .toString() +
-                                                          " " +
-                                                          "years",
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 35.sp,
-                                                          fontWeight:
-                                                              FontWeight.w800),
-                                                    ),
-                                                  ),
-                                                ),
-                                              SizedBox(
-                                                height: 5.h,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ),
-                                  )),
+                                      )),
                                 ),
                               ),
                               // SizedBox(

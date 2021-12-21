@@ -41,6 +41,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
                     labelType: NavigationRailLabelType.none,
                     leading: Text(
                       "Spark",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           color: MainTheme.primaryColor,
                           fontWeight: FontWeight.bold,
@@ -85,15 +86,15 @@ class _NavigationMenuState extends State<NavigationMenu> {
                       ),
                       NavigationRailDestination(
                         icon: Image.asset(
-                          "assets/icons/menu.png",
+                          "assets/images/3icon.png",
                           width: ScreenUtil().setWidth(25),
                           height: ScreenUtil().setHeight(25),
                           color: Colors.grey,
                         ),
                         selectedIcon: _buildActiveIcon(
-                          "assets/icons/menu.png",
+                          "assets/images/3icon.png",
                         ),
-                        label: Text('four'),
+                        label: Text('calender'),
                       ),
                       NavigationRailDestination(
                         icon: Image.asset(
@@ -137,27 +138,24 @@ class _NavigationMenuState extends State<NavigationMenu> {
     switch (index) {
       case 0:
         {
-          Routes.sailor(Routes.homePage,
-              navigationType: NavigationType.pushReplace);
+          NavigateFunction().withqueryReplace(Navigate.homePage);
+
           break;
         }
       case 1:
         {
-          Routes.sailor(Routes.commentPage,
-              navigationType: NavigationType.pushReplace);
+          NavigateFunction().withqueryReplace(Navigate.commentPage);
           break;
         }
       case 2:
         {
-          Routes.sailor(Routes.profilePage,
-              navigationType: NavigationType.pushReplace);
+          NavigateFunction().withqueryReplace(Navigate.profilePage);
 
           break;
         }
       case 3:
         {
-          Routes.sailor(Routes.matchPage,
-              navigationType: NavigationType.pushReplace);
+          NavigateFunction().withqueryReplace(Navigate.matchPage);
 
           break;
         }

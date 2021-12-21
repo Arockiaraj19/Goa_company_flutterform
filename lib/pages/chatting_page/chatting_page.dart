@@ -1,3 +1,5 @@
+// ignore_for_file: implementation_imports
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -27,12 +29,15 @@ import 'package:dating_app/shared/widgets/image_upload_alert.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/src/provider.dart';
+
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 // import 'package:web_socket_channel/io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -105,6 +110,7 @@ class _ChattingPageState extends State<ChattingPage> {
       print(result);
       ChatMessage chatdata = ChatMessage.fromMap(result);
       print(chatdata);
+
       return context.read<ChatProvider>().addsocketmessage(chatdata);
     });
     ChatNetwork().patchUnreadMessage(widget.groupid);
@@ -164,7 +170,7 @@ class _ChattingPageState extends State<ChattingPage> {
           await Games().sendgamerequest(games[0].id, widget.id);
       List<Getquestion> questions =
           await Games().getquestion(games[0].id, gameRequest.id);
-      Routes.sailor(Routes.quizGamePage, params: {
+      NavigateFunction().withoutquery(Navigate.quizGamePage, {
         "questions": questions,
         "playid": gameRequest.id,
         "user1": user1,
@@ -249,14 +255,14 @@ class _ChattingPageState extends State<ChattingPage> {
                 return Consumer<HomeProvider>(builder: (context, data, child) {
                   return InkWell(
                     onTap: () {
-                      Routes.sailor(Routes.quizGamePage, params: {
+                      NavigateFunction().withoutquery(Navigate.quizGamePage, {
                         "questions": snapshot.data.questions,
                         "playid": snapshot.data.playid,
                         "user1": data.userData.identificationImage,
                         "user2": widget.image,
                         "istrue": false,
                         "user1name": data.userData.firstName,
-                        "user2name": widget.name,
+                        "user2name": widget.name
                       });
                     },
                     child: Container(

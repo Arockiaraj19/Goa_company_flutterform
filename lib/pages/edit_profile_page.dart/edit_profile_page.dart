@@ -172,6 +172,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     // TODO: implement initState
     super.initState();
     time = 0;
+    print("edit page kkulla data varuthaa");
+    print(widget.userdata.firstName);
     fill();
     _future = GenderNetwork().getGenderData();
     if (interestData == null) {
@@ -1059,8 +1061,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Container(
                                   margin: EdgeInsetsDirectional.only(top: 5),
                                   child: Text(
-                                    widget.userdata.firstName ??
-                                        "Some thing wrong",
+                                    // widget.userdata.firstName ??
+                                    "Some thing wrong",
                                     style: _textStyleforName,
                                   ),
                                 ),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dating_app/models/forgetresponse_model.dart';
 import 'package:dating_app/models/matchuser_model.dart';
 import 'package:dating_app/models/otp_model.dart';
@@ -111,7 +113,8 @@ class Navigate extends Module {
         ChildRoute(matchPage, child: (_, args) => MatchesPage()),
         ChildRoute(signUpWithEmailPage,
             child: (_, args) => SignUpWithEmailPage(
-                  isforget: args.queryParams["isforget"] as bool,
+                  isforget:
+                      args.queryParams["isforget"] == "false" ? false : true,
                 )),
         ChildRoute(signUpWithMobilePage,
             child: (_, args) => SignUpWithMobilePage()),
@@ -128,51 +131,53 @@ class Navigate extends Module {
         ChildRoute(meetuppage, child: (_, args) => MeetupPage()),
         ChildRoute(subscription,
             child: (_, args) => Subscription(
-                  swiperIndex: int.parse(args.queryParams["swiperIndex"]),
-                  onboard: args.queryParams["onboard"] as bool,
+                  swiperIndex: args.queryParams["swiperIndex"] == null
+                      ? null
+                      : int.parse(args.queryParams["swiperIndex"]),
+                  onboard: args.queryParams["onboard"] == "true" ? true : false,
                 )),
         ChildRoute(payment, child: (_, args) => PaymentPage()),
         ChildRoute(imagecheck, child: (_, args) => Imagecheck()),
         ChildRoute(success, child: (_, args) => SuccessPage()),
         ChildRoute(albumview,
             child: (_, args) => AlbumView(
-                  galleryItems: args.params["galleryItems"],
+                  galleryItems: args.data["galleryItems"],
                 )),
         ChildRoute(notification, child: (_, args) => Notification()),
         ChildRoute(aboutus, child: (_, args) => AboutUs()),
         ChildRoute(expertGroup, child: (_, args) => ExpertGroup()),
         ChildRoute(editProfilePage,
             child: (_, args) =>
-                EditProfilePage(userdata: args.params["userDetail"])),
+                EditProfilePage(userdata: args.data["userDetails"])),
         ChildRoute(partnerTypePage,
             child: (_, args) =>
-                PartnerTypePage(userData: args.params["userDetail"])),
+                PartnerTypePage(userData: args.data["userDetail"])),
         ChildRoute(createProfilePage,
             child: (_, args) =>
-                CreateProfilePage(userData: args.params["userData"])),
+                CreateProfilePage(userData: args.data["userData"])),
         ChildRoute(detailPage,
             child: (_, args) =>
-                DetailPage(userDetails: args.params["userDetails"])),
+                DetailPage(userDetails: args.data["userDetails"])),
         ChildRoute(onboardingPage, child: (_, args) => OnboardingPage()),
         ChildRoute(otpPage,
             child: (_, args) => OtpPage(
-                  otpData: args.params["otpData"],
-                  isforget: args.params["isforget"],
+                  otpData: args.data["otpData"],
+                  isforget: args.data["isforget"],
                 )),
         ChildRoute(addingPasswordPage,
             child: (_, args) => AddingPasswordForSignUp(
-                  email: args.params["email"],
-                  otpdata: args.params["otpdata"],
-                  isforget: args.params["isforget"],
+                  email: args.data["email"],
+                  otpdata: args.data["otpdata"],
+                  isforget: args.data["isforget"],
                 )),
         ChildRoute(expertchat,
             child: (_, args) => ExpertChattingPage(
                   groupid: args.queryParams["groupid"],
                   id: args.queryParams["id"],
                   name: args.queryParams["name"],
-                  status: args.queryParams["status"] as int,
+                  status: int.parse(args.queryParams["status"]),
                   image: [args.queryParams["image"]],
-                  onWeb: args.queryParams["onWeb"] as bool,
+                  onWeb: true,
                 )),
         ChildRoute(chattingPage,
             child: (_, args) => ChattingPage(
@@ -180,30 +185,49 @@ class Navigate extends Module {
                   id: args.queryParams["id"],
                   name: args.queryParams["name"],
                   image: args.queryParams["image"],
+                  onWeb: true,
                 )),
         ChildRoute(perfectMatchPage,
             child: (_, args) => PerfectMatchPage(
-                  user1: args.params["user1"],
-                  user2: args.params["user2"],
+                  user1: args.data["user1"],
+                  user2: args.data["user2"],
                 )),
         ChildRoute(quizGamePage,
             child: (_, args) => QuizGamePage(
-                  questions: args.params["questions"],
-                  playid: args.params["playid"],
-                  user1: args.params["user1"],
-                  user2: args.params["user2"],
-                  istrue: args.params["istrue"],
-                  user1name: args.params["user1name"],
-                  user2name: args.params["user2name"],
+                  questions: args.data["questions"],
+                  playid: args.data["playid"],
+                  user1: args.data["user1"],
+                  user2: args.data["user2"],
+                  istrue: args.data["istrue"],
+                  user1name: args.data["user1name"],
+                  user2name: args.data["user2name"],
                 )),
         ChildRoute(quizSucessPage,
             child: (_, args) => QuizSucessPage(
-                  user1image: args.params["user1image"],
-                  user2image: args.params["user2image"],
-                  user1name: args.params["user1name"],
-                  user2name: args.params["user2name"],
-                  score: args.params["score"],
-                  length: args.params["length"],
+                  user1image: args.data["user1image"],
+                  user2image: args.data["user2image"],
+                  user1name: args.data["user1name"],
+                  user2name: args.data["user2name"],
+                  score: args.data["score"],
+                  length: args.data["length"],
                 )),
       ];
+}
+
+class NavigateFunction {
+  withoutquery(path, Map<String, dynamic> argument) {
+    return Modular.to.pushNamed(path, arguments: argument);
+  }
+
+  withquery(path) {
+    return Modular.to.pushNamed(path);
+  }
+
+  withqueryReplace(path) {
+    return Modular.to.pushReplacementNamed(path);
+  }
+
+  withoutqueryReplace(path, argument) {
+    return Modular.to.pushReplacementNamed(path, arguments: argument);
+  }
 }

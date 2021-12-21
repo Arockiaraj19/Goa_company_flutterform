@@ -256,15 +256,14 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
   }
 
   goToChatPage(groupid, id, image, name) {
-    Routes.sailor(Routes.chattingPage,
-        params: {"groupid": groupid, "id": id, "image": image, "name": name},
-        navigationType: NavigationType.pushReplace);
+    NavigateFunction().withqueryReplace(Navigate.chattingPage +
+        "?groupid=$groupid&id=$id&image=$image&name=$name");
   }
 
   goToQuizgamePage() {
-    Routes.sailor(
-      Routes.quizGamePage,
-    );
+    // Routes.sailor(
+    //   Routes.quizGamePage,
+    // );
   }
 
   Widget _buildWeb() {

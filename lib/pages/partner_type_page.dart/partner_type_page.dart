@@ -224,10 +224,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
       }
 
       UserModel result = await network.patchUserData(userData);
-      Routes.sailor(Routes.subscription, params: {
-        "swiperIndex": null,
-        "onboard": true,
-      });
+      NavigateFunction().withquery(Navigate.subscription + "?onboard=true");
     } catch (e) {
       offLoading();
     }
@@ -260,10 +257,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
       }
 
       UserModel result = await network.patchUserData(userData);
-      Routes.sailor(Routes.subscription, params: {
-        "swiperIndex": null,
-        "onboard": true,
-      });
+     NavigateFunction().withquery(Navigate.subscription + "?onboard=true");
     } catch (e) {
       offLoading();
     }

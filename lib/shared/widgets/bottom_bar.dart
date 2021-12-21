@@ -78,34 +78,34 @@ class _BottomTabBar extends State<BottomTabBar> {
     switch (pageIndex) {
       case 0:
         {
-          page = Routes.homePage;
+          page = Navigate.homePage;
           break;
         }
       case 1:
         {
-          page = Routes.commentPage;
+          page = Navigate.commentPage;
           break;
         }
       case 2:
         {
-          page = Routes.matchPage;
+          page = Navigate.matchPage;
           break;
         }
       case 3:
         {
-          page = Routes.profilePage;
+          page = Navigate.profilePage;
           break;
         }
 
       default:
         {
-          page = Routes.homePage;
+          page = Navigate.homePage;
           break;
         }
     }
     setState(() {
       _currentTabIndex = pageIndex;
     });
-    Routes.sailor.navigate(page, navigationType: NavigationType.pushReplace);
+    NavigateFunction().withqueryReplace(page);
   }
 }

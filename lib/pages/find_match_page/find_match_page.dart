@@ -174,28 +174,26 @@ class _FindMatchPageState extends State<FindMatchPage> {
                   return watch.homeState == HomeState.Error
                       ? ErrorCard(
                           text: watch.errorText,
-                          ontab: () => Routes.sailor(Routes.findMatchPage,
-                              navigationType: NavigationType.pushReplace))
+                          ontab: () => NavigateFunction()
+                              .withqueryReplace(Navigate.findMatchPage))
                       : Consumer<SubscriptionProvider>(
                           builder: (context, sub, child) {
                             return sub.subscriptionState ==
                                     SubscriptionState.Error
                                 ? ErrorCard(
                                     text: sub.errorText,
-                                    ontab: () => Routes.sailor(
-                                        Routes.findMatchPage,
-                                        navigationType:
-                                            NavigationType.pushReplace))
+                                    ontab: () => NavigateFunction()
+                                        .withqueryReplace(
+                                            Navigate.findMatchPage))
                                 : Consumer<NotificationProvider>(
                                     builder: (context, noti, child) {
                                       return noti.notificationState ==
                                               NotificationState.Error
                                           ? ErrorCard(
                                               text: noti.errorText,
-                                              ontab: () => Routes.sailor(
-                                                  Routes.findMatchPage,
-                                                  navigationType: NavigationType
-                                                      .pushReplace))
+                                              ontab: () => NavigateFunction()
+                                                  .withqueryReplace(
+                                                      Navigate.findMatchPage))
                                           : InkWell(
                                               child: SingleChildScrollView(
                                                   child: Column(children: [
@@ -405,7 +403,7 @@ class _FindMatchPageState extends State<FindMatchPage> {
   }
 
   goToHomePage() {
-    Routes.sailor(Routes.homePage);
+    NavigateFunction().withquery(Navigate.homePage);
   }
 
   Widget _buildWeb() {

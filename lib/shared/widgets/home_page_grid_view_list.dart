@@ -56,9 +56,9 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                         List<UserModel> data =
                             await Subscription().updateCount(1);
                         await context.read<HomeProvider>().replaceData(data[0]);
-                        return Routes.sailor(Routes.detailPage, params: {
-                          "userDetails": widget.usersData.response[index]
-                        });
+                        return NavigateFunction().withoutquery(
+                            Navigate.detailPage,
+                            {"userDetails": widget.usersData.response[index]});
                       } else {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
@@ -82,9 +82,8 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                         return BottomSheetClass().showplans(context);
                       }
                     }
-                    Routes.sailor(Routes.detailPage, params: {
-                      "userDetails": widget.usersData.response[index]
-                    });
+                    NavigateFunction().withoutquery(Navigate.detailPage,
+                        {"userDetails": widget.usersData.response[index]});
                   },
                   child: HomeGridViewcard(
                     userData: widget.usersData.response[index],

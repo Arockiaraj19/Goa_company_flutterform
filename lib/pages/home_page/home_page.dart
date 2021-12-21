@@ -41,6 +41,7 @@ import 'package:sailor/sailor.dart';
 
 import 'widget/interest_box.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
 
@@ -56,9 +57,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   
+
     print("home page kku varuthaa");
     FCM().initPushNotification();
+    if (context.read<HomeProvider>().userData == null) {
+      getdata();
+      getnotifi();
+    }
     Future.delayed(Duration(milliseconds: 500), () {
       if (context.read<SubscriptionProvider>().plan == null) {
         context.read<SubscriptionProvider>().getprofilecount();
@@ -73,6 +78,16 @@ class _HomePageState extends State<HomePage> {
         }
       }
     });
+  }
+
+  getdata() async {
+    await context.read<SubscriptionProvider>().checkplans();
+  }
+
+  getnotifi() async {
+    context.read<HomeProvider>().getData();
+
+    context.read<NotificationProvider>().getData();
   }
 
   callCountUpdate() async {
@@ -121,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, data, child) {
                     return InkWell(
                       onTap: () {
-                        Routes.sailor(Routes.notification);
+                        NavigateFunction().withquery(Navigate.notification);
                       },
                       child: Stack(
                         children: [
@@ -196,15 +211,14 @@ class _HomePageState extends State<HomePage> {
                   return sub.subscriptionState == SubscriptionState.Error
                       ? ErrorCard(
                           text: sub.errorText,
-                          ontab: () => Routes.sailor(Routes.homePage,
-                              navigationType: NavigationType.pushReplace))
+                          ontab: () => NavigateFunction()
+                              .withqueryReplace(Navigate.homePage))
                       : Consumer<HomeProvider>(builder: (context, data, child) {
                           return data.homeState == HomeState.Error
                               ? ErrorCard(
                                   text: data.errorText,
-                                  ontab: () => Routes.sailor(Routes.homePage,
-                                      navigationType:
-                                          NavigationType.pushReplace))
+                                  ontab: () => NavigateFunction()
+                                      .withqueryReplace(Navigate.homePage))
                               : data.homeState == HomeState.Loaded
                                   ? data.usersSuggestionData.response.length ==
                                           0

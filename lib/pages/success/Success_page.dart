@@ -6,6 +6,7 @@ import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'widget/logo_text.dart';
@@ -81,7 +82,9 @@ class SuccessPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   color: Colors.white,
                   onPressed: () {
-                    Routes.sailor(Routes.loginWith, params: {"name": "EMAIL"});
+                    Modular.to.pushNamed(
+                      Navigate.loginWith + "?name=EMAIL",
+                    );
                   },
                 ),
               ),

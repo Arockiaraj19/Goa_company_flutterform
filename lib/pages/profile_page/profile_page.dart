@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dating_app/models/like_list.dart';
@@ -20,6 +21,7 @@ import 'package:dating_app/providers/expertChat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/helpers/check_persentage.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -27,6 +29,7 @@ import 'package:dating_app/shared/widgets/album_card_list.dart';
 import 'package:dating_app/shared/widgets/alert_widget.dart';
 import 'package:dating_app/shared/widgets/bottmsheet.dart';
 import 'package:dating_app/shared/widgets/bottom_bar.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/filter_bottom_sheet1.dart';
 import 'package:dating_app/shared/widgets/interest_card_list.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
@@ -74,6 +77,9 @@ class _ProfilePageState extends State<ProfilePage>
     super.initState();
     getData();
     _tabController = TabController(length: 2, vsync: this);
+    if (context.read<HomeProvider>().userData == null) {
+      context.read<HomeProvider>().getData();
+    }
     // _createRewardedAd();
   }
 
@@ -429,8 +435,8 @@ class _ProfilePageState extends State<ProfilePage>
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Routes.sailor(Routes.likeMatchListPage,
-                                    params: {"index": 0});
+                                NavigateFunction().withquery(
+                                    Navigate.likeMatchListPage + "?index=0");
                               },
                               child: Scores(
                                 name:
@@ -442,8 +448,8 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                             GestureDetector(
                               onTap: () {
-                                Routes.sailor(Routes.likeMatchListPage,
-                                    params: {"index": 1});
+                                NavigateFunction().withquery(
+                                    Navigate.likeMatchListPage + "?index=1");
                               },
                               child: Scores(
                                 name: matchCount == -1
@@ -698,8 +704,8 @@ class _ProfilePageState extends State<ProfilePage>
                                         await context
                                             .read<ExpertChatProvider>()
                                             .getGroupCatoData();
-                                        return Routes.sailor(
-                                            Routes.expertGroup);
+                                        return NavigateFunction()
+                                            .withquery(Navigate.expertGroup);
                                       } else {
                                         if (subdata.subscriptionData.length ==
                                             0) {
@@ -715,23 +721,22 @@ class _ProfilePageState extends State<ProfilePage>
                                     await context
                                         .read<ExpertChatProvider>()
                                         .getGroupCatoData();
-
-                                    Routes.sailor(Routes.expertGroup);
+                                    NavigateFunction()
+                                        .withquery(Navigate.expertGroup);
                                   },
                                   child: SettingBox(name: "Expert Chat"));
                             }),
                             InkWell(
                                 onTap: () {
-                                  Routes.sailor(Routes.subscription, params: {
-                                    "swiperIndex": null,
-                                    "onboard": false,
-                                  });
+                                  NavigateFunction().withquery(
+                                      Navigate.subscription + "?onboard=false");
                                 },
                                 child: SettingBox(name: "Subscription")),
                             SettingBox(name: "Order history"),
                             InkWell(
                                 onTap: () {
-                                  Routes.sailor(Routes.aboutus);
+                                  NavigateFunction()
+                                      .withquery(Navigate.aboutus);
                                 },
                                 child: SettingBox(name: "About")),
                             GestureDetector(
@@ -801,8 +806,7 @@ class _ProfilePageState extends State<ProfilePage>
         InkWell(
           onTap: () {
             saveLoginStatus(1);
-            Routes.sailor.navigate((Routes.loginPage),
-                navigationType: NavigationType.pushReplace);
+            NavigateFunction().withqueryReplace(Navigate.loginPage);
           },
           child: Text(
             "Yes",
@@ -875,7 +879,10 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   goToEditProfilePagePage(UserModel userData) {
-    Routes.sailor(Routes.editProfilePage, params: {"userDetails": userData});
+    print("user data correct a varuthaa");
+    print(userData);
+    NavigateFunction()
+        .withoutquery(Navigate.editProfilePage, {"userDetails": userData});
   }
 
   Widget _buildWeb() {
@@ -924,629 +931,694 @@ class _ProfilePageState extends State<ProfilePage>
               currentTabIndex: 2,
             ),
             body: Consumer<HomeProvider>(builder: (context, data, child) {
-              return Container(
-                  padding: EdgeInsetsDirectional.only(start: 2),
-                  color: Colors.grey[200],
-                  child: Scaffold(
-                      appBar: AppBar(
-                        backgroundColor: Colors.white,
-                        elevation: 0,
-                        automaticallyImplyLeading: false,
-                        // titleSpacing: 0,
-                        title: Container(
-                            margin:
-                                EdgeInsetsDirectional.only(top: 20, start: 25),
-                            child: Text(
-                              "Profile Details",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "OpenSans",
-                                fontSize: 14,
-                              ),
-                            )),
-                        actions: [
-                          Container(
-                              margin: EdgeInsetsDirectional.only(
-                                  top: 5, end: 20, bottom: 5),
-                              child: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.notifications_outlined,
-                                    color: Colors.grey,
-                                    // size: 20,
-                                  ))),
-                          InkWell(
-                            onTap: () {
-                              goToEditProfilePagePage(data.userData);
-                            },
-                            child: Container(
-                                child: Text('Edit Profile',
-                                    style: TextStyle(
-                                        color: MainTheme.primaryColor,
+              return data.homeState == HomeState.Error
+                  ? ErrorCard(
+                      text: data.errorText,
+                      ontab: () => NavigateFunction()
+                          .withqueryReplace(Navigate.profilePage))
+                  : data.homeState != HomeState.Loaded
+                      ? LoadingLottie()
+                      : Container(
+                          padding: EdgeInsetsDirectional.only(start: 2),
+                          color: Colors.grey[200],
+                          child: Scaffold(
+                              appBar: AppBar(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                automaticallyImplyLeading: false,
+                                // titleSpacing: 0,
+                                title: Container(
+                                    margin: EdgeInsetsDirectional.only(
+                                        top: 20, start: 25),
+                                    child: Text(
+                                      "Profile Details",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "OpenSans",
                                         fontSize: 14,
-                                        fontFamily: "Nunito"))),
-                          )
-                        ],
-                      ),
-                      body: SingleChildScrollView(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    // Container(
-                                    //   height: 220,
-                                    //   width: _width / 25,
-                                    // ),
-                                    Container(
-                                        height: 280,
-                                        width: _width * 0.365,
-                                        child: Column(
+                                      ),
+                                    )),
+                                actions: [
+                                  Container(
+                                      margin: EdgeInsetsDirectional.only(
+                                          top: 5, end: 20, bottom: 5),
+                                      child: IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.notifications_outlined,
+                                            color: Colors.grey,
+                                            // size: 20,
+                                          ))),
+                                  InkWell(
+                                    onTap: () {
+                                      goToEditProfilePagePage(data.userData);
+                                    },
+                                    child: Container(
+                                        child: Text('Edit Profile',
+                                            style: TextStyle(
+                                                color: MainTheme.primaryColor,
+                                                fontSize: 14,
+                                                fontFamily: "Nunito"))),
+                                  )
+                                ],
+                              ),
+                              body: SingleChildScrollView(
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              MainAxisAlignment.spaceAround,
                                           children: [
-                                            FutureBuilder(
-                                              future: Persentage()
-                                                  .checkPresentage(
-                                                      data.userData),
-                                              builder: (BuildContext context,
-                                                  AsyncSnapshot snapshot) {
-                                                if (snapshot.hasData) {
-                                                  return PercentageBar(
-                                                    image: data.userData
-                                                        .identificationImage,
-                                                    percentage: snapshot.data,
-                                                  );
-                                                } else {
-                                                  return PercentageBar(
-                                                    image: data.userData
-                                                        .identificationImage,
-                                                    percentage: 0,
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsetsDirectional
-                                                      .only(top: 5),
-                                                  child: Text(
-                                                      "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""} , ${data.userData.age}",
-                                                      style: _textStyleforName),
-                                                ),
-                                              ],
-                                            ),
+                                            // Container(
+                                            //   height: 220,
+                                            //   width: _width / 25,
+                                            // ),
                                             Container(
-                                              height: 70,
-                                              margin:
-                                                  EdgeInsetsDirectional.only(
-                                                      top: 10,
-                                                      start: 10,
-                                                      end: 10,
-                                                      bottom: 10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                // border: Border.all(
-                                                //   width: 1,
-                                                //   color: Colors.grey.shade100,
-                                                // ),
-                                                boxShadow: <BoxShadow>[
-                                                  BoxShadow(
-                                                    color: Colors.grey.shade200,
-                                                    blurRadius: 1.0,
-                                                    offset: Offset(0, 3),
-                                                  )
-                                                ],
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              padding:
-                                                  EdgeInsetsDirectional.only(
-                                                      top: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      Routes.sailor(
-                                                          Routes
-                                                              .likeMatchListPage,
-                                                          params: {"index": 0});
-                                                    },
-                                                    child: Scores(
-                                                      name: likeCount == -1
-                                                          ? ""
-                                                          : likeCount
-                                                              .toString(),
-                                                      scores: "Like",
-                                                      nameFont:
-                                                          profileScoreName,
-                                                      valuefont: profileValue,
+                                                height: 280,
+                                                width: _width * 0.365,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    FutureBuilder(
+                                                      future: Persentage()
+                                                          .checkPresentage(
+                                                              data.userData),
+                                                      builder:
+                                                          (BuildContext context,
+                                                              AsyncSnapshot
+                                                                  snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          return PercentageBar(
+                                                            image: data.userData
+                                                                .identificationImage,
+                                                            percentage:
+                                                                snapshot.data,
+                                                          );
+                                                        } else {
+                                                          return PercentageBar(
+                                                            image: data.userData
+                                                                .identificationImage,
+                                                            percentage: 0,
+                                                          );
+                                                        }
+                                                      },
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      Routes.sailor(
-                                                          Routes
-                                                              .likeMatchListPage,
-                                                          params: {"index": 1});
-                                                    },
-                                                    child: Scores(
-                                                      name: matchCount == -1
-                                                          ? ""
-                                                          : matchCount
-                                                              .toString(),
-                                                      scores: "Heart",
-                                                      nameFont:
-                                                          profileScoreName,
-                                                      valuefont: profileValue,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsetsDirectional
+                                                                  .only(top: 5),
+                                                          child: Text(
+                                                              "${data.userData.firstName ?? ""} ${data.userData.lastName ?? ""} , ${data.userData.age}",
+                                                              style:
+                                                                  _textStyleforName),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  GestureDetector(
-                                                    onTap: () {},
-                                                    child: Scores(
-                                                      name: data.userData.score
-                                                          .toString(),
-                                                      scores: "Score",
-                                                      nameFont:
-                                                          profileScoreName,
-                                                      valuefont: profileValue,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                                child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                  InkWell(
-                                                    onTap: () => getinsta(),
-                                                    child: SocialMediaBox(
-                                                      name: "Add Instagram",
-                                                      image:
-                                                          "assets/images/Instagram_icon.png",
-                                                      style: socialMediaText,
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      return connectfb();
-                                                    },
-                                                    child: SocialMediaBox(
-                                                      name: data.userData
-                                                                  .facebookName ==
-                                                              null
-                                                          ? "Add Facebook"
-                                                          : data.userData
-                                                              .facebookName,
-                                                      image: data.userData
-                                                                  .facebookName ==
-                                                              null
-                                                          ? "assets/images/fbnotselect.png"
-                                                          : "assets/images/Facebook_icon.png",
-                                                      style:
-                                                          socialMediaTextBold,
-                                                      data: data.userData
-                                                          .facebookName,
-                                                    ),
-                                                  ),
-                                                ])),
-                                          ],
-                                        )),
-                                    Container(
-                                      height: 220,
-                                      width: _width / 45,
-                                    ),
-                                    Container(
-                                        height: 280,
-                                        width: _width * 0.400,
-                                        child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Container(
+                                                    Container(
+                                                      height: 70,
                                                       margin:
                                                           EdgeInsetsDirectional
                                                               .only(
-                                                        top: 10,
-                                                        bottom: 10,
+                                                                  top: 10,
+                                                                  start: 10,
+                                                                  end: 10,
+                                                                  bottom: 10),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        // border: Border.all(
+                                                        //   width: 1,
+                                                        //   color: Colors.grey.shade100,
+                                                        // ),
+                                                        boxShadow: <BoxShadow>[
+                                                          BoxShadow(
+                                                            color: Colors
+                                                                .grey.shade200,
+                                                            blurRadius: 1.0,
+                                                            offset:
+                                                                Offset(0, 3),
+                                                          )
+                                                        ],
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
-                                                      child: Text("Album",
-                                                          style: subHeading))
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                      height: 220,
-                                                      width: _width * 0.355,
-                                                      child: AlbumCardList(
-                                                        mainAxisSpacing: 10.0,
-                                                        crossAxisSpacing: 10.0,
-                                                        crossAxisCount: 3,
-                                                        images: data.userData
-                                                            .profileImage,
-                                                        itemCount: data
-                                                            .userData
-                                                            .profileImage
-                                                            .length,
-                                                      )),
-                                                ],
-                                              ),
-                                            ]))
-                                  ]),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  // Container(
-                                  //   height: 220,
-                                  //   width: _width / 25,
-                                  // ),
-                                  Container(
-                                    height: 300,
-                                    width: _width * 0.365,
-                                    child: SingleChildScrollView(
-                                        padding: EdgeInsetsDirectional.only(
-                                            start: 20, end: 20),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                    margin:
-                                                        EdgeInsetsDirectional
-                                                            .only(
-                                                                top: 10,
-                                                                bottom: 10),
-                                                    child: Text("About",
-                                                        style: subHeading))
-                                              ],
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(top: 10),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceAround,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              NavigateFunction()
+                                                                  .withquery(Navigate
+                                                                          .likeMatchListPage +
+                                                                      "?index=0");
+                                                            },
+                                                            child: Scores(
+                                                              name: likeCount ==
+                                                                      -1
+                                                                  ? ""
+                                                                  : likeCount
+                                                                      .toString(),
+                                                              scores: "Like",
+                                                              nameFont:
+                                                                  profileScoreName,
+                                                              valuefont:
+                                                                  profileValue,
+                                                            ),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              NavigateFunction()
+                                                                  .withquery(Navigate
+                                                                          .likeMatchListPage +
+                                                                      "?index=1");
+                                                            },
+                                                            child: Scores(
+                                                              name: matchCount ==
+                                                                      -1
+                                                                  ? ""
+                                                                  : matchCount
+                                                                      .toString(),
+                                                              scores: "Heart",
+                                                              nameFont:
+                                                                  profileScoreName,
+                                                              valuefont:
+                                                                  profileValue,
+                                                            ),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {},
+                                                            child: Scores(
+                                                              name: data
+                                                                  .userData
+                                                                  .score
+                                                                  .toString(),
+                                                              scores: "Score",
+                                                              nameFont:
+                                                                  profileScoreName,
+                                                              valuefont:
+                                                                  profileValue,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                        child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            children: [
+                                                          InkWell(
+                                                            onTap: () =>
+                                                                getinsta(),
+                                                            child:
+                                                                SocialMediaBox(
+                                                              name:
+                                                                  "Add Instagram",
+                                                              image:
+                                                                  "assets/images/Instagram_icon.png",
+                                                              style:
+                                                                  socialMediaText,
+                                                            ),
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              return connectfb();
+                                                            },
+                                                            child:
+                                                                SocialMediaBox(
+                                                              name: data.userData
+                                                                          .facebookName ==
+                                                                      null
+                                                                  ? "Add Facebook"
+                                                                  : data
+                                                                      .userData
+                                                                      .facebookName,
+                                                              image: data.userData
+                                                                          .facebookName ==
+                                                                      null
+                                                                  ? "assets/images/fbnotselect.png"
+                                                                  : "assets/images/Facebook_icon.png",
+                                                              style:
+                                                                  socialMediaTextBold,
+                                                              data: data
+                                                                  .userData
+                                                                  .facebookName,
+                                                            ),
+                                                          ),
+                                                        ])),
+                                                  ],
+                                                )),
+                                            Container(
+                                              height: 220,
+                                              width: _width / 45,
                                             ),
                                             Container(
-                                                child: Row(children: [
-                                              Expanded(
-                                                child: Text(
-                                                    data.userData.bio ?? "",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                    style: TextStyle(
-                                                        color: MainTheme
-                                                            .profileNameColors,
-                                                        fontSize: 11,
-                                                        fontFamily: "Inter")),
-                                              ),
-                                            ])),
-                                            Row(
-                                              children: [
-                                                Container(
-                                                    margin:
-                                                        EdgeInsetsDirectional
-                                                            .only(
+                                                height: 280,
+                                                width: _width * 0.400,
+                                                child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                              margin:
+                                                                  EdgeInsetsDirectional
+                                                                      .only(
                                                                 top: 10,
-                                                                bottom: 10),
-                                                    child: Text("Interest",
-                                                        style: subHeading))
-                                              ],
-                                            ),
-                                            GridView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisSpacing: 0.0,
-                                                      mainAxisSpacing: 0.0,
-                                                      crossAxisCount: 5,
-                                                      childAspectRatio: 2.8),
-                                              itemCount: data.userData
-                                                  .interestDetails.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return InterestBox(
-                                                  fillColor: Colors.white,
-                                                  fontSize: ScreenUtil().setSp(
-                                                      MainTheme
-                                                          .mSecondaryContentfontSize),
-                                                  color: MainTheme.primaryColor,
-                                                  title: data
-                                                          .userData
-                                                          .interestDetails[
-                                                              index]
-                                                          .title ??
-                                                      "",
-                                                  onTap: () {},
-                                                );
-                                              },
-                                            ),
-                                            Row(
-                                              children: [
-                                                Container(
-                                                    margin:
-                                                        EdgeInsetsDirectional
-                                                            .only(
-                                                                top: 10,
-                                                                bottom: 10),
-                                                    child: Text("Hobbies",
-                                                        style: subHeading))
-                                              ],
-                                            ),
-                                            GridView.builder(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisSpacing: 0.0,
-                                                      mainAxisSpacing: 0.0,
-                                                      crossAxisCount: 5,
-                                                      childAspectRatio: 2.8),
-                                              itemCount: data
-                                                  .userData.hobbyDetails.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return InterestBox(
-                                                  fillColor: Colors.white,
-                                                  fontSize: ScreenUtil().setSp(
-                                                      MainTheme
-                                                          .mSecondaryContentfontSize),
-                                                  color: MainTheme.primaryColor,
-                                                  title: data
-                                                          .userData
-                                                          .hobbyDetails[index]
-                                                          .title ??
-                                                      "",
-                                                  onTap: () {},
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        )),
-                                  ),
-                                  Container(
-                                    height: 45,
-                                    width: _width / 45,
-                                  ),
-                                  Container(
-                                      height: 300,
-                                      width: _width * 0.400,
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                    margin:
-                                                        EdgeInsetsDirectional
-                                                            .only(
-                                                      // top: 50,
-                                                      bottom: 10,
+                                                                bottom: 10,
+                                                              ),
+                                                              child: Text(
+                                                                  "Album",
+                                                                  style:
+                                                                      subHeading))
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Container(
+                                                              height: 220,
+                                                              width: _width *
+                                                                  0.355,
+                                                              child:
+                                                                  AlbumCardList(
+                                                                mainAxisSpacing:
+                                                                    10.0,
+                                                                crossAxisSpacing:
+                                                                    10.0,
+                                                                crossAxisCount:
+                                                                    3,
+                                                                images: data
+                                                                    .userData
+                                                                    .profileImage,
+                                                                itemCount: data
+                                                                    .userData
+                                                                    .profileImage
+                                                                    .length,
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ]))
+                                          ]),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          // Container(
+                                          //   height: 220,
+                                          //   width: _width / 25,
+                                          // ),
+                                          Container(
+                                            height: 300,
+                                            width: _width * 0.365,
+                                            child: SingleChildScrollView(
+                                                padding:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 20, end: 20),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                            margin:
+                                                                EdgeInsetsDirectional
+                                                                    .only(
+                                                                        top: 10,
+                                                                        bottom:
+                                                                            10),
+                                                            child: Text("About",
+                                                                style:
+                                                                    subHeading))
+                                                      ],
                                                     ),
-                                                    child: Text(
-                                                        "Booking Details",
-                                                        style: subHeading
+                                                    Container(
+                                                        child: Row(children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                            data.userData.bio ??
+                                                                "",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 2,
+                                                            style: TextStyle(
+                                                                color: MainTheme
+                                                                    .profileNameColors,
+                                                                fontSize: 11,
+                                                                fontFamily:
+                                                                    "Inter")),
+                                                      ),
+                                                    ])),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                            margin:
+                                                                EdgeInsetsDirectional
+                                                                    .only(
+                                                                        top: 10,
+                                                                        bottom:
+                                                                            10),
+                                                            child: Text(
+                                                                "Interest",
+                                                                style:
+                                                                    subHeading))
+                                                      ],
+                                                    ),
+                                                    GridView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          NeverScrollableScrollPhysics(),
+                                                      gridDelegate:
+                                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                                              crossAxisSpacing:
+                                                                  0.0,
+                                                              mainAxisSpacing:
+                                                                  0.0,
+                                                              crossAxisCount: 5,
+                                                              childAspectRatio:
+                                                                  2.8),
+                                                      itemCount: data
+                                                          .userData
+                                                          .interestDetails
+                                                          .length,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        return InterestBox(
+                                                          fillColor:
+                                                              Colors.white,
+                                                          fontSize: ScreenUtil()
+                                                              .setSp(MainTheme
+                                                                  .mSecondaryContentfontSize),
+                                                          color: MainTheme
+                                                              .primaryColor,
+                                                          title: data
+                                                                  .userData
+                                                                  .interestDetails[
+                                                                      index]
+                                                                  .title ??
+                                                              "",
+                                                          onTap: () {},
+                                                        );
+                                                      },
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                            margin:
+                                                                EdgeInsetsDirectional
+                                                                    .only(
+                                                                        top: 10,
+                                                                        bottom:
+                                                                            10),
+                                                            child: Text(
+                                                                "Hobbies",
+                                                                style:
+                                                                    subHeading))
+                                                      ],
+                                                    ),
+                                                    GridView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          NeverScrollableScrollPhysics(),
+                                                      gridDelegate:
+                                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                                              crossAxisSpacing:
+                                                                  0.0,
+                                                              mainAxisSpacing:
+                                                                  0.0,
+                                                              crossAxisCount: 5,
+                                                              childAspectRatio:
+                                                                  2.8),
+                                                      itemCount: data.userData
+                                                          .hobbyDetails.length,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        return InterestBox(
+                                                          fillColor:
+                                                              Colors.white,
+                                                          fontSize: ScreenUtil()
+                                                              .setSp(MainTheme
+                                                                  .mSecondaryContentfontSize),
+                                                          color: MainTheme
+                                                              .primaryColor,
+                                                          title: data
+                                                                  .userData
+                                                                  .hobbyDetails[
+                                                                      index]
+                                                                  .title ??
+                                                              "",
+                                                          onTap: () {},
+                                                        );
+                                                      },
+                                                    ),
+                                                  ],
+                                                )),
+                                          ),
+                                          Container(
+                                            height: 45,
+                                            width: _width / 45,
+                                          ),
+                                          Container(
+                                              height: 300,
+                                              width: _width * 0.400,
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Container(
+                                                            margin:
+                                                                EdgeInsetsDirectional
+                                                                    .only(
+                                                              // top: 50,
+                                                              bottom: 10,
+                                                            ),
+                                                            child: Text(
+                                                                "Booking Details",
+                                                                style:
+                                                                    subHeading
 
-                                                        //  TextStyle(
-                                                        //   color: Colors.black,
-                                                        //   fontWeight: FontWeight.w500,
-                                                        //   fontFamily: "OpenSans",
-                                                        //   fontSize: 15,
-                                                        // ),
+                                                                //  TextStyle(
+                                                                //   color: Colors.black,
+                                                                //   fontWeight: FontWeight.w500,
+                                                                //   fontFamily: "OpenSans",
+                                                                //   fontSize: 15,
+                                                                // ),
 
-                                                        ))
-                                              ],
-                                            ),
-                                            Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                      height: 220,
-                                                      width: _width * 0.350,
-                                                      child: Column(children: [
-                                                        _isCreatingLink
-                                                            ? Center(
-                                                                child:
-                                                                    CircularProgressIndicator())
-                                                            : InkWell(
-                                                                onTap: () =>
-                                                                    _createDynamicLink(data
-                                                                        .userData
-                                                                        .userReferralCode),
-                                                                child: SettingBox(
-                                                                    fontSize:
-                                                                        12,
-                                                                    name:
-                                                                        "Refer & Earn")),
-                                                        Consumer<
-                                                                SubscriptionProvider>(
-                                                            builder: (context,
-                                                                subdata,
-                                                                child) {
-                                                          return InkWell(
-                                                              onTap: () async {
-                                                                // if (subdata
-                                                                //         .plan !=
-                                                                //     null) {
-                                                                //   if (subdata
-                                                                //           .subscriptionData
-                                                                //           .length ==
-                                                                //       0) {
-                                                                //     await subdata
-                                                                //         .getdata();
-                                                                //   }
-                                                                //   SubscriptionModel sdata = subdata
-                                                                //       .subscriptionData
-                                                                //       .firstWhere((element) =>
-                                                                //           element
-                                                                //               .id ==
-                                                                //           subdata
-                                                                //               .plan);
-                                                                //   print(
-                                                                //       "id correct varuthaa");
-                                                                //   print(subdata
-                                                                //       .checklistData[
-                                                                //           5]
-                                                                //       .title);
-                                                                //   if (sdata.checklists.any((element) =>
-                                                                //       element
-                                                                //           .id !=
-                                                                //       subdata
-                                                                //           .checklistData[
-                                                                //               5]
-                                                                //           .id)) {
-                                                                //     return BottomSheetClass()
-                                                                //         .showplans(
-                                                                //             context);
-                                                                //   }
-                                                                // }
+                                                                ))
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Container(
+                                                              height: 220,
+                                                              width: _width *
+                                                                  0.350,
+                                                              child: Column(
+                                                                  children: [
+                                                                    _isCreatingLink
+                                                                        ? Center(
+                                                                            child:
+                                                                                CircularProgressIndicator())
+                                                                        : InkWell(
+                                                                            onTap: () =>
+                                                                                _createDynamicLink(data.userData.userReferralCode),
+                                                                            child: SettingBox(fontSize: 12, name: "Refer & Earn")),
+                                                                    Consumer<SubscriptionProvider>(builder:
+                                                                        (context,
+                                                                            subdata,
+                                                                            child) {
+                                                                      return InkWell(
+                                                                          onTap:
+                                                                              () async {
+                                                                            // if (subdata
+                                                                            //         .plan !=
+                                                                            //     null) {
+                                                                            //   if (subdata
+                                                                            //           .subscriptionData
+                                                                            //           .length ==
+                                                                            //       0) {
+                                                                            //     await subdata
+                                                                            //         .getdata();
+                                                                            //   }
+                                                                            //   SubscriptionModel sdata = subdata
+                                                                            //       .subscriptionData
+                                                                            //       .firstWhere((element) =>
+                                                                            //           element
+                                                                            //               .id ==
+                                                                            //           subdata
+                                                                            //               .plan);
+                                                                            //   print(
+                                                                            //       "id correct varuthaa");
+                                                                            //   print(subdata
+                                                                            //       .checklistData[
+                                                                            //           5]
+                                                                            //       .title);
+                                                                            //   if (sdata.checklists.any((element) =>
+                                                                            //       element
+                                                                            //           .id !=
+                                                                            //       subdata
+                                                                            //           .checklistData[
+                                                                            //               5]
+                                                                            //           .id)) {
+                                                                            //     return BottomSheetClass()
+                                                                            //         .showplans(
+                                                                            //             context);
+                                                                            //   }
+                                                                            // }
 
-                                                                // if (subdata
-                                                                //         .plan ==
-                                                                //     null) {
-                                                                //   if (int.parse(
-                                                                //           subdata
-                                                                //               .count) >=
-                                                                //       data.userData
-                                                                //           .subCount) {
-                                                                //     List<UserModel>
-                                                                //         data =
-                                                                //         await Subscription()
-                                                                //             .updateCount(1);
-                                                                //     await context
-                                                                //         .read<
-                                                                //             HomeProvider>()
-                                                                //         .replaceData(
-                                                                //             data[0]);
-                                                                //     await context
-                                                                //         .read<
-                                                                //             ExpertChatProvider>()
-                                                                //         .getGroupCatoData();
-                                                                //     return Routes
-                                                                //         .sailor(
-                                                                //             Routes.expertGroup);
-                                                                //   } else {
-                                                                //     if (subdata
-                                                                //             .subscriptionData
-                                                                //             .length ==
-                                                                //         0) {
-                                                                //       subdata
-                                                                //           .getdata();
-                                                                //       return BottomSheetClass()
-                                                                //           .showplans(
-                                                                //               context);
-                                                                //     } else {
-                                                                //       return BottomSheetClass()
-                                                                //           .showplans(
-                                                                //               context);
-                                                                //     }
-                                                                //   }
-                                                                // }
-                                                                await context
-                                                                    .read<
-                                                                        ExpertChatProvider>()
-                                                                    .getGroupCatoData();
-
-                                                                Routes.sailor(Routes
-                                                                    .expertGroup);
-                                                              },
-                                                              child: SettingBox(
-                                                                  fontSize: 12,
-                                                                  name:
-                                                                      "Expert Chat"));
-                                                        }),
-                                                        Consumer<
-                                                                SubscriptionProvider>(
-                                                            builder: (context,
-                                                                subdata,
-                                                                child) {
-                                                          return InkWell(
-                                                              onTap: () {
-                                                                if (subdata
-                                                                        .subscriptionData
-                                                                        .length ==
-                                                                    0) {
-                                                                  subdata
-                                                                      .getdata();
-                                                                  return BottomSheetClass()
-                                                                      .showsub(
-                                                                          context);
-                                                                } else {
-                                                                  return BottomSheetClass()
-                                                                      .showsub(
-                                                                          context);
-                                                                }
-                                                              },
-                                                              child: SettingBox(
-                                                                  fontSize: 12,
-                                                                  name:
-                                                                      "Subscription"));
-                                                        }),
-                                                        InkWell(
-                                                            onTap: () {
-                                                              showsub(context);
-                                                            },
-                                                            child: SettingBox(
-                                                                fontSize: 12,
-                                                                name: "About")),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            showAlertDialog(
-                                                                context);
-                                                          },
-                                                          child: SettingBox(
-                                                            fontSize: 12,
-                                                            name: "Log out",
-                                                            activeIcon: true,
-                                                          ),
-                                                        ),
-                                                      ]))
-                                                ]),
-                                          ]))
-                                ],
-                              )
-                            ]),
-                      )));
+                                                                            // if (subdata
+                                                                            //         .plan ==
+                                                                            //     null) {
+                                                                            //   if (int.parse(
+                                                                            //           subdata
+                                                                            //               .count) >=
+                                                                            //       data.userData
+                                                                            //           .subCount) {
+                                                                            //     List<UserModel>
+                                                                            //         data =
+                                                                            //         await Subscription()
+                                                                            //             .updateCount(1);
+                                                                            //     await context
+                                                                            //         .read<
+                                                                            //             HomeProvider>()
+                                                                            //         .replaceData(
+                                                                            //             data[0]);
+                                                                            //     await context
+                                                                            //         .read<
+                                                                            //             ExpertChatProvider>()
+                                                                            //         .getGroupCatoData();
+                                                                            //     return Routes
+                                                                            //         .sailor(
+                                                                            //             Routes.expertGroup);
+                                                                            //   } else {
+                                                                            //     if (subdata
+                                                                            //             .subscriptionData
+                                                                            //             .length ==
+                                                                            //         0) {
+                                                                            //       subdata
+                                                                            //           .getdata();
+                                                                            //       return BottomSheetClass()
+                                                                            //           .showplans(
+                                                                            //               context);
+                                                                            //     } else {
+                                                                            //       return BottomSheetClass()
+                                                                            //           .showplans(
+                                                                            //               context);
+                                                                            //     }
+                                                                            //   }
+                                                                            // }
+                                                                            await context.read<ExpertChatProvider>().getGroupCatoData();
+                                                                            NavigateFunction().withquery(Navigate.expertGroup);
+                                                                          },
+                                                                          child: SettingBox(
+                                                                              fontSize: 12,
+                                                                              name: "Expert Chat"));
+                                                                    }),
+                                                                    Consumer<SubscriptionProvider>(builder:
+                                                                        (context,
+                                                                            subdata,
+                                                                            child) {
+                                                                      return InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            if (subdata.subscriptionData.length ==
+                                                                                0) {
+                                                                              subdata.getdata();
+                                                                              return BottomSheetClass().showsub(context);
+                                                                            } else {
+                                                                              return BottomSheetClass().showsub(context);
+                                                                            }
+                                                                          },
+                                                                          child: SettingBox(
+                                                                              fontSize: 12,
+                                                                              name: "Subscription"));
+                                                                    }),
+                                                                    InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          showsub(
+                                                                              context);
+                                                                        },
+                                                                        child: SettingBox(
+                                                                            fontSize:
+                                                                                12,
+                                                                            name:
+                                                                                "About")),
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        showAlertDialog(
+                                                                            context);
+                                                                      },
+                                                                      child:
+                                                                          SettingBox(
+                                                                        fontSize:
+                                                                            12,
+                                                                        name:
+                                                                            "Log out",
+                                                                        activeIcon:
+                                                                            true,
+                                                                      ),
+                                                                    ),
+                                                                  ]))
+                                                        ]),
+                                                  ]))
+                                        ],
+                                      )
+                                    ]),
+                              )));
             })));
   }
 

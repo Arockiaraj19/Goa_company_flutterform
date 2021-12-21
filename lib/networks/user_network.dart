@@ -8,6 +8,7 @@ import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 import 'client/apiClient.dart';
 import 'client/api_list.dart';
@@ -238,8 +239,9 @@ class UserNetwork {
         List<Responses> finaldata = results
             .map((hobbieData) => Responses.fromJson(hobbieData))
             .toList(growable: false);
-        return Routes.sailor(Routes.detailPage,
-            params: {"userDetails": finaldata[0]});
+
+        return Modular.to.pushNamed(Navigate.detailPage,
+            arguments: {"userDetails": finaldata[0]});
       });
 
       return data;

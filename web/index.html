@@ -30,6 +30,13 @@
         content="836397981022-vf5vtia8ab01md7mhk6akes2suvtg5b6.apps.googleusercontent.com">
 </head>
 <body>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+       navigator.serviceWorker.register("/firebase-messaging-sw.js");
+     });
+    }
+   </script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>

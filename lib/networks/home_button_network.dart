@@ -4,6 +4,7 @@ import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 import 'client/apiClient.dart';
 import 'client/api_list.dart';
@@ -25,7 +26,7 @@ class HomeButtonNetwork {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 
@@ -53,8 +54,9 @@ class HomeButtonNetwork {
             showtoast(response.data["msg"]);
             final userdata = new Map<String, dynamic>.from(response.data);
             MatchUser matchdata = MatchUser.fromMap(userdata);
-            Routes.sailor(Routes.perfectMatchPage,
-                params: {"user1": userData, "user2": matchdata});
+            Modular.to.pushNamed(Navigate.perfectMatchPage,
+                arguments: {"user1": userData, "user2": matchdata});
+           
             return true;
           }
         }

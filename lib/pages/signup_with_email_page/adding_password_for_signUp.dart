@@ -126,7 +126,8 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
     try {
       var result = await ForgetPassword().forgetResetPassword(
           widget.otpdata.otp_id, widget.otpdata.user_id, _password1Ctrl.text);
-      Routes.sailor(Routes.success);
+      NavigateFunction().withquery(Navigate.success);
+    
     } catch (e) {
       setState(() {
         loading = false;

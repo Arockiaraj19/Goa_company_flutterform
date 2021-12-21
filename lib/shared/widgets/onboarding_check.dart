@@ -3,20 +3,23 @@ import '../../routes.dart';
 
 onboardingCheck(UserModel userData) {
   if (userData.firstName == null) {
-    Routes.sailor(Routes.createProfilePage, params: {"userData": userData});
+    NavigateFunction()
+        .withoutquery(Navigate.createProfilePage, {"userData": userData});
   } else if (userData.interests.length == 0 || userData.hobbies.length == 0) {
-    Routes.sailor(Routes.interestHobbiesPage);
+    NavigateFunction().withquery(Navigate.interestHobbiesPage);
   } else if (userData.identificationImage == null) {
-    Routes.sailor(Routes.addProfilePicPage);
+    NavigateFunction().withquery(Navigate.addProfilePicPage);
   } else if (userData.profileImage.length == 0) {
     // Routes.sailor(Routes.addProfilePicPage);
-    Routes.sailor(Routes.addAlbumPage);
+
+    NavigateFunction().withquery(Navigate.addAlbumPage);
   } else if (userData.sexualOrientation == null) {
-    Routes.sailor(Routes.lookingForPage);
+    NavigateFunction().withquery(Navigate.lookingForPage);
   } else if (userData.partnerType == null ||
       userData.verificationImage == null) {
-    Routes.sailor(Routes.partnerTypePage, params: {"userData": userData});
+    NavigateFunction()
+        .withoutquery(Navigate.partnerTypePage, {"userData": userData});
   } else {
-    Routes.sailor(Routes.findMatchPage);
+    NavigateFunction().withquery(Navigate.findMatchPage);
   }
 }

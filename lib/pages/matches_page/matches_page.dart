@@ -109,7 +109,8 @@ class _MatchesPageState extends State<MatchesPage>
                         child: MatchesCardList(
                       onWeb: onWeb,
                     )),
-                    Container(child: BlindsCardList(
+                    Container(
+                        child: BlindsCardList(
                       onWeb: onWeb,
                     )),
                   ]),
@@ -121,7 +122,7 @@ class _MatchesPageState extends State<MatchesPage>
   }
 
   goToChattingPage() {
-    Routes.sailor(Routes.chattingPage);
+    NavigateFunction().withquery(Navigate.chattingPage);
   }
 
   Widget _buildWeb() {
@@ -131,7 +132,7 @@ class _MatchesPageState extends State<MatchesPage>
     return Scaffold(
       body: BaseLayout(
           navigationRail: NavigationMenu(
-            currentTabIndex: 2,
+            currentTabIndex: 3,
           ),
           body: Container(
               color: Colors.grey[200],

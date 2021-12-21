@@ -108,9 +108,9 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
                       borderRadius: BorderRadius.circular(20.sp),
                       fontWeight: FontWeight.w500,
                       onPressed: () async {
-                        Routes.sailor(
-                          Routes.signUpPage,
-                        );
+                          NavigateFunction()
+        .withquery(Navigate.signUpPage);
+                      
                         // var dto = {"password": "123456", "email": "asd@mail.com"};
                         // _authStore.onLogin(dto);
                       },
@@ -120,7 +120,8 @@ class _OnboardingSwiperState extends State<OnboardingSwiper> {
                     right: 70.w,
                     child: InkWell(
                         onTap: () {
-                          Routes.sailor(Routes.signUpPage);
+                           NavigateFunction()
+        .withquery(Navigate.signUpPage);
                         },
                         child: Text('Skip', style: _textStyleForSikp))),
           ]);

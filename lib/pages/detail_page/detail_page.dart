@@ -494,6 +494,6 @@ class _DetailPageState extends State<DetailPage> {
 class Conatiner {}
 
 goToChatPage(groupid, id, image, name) {
-  Routes.sailor(Routes.chattingPage,
-      params: {"groupid": groupid, "id": id, "image": image, "name": name});
+  // Routes.sailor(Routes.chattingPage,
+  //     params: {"groupid": groupid, "id": id, "image": image, "name": name});
 }

@@ -150,12 +150,8 @@ class _OtpPageState extends State<OtpPage> {
       ResponseSubmitOtp result = await network.forgetSubmitOtp(
           _otpController.text, widget.otpData.value, widget.otpData.id);
       showtoast(result.msg.toString());
-
-      Routes.sailor(Routes.addingPasswordPage, params: {
-        "email": widget.otpData.value,
-        "otpdata": result,
-        "isforget": true
-      });
+      NavigateFunction().withoutquery(Navigate.addingPasswordPage,
+          {"email": widget.otpData.value, "otpdata": result, "isforget": true});
     } catch (e) {
       offLoading();
     }
@@ -185,9 +181,9 @@ class _OtpPageState extends State<OtpPage> {
               widget.otpData.value, _otpController.text);
           showtoast(result.msg.toString());
           result.statusDetails == 2
-              ? Routes.sailor(Routes.addingPasswordPage,
-                  params: {"email": widget.otpData.value, "isforget": false})
-              : Routes.sailor(Routes.loginPage);
+              ? NavigateFunction().withoutquery(Navigate.addingPasswordPage,
+                  {"email": widget.otpData.value, "isforget": false})
+              : NavigateFunction().withquery(Navigate.loginPage);
         } catch (e) {
           offLoading();
         }

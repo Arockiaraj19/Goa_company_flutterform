@@ -33,11 +33,11 @@ class _SplashScreenState extends State<SplashScreen> {
     var val = await getLoginStatus();
 
     if (val == 1 || kIsWeb) {
-      Routes.sailor(Routes.loginPage);
+      NavigateFunction().withquery(Navigate.loginPage);
     } else if (val == 2) {
-      Routes.sailor(Routes.findMatchPage);
+      NavigateFunction().withquery(Navigate.findMatchPage);
     } else {
-      Routes.sailor(Routes.onboardingPage);
+      NavigateFunction().withquery(Navigate.onboardingPage);
     }
   }
 

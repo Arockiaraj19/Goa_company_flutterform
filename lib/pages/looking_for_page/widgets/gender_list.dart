@@ -68,6 +68,8 @@ class _GenderListState extends State<GenderList> {
   }
 
   goToFindMatchPage() {
-    Routes.sailor(Routes.findMatchPage);
+      NavigateFunction()
+        .withquery(Navigate.findMatchPage);
+   
   }
 }

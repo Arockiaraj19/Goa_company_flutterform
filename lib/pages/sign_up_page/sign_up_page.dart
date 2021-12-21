@@ -206,15 +206,16 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   goToLoginPage() {
-    Routes.sailor(Routes.loginPage);
+    NavigateFunction().withquery(Navigate.loginPage);
   }
 
   goToSignUpWithMobile() {
-    Routes.sailor(Routes.signUpWithMobilePage);
+    NavigateFunction().withquery(Navigate.signUpWithMobilePage);
   }
 
   goToSignUpWithEmail() {
-    Routes.sailor(Routes.signUpWithEmailPage, params: {"isforget": false});
+    NavigateFunction()
+        .withquery(Navigate.signUpWithEmailPage + "?isforget=false");
   }
 
   Widget _buildWeb() {

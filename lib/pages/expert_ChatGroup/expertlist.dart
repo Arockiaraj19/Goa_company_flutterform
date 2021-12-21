@@ -28,14 +28,8 @@ class _ExpertCardState extends State<ExpertCard> {
   goToChatPage() async {
     String groupId = await ExpertNetwork()
         .createGroup(widget.data.id, context.read<HomeProvider>().userData);
-    Routes.sailor(Routes.expertchat, params: {
-      "groupid": groupId,
-      "id": widget.data.id,
-      "name": widget.data.firstname,
-      "status": widget.data.onlinestatus,
-      "image": widget.data.profileImage,
-      "onWeb": widget.onWeb,
-    });
+    NavigateFunction().withquery(Navigate.expertchat +
+        "?groupid=$groupId&id=${widget.data.id}&name=${widget.data.firstname}&status=${widget.data.onlinestatus}&image=${widget.data.profileImage}&onWeb=${widget.onWeb}");
   }
 
   String userid;

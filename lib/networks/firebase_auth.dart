@@ -5,6 +5,7 @@ import 'package:dating_app/shared/widgets/onboarding_check.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import '../routes.dart';
 import 'signup_network.dart';
 import 'user_network.dart';
@@ -23,8 +24,8 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp,
         "isMob": true,
         "isSignUp": isSignUp
       });
-      Routes.sailor(Routes.otpPage,
-          params: {"otpData": data, "isforget": false});
+      Modular.to.pushNamed(Navigate.otpPage,
+          arguments: {"otpData": data, "isforget": false});
     }).catchError((exception) {
       showtoast(exception.toString());
       callback(exception.toString());
@@ -59,8 +60,8 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp,
                 "isMob": true,
                 "isSignUp": isSignUp
               });
-              Routes.sailor(Routes.otpPage,
-                  params: {"otpData": data, "isforget": false});
+              Modular.to.pushNamed(Navigate.otpPage,
+                  arguments: {"otpData": data, "isforget": false});
             },
             codeAutoRetrievalTimeout: (String verificationId) {
               verificationId = verificationId;

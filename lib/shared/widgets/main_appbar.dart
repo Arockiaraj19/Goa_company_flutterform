@@ -37,7 +37,7 @@ class _MainAppBarState extends State<MainAppBar> {
                 builder: (context, data, child) {
                   return InkWell(
                     onTap: () {
-                      Routes.sailor(Routes.notification);
+                      NavigateFunction().withquery(Navigate.notification);
                     },
                     child: Stack(
                       children: [

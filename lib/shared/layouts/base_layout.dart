@@ -1,4 +1,6 @@
+import 'package:dating_app/providers/home_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/src/presenter/widgets/modular_app.dart';
 
 class BaseLayout extends StatefulWidget {
   BaseLayout({Key key, this.navigationRail, this.body}) : super(key: key);
@@ -10,6 +12,8 @@ class BaseLayout extends StatefulWidget {
 }
 
 class _BaseLayoutState extends State<BaseLayout> {
+ 
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

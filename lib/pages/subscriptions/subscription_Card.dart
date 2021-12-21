@@ -288,7 +288,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                               InkWell(
                                 onTap: () async {
                                   if (widget.onboard) {
-                                    Routes.sailor(Routes.findMatchPage);
+                                     NavigateFunction().withquery(Navigate.findMatchPage);
+                                 
                                   } else {
                                     Navigator.pop(context);
                                   }
@@ -329,7 +330,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                         widget.data.durationType,
                                         widget.data.coins,
                                         widget.data.subscriptionType);
-                                    Routes.sailor(Routes.findMatchPage);
+                                        NavigateFunction().withquery(Navigate.findMatchPage);
+                                 
                                   } else {
                                     openCheckout(data.userData);
                                   }

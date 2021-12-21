@@ -109,8 +109,8 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
         "isMob": false,
         "isSignUp": true
       });
-      Routes.sailor(Routes.otpPage,
-          params: {"otpData": data, "isforget": true});
+      NavigateFunction()
+          .withoutquery(Navigate.otpPage, {"otpData": data, "isforget": true});
     } catch (e) {
       setState(() {
         loading = false;
@@ -129,12 +129,12 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
       OtpModel data = OtpModel.fromJson(
           {"value": _emailCtrl.text, "isMob": false, "isSignUp": true});
       result.statusDetails == 1
-          ? Routes.sailor(Routes.otpPage,
-              params: {"otpData": data, "isforget": false})
+          ? NavigateFunction().withoutquery(
+              Navigate.otpPage, {"otpData": data, "isforget": false})
           : result.statusDetails == 2
-              ? Routes.sailor(Routes.addingPasswordPage,
-                  params: {"email": _emailCtrl.text, "isforget": false})
-              : Routes.sailor(Routes.loginPage);
+              ? NavigateFunction().withoutquery(Navigate.addingPasswordPage,
+                  {"email": _emailCtrl.text, "isforget": false})
+              : NavigateFunction().withquery(Navigate.loginPage);
     } catch (e) {
       setState(() {
         loading = false;

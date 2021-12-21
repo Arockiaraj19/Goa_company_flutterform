@@ -379,7 +379,8 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                   Navigator.pop(context);
                                 } else {
                                   int score = await Games().getscrore(playid);
-                                  Routes.sailor(Routes.quizSucessPage, params: {
+                                  NavigateFunction()
+                                      .withoutquery(Navigate.quizSucessPage, {
                                     "user1image": widget.user1,
                                     "user2image": widget.user2,
                                     "user1name": widget.user1name,
@@ -452,9 +453,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
   }
 
   goToQuizgamePage() {
-    Routes.sailor(
-      Routes.quizSucessPage,
-    );
+    NavigateFunction().withquery(Navigate.quizSucessPage);
   }
 
   showAlertDialog(BuildContext context) {

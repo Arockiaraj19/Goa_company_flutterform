@@ -185,11 +185,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   goToSignUpPage() {
-    Routes.sailor(Routes.signUpPage);
+    NavigateFunction().withquery(Navigate.signUpPage);
   }
 
   goToLoginWithMobile({String name}) {
-    Routes.sailor(Routes.loginWith, params: {"name": name});
+    NavigateFunction().withquery(Navigate.loginWith + "?name=$name");
   }
 
   Widget _buildWeb() {

@@ -285,11 +285,12 @@ class _ImageSwiperState extends State<ImageSwiper> {
   }
 
   goToDetailPage(Responses userDetails) {
-    Routes.sailor(Routes.detailPage, params: {"userDetails": userDetails});
+    NavigateFunction()
+        .withoutquery(Navigate.detailPage, {"userDetails": userDetails});
   }
 
   goToChatPage(groupid, id, image, name) {
-    Routes.sailor(Routes.chattingPage,
-        params: {"groupid": groupid, "id": id, "image": image, "name": name});
+    NavigateFunction().withquery(Navigate.chattingPage +
+        "?groupid=$groupid&id=$id&image=$image&name=$name&onWeb=true");
   }
 }

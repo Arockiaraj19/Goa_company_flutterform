@@ -322,7 +322,9 @@ class _LoginWithState extends State<LoginWith> {
   }
 
   goToforgetEmail() {
-    Routes.sailor(Routes.signUpWithEmailPage, params: {"isforget": true});
+    NavigateFunction()
+        .withquery(Navigate.signUpWithEmailPage + "?isforget=true");
+  
   }
 
   goToFindMatchPage() async {

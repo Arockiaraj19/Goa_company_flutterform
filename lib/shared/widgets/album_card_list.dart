@@ -27,7 +27,8 @@ class AlbumCardList extends StatefulWidget {
 
 class _AlbumCardListState extends State<AlbumCardList> {
   gotoalbumpage(List<String> images) {
-    Routes.sailor(Routes.albumview, params: {"galleryItems": images});
+    NavigateFunction().withoutquery(Navigate.albumview,{"galleryItems": images});
+   
   }
 
   @override

@@ -11,11 +11,12 @@ import 'package:dating_app/providers/ref_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
-import 'package:device_preview/device_preview.dart';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +63,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Routes.createRoutes();
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
     statusBarIconBrightness: Brightness.light,
@@ -91,71 +92,66 @@ Future<void> main() async {
       onSelectNotification: onselectnotication);
   // await MobileAds.instance.initialize();
 
-  runApp(
-    DevicePreview(
-      enabled: false,
-      builder: (context) => MyApp(), // Wrap your app
-    ),
-  );
+  runApp(ModularApp(module: Navigate(), child: MyApp()));
 }
 
 onselectnotication(String payload) async {
-  var data = json.decode(payload);
-  print(data);
-  if (data["type"] == "1") {
-    print("page 1");
-    Routes.sailor(
-      Routes.chattingPage,
-      params: {
-        "groupid": data["group_id"],
-        "id": data["sender_id"],
-        "image": data["identification_image"],
-        "name": data["first_name"]
-      },
-    );
-  } else if (data["type"] == "2") {
-    print("second step kku varuthaa");
-    print(data);
-    print(json.decode(data["questions"]));
-    print(data["user2_identification_image"]);
-    print(data["user1_identification_image"]);
-    print(data["user2_first_name"]);
-    print(data["user1_first_name"]);
-    final finaldata = List.from(json.decode(data["questions"]));
-    List<Getquestion> result = await finaldata
-        .map((codeData) => Getquestion.fromMap(codeData))
-        .toList(growable: false);
-    print(result);
-    Routes.sailor(Routes.quizGamePage, params: {
-      "questions": result,
-      "playid": data["play_id"],
-      "user1": data["user2_identification_image"],
-      "user2": data["user1_identification_image"],
-      "istrue": false,
-      "user1name": data["user2_first_name"],
-      "user2name": data["user1_first_name"],
-    });
-  } else if (data["type"] == "4") {
-    print("four th step kku varuthaa");
-    print(data);
-    Routes.sailor(Routes.expertchat, params: {
-      "groupid": data["group_id"],
-      "id": data["sender_id"],
-      "name": data["first_name"],
-      "status": int.parse(data["online_status"]),
-      "image": List<String>.from([data["identification_image"].toString()]),
-    });
-  } else {
-    print("third scenario");
-    Routes.sailor(Routes.quizSucessPage, params: {
-      "user1image": data["user2_identification_image"] as String,
-      "user2image": data["user1_identification_image"] as String,
-      "user1name": data["user2_first_name"] as String,
-      "user2name": data["user1_first_name"] as String,
-      "score": int.parse(data["score"]),
-      "length": int.parse(data["questions"]),
-    });
-  }
+  // var data = json.decode(payload);
+  // print(data);
+  // if (data["type"] == "1") {
+  //   print("page 1");
+  //   Routes.sailor(
+  //     Routes.chattingPage,
+  //     params: {
+  //       "groupid": data["group_id"],
+  //       "id": data["sender_id"],
+  //       "image": data["identification_image"],
+  //       "name": data["first_name"]
+  //     },
+  //   );
+  // } else if (data["type"] == "2") {
+  //   print("second step kku varuthaa");
+  //   print(data);
+  //   print(json.decode(data["questions"]));
+  //   print(data["user2_identification_image"]);
+  //   print(data["user1_identification_image"]);
+  //   print(data["user2_first_name"]);
+  //   print(data["user1_first_name"]);
+  //   final finaldata = List.from(json.decode(data["questions"]));
+  //   List<Getquestion> result = await finaldata
+  //       .map((codeData) => Getquestion.fromMap(codeData))
+  //       .toList(growable: false);
+  //   print(result);
+  //   Routes.sailor(Routes.quizGamePage, params: {
+  //     "questions": result,
+  //     "playid": data["play_id"],
+  //     "user1": data["user2_identification_image"],
+  //     "user2": data["user1_identification_image"],
+  //     "istrue": false,
+  //     "user1name": data["user2_first_name"],
+  //     "user2name": data["user1_first_name"],
+  //   });
+  // } else if (data["type"] == "4") {
+  //   print("four th step kku varuthaa");
+  //   print(data);
+  //   Routes.sailor(Routes.expertchat, params: {
+  //     "groupid": data["group_id"],
+  //     "id": data["sender_id"],
+  //     "name": data["first_name"],
+  //     "status": int.parse(data["online_status"]),
+  //     "image": List<String>.from([data["identification_image"].toString()]),
+  //   });
+  // } else {
+  //   print("third scenario");
+  //   Routes.sailor(Routes.quizSucessPage, params: {
+  //     "user1image": data["user2_identification_image"] as String,
+  //     "user2image": data["user1_identification_image"] as String,
+  //     "user1name": data["user2_first_name"] as String,
+  //     "user2name": data["user1_first_name"] as String,
+  //     "score": int.parse(data["score"]),
+  //     "length": int.parse(data["questions"]),
+  //   });
+  // }
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -167,7 +163,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _initialRoute = Routes.splashScreen;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -321,9 +316,7 @@ class _MyAppState extends State<MyApp> {
                   // builder: DevicePreview.appBuilder, // Add the builder here
                   builder: BotToastInit(),
                   navigatorObservers: [BotToastNavigatorObserver()],
-                  navigatorKey: Routes.sailor.navigatorKey,
-                  onGenerateRoute: Routes.sailor.generator(),
-                  initialRoute: _initialRoute,
+
                   theme: ThemeData(
                       scaffoldBackgroundColor: Colors.white,
                       fontFamily: 'Nunito',
@@ -335,6 +328,6 @@ class _MyAppState extends State<MyApp> {
                         iconTheme:
                             IconThemeData(color: Colors.white, size: 100),
                       )),
-                )));
+                ).modular()));
   }
 }
