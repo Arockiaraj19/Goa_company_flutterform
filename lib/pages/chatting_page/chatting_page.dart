@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chatmessage_model.dart';
@@ -37,7 +38,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 // import 'package:web_socket_channel/io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -558,8 +559,14 @@ class _ChattingPageState extends State<ChattingPage> {
                                                                       .start,
                                                               children: [
                                                                 CachedNetworkImage(
-                                                                  height: 200.h,
-                                                                  width: 500.w,
+                                                                  height: widget
+                                                                          .onWeb
+                                                                      ? 250
+                                                                      : 200.h,
+                                                                  width: widget
+                                                                          .onWeb
+                                                                      ? 125
+                                                                      : 500.w,
                                                                   imageUrl: element
                                                                       .images[0],
                                                                   fit: BoxFit
@@ -587,8 +594,10 @@ class _ChattingPageState extends State<ChattingPage> {
                                                                             .white
                                                                         : MainTheme
                                                                             .chatPageColor,
-                                                                    fontSize:
-                                                                        25.sp,
+                                                                    fontSize: widget
+                                                                            .onWeb
+                                                                        ? 10
+                                                                        : 25.sp,
                                                                   ),
                                                                 ),
                                                               ],
@@ -668,18 +677,27 @@ class _ChattingPageState extends State<ChattingPage> {
   }
 
   XFile selectedUserAvatar;
-
+  Uint8List selectedWebAvatar;
   void selectUserImage() async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return ImageUploadAlert(
-            onImagePicked: (XFile imageData) {
-              setState(() {
-                selectedUserAvatar = imageData;
-              });
-              showPopup();
-            },
+            onImagePicked: !kIsWeb
+                ? (XFile imageData) {
+                    setState(() {
+                      selectedUserAvatar = imageData;
+                    });
+                    showPopup();
+                  }
+                : (Uint8List imageData) {
+                    setState(() {
+                      selectedWebAvatar = imageData;
+                      print("bytes inga varuthaa");
+                    });
+
+                    showPopup();
+                  },
           );
         });
   }
@@ -703,7 +721,11 @@ class _ChattingPageState extends State<ChattingPage> {
                     Container(
                         width: double.infinity,
                         height: 300.h,
-                        child: Image.file(File(selectedUserAvatar.path))),
+                        child: !kIsWeb
+                            ? Image.file(File(selectedUserAvatar.path))
+                            : Image.memory(
+                                selectedWebAvatar,
+                              )),
                     SizedBox(
                       height: 5.h,
                     ),
@@ -720,7 +742,7 @@ class _ChattingPageState extends State<ChattingPage> {
                                       setSState(() {
                                         loading = true;
                                       });
-                                      goToAlbumPage(selectedUserAvatar);
+                                      goToAlbumPage();
                                     },
                                     child: Container(
                                       height: 150.r,
@@ -764,10 +786,8 @@ class _ChattingPageState extends State<ChattingPage> {
             }));
   }
 
-  goToAlbumPage(XFile image) async {
-    List<int> imageBytes = File(image.path).readAsBytesSync();
-
-    String base64Image = base64Encode(imageBytes);
+  goToAlbumPage() async {
+    String base64Image = base64Encode(selectedWebAvatar);
     try {
       ImageCheckModel resultsafe = await ImageCheckNetwork().check(base64Image);
       if (resultsafe.safe < resultsafe.unsafe) {
@@ -781,14 +801,16 @@ class _ChattingPageState extends State<ChattingPage> {
     } on DioError catch (e) {
       return showtoast(DioException.fromDioError(e).toString());
     }
-    var network = UploadImage();
+    var network = UploadImageWeb();
 
-    String result = await network.uploadImage(image.path, "user_chat_images");
+    String result =
+        await network.uploadImage(selectedWebAvatar, "user_chat_images");
     print("image result correct a varuthaaaa");
     print(result);
     List<String> images = [];
     images.add(result);
     _sentmessage(images);
+    selectedWebAvatar = null;
     Navigator.pop(context);
   }
 }

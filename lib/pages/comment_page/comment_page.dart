@@ -8,6 +8,7 @@ import 'package:dating_app/pages/comment_page/widgets/massage_card_list.dart';
 
 import 'package:dating_app/pages/comment_page/widgets/request_card_list.dart';
 import 'package:dating_app/providers/chat_provider.dart';
+import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dating_app/shared/layouts/base_layout.dart';
@@ -40,6 +41,9 @@ class _CommentPageState extends State<CommentPage>
     getId();
     _tabController = TabController(length: 3, vsync: this);
     print("init socket state");
+    if (context.read<HomeProvider>().userData == null) {
+      context.read<HomeProvider>().getData();
+    }
   }
 
   getId() async {
@@ -50,7 +54,7 @@ class _CommentPageState extends State<CommentPage>
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone();
       } else {
         return _buildWeb();

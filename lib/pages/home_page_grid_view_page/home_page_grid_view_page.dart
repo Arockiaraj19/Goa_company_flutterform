@@ -21,7 +21,7 @@ class _HomePageGridViewPageState extends State<HomePageGridViewPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -33,13 +33,12 @@ class _HomePageGridViewPageState extends State<HomePageGridViewPage> {
     return Scaffold(
         backgroundColor: Colors.grey.shade50,
         body: Container(
-        padding: EdgeInsets.all(5),
-        width: MediaQuery.of(context).size.width,
-        height:
-            MediaQuery.of(context).size.height - (kToolbarHeight + 125),
-        child: HomePageGridViewList(
-          usersData: widget.usersData,
-        )));
+            padding: EdgeInsets.all(5),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - (kToolbarHeight + 125),
+            child: HomePageGridViewList(
+              usersData: widget.usersData,
+            )));
   }
 
   Widget _buildWeb() {

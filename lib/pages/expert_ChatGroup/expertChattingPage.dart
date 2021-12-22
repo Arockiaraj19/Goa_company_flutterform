@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dating_app/models/chatmessage_model.dart';
@@ -37,6 +38,7 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 // import 'package:web_socket_channel/io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:web_socket_channel/status.dart' as status;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ExpertChattingPage extends StatefulWidget {
   final String groupid;
@@ -147,7 +149,7 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone(context);
       } else {
         return _buildWeb(context);
@@ -424,8 +426,14 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                                                   .start,
                                                           children: [
                                                             CachedNetworkImage(
-                                                              height: 200.h,
-                                                              width: 500.w,
+                                                              height:
+                                                                  widget.onWeb
+                                                                      ? 250
+                                                                      : 200.h,
+                                                              width:
+                                                                  widget.onWeb
+                                                                      ? 125
+                                                                      : 500.w,
                                                               imageUrl: element
                                                                   .images[0],
                                                               fit: BoxFit.fill,
@@ -447,7 +455,10 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                                                         .white
                                                                     : MainTheme
                                                                         .chatPageColor,
-                                                                fontSize: 25.sp,
+                                                                fontSize:
+                                                                    widget.onWeb
+                                                                        ? 10
+                                                                        : 25.sp,
                                                               ),
                                                             ),
                                                           ],
@@ -528,18 +539,28 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
   }
 
   XFile selectedUserAvatar;
+  Uint8List selectedWebAvatar;
 
   void selectUserImage() async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return ImageUploadAlert(
-            onImagePicked: (XFile imageData) {
-              setState(() {
-                selectedUserAvatar = imageData;
-              });
-              showPopup();
-            },
+            onImagePicked: !kIsWeb
+                ? (XFile imageData) {
+                    setState(() {
+                      selectedUserAvatar = imageData;
+                    });
+                    showPopup();
+                  }
+                : (Uint8List imageData) {
+                    setState(() {
+                      selectedWebAvatar = imageData;
+                      print("bytes inga varuthaa");
+                    });
+
+                    showPopup();
+                  },
           );
         });
   }
@@ -563,7 +584,11 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                     Container(
                         width: double.infinity,
                         height: 300.h,
-                        child: Image.file(File(selectedUserAvatar.path))),
+                        child: !kIsWeb
+                            ? Image.file(File(selectedUserAvatar.path))
+                            : Image.memory(
+                                selectedWebAvatar,
+                              )),
                     SizedBox(
                       height: 5.h,
                     ),
@@ -580,7 +605,7 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                                       setSState(() {
                                         loading = true;
                                       });
-                                      goToAlbumPage(selectedUserAvatar);
+                                      goToAlbumPage();
                                     },
                                     child: Container(
                                       height: 150.r,
@@ -624,15 +649,17 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
             }));
   }
 
-  goToAlbumPage(XFile image) async {
-    var network = UploadImage();
+  goToAlbumPage() async {
+    var network = UploadImageWeb();
 
-    String result = await network.uploadImage(image.path, "user_chat_images");
+    String result =
+        await network.uploadImage(selectedWebAvatar, "user_chat_images");
     print("image result correct a varuthaaaa");
     print(result);
     List<String> images = [];
     images.add(result);
     _sentmessage(images);
+    selectedUserAvatar = null;
     Navigator.pop(context);
   }
 }

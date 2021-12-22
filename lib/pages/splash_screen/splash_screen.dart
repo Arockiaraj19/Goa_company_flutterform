@@ -43,6 +43,43 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth < 769) {
+        return phone();
+      } else {
+        return Scaffold(
+            body: Center(
+                child: SizedBox(
+          width: double.infinity,
+          child: TextLiquidFill(
+            boxHeight: 200.h,
+            boxWidth: double.infinity,
+            text: 'SPARKS', loadDuration: Duration(seconds: 2),
+            textAlign: TextAlign.center,
+            waveColor: MainTheme.primaryColor,
+            boxBackgroundColor: Colors.white,
+            textStyle: TextStyle(
+              fontSize: 150.sp,
+              fontWeight: FontWeight.w900,
+            ),
+            // boxHeight: 300.0,
+          ),
+        )
+                //     Text("SPARKS",
+                //       style: new TextStyle(
+                //           fontSize: 60.0,
+                //           fontWeight: FontWeight.bold,
+                //           foreground: Paint()..shader = MainTheme.loginBtnGradient.
+                // createShader((Rect.fromLTWH(0.0, 0.0, 200.0, 70.0))),
+                //     ),
+                //   ),
+                ));
+      }
+    });
+  }
+
+  Scaffold phone() {
     return Scaffold(
         body: Center(
             child: SizedBox(

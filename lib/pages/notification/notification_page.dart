@@ -8,12 +8,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class Notification extends StatefulWidget {
+class NotificationPage extends StatefulWidget {
   @override
   _NotificationState createState() => _NotificationState();
 }
 
-class _NotificationState extends State<Notification> {
+class _NotificationState extends State<NotificationPage> {
   List<String> deleteId = [];
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class _NotificationState extends State<Notification> {
                                     ),
                                   if (deleteId.length == 0)
                                     Text(
-                                      "Notification",
+                                      "NotificationPage",
                                       style: TextStyle(
                                           color: Color(0xff1A1F36),
                                           fontSize: 45.sp,

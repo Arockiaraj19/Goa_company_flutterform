@@ -113,8 +113,7 @@ class Navigate extends Module {
         ChildRoute(matchPage, child: (_, args) => MatchesPage()),
         ChildRoute(signUpWithEmailPage,
             child: (_, args) => SignUpWithEmailPage(
-                  isforget:
-                      args.queryParams["isforget"] == "false" ? false : true,
+                  isforget: args.queryParams["isforget"] == "true",
                 )),
         ChildRoute(signUpWithMobilePage,
             child: (_, args) => SignUpWithMobilePage()),
@@ -134,7 +133,7 @@ class Navigate extends Module {
                   swiperIndex: args.queryParams["swiperIndex"] == null
                       ? null
                       : int.parse(args.queryParams["swiperIndex"]),
-                  onboard: args.queryParams["onboard"] == "true" ? true : false,
+                  onboard: args.queryParams["onboard"] == "true",
                 )),
         ChildRoute(payment, child: (_, args) => PaymentPage()),
         ChildRoute(imagecheck, child: (_, args) => Imagecheck()),
@@ -143,7 +142,7 @@ class Navigate extends Module {
             child: (_, args) => AlbumView(
                   galleryItems: args.data["galleryItems"],
                 )),
-        ChildRoute(notification, child: (_, args) => Notification()),
+        ChildRoute(notification, child: (_, args) => NotificationPage()),
         ChildRoute(aboutus, child: (_, args) => AboutUs()),
         ChildRoute(expertGroup, child: (_, args) => ExpertGroup()),
         ChildRoute(editProfilePage,
@@ -151,7 +150,7 @@ class Navigate extends Module {
                 EditProfilePage(userdata: args.data["userDetails"])),
         ChildRoute(partnerTypePage,
             child: (_, args) =>
-                PartnerTypePage(userData: args.data["userDetail"])),
+                PartnerTypePage(userData: args.data["userData"])),
         ChildRoute(createProfilePage,
             child: (_, args) =>
                 CreateProfilePage(userData: args.data["userData"])),

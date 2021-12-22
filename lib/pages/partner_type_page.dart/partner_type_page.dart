@@ -63,7 +63,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone(false);
       } else {
         return _buildWeb();
@@ -166,33 +166,39 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
                   itemCount: itemGender.length,
                   itemBuilder: (BuildContext context, int index) {
                     dynamic item = itemGender[index];
-                    return Container(
-                        width: onWeb
-                            ? MediaQuery.of(context).size.width / 4
-                            : null,
-                        child: PartnerCard(
-                          name: item["gender"],
-                          image: item["image"],
-                          isActive: widget.userData.partnerType == null
-                              ? item["isActive"]
-                              : widget.userData.partnerType == item["gender"]
-                                  ? true
-                                  : false,
-                          onTap: () {
-                            if (mounted) {
-                              setState(() {
-                                selectedMenuIndex = index;
-                                itemGender = itemGender
-                                    .map<Map<String, dynamic>>(
-                                        (Map<String, dynamic> item) {
-                                  item['isActive'] = false;
-                                  return item;
-                                }).toList();
-                                itemGender[index]['isActive'] = true;
-                              });
-                            }
-                          },
-                        ));
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: onWeb
+                                ? MediaQuery.of(context).size.width / 4
+                                : null,
+                            child: PartnerCard(
+                              name: item["gender"],
+                              image: item["image"],
+                              isActive: widget.userData.partnerType == null
+                                  ? item["isActive"]
+                                  : widget.userData.partnerType ==
+                                          item["gender"]
+                                      ? true
+                                      : false,
+                              onTap: () {
+                                if (mounted) {
+                                  setState(() {
+                                    selectedMenuIndex = index;
+                                    itemGender = itemGender
+                                        .map<Map<String, dynamic>>(
+                                            (Map<String, dynamic> item) {
+                                      item['isActive'] = false;
+                                      return item;
+                                    }).toList();
+                                    itemGender[index]['isActive'] = true;
+                                  });
+                                }
+                              },
+                            )),
+                      ],
+                    );
                   })),
         ])));
   }
@@ -257,7 +263,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
       }
 
       UserModel result = await network.patchUserData(userData);
-     NavigateFunction().withquery(Navigate.subscription + "?onboard=true");
+      NavigateFunction().withquery(Navigate.subscription + "?onboard=true");
     } catch (e) {
       offLoading();
     }

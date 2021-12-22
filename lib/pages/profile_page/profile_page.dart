@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:share_plus/share_plus.dart';
 import 'package:dating_app/models/like_list.dart';
 import 'package:dating_app/models/subscription_model.dart';
 import 'package:dating_app/models/user.dart';
@@ -9,6 +9,7 @@ import 'package:dating_app/networks/instagram.dart';
 import 'package:dating_app/networks/ref_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/subscription.dart';
+import 'package:dating_app/networks/topic_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/about_page/aboutUs_page.dart';
 
@@ -47,9 +48,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:sailor/sailor.dart';
-import 'package:share/share.dart';
 
 import '../../routes.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -152,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -667,8 +668,14 @@ class _ProfilePageState extends State<ProfilePage>
                             _isCreatingLink
                                 ? Center(child: CircularProgressIndicator())
                                 : InkWell(
-                                    onTap: () => _createDynamicLink(
-                                        data.userData.userReferralCode),
+                                    onTap: () async {
+                                      String link = await DynamcLink()
+                                          .creatLink(
+                                              data.userData.userReferralCode);
+                                      print(link);
+                                      return Share.share(link,
+                                          subject: 'Look what I made!');
+                                    },
                                     child: SettingBox(name: "Refer & Earn")),
                             Consumer<SubscriptionProvider>(
                                 builder: (context, subdata, child) {
@@ -840,44 +847,6 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Future<void> _createDynamicLink(String refId) async {
-    String _linkMessage;
-    setState(() {
-      _isCreatingLink = true;
-    });
-
-    final DynamicLinkParameters parameters = DynamicLinkParameters(
-      uriPrefix: 'https://life2sparks.page.link',
-      link: Uri.parse("https://life2sparks.page.link/ref?id=$refId"),
-      androidParameters: AndroidParameters(
-        packageName: "com.life2sparks",
-        minimumVersion: 0,
-      ),
-      dynamicLinkParametersOptions: DynamicLinkParametersOptions(
-        shortDynamicLinkPathLength: ShortDynamicLinkPathLength.short,
-      ),
-      iosParameters: IosParameters(
-        bundleId: 'com.google.FirebaseCppDynamicLinksTestApp.dev',
-        minimumVersion: '0',
-      ),
-    );
-
-    Uri url;
-    if (true) {
-      final ShortDynamicLink shortLink = await parameters.buildShortLink();
-      url = shortLink.shortUrl;
-    } else {
-      url = await parameters.buildUrl();
-    }
-
-    setState(() {
-      _linkMessage = url.toString();
-      _isCreatingLink = false;
-    });
-    print(url);
-    return Share.share(_linkMessage);
-  }
-
   goToEditProfilePagePage(UserModel userData) {
     print("user data correct a varuthaa");
     print(userData);
@@ -970,17 +939,17 @@ class _ProfilePageState extends State<ProfilePage>
                                             color: Colors.grey,
                                             // size: 20,
                                           ))),
-                                  InkWell(
-                                    onTap: () {
-                                      goToEditProfilePagePage(data.userData);
-                                    },
-                                    child: Container(
-                                        child: Text('Edit Profile',
-                                            style: TextStyle(
-                                                color: MainTheme.primaryColor,
-                                                fontSize: 14,
-                                                fontFamily: "Nunito"))),
-                                  )
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     goToEditProfilePagePage(data.userData);
+                                  //   },
+                                  //   child: Container(
+                                  //       child: Text('Edit Profile',
+                                  //           style: TextStyle(
+                                  //               color: MainTheme.primaryColor,
+                                  //               fontSize: 14,
+                                  //               fontFamily: "Nunito"))),
+                                  // )
                                 ],
                               ),
                               body: SingleChildScrollView(
@@ -1006,29 +975,78 @@ class _ProfilePageState extends State<ProfilePage>
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    FutureBuilder(
-                                                      future: Persentage()
-                                                          .checkPresentage(
-                                                              data.userData),
-                                                      builder:
-                                                          (BuildContext context,
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Container(
+                                                          width: 100,
+                                                        ),
+                                                        FutureBuilder(
+                                                          future: Persentage()
+                                                              .checkPresentage(
+                                                                  data.userData),
+                                                          builder: (BuildContext
+                                                                  context,
                                                               AsyncSnapshot
                                                                   snapshot) {
-                                                        if (snapshot.hasData) {
-                                                          return PercentageBar(
-                                                            image: data.userData
-                                                                .identificationImage,
-                                                            percentage:
-                                                                snapshot.data,
-                                                          );
-                                                        } else {
-                                                          return PercentageBar(
-                                                            image: data.userData
-                                                                .identificationImage,
-                                                            percentage: 0,
-                                                          );
-                                                        }
-                                                      },
+                                                            if (snapshot
+                                                                .hasData) {
+                                                              return PercentageBar(
+                                                                image: data
+                                                                    .userData
+                                                                    .identificationImage,
+                                                                percentage:
+                                                                    snapshot
+                                                                        .data,
+                                                              );
+                                                            } else {
+                                                              return PercentageBar(
+                                                                image: data
+                                                                    .userData
+                                                                    .identificationImage,
+                                                                percentage: 0,
+                                                              );
+                                                            }
+                                                          },
+                                                        ),
+                                                        InkWell(
+                                                            onTap: () {
+                                                              goToEditProfilePagePage(
+                                                                  data.userData);
+                                                            },
+                                                            child: Container(
+                                                                padding: EdgeInsetsDirectional
+                                                                    .only(
+                                                                        start:
+                                                                            20,
+                                                                        end:
+                                                                            10),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Container(
+                                                                        child:
+                                                                            Icon(
+                                                                      Icons
+                                                                          .edit_outlined,
+                                                                      color: MainTheme
+                                                                          .primaryColor,
+                                                                      size: 14,
+                                                                    )),
+                                                                    Container(
+                                                                        child: Text(
+                                                                            'Edit Profile',
+                                                                            style: TextStyle(
+                                                                                color: MainTheme.primaryColor,
+                                                                                fontSize: 14,
+                                                                                fontFamily: "Nunito")))
+                                                                  ],
+                                                                ))),
+                                                      ],
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
@@ -1328,7 +1346,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                                   0.0,
                                                               mainAxisSpacing:
                                                                   0.0,
-                                                              crossAxisCount: 5,
+                                                              crossAxisCount: 4,
                                                               childAspectRatio:
                                                                   2.8),
                                                       itemCount: data
@@ -1381,7 +1399,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                                   0.0,
                                                               mainAxisSpacing:
                                                                   0.0,
-                                                              crossAxisCount: 5,
+                                                              crossAxisCount: 4,
                                                               childAspectRatio:
                                                                   2.8),
                                                       itemCount: data.userData
@@ -1472,9 +1490,14 @@ class _ProfilePageState extends State<ProfilePage>
                                                                             child:
                                                                                 CircularProgressIndicator())
                                                                         : InkWell(
-                                                                            onTap: () =>
-                                                                                _createDynamicLink(data.userData.userReferralCode),
-                                                                            child: SettingBox(fontSize: 12, name: "Refer & Earn")),
+                                                                            onTap:
+                                                                                () async {
+                                                                              String link = await DynamcLink().creatLink(data.userData.userReferralCode);
+                                                                              print(link);
+                                                                              return Share.share(link, subject: 'Look what I made!');
+                                                                            },
+                                                                            child:
+                                                                                SettingBox(fontSize: 12, name: "Refer & Earn")),
                                                                     Consumer<SubscriptionProvider>(builder:
                                                                         (context,
                                                                             subdata,

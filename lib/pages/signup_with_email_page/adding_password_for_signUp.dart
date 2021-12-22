@@ -37,7 +37,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone();
       } else {
         return _buildWeb();
@@ -127,7 +127,6 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
       var result = await ForgetPassword().forgetResetPassword(
           widget.otpdata.otp_id, widget.otpdata.user_id, _password1Ctrl.text);
       NavigateFunction().withquery(Navigate.success);
-    
     } catch (e) {
       setState(() {
         loading = false;
@@ -157,252 +156,261 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
 
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Enter your New Password",
-            style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-          ),
-          SizedBox(height: 12.h),
-          TextFormField(
-            controller: _password1Ctrl,
-            cursorColor: MainTheme.primaryColor,
-            textAlign: TextAlign.left,
-            keyboardType: TextInputType.emailAddress,
-            obscureText: obscureText,
-            style: TextStyle(
-                fontSize: onWeb ? inputFont : 40.sp,
-                letterSpacing: 1.0,
-                fontWeight: FontWeight.w400,
-                color: MainTheme.enterTextColor),
-            decoration: InputDecoration(
-              suffixIcon: InkWell(
-                  onTap: () {
-                    print("you clicked");
-                    setState(() {
-                      if (obscureText == false) {
-                        obscureText = true;
-                      } else {
-                        obscureText = false;
-                      }
-                    });
-                  },
-                  child: Container(
-                      margin: EdgeInsetsDirectional.only(end: 10),
-                      child: !obscureText
-                          ? Icon(
-                              Icons.remove_red_eye_outlined,
-                              color: Color(0xffC4C4C4),
-                              size: onWeb ? inputFont : 45.sp,
-                            )
-                          : Icon(
-                              Icons.visibility_off_outlined,
-                              color: Color(0xffC4C4C4),
-                              size: onWeb ? inputFont : 45.sp,
-                            ))),
-              contentPadding: onWeb
-                  ? null
-                  : EdgeInsets.only(
-                      left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
-              hintText: 'New password',
-              hintStyle: TextStyle(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: onWeb ? 40 : 0, vertical: 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Enter your New Password",
+              style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
+            ),
+            SizedBox(height: 12.h),
+            TextFormField(
+              controller: _password1Ctrl,
+              cursorColor: MainTheme.primaryColor,
+              textAlign: TextAlign.left,
+              keyboardType: TextInputType.emailAddress,
+              obscureText: obscureText,
+              style: TextStyle(
                   fontSize: onWeb ? inputFont : 40.sp,
                   letterSpacing: 1.0,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xffC4C4C4)),
-              errorStyle: TextStyle(
-                fontSize: onWeb ? inputFont : 40.sp,
-                fontWeight: FontWeight.w400,
-                color: MainTheme.primaryColor,
+                  color: MainTheme.enterTextColor),
+              decoration: InputDecoration(
+                suffixIcon: InkWell(
+                    onTap: () {
+                      print("you clicked");
+                      setState(() {
+                        if (obscureText == false) {
+                          obscureText = true;
+                        } else {
+                          obscureText = false;
+                        }
+                      });
+                    },
+                    child: Container(
+                        margin: EdgeInsetsDirectional.only(end: 10),
+                        child: !obscureText
+                            ? Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: Color(0xffC4C4C4),
+                                size: onWeb ? inputFont : 45.sp,
+                              )
+                            : Icon(
+                                Icons.visibility_off_outlined,
+                                color: Color(0xffC4C4C4),
+                                size: onWeb ? inputFont : 45.sp,
+                              ))),
+                contentPadding: onWeb
+                    ? null
+                    : EdgeInsets.only(
+                        left: 18.0.w,
+                        bottom: 12.0.h,
+                        top: 12.0.h,
+                        right: 2.0.w),
+                hintText: 'New password',
+                hintStyle: TextStyle(
+                    fontSize: onWeb ? inputFont : 40.sp,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xffC4C4C4)),
+                errorStyle: TextStyle(
+                  fontSize: onWeb ? inputFont : 40.sp,
+                  fontWeight: FontWeight.w400,
+                  color: MainTheme.primaryColor,
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MainTheme.primaryColor,
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MainTheme.primaryColor,
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Color(0xffC4C4C4),
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MainTheme.primaryColor,
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
               ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: MainTheme.primaryColor,
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: MainTheme.primaryColor,
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color(0xffC4C4C4),
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: MainTheme.primaryColor,
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
+              validator: (val) {
+                if (val.isEmpty) {
+                  return "Please enter password";
+                }
+                RegExp regex = new RegExp(passwordpattern.toString());
+                if (!regex.hasMatch(val)) {
+                  return 'Your password must be have at least 8 \ncharacters long, 1 uppercase , 1 lowercase,\n1 number & 1 special character';
+                }
+                return null;
+              },
             ),
-            validator: (val) {
-              if (val.isEmpty) {
-                return "Please enter password";
-              }
-              RegExp regex = new RegExp(passwordpattern.toString());
-              if (!regex.hasMatch(val)) {
-                return 'Your password must be have at least 8 \ncharacters long, 1 uppercase , 1 lowercase,\n1 number & 1 special character';
-              }
-              return null;
-            },
-          ),
-          SizedBox(height: 25.h),
+            SizedBox(height: 25.h),
 
-          Text(
-            "Re-enter your New Password",
-            style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
-          ),
-          SizedBox(height: 12.h),
-          TextFormField(
-            controller: _password2Ctrl,
-            cursorColor: MainTheme.primaryColor,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                fontSize: onWeb ? inputFont : 40.sp,
-                letterSpacing: 1.0,
-                fontWeight: FontWeight.w400,
-                color: MainTheme.enterTextColor),
-            keyboardType: TextInputType.emailAddress,
-            obscureText: obscureText1,
-            decoration: InputDecoration(
-              suffixIcon: InkWell(
-                  onTap: () {
-                    setState(() {
-                      if (obscureText1 == false) {
-                        obscureText1 = true;
-                      } else {
-                        obscureText1 = false;
-                      }
-                    });
-                  },
-                  child: Container(
-                      margin: EdgeInsetsDirectional.only(end: 10),
-                      child: !obscureText1
-                          ? Icon(
-                              Icons.remove_red_eye_outlined,
-                              color: Color(0xffC4C4C4),
-                              size: onWeb ? inputFont : 45.sp,
-                            )
-                          : Icon(
-                              Icons.visibility_off_outlined,
-                              color: Color(0xffC4C4C4),
-                              size: onWeb ? inputFont : 45.sp,
-                            ))),
-              contentPadding: onWeb
-                  ? null
-                  : EdgeInsets.only(
-                      left: 18.0.w, bottom: 12.0.h, top: 12.0.h, right: 2.0.w),
-              hintText: 'Re-enter the new password',
-              hintStyle: TextStyle(
+            Text(
+              "Re-enter your New Password",
+              style: onWeb ? _textStyleforEnterNo : _textForEnterMobile,
+            ),
+            SizedBox(height: 12.h),
+            TextFormField(
+              controller: _password2Ctrl,
+              cursorColor: MainTheme.primaryColor,
+              textAlign: TextAlign.left,
+              style: TextStyle(
                   fontSize: onWeb ? inputFont : 40.sp,
                   letterSpacing: 1.0,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xffC4C4C4)),
-              errorStyle: TextStyle(
-                fontSize: onWeb ? inputFont : 40.sp,
-                fontWeight: FontWeight.w400,
-                color: MainTheme.primaryColor,
+                  color: MainTheme.enterTextColor),
+              keyboardType: TextInputType.emailAddress,
+              obscureText: obscureText1,
+              decoration: InputDecoration(
+                suffixIcon: InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (obscureText1 == false) {
+                          obscureText1 = true;
+                        } else {
+                          obscureText1 = false;
+                        }
+                      });
+                    },
+                    child: Container(
+                        margin: EdgeInsetsDirectional.only(end: 10),
+                        child: !obscureText1
+                            ? Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: Color(0xffC4C4C4),
+                                size: onWeb ? inputFont : 45.sp,
+                              )
+                            : Icon(
+                                Icons.visibility_off_outlined,
+                                color: Color(0xffC4C4C4),
+                                size: onWeb ? inputFont : 45.sp,
+                              ))),
+                contentPadding: onWeb
+                    ? null
+                    : EdgeInsets.only(
+                        left: 18.0.w,
+                        bottom: 12.0.h,
+                        top: 12.0.h,
+                        right: 2.0.w),
+                hintText: 'Re-enter the new password',
+                hintStyle: TextStyle(
+                    fontSize: onWeb ? inputFont : 40.sp,
+                    letterSpacing: 1.0,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xffC4C4C4)),
+                errorStyle: TextStyle(
+                  fontSize: onWeb ? inputFont : 40.sp,
+                  fontWeight: FontWeight.w400,
+                  color: MainTheme.primaryColor,
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MainTheme.primaryColor,
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MainTheme.primaryColor,
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Color(0xffC4C4C4),
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: MainTheme.primaryColor,
+                      width: 1,
+                      style: BorderStyle.solid),
+                ),
               ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: MainTheme.primaryColor,
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: MainTheme.primaryColor,
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color(0xffC4C4C4),
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: MainTheme.primaryColor,
-                    width: 1,
-                    style: BorderStyle.solid),
-              ),
+              validator: (val) {
+                if (val.isEmpty) {
+                  return "Please enter password";
+                }
+                if (val != _password1Ctrl.text) {
+                  return 'Password does not match';
+                }
+
+                RegExp regex = new RegExp(passwordpattern.toString());
+                if (!regex.hasMatch(val)) {
+                  return 'Your password must be have at least 8 \ncharacters long, 1 uppercase , 1 lowercase,\n1 number & 1 special character';
+                }
+                return null;
+              },
             ),
-            validator: (val) {
-              if (val.isEmpty) {
-                return "Please enter password";
-              }
-              if (val != _password1Ctrl.text) {
-                return 'Password does not match';
-              }
+            SizedBox(height: 50.h),
 
-              RegExp regex = new RegExp(passwordpattern.toString());
-              if (!regex.hasMatch(val)) {
-                return 'Your password must be have at least 8 \ncharacters long, 1 uppercase , 1 lowercase,\n1 number & 1 special character';
-              }
-              return null;
-            },
-          ),
-          SizedBox(height: 50.h),
-
-          // Container(
-          //   padding: EdgeInsetsDirectional.only(
-          //     top: _height / 18,
-          //     end: _width * 0.12,
-          //     start: _width * 0.12,
-          //   ),
-          //   child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Expanded(
-          //             child: Text(
-          //               "Once you hit continue, you’ll receive a verification code. The verified email can be used to log in",
-          //               style: TextStyle(
-          //                   color: Colors.grey,
-          //                   fontSize: 14,
-          //                   fontFamily: "lato"),
-          //               textAlign: TextAlign.center,
-          //               maxLines: 2,
-          //               overflow: TextOverflow.ellipsis,
-          //             )),
-          //       ]),
-          // ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                name: loading ? "Loading.." : "Next",
-                gradient: MainTheme.loginBtnGradient,
-                height: onWeb ? 35 : 110.w,
-                fontSize: onWeb ? inputFont : 40.sp,
-                width: onWeb ? 130 : 500.w,
-                active: true,
-                isLoading: loading,
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.white,
-                onPressed: () {
-                  print("adsf");
-                  if (_formKey.currentState.validate()) {
-                    print("adsfsdfs");
-                    print(widget.isforget);
-                    if (widget.isforget) {
-                      forgetresetpassword();
-                    } else {
-                      print("adsf");
-                      goToCreateProfilePage();
+            // Container(
+            //   padding: EdgeInsetsDirectional.only(
+            //     top: _height / 18,
+            //     end: _width * 0.12,
+            //     start: _width * 0.12,
+            //   ),
+            //   child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Expanded(
+            //             child: Text(
+            //               "Once you hit continue, you’ll receive a verification code. The verified email can be used to log in",
+            //               style: TextStyle(
+            //                   color: Colors.grey,
+            //                   fontSize: 14,
+            //                   fontFamily: "lato"),
+            //               textAlign: TextAlign.center,
+            //               maxLines: 2,
+            //               overflow: TextOverflow.ellipsis,
+            //             )),
+            //       ]),
+            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  name: loading ? "Loading.." : "Next",
+                  gradient: MainTheme.loginBtnGradient,
+                  height: onWeb ? 35 : 110.w,
+                  fontSize: onWeb ? inputFont : 40.sp,
+                  width: onWeb ? 130 : 500.w,
+                  active: true,
+                  isLoading: loading,
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white,
+                  onPressed: () {
+                    print("adsf");
+                    if (_formKey.currentState.validate()) {
+                      print("adsfsdfs");
+                      print(widget.isforget);
+                      if (widget.isforget) {
+                        forgetresetpassword();
+                      } else {
+                        print("adsf");
+                        goToCreateProfilePage();
+                      }
                     }
-                  }
-                },
-              ),
-            ],
-          ),
-        ],
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

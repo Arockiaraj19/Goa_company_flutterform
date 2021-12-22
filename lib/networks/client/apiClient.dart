@@ -40,7 +40,7 @@ Future<Dio> apiClient() async {
   }, onError: (DioError error, handler) async {
     print(error.response);
     // print(error.response.statusCode);
-
+    showtoast(DioException.fromDioError(error).toString());
     // Do something with response error
     if (error.response != null) {
       // print(error.response);
@@ -53,8 +53,21 @@ Future<Dio> apiClient() async {
           print("refersh");
           var refreshToken = await getRefreshToken();
           print(refreshToken);
+          DeviceInfo deviceInfo = await getDeviceInfo();
+
+          var headerData = deviceInfo.appType == "web"
+              ? '{"app_type":"web","device_type": "desktop","browser": "${deviceInfo.browser.toString()}","browser_version": "${deviceInfo.browserVersion.toString()}"}'
+              : deviceInfo.appType == "android"
+                  ? '{"device_model": "${deviceInfo.deviceName}","imei_no": "${deviceInfo.identifier}","app_type": "android","device_type": "mobile"}'
+                  : '{"device_model": "${deviceInfo.deviceName}","imei_no": "${deviceInfo.identifier}","app_type": "ios","device_type": "mobile"}';
+
+          var decodeJson = jsonDecode(headerData);
+          String encodedData = jsonEncode(decodeJson);
           final response1 = await Dio().get(baseUrl + refreshTokenEndpoint,
-              options: Options(headers: {"Authorization": refreshToken}));
+              options: Options(headers: {
+                "Authorization": refreshToken,
+                "user_device": encodedData
+              }));
           print(response1.data);
           var accessToken;
           if (response1.statusCode == 200) {
@@ -74,9 +87,7 @@ Future<Dio> apiClient() async {
           saveLoginStatus(0);
           Modular.to.navigate(Navigate.loginPage);
         }
-      } else {
-        showtoast(DioException.fromDioError(error).toString());
-      }
+      } else {}
     } else {}
     return handler.next(error);
   }));

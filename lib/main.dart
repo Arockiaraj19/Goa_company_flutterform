@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dating_app/networks/messaging.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
+import 'package:dating_app/networks/topic_network.dart';
 import 'package:dating_app/providers/blind_provider.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/expertChat_provider.dart';
@@ -37,27 +39,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  RemoteNotification notification = message.notification;
-  AndroidNotification android = message.notification?.android;
-  if (notification != null && android != null) {
-    flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            color: Colors.blue,
-            playSound: true,
-            icon: '@mipmap/ic_launcher',
-          ),
-        ),
-        payload: json.encode(message.data));
-    print("onMessage: $message");
-    print(message);
-  }
+  print("background message");
+  print(message);
 }
 
 Future<void> main() async {
@@ -71,25 +54,25 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
 
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-  final InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-  );
+  // const AndroidInitializationSettings initializationSettingsAndroid =
+  //     AndroidInitializationSettings('@mipmap/ic_launcher');
+  // final InitializationSettings initializationSettings = InitializationSettings(
+  //   android: initializationSettingsAndroid,
+  // );
 
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: onselectnotication);
+  // await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+  //     onSelectNotification: onselectnotication);
   // await MobileAds.instance.initialize();
 
   runApp(ModularApp(module: Navigate(), child: MyApp()));
@@ -175,48 +158,52 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                color: Colors.blue,
-                playSound: true,
-                icon: '@mipmap/ic_launcher',
-              ),
-            ),
-            payload: json.encode(message.data));
-        print("onMessage: $message");
-        print(message);
-      }
+      print("get message");
+      print(message);
+      // RemoteNotification notification = message.notification;
+      // AndroidNotification android = message.notification?.android;
+      // if (notification != null && android != null) {
+      //   flutterLocalNotificationsPlugin.show(
+      //       notification.hashCode,
+      //       notification.title,
+      //       notification.body,
+      //       NotificationDetails(
+      //         android: AndroidNotificationDetails(
+      //           channel.id,
+      //           channel.name,
+      //           color: Colors.blue,
+      //           playSound: true,
+      //           icon: '@mipmap/ic_launcher',
+      //         ),
+      //       ),
+      //       payload: json.encode(message.data));
+      //   print("onMessage: $message");
+      //   print(message);
+      // }
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                color: Colors.blue,
-                playSound: true,
-                icon: '@mipmap/ic_launcher',
-              ),
-            ),
-            payload: json.encode(message.data));
-        print("onMessage: $message");
-        print(message);
-      }
+      print("on Message message");
+      print(message);
+      // RemoteNotification notification = message.notification;
+      // AndroidNotification android = message.notification?.android;
+      // if (notification != null && android != null) {
+      //   flutterLocalNotificationsPlugin.show(
+      //       notification.hashCode,
+      //       notification.title,
+      //       notification.body,
+      //       NotificationDetails(
+      //         android: AndroidNotificationDetails(
+      //           channel.id,
+      //           channel.name,
+      //           color: Colors.blue,
+      //           playSound: true,
+      //           icon: '@mipmap/ic_launcher',
+      //         ),
+      //       ),
+      //       payload: json.encode(message.data));
+      //   print("onMessage: $message");
+      //   print(message);
+      // }
     });
 
     // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -225,26 +212,45 @@ class _MyAppState extends State<MyApp> {
     // });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                color: Colors.blue,
-                playSound: true,
-                icon: '@mipmap/ic_launcher',
-              ),
-            ),
-            payload: json.encode(message.data));
-        print("onMessage: $message");
-        print(message);
-      }
+      print("onMessageOpenApp message");
+      print(message);
+      // RemoteNotification notification = message.notification;
+      // AndroidNotification android = message.notification?.android;
+      // if (notification != null && android != null) {
+      //   flutterLocalNotificationsPlugin.show(
+      //       notification.hashCode,
+      //       notification.title,
+      //       notification.body,
+      //       NotificationDetails(
+      //         android: AndroidNotificationDetails(
+      //           channel.id,
+      //           channel.name,
+      //           color: Colors.blue,
+      //           playSound: true,
+      //           icon: '@mipmap/ic_launcher',
+      //         ),
+      //       ),
+      //       payload: json.encode(message.data));
+      //   print("onMessage: $message");
+      //   print(message);
+      // }
+    });
+
+    _messaging.init().then((value) => request());
+    _messaging.stream.listen(
+      (event) {
+        print('New Message: ${event}');
+      },
+    );
+  }
+
+  final _messaging = Messaging.instance;
+  Future<void> request() async {
+    _messaging.requestPermission().then((_) async {
+      final _token = await _messaging.getToken();
+
+      print('Token: $_token');
+      Topic().subscripeToken(_token, "broadcast_user");
     });
   }
 

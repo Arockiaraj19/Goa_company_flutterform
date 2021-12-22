@@ -34,7 +34,7 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone();
       } else {
         return _buildWeb();

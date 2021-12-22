@@ -46,7 +46,7 @@ class _LoginWithState extends State<LoginWith> {
     print(widget.name);
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 1100) {
+      if (constraints.maxWidth < 769) {
         return _buildPhone(false);
       } else {
         return _buildWeb(true);
@@ -151,6 +151,7 @@ class _LoginWithState extends State<LoginWith> {
             height: 8.h,
           ),
           Forminput(
+            onWeb: onWeb,
             emailController: _emailCtrl,
             placeholder: "Email",
             validation: (val) {
@@ -195,6 +196,7 @@ class _LoginWithState extends State<LoginWith> {
                 fontWeight: FontWeight.w400,
                 color: MainTheme.enterTextColor),
             decoration: InputDecoration(
+              isDense: onWeb ? true : false,
               suffixIcon: InkWell(
                   onTap: () {
                     setState(() {
@@ -324,7 +326,6 @@ class _LoginWithState extends State<LoginWith> {
   goToforgetEmail() {
     NavigateFunction()
         .withquery(Navigate.signUpWithEmailPage + "?isforget=true");
-  
   }
 
   goToFindMatchPage() async {

@@ -35,7 +35,7 @@ class _PercentageMatchingBoxState extends State<PercentageMatchingBox> {
                     boxShadow: <BoxShadow>[
                       BoxShadow(color: Colors.grey, blurRadius: 1.0)
                     ],
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   padding: EdgeInsetsDirectional.only(
                     start: 40,

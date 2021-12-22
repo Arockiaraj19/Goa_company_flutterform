@@ -1,5 +1,6 @@
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/shared/helpers/loadingLottie.dart';
+import 'package:dating_app/shared/widgets/bottmsheet.dart';
 import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,23 @@ class _SubscriptionState extends State<Subscription> {
   SwiperController _controller = SwiperController();
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth < 769) {
+        return _buildphone(context);
+      } else {
+        Future.delayed(Duration(seconds: 1), () {
+          BottomSheetClass().showsub(context, onWeb: true);
+        });
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: Container(),
+        );
+      }
+    });
+  }
+
+  Scaffold _buildphone(BuildContext context) {
     return Scaffold(
         appBar: widget.onWeb
             ? null

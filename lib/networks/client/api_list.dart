@@ -87,3 +87,7 @@ const String gameaction = "/user/gamerequestaction/";
 const String gameanswer = "/user/gameanswer";
 
 const String getgamesquestion = "/user/gamequestions/";
+
+const String fcm_server_key =
+    'AAAATsqjKkU:APA91bGiHWqb4McbggopHO_PYSW490B3ipH63UsFBYuRbKWrxbDhumXN39ijBv_5P-FrHJ3vRzkGq79u6HWOyK9xB4_IN0CGdX7Cm6dQwi8AiYP1GIhtCJLtHvesNaYiqt58HEJ-Pj9V';
+const String webapikey = "AIzaSyC1V_1rQ8CdCJyUDNr0tCF2Hg9TQb6cO0s";
