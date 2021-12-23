@@ -27,6 +27,7 @@ import 'package:dating_app/pages/login_page/login_page.dart';
 import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/pages/looking_for_page/looking_for_page.dart';
 import 'package:dating_app/pages/matches_page/matches_page.dart';
+import 'package:dating_app/pages/notFoundPage.dart';
 import 'package:dating_app/pages/onboarding_page/onboarding_page.dart';
 import 'package:dating_app/pages/otp_page/otp_page.dart';
 import 'package:dating_app/pages/partner_type_page.dart/partner_type_page.dart';
@@ -46,11 +47,13 @@ import 'package:sailor/sailor.dart';
 
 import 'models/user_suggestion.dart';
 import 'pages/add_album_page/add_album_page.dart';
+import 'pages/googleAdsCheck.dart';
 import 'pages/imagecheck.dart';
 import 'pages/meet_page/meetup_page.dart';
 import 'pages/notification/notification_page.dart';
 import 'pages/subscriptions/subscription_page.dart';
 import 'pages/success/Success_page.dart';
+import 'shared/helpers/route_restriction.dart';
 
 class Navigate extends Module {
   @override
@@ -99,18 +102,21 @@ class Navigate extends Module {
 
   @override
   List<ModularRoute> get routes => [
-        ChildRoute(Modular.initialRoute,
-            child: (_, args) => const SplashScreen()),
-        ChildRoute(homePage, child: (_, args) => HomePage()),
+        ChildRoute(Modular.initialRoute, child: (_, args) => SplashScreen()),
+        ChildRoute(homePage,
+            child: (_, args) => HomePage(), guards: [AuthGuard()]),
         ChildRoute(loginPage, child: (_, args) => LoginPage()),
         ChildRoute(loginWith,
             child: (context, args) => LoginWith(
                   name: args.queryParams["name"],
                 )),
         ChildRoute(signUpPage, child: (_, args) => SignUpPage()),
-        ChildRoute(profilePage, child: (_, args) => ProfilePage()),
-        ChildRoute(commentPage, child: (_, args) => CommentPage()),
-        ChildRoute(matchPage, child: (_, args) => MatchesPage()),
+        ChildRoute(profilePage,
+            child: (_, args) => ProfilePage(), guards: [AuthGuard()]),
+        ChildRoute(commentPage,
+            child: (_, args) => CommentPage(), guards: [AuthGuard()]),
+        ChildRoute(matchPage,
+            child: (_, args) => MatchesPage(), guards: [AuthGuard()]),
         ChildRoute(signUpWithEmailPage,
             child: (_, args) => SignUpWithEmailPage(
                   isforget: args.queryParams["isforget"] == "true",
@@ -118,16 +124,21 @@ class Navigate extends Module {
         ChildRoute(signUpWithMobilePage,
             child: (_, args) => SignUpWithMobilePage()),
         ChildRoute(interestHobbiesPage,
-            child: (_, args) => InterestHobbiesPage()),
-        ChildRoute(addAlbumPage, child: (_, args) => AddAlbumPicPage()),
-        ChildRoute(addProfilePicPage, child: (_, args) => AddProfilePic()),
-        ChildRoute(lookingForPage, child: (_, args) => LookingForPage()),
+            child: (_, args) => InterestHobbiesPage(), guards: [AuthGuard1()]),
+        ChildRoute(addAlbumPage,
+            child: (_, args) => AddAlbumPicPage(), guards: [AuthGuard1()]),
+        ChildRoute(addProfilePicPage,
+            child: (_, args) => AddProfilePic(), guards: [AuthGuard1()]),
+        ChildRoute(lookingForPage,
+            child: (_, args) => LookingForPage(), guards: [AuthGuard1()]),
         ChildRoute(findMatchPage, child: (_, args) => FindMatchPage()),
         ChildRoute(likeMatchListPage,
             child: (_, args) => LikeMatchListPage(
                   index: int.parse(args.queryParams["index"]),
-                )),
-        ChildRoute(meetuppage, child: (_, args) => MeetupPage()),
+                ),
+            guards: [AuthGuard()]),
+        ChildRoute(meetuppage,
+            child: (_, args) => MeetupPage(), guards: [AuthGuard()]),
         ChildRoute(subscription,
             child: (_, args) => Subscription(
                   swiperIndex: args.queryParams["swiperIndex"] == null
@@ -135,28 +146,38 @@ class Navigate extends Module {
                       : int.parse(args.queryParams["swiperIndex"]),
                   onboard: args.queryParams["onboard"] == "true",
                 )),
-        ChildRoute(payment, child: (_, args) => PaymentPage()),
-        ChildRoute(imagecheck, child: (_, args) => Imagecheck()),
+        ChildRoute(payment,
+            child: (_, args) => PaymentPage(), guards: [AuthGuard()]),
+        ChildRoute(imagecheck,
+            child: (_, args) => Imagecheck(), guards: [AuthGuard()]),
         ChildRoute(success, child: (_, args) => SuccessPage()),
         ChildRoute(albumview,
             child: (_, args) => AlbumView(
                   galleryItems: args.data["galleryItems"],
-                )),
-        ChildRoute(notification, child: (_, args) => NotificationPage()),
-        ChildRoute(aboutus, child: (_, args) => AboutUs()),
-        ChildRoute(expertGroup, child: (_, args) => ExpertGroup()),
+                ),
+            guards: [AuthGuard()]),
+        ChildRoute(notification,
+            child: (_, args) => NotificationPage(), guards: [AuthGuard()]),
+        ChildRoute(aboutus,
+            child: (_, args) => AboutUs(), guards: [AuthGuard()]),
+        ChildRoute(expertGroup,
+            child: (_, args) => ExpertGroup(), guards: [AuthGuard()]),
         ChildRoute(editProfilePage,
             child: (_, args) =>
-                EditProfilePage(userdata: args.data["userDetails"])),
+                EditProfilePage(userdata: args.data["userDetails"]),
+            guards: [AuthGuard()]),
         ChildRoute(partnerTypePage,
             child: (_, args) =>
-                PartnerTypePage(userData: args.data["userData"])),
+                PartnerTypePage(userData: args.data["userData"]),
+            guards: [AuthGuard1()]),
         ChildRoute(createProfilePage,
             child: (_, args) =>
-                CreateProfilePage(userData: args.data["userData"])),
+                CreateProfilePage(userData: args.data["userData"]),
+            guards: [AuthGuard1()]),
         ChildRoute(detailPage,
             child: (_, args) =>
-                DetailPage(userDetails: args.data["userDetails"])),
+                DetailPage(userDetails: args.data["userDetails"]),
+            guards: [AuthGuard()]),
         ChildRoute(onboardingPage, child: (_, args) => OnboardingPage()),
         ChildRoute(otpPage,
             child: (_, args) => OtpPage(
@@ -177,7 +198,8 @@ class Navigate extends Module {
                   status: int.parse(args.queryParams["status"]),
                   image: [args.queryParams["image"]],
                   onWeb: true,
-                )),
+                ),
+            guards: [AuthGuard()]),
         ChildRoute(chattingPage,
             child: (_, args) => ChattingPage(
                   groupid: args.queryParams["groupid"],
@@ -185,12 +207,14 @@ class Navigate extends Module {
                   name: args.queryParams["name"],
                   image: args.queryParams["image"],
                   onWeb: true,
-                )),
+                ),
+            guards: [AuthGuard()]),
         ChildRoute(perfectMatchPage,
             child: (_, args) => PerfectMatchPage(
                   user1: args.data["user1"],
                   user2: args.data["user2"],
-                )),
+                ),
+            guards: [AuthGuard()]),
         ChildRoute(quizGamePage,
             child: (_, args) => QuizGamePage(
                   questions: args.data["questions"],
@@ -200,7 +224,8 @@ class Navigate extends Module {
                   istrue: args.data["istrue"],
                   user1name: args.data["user1name"],
                   user2name: args.data["user2name"],
-                )),
+                ),
+            guards: [AuthGuard()]),
         ChildRoute(quizSucessPage,
             child: (_, args) => QuizSucessPage(
                   user1image: args.data["user1image"],
@@ -209,7 +234,9 @@ class Navigate extends Module {
                   user2name: args.data["user2name"],
                   score: args.data["score"],
                   length: args.data["length"],
-                )),
+                ),
+            guards: [AuthGuard()]),
+        WildcardRoute(child: (context, args) => NotFoundPage()),
       ];
 }
 

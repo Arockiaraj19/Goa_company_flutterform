@@ -1,6 +1,7 @@
 import 'package:dating_app/networks/notification_network.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/no_result.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class NotificationPage extends StatefulWidget {
+  final bool onweb;
+  NotificationPage({this.onweb = false});
   @override
   _NotificationState createState() => _NotificationState();
 }
@@ -28,16 +31,18 @@ class _NotificationState extends State<NotificationPage> {
                     )
                   : Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 30.w, vertical: 10.h),
+                          horizontal: widget.onweb ? 0 : 30.w,
+                          vertical: widget.onweb ? 0 : 10.h),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
                           boxShadow: <BoxShadow>[
-                            BoxShadow(
-                              color: Colors.grey[400],
-                              blurRadius: 1.0,
-                              offset: Offset(0, 5),
-                            ),
+                            if (!widget.onweb)
+                              BoxShadow(
+                                color: Colors.grey[400],
+                                blurRadius: 1.0,
+                                offset: Offset(0, 5),
+                              ),
                           ],
                         ),
                         child: Column(
@@ -59,7 +64,9 @@ class _NotificationState extends State<NotificationPage> {
                                         "cancel",
                                         style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 45.sp,
+                                            fontSize: widget.onweb
+                                                ? inputFont
+                                                : 45.sp,
                                             fontWeight: FontWeight.w400),
                                       ),
                                     ),
@@ -68,7 +75,8 @@ class _NotificationState extends State<NotificationPage> {
                                       "NotificationPage",
                                       style: TextStyle(
                                           color: Color(0xff1A1F36),
-                                          fontSize: 45.sp,
+                                          fontSize:
+                                              widget.onweb ? inputFont : 45.sp,
                                           fontWeight: FontWeight.w600),
                                     ),
                                   if (deleteId.length == 0)
@@ -78,7 +86,9 @@ class _NotificationState extends State<NotificationPage> {
                                           "Mark all as read",
                                           style: TextStyle(
                                               color: Color(0xff1A1F36),
-                                              fontSize: 45.sp,
+                                              fontSize: widget.onweb
+                                                  ? inputFont
+                                                  : 45.sp,
                                               fontWeight: FontWeight.w400),
                                         ),
                                         IconButton(
@@ -115,7 +125,9 @@ class _NotificationState extends State<NotificationPage> {
                                         "remove",
                                         style: TextStyle(
                                             color: MainTheme.primaryColor,
-                                            fontSize: 45.sp,
+                                            fontSize: widget.onweb
+                                                ? inputFont
+                                                : 45.sp,
                                             fontWeight: FontWeight.w400),
                                       ),
                                     ),
@@ -143,7 +155,8 @@ class _NotificationState extends State<NotificationPage> {
                                               : Colors.white,
                                           width: double.infinity,
                                           child: Padding(
-                                            padding: EdgeInsets.all(25.0.w),
+                                            padding: EdgeInsets.all(
+                                                widget.onweb ? 5.w : 25.0.w),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -174,12 +187,19 @@ class _NotificationState extends State<NotificationPage> {
                                                                 index]
                                                             .sender
                                                             .identificationImage,
-                                                        height: 150.r,
-                                                        width: 150.r,
+                                                        height: widget.onweb
+                                                            ? 50
+                                                            : 150.r,
+                                                        width: widget.onweb
+                                                            ? 50
+                                                            : 150.r,
                                                         fit: BoxFit.fill,
                                                       ),
                                                     ),
-                                                    SizedBox(width: 30.w),
+                                                    SizedBox(
+                                                        width: widget.onweb
+                                                            ? 5.w
+                                                            : 30.w),
                                                     Expanded(
                                                       child: Column(
                                                         crossAxisAlignment:
@@ -191,8 +211,10 @@ class _NotificationState extends State<NotificationPage> {
                                                               style: TextStyle(
                                                                   color: Color(
                                                                       0xff1A1F36),
-                                                                  fontSize:
-                                                                      45.sp,
+                                                                  fontSize: widget
+                                                                          .onweb
+                                                                      ? inputFont
+                                                                      : 45.sp,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400),
@@ -213,8 +235,11 @@ class _NotificationState extends State<NotificationPage> {
                                                                   style: TextStyle(
                                                                       color: Color(
                                                                           0xff1A1F36),
-                                                                      fontSize:
-                                                                          48.sp,
+                                                                      fontSize: widget
+                                                                              .onweb
+                                                                          ? 17.5
+                                                                          : 48
+                                                                              .sp,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w600),
@@ -225,8 +250,11 @@ class _NotificationState extends State<NotificationPage> {
                                                                   style: TextStyle(
                                                                       color: Color(
                                                                           0xff1A1F36),
-                                                                      fontSize:
-                                                                          45.sp,
+                                                                      fontSize: widget
+                                                                              .onweb
+                                                                          ? inputFont
+                                                                          : 45
+                                                                              .sp,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w400),
@@ -235,7 +263,9 @@ class _NotificationState extends State<NotificationPage> {
                                                             ),
                                                           ),
                                                           SizedBox(
-                                                            height: 10.h,
+                                                            height: widget.onweb
+                                                                ? 8
+                                                                : 10.h,
                                                           ),
                                                           Text(
                                                             DateFormat
@@ -247,7 +277,10 @@ class _NotificationState extends State<NotificationPage> {
                                                             style: TextStyle(
                                                                 color:
                                                                     Colors.grey,
-                                                                fontSize: 40.sp,
+                                                                fontSize:
+                                                                    widget.onweb
+                                                                        ? 14
+                                                                        : 40.sp,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w400),

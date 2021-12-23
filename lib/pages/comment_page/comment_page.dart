@@ -9,7 +9,9 @@ import 'package:dating_app/pages/comment_page/widgets/massage_card_list.dart';
 import 'package:dating_app/pages/comment_page/widgets/request_card_list.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/providers/notification_provider.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
+import 'package:dating_app/shared/widgets/bottmsheet.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -190,13 +192,47 @@ class _CommentPageState extends State<CommentPage>
                       Container(
                           margin: EdgeInsetsDirectional.only(
                               top: 5, end: 20, bottom: 5),
-                          child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.notifications_outlined,
-                                color: Colors.grey,
-                                size: 20,
-                              )))
+                          child: Consumer<NotificationProvider>(
+                            builder: (context, data, child) {
+                              return InkWell(
+                                onTap: () {
+                                  return BottomSheetClass().shownav(context);
+                                },
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      child: Icon(
+                                        Icons.notifications_outlined,
+                                        color: Colors.grey,
+                                        size: 25,
+                                      ),
+                                    ),
+                                    if (data.notificationData.length != 0)
+                                      Positioned(
+                                        right: 8,
+                                        top: 2,
+                                        child: Container(
+                                            alignment: Alignment.center,
+                                            height: 15,
+                                            width: 15,
+                                            decoration: BoxDecoration(
+                                              color: MainTheme.primaryColor,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Text(
+                                              data.notificationData.length
+                                                  .toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                              ),
+                                            )),
+                                      )
+                                  ],
+                                ),
+                              );
+                            },
+                          ))
                     ],
                     backgroundColor: MainTheme.appBarColor,
                     elevation: 0,
@@ -332,37 +368,51 @@ class _CommentPageState extends State<CommentPage>
                                   ),
                                   height: _height,
                                   width: _width * 0.570,
-                                  child: ChattingPage(
-                                    groupid: data.chatGroupData[cardIndex].id,
-                                    id: data.chatGroupData[cardIndex]
-                                                .user_id_1_details[0].userid !=
-                                            userid
-                                        ? data.chatGroupData[cardIndex]
-                                            .user_id_1_details[0].userid
-                                        : data.chatGroupData[cardIndex]
-                                            .user_id_2_details[0].userid,
-                                    image: data.chatGroupData[cardIndex]
-                                                .user_id_1_details[0].userid !=
-                                            userid
-                                        ? data
-                                            .chatGroupData[cardIndex]
-                                            .user_id_1_details[0]
-                                            .identificationImage
-                                        : data
-                                            .chatGroupData[cardIndex]
-                                            .user_id_2_details[0]
-                                            .identificationImage,
-                                    name: data.chatGroupData[cardIndex]
-                                                .user_id_1_details[0].userid !=
-                                            userid
-                                        ? data.chatGroupData[cardIndex]
-                                            .user_id_1_details[0].firstname
-                                        : data.chatGroupData[cardIndex]
-                                            .user_id_2_details[0].firstname,
-                                    chatBoxWidth: _width / 3.8,
-                                    floatingActionButtonWidth: _width * 0.500,
-                                    onWeb: true,
-                                  )),
+                                  child: data.chatGroupData.length != 0
+                                      ? ChattingPage(
+                                          groupid:
+                                              data.chatGroupData[cardIndex].id,
+                                          id: data
+                                                      .chatGroupData[cardIndex]
+                                                      .user_id_1_details[0]
+                                                      .userid !=
+                                                  userid
+                                              ? data.chatGroupData[cardIndex]
+                                                  .user_id_1_details[0].userid
+                                              : data.chatGroupData[cardIndex]
+                                                  .user_id_2_details[0].userid,
+                                          image: data
+                                                      .chatGroupData[cardIndex]
+                                                      .user_id_1_details[0]
+                                                      .userid !=
+                                                  userid
+                                              ? data
+                                                  .chatGroupData[cardIndex]
+                                                  .user_id_1_details[0]
+                                                  .identificationImage
+                                              : data
+                                                  .chatGroupData[cardIndex]
+                                                  .user_id_2_details[0]
+                                                  .identificationImage,
+                                          name: data
+                                                      .chatGroupData[cardIndex]
+                                                      .user_id_1_details[0]
+                                                      .userid !=
+                                                  userid
+                                              ? data
+                                                  .chatGroupData[cardIndex]
+                                                  .user_id_1_details[0]
+                                                  .firstname
+                                              : data
+                                                  .chatGroupData[cardIndex]
+                                                  .user_id_2_details[0]
+                                                  .firstname,
+                                          chatBoxWidth: _width / 3.8,
+                                          floatingActionButtonWidth:
+                                              _width * 0.500,
+                                          onWeb: true,
+                                        )
+                                      : Container()),
                             ],
                           ))
                         : Container();

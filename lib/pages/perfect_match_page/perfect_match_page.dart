@@ -3,6 +3,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/pages/detail_page/detail_page.dart';
 import 'package:dating_app/routes.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -231,13 +232,14 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                     //   },
                     // ),
                     GradientButton(
-                      height: MediaQuery.of(context).size.height / 20,
+                      height: 35,
+                      fontSize: inputFont,
                       name: "Say “Hi”",
                       gradient: MainTheme.loginBtnGradient,
                       active: true,
                       color: Colors.white,
-                      width: ScreenUtil().setWidth(400),
                       borderRadius: BorderRadius.circular(5),
+                      width: 130,
                       fontWeight: FontWeight.bold,
                       onPressed: () async {
                         String groupid = await ChatNetwork().createGroup(

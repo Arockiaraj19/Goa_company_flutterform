@@ -59,8 +59,8 @@ class BottomSheetClass {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content:
-                Container(width: 400, height: 500, child: NotificationPage()),
+            content: Container(
+                width: 400, height: 500, child: NotificationPage(onweb: true)),
           );
         });
   }

@@ -330,15 +330,47 @@ class _HomePageState extends State<HomePage> {
                     Container(
                         margin: EdgeInsetsDirectional.only(
                             top: 5, end: 20, bottom: 5),
-                        child: IconButton(
-                            onPressed: () {
-                              return BottomSheetClass().shownav(context);
-                            },
-                            icon: Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.grey,
-                              // size: 20,
-                            )))
+                        child: Consumer<NotificationProvider>(
+                          builder: (context, data, child) {
+                            return InkWell(
+                              onTap: () {
+                                return BottomSheetClass().shownav(context);
+                              },
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    child: Icon(
+                                      Icons.notifications_outlined,
+                                      color: Colors.grey,
+                                      size: 25,
+                                    ),
+                                  ),
+                                  if (data.notificationData.length != 0)
+                                    Positioned(
+                                      right: 8,
+                                      top: 2,
+                                      child: Container(
+                                          alignment: Alignment.center,
+                                          height: 15,
+                                          width: 15,
+                                          decoration: BoxDecoration(
+                                            color: MainTheme.primaryColor,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Text(
+                                            data.notificationData.length
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                            ),
+                                          )),
+                                    )
+                                ],
+                              ),
+                            );
+                          },
+                        ))
                   ],
                 ),
                 body: Consumer<HomeProvider>(builder: (context, data, child) {
@@ -349,8 +381,8 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 0, horizontal: 80),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 40.w),
                                 child: Column(
                                   children: [
                                     Container(

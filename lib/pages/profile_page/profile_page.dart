@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:dating_app/providers/notification_provider.dart';
+import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:dating_app/models/like_list.dart';
 import 'package:dating_app/models/subscription_model.dart';
@@ -804,7 +806,7 @@ class _ProfilePageState extends State<ProfilePage>
           child: Text(
             "No",
             style: TextStyle(
-                fontSize: 45.sp,
+                fontSize: inputFont,
                 color: Colors.black,
                 fontWeight: FontWeight.w400),
           ),
@@ -818,7 +820,7 @@ class _ProfilePageState extends State<ProfilePage>
           child: Text(
             "Yes",
             style: TextStyle(
-                fontSize: 45.sp,
+                fontSize: inputFont,
                 color: MainTheme.primaryColor,
                 fontWeight: FontWeight.w400),
           ),
@@ -828,14 +830,16 @@ class _ProfilePageState extends State<ProfilePage>
       title: Text(
         "Logout",
         style: TextStyle(
-            fontSize: 60.sp,
+            fontSize: 20,
             color: MainTheme.primaryColor,
             fontWeight: FontWeight.w600),
       ),
       content: Text(
         "Do you want logout?",
         style: TextStyle(
-            fontSize: 45.sp, color: Colors.black, fontWeight: FontWeight.w400),
+            fontSize: inputFont,
+            color: Colors.black,
+            fontWeight: FontWeight.w400),
       ),
     );
 
@@ -932,13 +936,56 @@ class _ProfilePageState extends State<ProfilePage>
                                   Container(
                                       margin: EdgeInsetsDirectional.only(
                                           top: 5, end: 20, bottom: 5),
-                                      child: IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(
-                                            Icons.notifications_outlined,
-                                            color: Colors.grey,
-                                            // size: 20,
-                                          ))),
+                                      child: Consumer<NotificationProvider>(
+                                        builder: (context, data, child) {
+                                          return InkWell(
+                                            onTap: () {
+                                              return BottomSheetClass()
+                                                  .shownav(context);
+                                            },
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  child: Icon(
+                                                    Icons
+                                                        .notifications_outlined,
+                                                    color: Colors.grey,
+                                                    size: 25,
+                                                  ),
+                                                ),
+                                                if (data.notificationData
+                                                        .length !=
+                                                    0)
+                                                  Positioned(
+                                                    right: 8,
+                                                    top: 2,
+                                                    child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        height: 15,
+                                                        width: 15,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: MainTheme
+                                                              .primaryColor,
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                        child: Text(
+                                                          data.notificationData
+                                                              .length
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 10,
+                                                          ),
+                                                        )),
+                                                  )
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ))
                                   // InkWell(
                                   //   onTap: () {
                                   //     goToEditProfilePagePage(data.userData);
@@ -967,7 +1014,7 @@ class _ProfilePageState extends State<ProfilePage>
                                             //   width: _width / 25,
                                             // ),
                                             Container(
-                                                height: 280,
+                                                height: 285,
                                                 width: _width * 0.365,
                                                 child: Column(
                                                   mainAxisAlignment:
@@ -1062,6 +1109,39 @@ class _ProfilePageState extends State<ProfilePage>
                                                               style:
                                                                   _textStyleforName),
                                                         ),
+                                                        InkWell(
+                                                          onTap: () {
+                                                            // _showRewardedAd();
+                                                          },
+                                                          child: Card(
+                                                            child: Container(
+                                                                padding:
+                                                                    EdgeInsetsDirectional
+                                                                        .all(3),
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            3)),
+                                                                child: ClipRRect(
+                                                                    child: Container(
+                                                                        padding: EdgeInsets.all(2),
+                                                                        color: Colors.white,
+                                                                        child: Row(children: [
+                                                                          Container(
+                                                                              padding: EdgeInsetsDirectional.only(
+                                                                                end: 2,
+                                                                                start: 2,
+                                                                              ),
+                                                                              child: Image.asset(
+                                                                                "assets/images/coin.png",
+                                                                                width: 20,
+                                                                                height: 20,
+                                                                              )),
+                                                                          Container(
+                                                                              child: Text(data.userData.coin == null ? "0" : data.userData.coin))
+                                                                        ])))),
+                                                          ),
+                                                        )
                                                       ],
                                                     ),
                                                     Container(

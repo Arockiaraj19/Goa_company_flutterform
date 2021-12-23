@@ -5,6 +5,7 @@ import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/forgetpassword_network.dart';
+import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -145,6 +146,7 @@ class _OtpPageState extends State<OtpPage> {
     setState(() {
       loading = true;
     });
+
     var network = ForgetPassword();
     try {
       ResponseSubmitOtp result = await network.forgetSubmitOtp(
@@ -152,6 +154,7 @@ class _OtpPageState extends State<OtpPage> {
       showtoast(result.msg.toString());
       NavigateFunction().withoutquery(Navigate.addingPasswordPage,
           {"email": widget.otpData.value, "otpdata": result, "isforget": true});
+      saveLoginStatus(1);
     } catch (e) {
       offLoading();
     }
@@ -165,7 +168,7 @@ class _OtpPageState extends State<OtpPage> {
 
   void getcallback(String data) {
     print("call back funtion la correct a varuthaa");
-
+    saveLoginStatus(0);
     offLoading();
   }
 
@@ -173,6 +176,7 @@ class _OtpPageState extends State<OtpPage> {
     setState(() {
       loading = true;
     });
+
     try {
       if (widget.otpData.isMob == false) {
         var network = EmailSignUpNetwork();
@@ -184,6 +188,7 @@ class _OtpPageState extends State<OtpPage> {
               ? NavigateFunction().withoutquery(Navigate.addingPasswordPage,
                   {"email": widget.otpData.value, "isforget": false})
               : NavigateFunction().withquery(Navigate.loginPage);
+          saveLoginStatus(1);
         } catch (e) {
           offLoading();
         }
@@ -193,6 +198,7 @@ class _OtpPageState extends State<OtpPage> {
               verificationId: widget.otpData.id, smsCode: _otpController.text);
           await Master_function(context, _credential, widget.otpData.value,
               widget.otpData.isSignUp, getcallback);
+          saveLoginStatus(1);
         } catch (e) {
           offLoading();
         }
@@ -256,8 +262,8 @@ class _OtpPageState extends State<OtpPage> {
           Container(
               padding: onWeb
                   ? EdgeInsetsDirectional.only(
-                      end: _width * 0.12,
-                      start: _width * 0.12,
+                      end: _width * 0.10,
+                      start: _width * 0.10,
                     )
                   : EdgeInsetsDirectional.only(
                       end: 35,
@@ -272,8 +278,8 @@ class _OtpPageState extends State<OtpPage> {
                 controller: _otpController,
                 // onSubmit: goVerify,
                 showFieldAsBox: true,
-                fieldWidth: onWeb ? 40 : 100.r,
-                fieldHeight: onWeb ? 40 : 100.r,
+                fieldWidth: onWeb ? 40.r : 100.r,
+                fieldHeight: onWeb ? 40.r : 100.r,
 
                 focusedBorderColor: MainTheme.primaryColor,
                 enabledBorderColor: Colors.black,

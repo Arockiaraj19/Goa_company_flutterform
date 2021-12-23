@@ -119,7 +119,7 @@ class _AddProfilePicState extends State<AddProfilePic> {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: MainTheme.primaryColor)),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.camera_alt_outlined,
