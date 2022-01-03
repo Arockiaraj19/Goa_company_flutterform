@@ -20,9 +20,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../routes.dart';
 
 class OtpPage extends StatefulWidget {
-  final OtpModel otpData;
   final bool isforget;
-  OtpPage({Key key, this.otpData, this.isforget}) : super(key: key);
+  final String ovalue;
+  final String oid;
+  final bool oisMob;
+  final bool oisSignUp;
+  OtpPage(
+      {Key key,
+      this.isforget,
+      this.ovalue,
+      this.oid,
+      this.oisMob,
+      this.oisSignUp})
+      : super(key: key);
 
   @override
   _OtpPageState createState() => _OtpPageState();
@@ -41,7 +51,7 @@ class _OtpPageState extends State<OtpPage> {
     super.initState();
     print("otp page la boolean correct a varuthaaa");
     print(widget.isforget);
-    print(widget.otpData);
+
     timerFunction();
   }
 
@@ -150,10 +160,10 @@ class _OtpPageState extends State<OtpPage> {
     var network = ForgetPassword();
     try {
       ResponseSubmitOtp result = await network.forgetSubmitOtp(
-          _otpController.text, widget.otpData.value, widget.otpData.id);
+          _otpController.text, widget.ovalue, widget.oid);
       showtoast(result.msg.toString());
       NavigateFunction().withoutquery(Navigate.addingPasswordPage,
-          {"email": widget.otpData.value, "otpdata": result, "isforget": true});
+          {"email": widget.ovalue, "otpdata": result, "isforget": true});
       saveLoginStatus(1);
     } catch (e) {
       offLoading();
@@ -178,15 +188,17 @@ class _OtpPageState extends State<OtpPage> {
     });
 
     try {
-      if (widget.otpData.isMob == false) {
+      if (widget.oisMob == false) {
         var network = EmailSignUpNetwork();
         try {
           ResponseData result = await network.verifyOtpForSignup(
-              widget.otpData.value, _otpController.text);
+              widget.ovalue, _otpController.text);
           showtoast(result.msg.toString());
           result.statusDetails == 2
-              ? NavigateFunction().withoutquery(Navigate.addingPasswordPage,
-                  {"email": widget.otpData.value, "isforget": false})
+              ? NavigateFunction().withquery(
+                  Navigate.addingPasswordPage +
+                      "?email=${widget.ovalue}&isforget=${false}",
+                )
               : NavigateFunction().withquery(Navigate.loginPage);
           saveLoginStatus(1);
         } catch (e) {
@@ -195,9 +207,9 @@ class _OtpPageState extends State<OtpPage> {
       } else {
         try {
           var _credential = PhoneAuthProvider.credential(
-              verificationId: widget.otpData.id, smsCode: _otpController.text);
-          await Master_function(context, _credential, widget.otpData.value,
-              widget.otpData.isSignUp, getcallback);
+              verificationId: widget.oid, smsCode: _otpController.text);
+          await Master_function(context, _credential, widget.ovalue,
+              widget.oisSignUp, getcallback);
           saveLoginStatus(1);
         } catch (e) {
           offLoading();
@@ -250,7 +262,7 @@ class _OtpPageState extends State<OtpPage> {
                           bottom: _height / 40,
                         )
                       : null,
-                  child: Text("code is sent to ${widget.otpData.value}",
+                  child: Text("code is sent to ${widget.ovalue}",
                       style: onWeb ? _textStyleContent : _codeIsTextColor)),
             ],
           ),
@@ -357,12 +369,12 @@ class _OtpPageState extends State<OtpPage> {
                       timerFunction();
                       if (widget.isforget) {
                         String result = await ForgetPassword()
-                            .forgetGetresentOtp(widget.otpData.value);
+                            .forgetGetresentOtp(widget.ovalue);
                         showtoast(result);
                       } else {
                         var network = EmailSignUpNetwork();
-                        bool result = await network
-                            .resendOtpForEmail(widget.otpData.value);
+                        bool result =
+                            await network.resendOtpForEmail(widget.ovalue);
                       }
                     }
                   },

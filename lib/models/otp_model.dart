@@ -6,8 +6,7 @@ class OtpModel {
   bool isMob;
   bool isSignUp;
 
-
-  OtpModel({this.value,this.id,this.isMob,this.isSignUp});
+  OtpModel({this.value, this.id, this.isMob, this.isSignUp});
 
   OtpModel.fromJson(Map<String, dynamic> json) {
     value = json['value'];

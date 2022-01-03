@@ -13,7 +13,6 @@ class AuthGuard extends RouteGuard {
   }
 }
 
-
 class AuthGuard1 extends RouteGuard {
   AuthGuard1() : super(redirectTo: Navigate.loginPage);
 

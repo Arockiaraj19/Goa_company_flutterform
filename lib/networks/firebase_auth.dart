@@ -24,8 +24,10 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp,
         "isMob": true,
         "isSignUp": isSignUp
       });
-      Modular.to.pushNamed(Navigate.otpPage,
-          arguments: {"otpData": data, "isforget": false});
+      Modular.to.pushNamed(
+        Navigate.otpPage +
+            "?ovalue=${mobile}&isforget=${false}&oid=${value.verificationId.toString()}&oisMob=${true}&oisSignUp=${isSignUp}",
+      );
     }).catchError((exception) {
       showtoast(exception.toString());
       callback(exception.toString());
@@ -60,8 +62,10 @@ Future registerUser(String mobile, BuildContext context, bool isSignUp,
                 "isMob": true,
                 "isSignUp": isSignUp
               });
-              Modular.to.pushNamed(Navigate.otpPage,
-                  arguments: {"otpData": data, "isforget": false});
+              Modular.to.pushNamed(
+                Navigate.otpPage +
+                    "?ovalue=${mobile}&isforget=${false}&oid=${verificationId.toString()}&oisMob=${true}&oisSignUp=${isSignUp}",
+              );
             },
             codeAutoRetrievalTimeout: (String verificationId) {
               verificationId = verificationId;

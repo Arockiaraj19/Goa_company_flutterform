@@ -169,17 +169,9 @@ class _ChattingPageState extends State<ChattingPage> {
       List<GamesModel> games = await Games().getallgames();
       GameRequest gameRequest =
           await Games().sendgamerequest(games[0].id, widget.id);
-      List<Getquestion> questions =
-          await Games().getquestion(games[0].id, gameRequest.id);
-      NavigateFunction().withoutquery(Navigate.quizGamePage, {
-        "questions": questions,
-        "playid": gameRequest.id,
-        "user1": user1,
-        "user2": user2,
-        "istrue": true,
-        "user1name": user1name,
-        "user2name": widget.name,
-      });
+
+      NavigateFunction().withquery(Navigate.quizGamePage +
+          "?questionid=${games[0].id}&playid=${gameRequest.id}&user1=${user1}&user2=${user2}&istrue=${true}&user1name=${user1name}&user2name=${widget.name}");
     } catch (e) {
       print(e);
     }
@@ -256,15 +248,8 @@ class _ChattingPageState extends State<ChattingPage> {
                 return Consumer<HomeProvider>(builder: (context, data, child) {
                   return InkWell(
                     onTap: () {
-                      NavigateFunction().withoutquery(Navigate.quizGamePage, {
-                        "questions": snapshot.data.questions,
-                        "playid": snapshot.data.playid,
-                        "user1": data.userData.identificationImage,
-                        "user2": widget.image,
-                        "istrue": false,
-                        "user1name": data.userData.firstName,
-                        "user2name": widget.name
-                      });
+                      gotogame(data.userData.identificationImage, widget.image,
+                          data.userData.firstName);
                     },
                     child: Container(
                       alignment: Alignment.center,

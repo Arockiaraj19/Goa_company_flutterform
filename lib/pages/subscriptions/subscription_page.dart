@@ -47,6 +47,8 @@ class _SubscriptionState extends State<Subscription> {
     });
   }
 
+  ScrollController _scrollController = ScrollController();
+
   Scaffold _buildphone(BuildContext context) {
     return Scaffold(
         appBar: widget.onWeb
@@ -108,19 +110,24 @@ class _SubscriptionState extends State<Subscription> {
                             width: double.infinity,
                             height: double.infinity,
                             child: widget.onWeb
-                                ? ListView.builder(
-                                    itemCount: data.subscriptionData.length,
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return SingleChildScrollView(
-                                        child: SubscriptionCard(
-                                            data.subscriptionData[index],
-                                            index,
-                                            widget.onboard,
-                                            widget.onWeb),
-                                      );
-                                    })
+                                ? Scrollbar(
+                                    controller: _scrollController,
+                                    isAlwaysShown: true,
+                                    child: ListView.builder(
+                                        itemCount: data.subscriptionData.length,
+                                        shrinkWrap: true,
+                                        controller: _scrollController,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return SingleChildScrollView(
+                                            child: SubscriptionCard(
+                                                data.subscriptionData[index],
+                                                index,
+                                                widget.onboard,
+                                                widget.onWeb),
+                                          );
+                                        }),
+                                  )
                                 : Swiper(
                                     index: widget.swiperIndex == null
                                         ? 0

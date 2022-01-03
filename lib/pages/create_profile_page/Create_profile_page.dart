@@ -11,6 +11,7 @@ import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
 import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/countryCode_provider.dart';
+import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/ref_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/date_picker_input.dart';
@@ -32,9 +33,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CreateProfilePage extends StatefulWidget {
-  final UserModel userData;
-  CreateProfilePage({Key key, this.userData}) : super(key: key);
-
   @override
   _CreateProfilePageState createState() => _CreateProfilePageState();
 }
@@ -96,9 +94,12 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   String countrycode;
   CountryCode code;
 
-  fill() {
+  UserModel userData;
+  fill() async {
+    await context.read<HomeProvider>().getData();
+    userData = context.read<HomeProvider>().userData;
     setState(() {
-      _emailCtrl.text = widget.userData.email;
+      _emailCtrl.text = userData.email;
     });
   }
 
@@ -106,13 +107,22 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 769) {
-        return _buildPhone(false);
-      } else {
-        return _buildWeb();
-      }
+    return Consumer<HomeProvider>(builder: (context, data, child) {
+      return data.homeState == HomeState.Loaded
+          ? LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxWidth < 769) {
+                return _buildPhone(false);
+              } else {
+                return _buildWeb();
+              }
+            })
+          : data.homeState == HomeState.Error
+              ? ErrorCard(
+                  text: data.errorText,
+                  ontab: () => NavigateFunction()
+                      .withqueryReplace(Navigate.createProfilePage))
+              : LoadingLottie();
     });
   }
 
@@ -255,11 +265,11 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                             // return null;
                           },
                         ),
-                        if (widget.userData.email != null)
+                        if (userData.email != null)
                           SizedBox(
                             height: 8.h,
                           ),
-                        if (widget.userData.email != null)
+                        if (userData.email != null)
                           Row(
                             children: [
                               Container(
@@ -906,7 +916,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     }
     var network = UserNetwork();
     var userData;
-    if (widget.userData.email != null) {
+    if (userData.email != null) {
       userData = {
         "first_name": _firstNameCtrl.text,
         "last_name": _lastNameCtrl.text,

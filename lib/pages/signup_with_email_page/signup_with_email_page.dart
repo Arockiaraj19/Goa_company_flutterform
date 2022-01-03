@@ -109,8 +109,10 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
         "isMob": false,
         "isSignUp": true
       });
-      NavigateFunction()
-          .withoutquery(Navigate.otpPage, {"otpData": data, "isforget": true});
+      NavigateFunction().withquery(
+        Navigate.otpPage +
+            "?ovalue=${_emailCtrl.text}&isforget=${true}&oid=${result.user_id}&oisMob=${false}&oisSignUp=${true}",
+      );
     } catch (e) {
       setState(() {
         loading = false;
@@ -129,11 +131,16 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
       OtpModel data = OtpModel.fromJson(
           {"value": _emailCtrl.text, "isMob": false, "isSignUp": true});
       result.statusDetails == 1
-          ? NavigateFunction().withoutquery(
-              Navigate.otpPage, {"otpData": data, "isforget": false})
+          ? NavigateFunction().withquery(
+              Navigate.otpPage +
+                  "?ovalue=${_emailCtrl.text}&isforget=${false}&oid="
+                      "&oisMob=${false}&oisSignUp=${true}",
+            )
           : result.statusDetails == 2
-              ? NavigateFunction().withoutquery(Navigate.addingPasswordPage,
-                  {"email": _emailCtrl.text, "isforget": false})
+              ? NavigateFunction().withquery(
+                  Navigate.addingPasswordPage +
+                      "?email=${_emailCtrl.text}&isforget=${false}",
+                )
               : NavigateFunction().withquery(Navigate.loginPage);
     } catch (e) {
       setState(() {

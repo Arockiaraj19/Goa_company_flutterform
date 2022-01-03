@@ -16,9 +16,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddingPasswordForSignUp extends StatefulWidget {
   final String email;
-  final ResponseSubmitOtp otpdata;
+  final String omsg;
+  final String oemail;
+  final String ootp_id;
+  final String ouser_id;
   final bool isforget;
-  AddingPasswordForSignUp({Key key, this.email, this.otpdata, this.isforget})
+  AddingPasswordForSignUp(
+      {Key key,
+      this.email,
+      this.omsg,
+      this.oemail,
+      this.ootp_id,
+      this.ouser_id,
+      this.isforget})
       : super(key: key);
 
   @override
@@ -49,7 +59,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
   void initState() {
     super.initState();
     print("otp data correct a varuthaaaa");
-    print(widget.otpdata);
+   
     print("boolean enna varuthu");
     print(widget.isforget);
   }
@@ -125,7 +135,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
     });
     try {
       var result = await ForgetPassword().forgetResetPassword(
-          widget.otpdata.otp_id, widget.otpdata.user_id, _password1Ctrl.text);
+          widget.ootp_id, widget.ouser_id, _password1Ctrl.text);
       NavigateFunction().withquery(Navigate.success);
     } catch (e) {
       setState(() {

@@ -48,7 +48,8 @@ class _NotificationState extends State<NotificationPage> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.all(15.0.w),
+                              padding:
+                                  EdgeInsets.all(widget.onweb ? 0 : 15.0.w),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -105,7 +106,7 @@ class _NotificationState extends State<NotificationPage> {
                                               });
                                             },
                                             icon: Icon(
-                                                Icons.check_circle_outlined))
+                                                Icons.check_circle_outlined,color: Colors.black,))
                                       ],
                                     ),
                                   if (deleteId.length != 0)

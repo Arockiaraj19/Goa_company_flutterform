@@ -16,12 +16,15 @@ import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
 import 'package:dating_app/pages/profile_page/widgets/percentage_bar.dart';
 import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/date_picker_input.dart';
 import 'package:dating_app/shared/helpers.dart';
 import 'package:dating_app/shared/helpers/check_persentage.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/image_upload_alert.dart';
 import 'package:dating_app/shared/widgets/input_field.dart';
@@ -33,13 +36,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 import 'package:dio/dio.dart';
 
 class EditProfilePage extends StatefulWidget {
-  final UserModel userdata;
-  EditProfilePage({Key key, this.userdata}) : super(key: key);
-
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
@@ -114,29 +115,46 @@ class _EditProfilePageState extends State<EditProfilePage> {
   XFile selectedUserAvatar = null;
 
   XFile selectedUserPic = null;
-
+  UserModel userData;
   fill() async {
-    _firstNameCtrl.text = widget.userdata.firstName;
-    _lastNameCtrl.text = widget.userdata.lastName;
+    await context.read<HomeProvider>().getData();
+    userData = context.read<HomeProvider>().userData;
+    _firstNameCtrl.text = userData.firstName;
+    _lastNameCtrl.text = userData.lastName;
 
-    _bioCtrl.text = widget.userdata.bio ?? "";
+    _bioCtrl.text = userData.bio ?? "";
     _heightCtrl.text =
-        widget.userdata.height == null ? "" : widget.userdata.height.toString();
+        userData.height == null ? "" : userData.height.toString();
     _weightCtrl.text =
-        widget.userdata.weight == null ? "" : widget.userdata.weight.toString();
-    dropdownProfessionValue = widget.userdata.profession.first;
-    // selectedMenuIndex = widget.userdata.gender;
-    selectedDate = DateTime.parse(widget.userdata.dob);
+        userData.weight == null ? "" : userData.weight.toString();
+    dropdownProfessionValue = userData.profession.first;
+    // selectedMenuIndex = userData.gender;
+    selectedDate = DateTime.parse(userData.dob);
     _dobInputCtrl.value =
         TextEditingValue(text: DateFormat.yMMMd().format(selectedDate));
-    for (var i = 0; i < widget.userdata.profileImage.length; i++) {
-      alreadyimage[i] = widget.userdata.profileImage[i];
+    for (var i = 0; i < userData.profileImage.length; i++) {
+      alreadyimage[i] = userData.profileImage[i];
     }
+    _future = GenderNetwork().getGenderData();
+    if (interestData == null) {
+      interestData = UserNetwork().getUserInterests();
+      hobbyData = UserNetwork().getUserHobbies();
+    }
+    textEditingController.addListener(() {
+      if (textEditingController.text != null) {
+        fillHobbies();
+      }
+    });
+    textEditingController1.addListener(() {
+      if (textEditingController1.text != null) {
+        fillInterests();
+      }
+    });
   }
 
   fillHobbies() {
     for (int i = 0; i < hobbyData1.length; i++) {
-      if (widget.userdata.hobbies.contains(hobbyData1[i].hobby_id)) {
+      if (userData.hobbies.contains(hobbyData1[i].hobby_id)) {
         hobbieBool[i] = true;
         hobbieSelected.add(hobbyData1[i].hobby_id);
         var val = {
@@ -150,7 +168,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   fillInterests() {
     for (int i = 0; i < interestData1.length; i++) {
-      if (widget.userdata.interests.contains(interestData1[i].interest_id)) {
+      if (userData.interests.contains(interestData1[i].interest_id)) {
         interestBool[i] = true;
         interestSelected.add(interestData1[i].interest_id);
         var val = {
@@ -173,23 +191,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.initState();
     time = 0;
     print("edit page kkulla data varuthaa");
-    print(widget.userdata.firstName);
+
     fill();
-    _future = GenderNetwork().getGenderData();
-    if (interestData == null) {
-      interestData = UserNetwork().getUserInterests();
-      hobbyData = UserNetwork().getUserHobbies();
-    }
-    textEditingController.addListener(() {
-      if (textEditingController.text != null) {
-        fillHobbies();
-      }
-    });
-    textEditingController1.addListener(() {
-      if (textEditingController1.text != null) {
-        fillInterests();
-      }
-    });
   }
 
   int time = 0;
@@ -197,13 +200,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
   List<String> uploadedImages = [];
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 769) {
-        return _buildPhone();
-      } else {
-        return _buildWeb(true);
-      }
+    return Consumer<HomeProvider>(builder: (context, data, child) {
+      return data.homeState == HomeState.Loaded
+          ? LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxWidth < 769) {
+                return _buildPhone();
+              } else {
+                return _buildWeb(true);
+              }
+            })
+          : data.homeState == HomeState.Error
+              ? ErrorCard(
+                  text: data.errorText,
+                  ontab: () => NavigateFunction()
+                      .withqueryReplace(Navigate.editProfilePage))
+              : LoadingLottie();
     });
   }
 
@@ -311,7 +323,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: Column(
           children: [
             FutureBuilder(
-              future: Persentage().checkPresentage(widget.userdata),
+              future: Persentage().checkPresentage(userData),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   return PercentageBar(
@@ -320,7 +332,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     onTap: () {
                       selectUserPic();
                     },
-                    image: widget.userdata.identificationImage,
+                    image: userData.identificationImage,
                     selectedUserPic: selectedUserPic,
                     onTapClose: () {
                       setState(() {
@@ -335,7 +347,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     onTap: () {
                       selectUserPic();
                     },
-                    image: widget.userdata.identificationImage,
+                    image: userData.identificationImage,
                     selectedUserPic: selectedUserPic,
                     onTapClose: () {
                       setState(() {
@@ -352,7 +364,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 Container(
                   margin: EdgeInsetsDirectional.only(top: 5),
                   child: Text(
-                    widget.userdata.firstName ?? "Some thing wrong",
+                    userData.firstName ?? "Some thing wrong",
                     style: _textStyleforName,
                   ),
                 ),
@@ -499,10 +511,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             if (snapshot.hasData) {
                               List<GenderModel> genderdata = snapshot.data;
                               if (time == 0) {
-                                _selectedGenderid = widget.userdata.gender;
+                                _selectedGenderid = userData.gender;
                                 genderdetail = genderdata.firstWhere(
-                                    (element) =>
-                                        element.id == widget.userdata.gender);
+                                    (element) => element.id == userData.gender);
                                 print("inga na select pannathu varuthaa");
                                 print(_selectedGenderid);
                                 print(genderdetail);
@@ -768,6 +779,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 fontWeight: FontWeight.bold,
                 borderRadius: BorderRadius.circular(5),
                 onPressed: () async {
+                  UserModel usergetdata = userData;
                   if (hobbieSelected.length < 2 &&
                       interestSelected.length < 2) {
                     showtoast("Please choose minimum 2 interests & hobbies");
@@ -781,12 +793,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     String result;
                     try {
                       result = selectedUserPic == null
-                          ? widget.userdata.identificationImage
+                          ? usergetdata.identificationImage
                           : await UploadImage().uploadImage(
                               selectedUserPic.path, "identification");
                       if (selectedUserPic != null) {
                         await UploadImage().deleteImage(
-                            [widget.userdata.identificationImage],
+                            [usergetdata.identificationImage],
                             [result],
                             "identification");
                       }
@@ -806,7 +818,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     print("album enna varuthu");
                     print(uploadedImages);
                     List<String> albumimage = uploadedImages.length == 0
-                        ? widget.userdata.profileImage
+                        ? usergetdata.profileImage
                         : uploadedImages;
                     var userData = {
                       "first_name": _firstNameCtrl.text,
@@ -869,14 +881,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
       if (selectedalbumAvatar.any((element) => element != null)) {
         // await uploadedImages.forEach((element) {
-        //   if (!widget.userdata.profileImage.contains(element)) {
+        //   if (!userData.profileImage.contains(element)) {
         //     deletedImage.add(element);
         //   }
         // });
 
         print("user gallery deleted image call aakuthaa");
-        await UploadImage().deleteImage(
-            widget.userdata.profileImage, uploadedImages, "user_gallery");
+        await UploadImage()
+            .deleteImage(userData.profileImage, uploadedImages, "user_gallery");
       }
     } catch (e) {
       throw e;
@@ -935,6 +947,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           );
         });
   }
+
+  ScrollController _scrollController = ScrollController();
 
   Widget _buildWeb(onWeb) {
     var _leadingHeading = TextStyle(
@@ -1006,620 +1020,651 @@ class _EditProfilePageState extends State<EditProfilePage> {
             navigationRail: NavigationMenu(
               currentTabIndex: 2,
             ),
-            body: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Container(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 0),
-                          child: Column(children: [
-                            FutureBuilder(
-                              future:
-                                  Persentage().checkPresentage(widget.userdata),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  return PercentageBar(
-                                    percentage: snapshot.data,
-                                    onEditProfilePage: true,
-                                    onTap: () {
-                                      selectUserPic();
-                                    },
-                                    image: widget.userdata.identificationImage,
-                                    selectedUserPic: selectedUserPic,
-                                    onTapClose: () {
-                                      setState(() {
-                                        selectedUserPic = null;
-                                      });
-                                    },
-                                  );
-                                } else {
-                                  return PercentageBar(
-                                    percentage: 0,
-                                    onEditProfilePage: true,
-                                    onTap: () {
-                                      selectUserPic();
-                                    },
-                                    image: widget.userdata.identificationImage,
-                                    selectedUserPic: selectedUserPic,
-                                    onTapClose: () {
-                                      setState(() {
-                                        selectedUserPic = null;
-                                      });
-                                    },
-                                  );
-                                }
-                              },
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: EdgeInsetsDirectional.only(top: 5),
-                                  child: Text(
-                                    // widget.userdata.firstName ??
-                                    "Some thing wrong",
-                                    style: _textStyleforName,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            // SocialMediaRowList(),
-                            Container(
-                                padding: EdgeInsetsDirectional.only(
-                                    start: 10, end: 10, top: 10),
-                                child: Column(
-                                  children: [
-                                    InputField(
-                                      onTap: () {},
-                                      controller: _firstNameCtrl,
-                                      padding: EdgeInsets.all(10),
-                                      validators: (String value) {
-                                        if (value.isEmpty)
-                                          return 'Required field';
-                                        return null;
+            body: Scrollbar(
+              controller: _scrollController,
+              isAlwaysShown: true,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Form(
+                  key: _formKey,
+                  child: Container(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 0),
+                            child: Column(children: [
+                              FutureBuilder(
+                                future: Persentage().checkPresentage(userData),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    return PercentageBar(
+                                      percentage: snapshot.data,
+                                      onEditProfilePage: true,
+                                      onTap: () {
+                                        selectUserPic();
                                       },
-                                      hintText: 'Your first name',
-                                    ),
-                                    InputField(
-                                      onTap: () {},
-                                      controller: _lastNameCtrl,
-                                      padding: EdgeInsets.all(10),
-                                      validators: (String value) {
-                                        if (value.isEmpty)
-                                          return 'Required field';
-                                        return null;
-                                      },
-                                      hintText: 'Your last name',
-                                    ),
-                                    // InputField(
-                                    //   onTap: () {},
-                                    //   controller: _emailCtrl,
-                                    //   padding: EdgeInsets.all(10),
-                                    //   validators: (String value) {
-                                    //     if (value.isEmpty) return 'Required field';
-                                    //     return null;
-                                    //   },
-                                    //   hintText: 'Email',
-                                    // ),
-                                    InputField(
-                                      onTap: () {},
-                                      controller: _bioCtrl,
-                                      maxLines: 3,
-                                      padding: EdgeInsets.all(10),
-                                      validators: (String value) {
-                                        if (value.isEmpty)
-                                          return 'Required field';
-                                        return null;
-                                      },
-                                      hintText: 'Bio',
-                                    ),
-                                    DatePickerInput(
-                                      hintText: 'DD-MM-YYYY',
-                                      controller: _dobInputCtrl,
-                                      onSelect: (DateTime date) {
-                                        removeFocus(context);
+                                      image: userData.identificationImage,
+                                      selectedUserPic: selectedUserPic,
+                                      onTapClose: () {
                                         setState(() {
-                                          selectedDate = date;
+                                          selectedUserPic = null;
                                         });
                                       },
+                                    );
+                                  } else {
+                                    return PercentageBar(
+                                      percentage: 0,
+                                      onEditProfilePage: true,
+                                      onTap: () {
+                                        selectUserPic();
+                                      },
+                                      image: userData.identificationImage,
+                                      selectedUserPic: selectedUserPic,
+                                      onTapClose: () {
+                                        setState(() {
+                                          selectedUserPic = null;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsetsDirectional.only(top: 5),
+                                    child: Text(
+                                      // userData.firstName ??
+                                      "Some thing wrong",
+                                      style: _textStyleforName,
                                     ),
-                                    Container(
-                                        margin: EdgeInsets.all(10),
-                                        padding: EdgeInsetsDirectional.only(
-                                            start: 10, end: 10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: <BoxShadow>[
-                                            BoxShadow(
-                                              color: Colors.grey.shade200,
-                                              blurRadius: 1.0,
-                                              offset: Offset(0, 3),
-                                            )
-                                          ],
-                                          borderRadius:
-                                              BorderRadius.circular(5),
+                                  ),
+                                ],
+                              ),
+                              // SocialMediaRowList(),
+                              Container(
+                                  padding: EdgeInsetsDirectional.only(
+                                      start: 10, end: 10, top: 10),
+                                  child: Column(
+                                    children: [
+                                      InputField(
+                                        onTap: () {},
+                                        controller: _firstNameCtrl,
+                                        padding: EdgeInsets.all(10),
+                                        validators: (String value) {
+                                          if (value.isEmpty)
+                                            return 'Required field';
+                                          return null;
+                                        },
+                                        hintText: 'Your first name',
+                                      ),
+                                      InputField(
+                                        onTap: () {},
+                                        controller: _lastNameCtrl,
+                                        padding: EdgeInsets.all(10),
+                                        validators: (String value) {
+                                          if (value.isEmpty)
+                                            return 'Required field';
+                                          return null;
+                                        },
+                                        hintText: 'Your last name',
+                                      ),
+                                      // InputField(
+                                      //   onTap: () {},
+                                      //   controller: _emailCtrl,
+                                      //   padding: EdgeInsets.all(10),
+                                      //   validators: (String value) {
+                                      //     if (value.isEmpty) return 'Required field';
+                                      //     return null;
+                                      //   },
+                                      //   hintText: 'Email',
+                                      // ),
+                                      InputField(
+                                        onTap: () {},
+                                        controller: _bioCtrl,
+                                        maxLines: 3,
+                                        padding: EdgeInsets.all(10),
+                                        validators: (String value) {
+                                          if (value.isEmpty)
+                                            return 'Required field';
+                                          return null;
+                                        },
+                                        hintText: 'Bio',
+                                      ),
+                                      DatePickerInput(
+                                        hintText: 'DD-MM-YYYY',
+                                        controller: _dobInputCtrl,
+                                        onSelect: (DateTime date) {
+                                          removeFocus(context);
+                                          setState(() {
+                                            selectedDate = date;
+                                          });
+                                        },
+                                      ),
+                                      Container(
+                                          margin: EdgeInsets.all(10),
+                                          padding: EdgeInsetsDirectional.only(
+                                              start: 10, end: 10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: <BoxShadow>[
+                                              BoxShadow(
+                                                color: Colors.grey.shade200,
+                                                blurRadius: 1.0,
+                                                offset: Offset(0, 3),
+                                              )
+                                            ],
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: DropdownButton<dynamic>(
+                                            isExpanded: true,
+                                            value: dropdownProfessionValue,
+                                            hint: Text("Profession"),
+                                            icon: Icon(Icons.arrow_drop_down),
+                                            elevation: 16,
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                            underline: Container(),
+                                            onChanged: (newValue) {
+                                              setState(() {
+                                                dropdownProfessionValue =
+                                                    newValue;
+                                              });
+                                            },
+                                            items: itemdate
+                                                .map<DropdownMenuItem<dynamic>>(
+                                                    (dynamic value) {
+                                              return DropdownMenuItem<dynamic>(
+                                                value: value,
+                                                child: Text(value
+                                                    // style: TextStyle(fontSize: 28.sp),
+                                                    ),
+                                              );
+                                            }).toList(),
+                                          )),
+                                      InputField(
+                                        onTap: () {},
+                                        controller: _heightCtrl,
+                                        inputType: TextInputType.number,
+                                        padding: EdgeInsets.all(10),
+                                        validators: (String value) {
+                                          if (value.isEmpty)
+                                            return 'Required field';
+                                          return null;
+                                        },
+                                        hintText: 'Height',
+                                        suffixIcon: Text("cm  "),
+                                      ),
+                                      InputField(
+                                        onTap: () {},
+                                        controller: _weightCtrl,
+                                        padding: EdgeInsets.all(10),
+                                        inputType: TextInputType.number,
+                                        validators: (String value) {
+                                          if (value.isEmpty)
+                                            return 'Required field';
+                                          return null;
+                                        },
+                                        hintText: 'Weight',
+                                        suffixIcon: Text("kg  "),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Container(
+                                              margin:
+                                                  EdgeInsetsDirectional.only(
+                                                      start: 20,
+                                                      top: 5,
+                                                      bottom: 5),
+                                              child: Text(
+                                                "Gender",
+                                                style: _textForsubHeading,
+                                              )),
+                                        ],
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: FutureBuilder(
+                                          future: _future,
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot snapshot) {
+                                            if (snapshot.hasData) {
+                                              List<GenderModel> genderdata =
+                                                  snapshot.data;
+                                              if (time == 0) {
+                                                _selectedGenderid =
+                                                    userData.gender;
+                                                genderdetail = genderdata
+                                                    .firstWhere((element) =>
+                                                        element.id ==
+                                                        userData.gender);
+                                                print(
+                                                    "inga na select pannathu varuthaa");
+                                                print(_selectedGenderid);
+                                                print(genderdetail);
+                                              }
+                                              return Padding(
+                                                padding:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 10, end: 10),
+                                                child: GridView.builder(
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    gridDelegate:
+                                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisSpacing:
+                                                                0.0,
+                                                            mainAxisSpacing:
+                                                                0.0,
+                                                            crossAxisCount: 5,
+                                                            childAspectRatio:
+                                                                2.8),
+                                                    itemCount:
+                                                        genderdata.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return GenderEditCard(
+                                                        data: genderdata[index],
+                                                        id: _selectedGenderid,
+                                                        onTap: () async {
+                                                          setState(() {
+                                                            _selectedGenderid =
+                                                                genderdata[
+                                                                        index]
+                                                                    .id;
+                                                            genderdetail =
+                                                                genderdata[
+                                                                    index];
+                                                          });
+                                                          time++;
+                                                        },
+                                                      );
+                                                    }),
+                                              );
+                                            } else {
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
                                         ),
-                                        child: DropdownButton<dynamic>(
-                                          isExpanded: true,
-                                          value: dropdownProfessionValue,
-                                          hint: Text("Profession"),
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          elevation: 16,
-                                          style: TextStyle(color: Colors.black),
-                                          underline: Container(),
-                                          onChanged: (newValue) {
+                                      ),
+                                    ],
+                                  )),
+                            ]),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 0),
+                            child: Column(children: [
+                              Row(
+                                children: [
+                                  Container(
+                                      padding: EdgeInsetsDirectional.only(
+                                          start: 30, top: 5, bottom: 20),
+                                      child: Text("Interest",
+                                          style: _textForsubHeading)),
+                                ],
+                              ),
+                              FutureBuilder(
+                                  future: interestData,
+                                  builder: (context,
+                                      AsyncSnapshot<List<InterestModel>>
+                                          snapshot) {
+                                    if (snapshot.hasData) {
+                                      addInterestBool(snapshot.data.length);
+                                      interestData1 = snapshot.data;
+                                      textEditingController1.text = "start";
+                                      return Container(
+                                          height: 200,
+                                          padding: EdgeInsetsDirectional.only(
+                                              start: 20, end: 20),
+                                          child: GridView.builder(
+                                            shrinkWrap: true,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisSpacing: 0.0,
+                                                    mainAxisSpacing: 0.0,
+                                                    crossAxisCount: 5,
+                                                    childAspectRatio: 2.8),
+                                            itemCount: snapshot.data.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return InterestBox(
+                                                fontSize: ScreenUtil().setSp(
+                                                    MainTheme
+                                                        .mPrimaryContentfontSize),
+                                                fillColor: interestBool[index]
+                                                    ? MainTheme.primaryColor
+                                                    : Colors.white,
+                                                color: MainTheme.primaryColor,
+                                                title:
+                                                    snapshot.data[index].title,
+                                                onTap: () {
+                                                  if (interestBool[index] ==
+                                                      true) {
+                                                    setState(() {
+                                                      interestBool[index] =
+                                                          false;
+                                                    });
+                                                    interestSelected.remove(
+                                                        snapshot.data[index]
+                                                            .interest_id);
+
+                                                    interestSelected1.remove(
+                                                        snapshot.data[index]
+                                                            .toMap());
+                                                  } else {
+                                                    setState(() {
+                                                      interestBool[index] =
+                                                          true;
+                                                    });
+                                                    interestSelected.add(
+                                                        snapshot.data[index]
+                                                            .interest_id);
+
+                                                    interestSelected1.add(
+                                                        snapshot.data[index]
+                                                            .toMap());
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          ));
+                                    } else
+                                      return Container(
+                                        height: 200,
+                                        alignment: Alignment.center,
+                                        child: CircularProgressIndicator(),
+                                      );
+                                  }),
+                              Row(
+                                children: [
+                                  Container(
+                                      padding: EdgeInsetsDirectional.only(
+                                          start: 30, top: 10, bottom: 20),
+                                      child: Text("Hobbies",
+                                          style: _textForsubHeading)),
+                                ],
+                              ),
+                              FutureBuilder(
+                                  future: hobbyData,
+                                  builder: (context,
+                                      AsyncSnapshot<List<HobbyModel>>
+                                          snapshot) {
+                                    if (snapshot.hasData) {
+                                      addHobbyBool(snapshot.data.length);
+                                      hobbyData1 = snapshot.data;
+                                      textEditingController.text = "start";
+                                      return Container(
+                                          height: 200,
+                                          padding: EdgeInsetsDirectional.only(
+                                              start: 20, end: 20),
+                                          child: GridView.builder(
+                                            shrinkWrap: true,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisSpacing: 0.0,
+                                                    mainAxisSpacing: 0.0,
+                                                    crossAxisCount: 5,
+                                                    childAspectRatio: 2.8),
+                                            itemCount: snapshot.data.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return InterestBox(
+                                                fontSize: ScreenUtil().setSp(
+                                                    MainTheme
+                                                        .mPrimaryContentfontSize),
+                                                fillColor: hobbieBool[index]
+                                                    ? MainTheme.primaryColor
+                                                    : Colors.white,
+                                                color: MainTheme.primaryColor,
+                                                title:
+                                                    snapshot.data[index].title,
+                                                onTap: () {
+                                                  if (hobbieBool[index] ==
+                                                      true) {
+                                                    setState(() {
+                                                      hobbieBool[index] = false;
+                                                    });
+                                                    hobbieSelected.remove(
+                                                        snapshot.data[index]
+                                                            .hobby_id);
+                                                    var val = {
+                                                      "hobby_id": snapshot
+                                                          .data[index].hobby_id,
+                                                      "title": snapshot
+                                                          .data[index].title
+                                                    };
+                                                    hobbieSelected1.remove(val);
+                                                  } else {
+                                                    setState(() {
+                                                      hobbieBool[index] = true;
+                                                    });
+                                                    hobbieSelected.add(snapshot
+                                                        .data[index].hobby_id);
+                                                    var val = {
+                                                      "hobby_id": snapshot
+                                                          .data[index].hobby_id,
+                                                      "title": snapshot
+                                                          .data[index].title
+                                                    };
+                                                    hobbieSelected1.add(val);
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          ));
+                                    } else
+                                      return Container(
+                                        height: 200,
+                                        alignment: Alignment.center,
+                                        child: CircularProgressIndicator(),
+                                      );
+                                  }),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    child: Container(
+                                        child: Text("Album",
+                                            style: _textForsubHeading)),
+                                  )
+                                ],
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                child: Container(
+                                    color: Colors.grey[200],
+                                    height: MediaQuery.of(context).size.height /
+                                        2.7,
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: EdgeInsets.all(10),
+                                    child: StaggeredGridView.countBuilder(
+                                      crossAxisCount: 3,
+                                      itemCount: 6,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return AlbumImageCard(
+                                          alreadyimage: alreadyimage[index],
+                                          onTap: () async {
+                                            selectalbumImage(index);
+                                          },
+                                          selectedUserAvatar:
+                                              selectedalbumAvatar[index],
+                                          onTapClose: () {
                                             setState(() {
-                                              dropdownProfessionValue =
-                                                  newValue;
+                                              alreadyimage[index] = null;
+                                              selectedalbumAvatar[index] = null;
                                             });
                                           },
-                                          items: itemdate
-                                              .map<DropdownMenuItem<dynamic>>(
-                                                  (dynamic value) {
-                                            return DropdownMenuItem<dynamic>(
-                                              value: value,
-                                              child: Text(value
-                                                  // style: TextStyle(fontSize: 28.sp),
-                                                  ),
-                                            );
-                                          }).toList(),
-                                        )),
-                                    InputField(
-                                      onTap: () {},
-                                      controller: _heightCtrl,
-                                      inputType: TextInputType.number,
-                                      padding: EdgeInsets.all(10),
-                                      validators: (String value) {
-                                        if (value.isEmpty)
-                                          return 'Required field';
-                                        return null;
+                                        );
                                       },
-                                      hintText: 'Height',
-                                      suffixIcon: Text("cm  "),
-                                    ),
-                                    InputField(
-                                      onTap: () {},
-                                      controller: _weightCtrl,
-                                      padding: EdgeInsets.all(10),
-                                      inputType: TextInputType.number,
-                                      validators: (String value) {
-                                        if (value.isEmpty)
-                                          return 'Required field';
-                                        return null;
-                                      },
-                                      hintText: 'Weight',
-                                      suffixIcon: Text("kg  "),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                            margin: EdgeInsetsDirectional.only(
-                                                start: 20, top: 5, bottom: 5),
-                                            child: Text(
-                                              "Gender",
-                                              style: _textForsubHeading,
-                                            )),
-                                      ],
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: FutureBuilder(
-                                        future: _future,
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot snapshot) {
-                                          if (snapshot.hasData) {
-                                            List<GenderModel> genderdata =
-                                                snapshot.data;
-                                            if (time == 0) {
-                                              _selectedGenderid =
-                                                  widget.userdata.gender;
-                                              genderdetail = genderdata
-                                                  .firstWhere((element) =>
-                                                      element.id ==
-                                                      widget.userdata.gender);
-                                              print(
-                                                  "inga na select pannathu varuthaa");
-                                              print(_selectedGenderid);
-                                              print(genderdetail);
+                                      staggeredTileBuilder: (int index) =>
+                                          StaggeredTile.fit(1),
+                                      mainAxisSpacing: 0,
+                                      crossAxisSpacing: 0,
+                                    )),
+                              ),
+                              Container(
+                                  height: 60,
+                                  color: Colors.white,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      GradientButton(
+                                        height: onWeb ? 35 : 110.w,
+                                        fontSize: onWeb ? inputFont : 40.sp,
+                                        width: onWeb ? 130 : 500.w,
+                                        borderRadius: BorderRadius.circular(
+                                            onWeb ? 5 : 20.sp),
+                                        margin: EdgeInsets.all(0),
+                                        name: "Cancel",
+                                        buttonColor: Colors.white,
+                                        active: true,
+                                        color: MainTheme.primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      GradientButton(
+                                        margin: EdgeInsets.all(0),
+                                        height: onWeb ? 35 : 110.w,
+                                        fontSize: onWeb ? inputFont : 40.sp,
+                                        width: onWeb ? 130 : 500.w,
+                                        borderRadius: BorderRadius.circular(
+                                            onWeb ? 5 : 20.sp),
+                                        name:
+                                            loading ? "Loading..." : "Confirm",
+                                        gradient: MainTheme.loginBtnGradient,
+                                        active: true,
+                                        isLoading: loading,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        onPressed: () async {
+                                          UserModel usergetdata = userData;
+                                          if (hobbieSelected.length < 2 &&
+                                              interestSelected.length < 2) {
+                                            showtoast(
+                                                "Please choose minimum 2 interests & hobbies");
+                                          }
+                                          if (_formKey.currentState
+                                                  .validate() &&
+                                              interestSelected.length > 1 &&
+                                              hobbieSelected.length > 1) {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                            String result;
+                                            try {
+                                              result = selectedUserPic == null
+                                                  ? usergetdata
+                                                      .identificationImage
+                                                  : await UploadImage()
+                                                      .uploadImage(
+                                                          selectedUserPic.path,
+                                                          "identification");
+                                              if (selectedUserPic != null) {
+                                                await UploadImage().deleteImage(
+                                                    [
+                                                      usergetdata
+                                                          .identificationImage
+                                                    ],
+                                                    [
+                                                      result
+                                                    ],
+                                                    "identification");
+                                              }
+                                            } on DioError catch (e) {
+                                              setState(() {
+                                                loading = false;
+                                              });
                                             }
-                                            return Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.only(
-                                                      start: 10, end: 10),
-                                              child: GridView.builder(
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  gridDelegate:
-                                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                                          crossAxisSpacing: 0.0,
-                                                          mainAxisSpacing: 0.0,
-                                                          crossAxisCount: 5,
-                                                          childAspectRatio:
-                                                              2.8),
-                                                  itemCount: genderdata.length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return GenderEditCard(
-                                                      data: genderdata[index],
-                                                      id: _selectedGenderid,
-                                                      onTap: () async {
-                                                        setState(() {
-                                                          _selectedGenderid =
-                                                              genderdata[index]
-                                                                  .id;
-                                                          genderdetail =
-                                                              genderdata[index];
-                                                        });
-                                                        time++;
-                                                      },
-                                                    );
-                                                  }),
-                                            );
-                                          } else {
-                                            return Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
+                                            try {
+                                              await goToLookingForPagePage();
+                                            } on DioError catch (e) {
+                                              setState(() {
+                                                loading = false;
+                                              });
+                                            }
+
+                                            print("album enna varuthu");
+                                            print(uploadedImages);
+                                            List<String> albumimage =
+                                                uploadedImages.length == 0
+                                                    ? usergetdata.profileImage
+                                                    : uploadedImages;
+                                            var userData = {
+                                              "first_name": _firstNameCtrl.text,
+                                              "last_name": _lastNameCtrl
+                                                  .text, //"email":_emailCtrl.text,
+                                              "profession": [
+                                                "$dropdownProfessionValue"
+                                              ],
+                                              "dob": selectedDate.toString(),
+                                              "gender_id":
+                                                  _selectedGenderid.toString(),
+                                              "gender_details": [
+                                                genderdetail.toMap()
+                                              ],
+                                              "height":
+                                                  int.parse(_heightCtrl.text),
+                                              "weight":
+                                                  int.parse(_weightCtrl.text),
+                                              "bio": _bioCtrl.text,
+                                              "interests": interestSelected,
+                                              "hobbies": hobbieSelected,
+                                              "hobby_details": hobbieSelected1,
+                                              "interest_details":
+                                                  interestSelected1,
+                                              "identification_image": result,
+                                              "profile_image": albumimage,
+                                            };
+                                            print("edit profile userdata");
+                                            print(userData);
+                                            try {
+                                              UserModel data =
+                                                  await UserNetwork()
+                                                      .patchUserData(userData);
+                                              data != null
+                                                  ? await context
+                                                      .read<HomeProvider>()
+                                                      .replaceData(data)
+                                                  : null;
+                                              print("ool");
+                                              NavigateFunction()
+                                                  .withqueryReplace(
+                                                      Navigate.profilePage);
+                                            } on DioError catch (e) {
+                                              setState(() {
+                                                loading = false;
+                                              });
+                                            }
                                           }
                                         },
                                       ),
-                                    ),
-                                  ],
-                                )),
-                          ]),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 0),
-                          child: Column(children: [
-                            Row(
-                              children: [
-                                Container(
-                                    padding: EdgeInsetsDirectional.only(
-                                        start: 30, top: 5, bottom: 20),
-                                    child: Text("Interest",
-                                        style: _textForsubHeading)),
-                              ],
-                            ),
-                            FutureBuilder(
-                                future: interestData,
-                                builder: (context,
-                                    AsyncSnapshot<List<InterestModel>>
-                                        snapshot) {
-                                  if (snapshot.hasData) {
-                                    addInterestBool(snapshot.data.length);
-                                    interestData1 = snapshot.data;
-                                    textEditingController1.text = "start";
-                                    return Container(
-                                        height: 200,
-                                        padding: EdgeInsetsDirectional.only(
-                                            start: 20, end: 20),
-                                        child: GridView.builder(
-                                          shrinkWrap: true,
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisSpacing: 0.0,
-                                                  mainAxisSpacing: 0.0,
-                                                  crossAxisCount: 5,
-                                                  childAspectRatio: 2.8),
-                                          itemCount: snapshot.data.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return InterestBox(
-                                              fontSize: ScreenUtil().setSp(
-                                                  MainTheme
-                                                      .mPrimaryContentfontSize),
-                                              fillColor: interestBool[index]
-                                                  ? MainTheme.primaryColor
-                                                  : Colors.white,
-                                              color: MainTheme.primaryColor,
-                                              title: snapshot.data[index].title,
-                                              onTap: () {
-                                                if (interestBool[index] ==
-                                                    true) {
-                                                  setState(() {
-                                                    interestBool[index] = false;
-                                                  });
-                                                  interestSelected.remove(
-                                                      snapshot.data[index]
-                                                          .interest_id);
-
-                                                  interestSelected1.remove(
-                                                      snapshot.data[index]
-                                                          .toMap());
-                                                } else {
-                                                  setState(() {
-                                                    interestBool[index] = true;
-                                                  });
-                                                  interestSelected.add(snapshot
-                                                      .data[index].interest_id);
-
-                                                  interestSelected1.add(snapshot
-                                                      .data[index]
-                                                      .toMap());
-                                                }
-                                              },
-                                            );
-                                          },
-                                        ));
-                                  } else
-                                    return Container(
-                                      height: 200,
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator(),
-                                    );
-                                }),
-                            Row(
-                              children: [
-                                Container(
-                                    padding: EdgeInsetsDirectional.only(
-                                        start: 30, top: 10, bottom: 20),
-                                    child: Text("Hobbies",
-                                        style: _textForsubHeading)),
-                              ],
-                            ),
-                            FutureBuilder(
-                                future: hobbyData,
-                                builder: (context,
-                                    AsyncSnapshot<List<HobbyModel>> snapshot) {
-                                  if (snapshot.hasData) {
-                                    addHobbyBool(snapshot.data.length);
-                                    hobbyData1 = snapshot.data;
-                                    textEditingController.text = "start";
-                                    return Container(
-                                        height: 200,
-                                        padding: EdgeInsetsDirectional.only(
-                                            start: 20, end: 20),
-                                        child: GridView.builder(
-                                          shrinkWrap: true,
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisSpacing: 0.0,
-                                                  mainAxisSpacing: 0.0,
-                                                  crossAxisCount: 5,
-                                                  childAspectRatio: 2.8),
-                                          itemCount: snapshot.data.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return InterestBox(
-                                              fontSize: ScreenUtil().setSp(
-                                                  MainTheme
-                                                      .mPrimaryContentfontSize),
-                                              fillColor: hobbieBool[index]
-                                                  ? MainTheme.primaryColor
-                                                  : Colors.white,
-                                              color: MainTheme.primaryColor,
-                                              title: snapshot.data[index].title,
-                                              onTap: () {
-                                                if (hobbieBool[index] == true) {
-                                                  setState(() {
-                                                    hobbieBool[index] = false;
-                                                  });
-                                                  hobbieSelected.remove(snapshot
-                                                      .data[index].hobby_id);
-                                                  var val = {
-                                                    "hobby_id": snapshot
-                                                        .data[index].hobby_id,
-                                                    "title": snapshot
-                                                        .data[index].title
-                                                  };
-                                                  hobbieSelected1.remove(val);
-                                                } else {
-                                                  setState(() {
-                                                    hobbieBool[index] = true;
-                                                  });
-                                                  hobbieSelected.add(snapshot
-                                                      .data[index].hobby_id);
-                                                  var val = {
-                                                    "hobby_id": snapshot
-                                                        .data[index].hobby_id,
-                                                    "title": snapshot
-                                                        .data[index].title
-                                                  };
-                                                  hobbieSelected1.add(val);
-                                                }
-                                              },
-                                            );
-                                          },
-                                        ));
-                                  } else
-                                    return Container(
-                                      height: 200,
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator(),
-                                    );
-                                }),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  child: Container(
-                                      child: Text("Album",
-                                          style: _textForsubHeading)),
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Container(
-                                  color: Colors.grey[200],
-                                  height:
-                                      MediaQuery.of(context).size.height / 2.7,
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: EdgeInsets.all(10),
-                                  child: StaggeredGridView.countBuilder(
-                                    crossAxisCount: 3,
-                                    itemCount: 6,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return AlbumImageCard(
-                                        alreadyimage: alreadyimage[index],
-                                        onTap: () async {
-                                          selectalbumImage(index);
-                                        },
-                                        selectedUserAvatar:
-                                            selectedalbumAvatar[index],
-                                        onTapClose: () {
-                                          setState(() {
-                                            alreadyimage[index] = null;
-                                            selectedalbumAvatar[index] = null;
-                                          });
-                                        },
-                                      );
-                                    },
-                                    staggeredTileBuilder: (int index) =>
-                                        StaggeredTile.fit(1),
-                                    mainAxisSpacing: 0,
-                                    crossAxisSpacing: 0,
+                                    ],
                                   )),
-                            ),
-                            Container(
-                                height: 60,
-                                color: Colors.white,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    GradientButton(
-                                      height: onWeb ? 35 : 110.w,
-                                      fontSize: onWeb ? inputFont : 40.sp,
-                                      width: onWeb ? 130 : 500.w,
-                                      borderRadius: BorderRadius.circular(
-                                          onWeb ? 5 : 20.sp),
-                                      margin: EdgeInsets.all(0),
-                                      name: "Cancel",
-                                      buttonColor: Colors.white,
-                                      active: true,
-                                      color: MainTheme.primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    GradientButton(
-                                      margin: EdgeInsets.all(0),
-                                      height: onWeb ? 35 : 110.w,
-                                      fontSize: onWeb ? inputFont : 40.sp,
-                                      width: onWeb ? 130 : 500.w,
-                                      borderRadius: BorderRadius.circular(
-                                          onWeb ? 5 : 20.sp),
-                                      name: loading ? "Loading..." : "Confirm",
-                                      gradient: MainTheme.loginBtnGradient,
-                                      active: true,
-                                      isLoading: loading,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      onPressed: () async {
-                                        if (hobbieSelected.length < 2 &&
-                                            interestSelected.length < 2) {
-                                          showtoast(
-                                              "Please choose minimum 2 interests & hobbies");
-                                        }
-                                        if (_formKey.currentState.validate() &&
-                                            interestSelected.length > 1 &&
-                                            hobbieSelected.length > 1) {
-                                          setState(() {
-                                            loading = true;
-                                          });
-                                          String result;
-                                          try {
-                                            result = selectedUserPic == null
-                                                ? widget.userdata
-                                                    .identificationImage
-                                                : await UploadImage()
-                                                    .uploadImage(
-                                                        selectedUserPic.path,
-                                                        "identification");
-                                            if (selectedUserPic != null) {
-                                              await UploadImage().deleteImage([
-                                                widget.userdata
-                                                    .identificationImage
-                                              ], [
-                                                result
-                                              ], "identification");
-                                            }
-                                          } on DioError catch (e) {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                          }
-                                          try {
-                                            await goToLookingForPagePage();
-                                          } on DioError catch (e) {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                          }
-
-                                          print("album enna varuthu");
-                                          print(uploadedImages);
-                                          List<String> albumimage =
-                                              uploadedImages.length == 0
-                                                  ? widget.userdata.profileImage
-                                                  : uploadedImages;
-                                          var userData = {
-                                            "first_name": _firstNameCtrl.text,
-                                            "last_name": _lastNameCtrl
-                                                .text, //"email":_emailCtrl.text,
-                                            "profession": [
-                                              "$dropdownProfessionValue"
-                                            ],
-                                            "dob": selectedDate.toString(),
-                                            "gender_id":
-                                                _selectedGenderid.toString(),
-                                            "gender_details": [
-                                              genderdetail.toMap()
-                                            ],
-                                            "height":
-                                                int.parse(_heightCtrl.text),
-                                            "weight":
-                                                int.parse(_weightCtrl.text),
-                                            "bio": _bioCtrl.text,
-                                            "interests": interestSelected,
-                                            "hobbies": hobbieSelected,
-                                            "hobby_details": hobbieSelected1,
-                                            "interest_details":
-                                                interestSelected1,
-                                            "identification_image": result,
-                                            "profile_image": albumimage,
-                                          };
-                                          print("edit profile userdata");
-                                          print(userData);
-                                          try {
-                                            UserModel data = await UserNetwork()
-                                                .patchUserData(userData);
-                                            data != null
-                                                ? await context
-                                                    .read<HomeProvider>()
-                                                    .replaceData(data)
-                                                : null;
-                                            print("ool");
-                                            Navigator.pop(context);
-                                          } on DioError catch (e) {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                          }
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                )),
-                          ]),
+                            ]),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

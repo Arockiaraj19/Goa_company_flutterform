@@ -26,10 +26,10 @@ class AlbumCardList extends StatefulWidget {
 }
 
 class _AlbumCardListState extends State<AlbumCardList> {
-  gotoalbumpage(List<String> images) {
-    NavigateFunction().withoutquery(Navigate.albumview,{"galleryItems": images});
-   
-  }
+  // gotoalbumpage(List<String> images) {
+  //   NavigateFunction().withoutquery(Navigate.albumview,{"galleryItems": images});
+
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _AlbumCardListState extends State<AlbumCardList> {
         return InkWell(
             onTap: () {
               print("you clicked goto album page");
-              gotoalbumpage(widget.images);
+              // gotoalbumpage(widget.images);
             },
             child: AlbumCard(
               image: widget.images[index],

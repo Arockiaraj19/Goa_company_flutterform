@@ -5,20 +5,22 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
+import 'package:dating_app/providers/home_provider.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/upload_verficationImage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/src/provider.dart';
 import '../../routes.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class PartnerTypePage extends StatefulWidget {
-  final UserModel userData;
-  PartnerTypePage({Key key, this.userData}) : super(key: key);
-
   @override
   _PartnerTypePageState createState() => _PartnerTypePageState();
 }
@@ -47,11 +49,15 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
   @override
   void initState() {
     super.initState();
-    print(widget.userData.verificationImage);
-    print("partner type enna varuthu");
-    print(widget.userData.partnerType);
-    if (widget.userData.verificationImage == null &&
-        widget.userData.partnerType != null) {
+
+    fill();
+  }
+
+  UserModel userData;
+  fill() async {
+    await context.read<HomeProvider>().getData();
+    userData = context.read<HomeProvider>().userData;
+    if (userData.verificationImage == null && userData.partnerType != null) {
       print("init state kku partner type varuthaaa");
       Future.delayed(Duration(milliseconds: 800), () {
         selectUserImage();
@@ -61,13 +67,22 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 769) {
-        return _buildPhone(false);
-      } else {
-        return _buildWeb();
-      }
+    return Consumer<HomeProvider>(builder: (context, data, child) {
+      return data.homeState == HomeState.Loaded
+          ? LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxWidth < 769) {
+                return _buildPhone(false);
+              } else {
+                return _buildWeb();
+              }
+            })
+          : data.homeState == HomeState.Error
+              ? ErrorCard(
+                  text: data.errorText,
+                  ontab: () => NavigateFunction()
+                      .withqueryReplace(Navigate.partnerTypePage))
+              : LoadingLottie();
     });
   }
 
@@ -176,10 +191,9 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
                             child: PartnerCard(
                               name: item["gender"],
                               image: item["image"],
-                              isActive: widget.userData.partnerType == null
+                              isActive: userData.partnerType == null
                                   ? item["isActive"]
-                                  : widget.userData.partnerType ==
-                                          item["gender"]
+                                  : userData.partnerType == item["gender"]
                                       ? true
                                       : false,
                               onTap: () {
@@ -214,16 +228,16 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
       var userData;
       if (selectedUserAvatar == null) {
         userData = {
-          "partner_type": widget.userData.partnerType != null
-              ? widget.userData.partnerType
+          "partner_type": userData.partnerType != null
+              ? userData.partnerType
               : itemGender[selectedMenuIndex]["gender"]
         };
       } else {
         String result = await network1.uploadImage(
             selectedUserAvatar.path, "verification_image");
         userData = {
-          "partner_type": widget.userData.partnerType != null
-              ? widget.userData.partnerType
+          "partner_type": userData.partnerType != null
+              ? userData.partnerType
               : itemGender[selectedMenuIndex]["gender"],
           "verification_image": result
         };
@@ -247,16 +261,16 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
       var userData;
       if (selectedWebAvatar == null) {
         userData = {
-          "partner_type": widget.userData.partnerType != null
-              ? widget.userData.partnerType
+          "partner_type": userData.partnerType != null
+              ? userData.partnerType
               : itemGender[selectedMenuIndex]["gender"]
         };
       } else {
         String result =
             await network1.uploadImage(selectedWebAvatar, "verification_image");
         userData = {
-          "partner_type": widget.userData.partnerType != null
-              ? widget.userData.partnerType
+          "partner_type": userData.partnerType != null
+              ? userData.partnerType
               : itemGender[selectedMenuIndex]["gender"],
           "verification_image": result
         };

@@ -854,8 +854,7 @@ class _ProfilePageState extends State<ProfilePage>
   goToEditProfilePagePage(UserModel userData) {
     print("user data correct a varuthaa");
     print(userData);
-    NavigateFunction()
-        .withoutquery(Navigate.editProfilePage, {"userDetails": userData});
+    NavigateFunction().withquery(Navigate.editProfilePage);
   }
 
   Widget _buildWeb() {

@@ -6,6 +6,7 @@ import 'package:dating_app/networks/topic_network.dart';
 import 'package:dating_app/providers/blind_provider.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/expertChat_provider.dart';
+import 'package:dating_app/providers/game_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
@@ -312,6 +313,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => SubscriptionProvider()),
           ChangeNotifierProvider(create: (context) => RefProvider()),
           ChangeNotifierProvider(create: (context) => ExpertChatProvider()),
+          ChangeNotifierProvider(create: (context) => GameProvider()),
         ],
         child: ScreenUtilInit(
             designSize: Size(1000, 690),

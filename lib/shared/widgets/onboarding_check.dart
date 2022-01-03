@@ -17,8 +17,7 @@ onboardingCheck(UserModel userData) {
     NavigateFunction().withquery(Navigate.lookingForPage);
   } else if (userData.partnerType == null ||
       userData.verificationImage == null) {
-    NavigateFunction()
-        .withoutquery(Navigate.partnerTypePage, {"userData": userData});
+    NavigateFunction().withquery(Navigate.partnerTypePage);
   } else {
     NavigateFunction().withquery(Navigate.findMatchPage);
   }

@@ -1,4 +1,7 @@
+import 'package:dating_app/providers/game_provider.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
+import 'package:dating_app/shared/widgets/error_card.dart';
 import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +17,8 @@ import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/layouts/base_layout.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/navigation_rail.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/src/provider.dart';
 
 class FuntionModel {
   String game;
@@ -31,7 +36,7 @@ class FuntionModel {
 }
 
 class QuizGamePage extends StatefulWidget {
-  List<Getquestion> questions;
+  String questionid;
   String playid;
   String user1;
   String user2;
@@ -39,7 +44,7 @@ class QuizGamePage extends StatefulWidget {
   String user1name;
   String user2name;
   QuizGamePage(
-      {this.questions,
+      {this.questionid,
       this.playid,
       this.user1,
       this.user2,
@@ -60,9 +65,14 @@ class _QuizGamePageState extends State<QuizGamePage> {
   }
 
   List<bool> heartbool = [];
-  fill() {
+  List<Getquestion> questions;
+  fill() async {
+    await context
+        .read<GameProvider>()
+        .getQuestions(widget.questionid, widget.playid);
+    questions = context.read<GameProvider>().gameData;
     heartbool = [];
-    for (var i = 0; i < widget.questions.length; i++) {
+    for (var i = 0; i < questions.length; i++) {
       heartbool.add(false);
     }
     playid = widget.playid;
@@ -74,13 +84,22 @@ class _QuizGamePageState extends State<QuizGamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 769) {
-        return _buildPhone(false);
-      } else {
-        return _buildWeb();
-      }
+    return Consumer<GameProvider>(builder: (context, data, child) {
+      return data.gameState == GameState.Loaded
+          ? LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxWidth < 769) {
+                return _buildPhone(false);
+              } else {
+                return _buildWeb();
+              }
+            })
+          : data.gameState == GameState.Error
+              ? ErrorCard(
+                  text: data.errorText,
+                  ontab: () => NavigateFunction()
+                      .withqueryReplace(Navigate.quizGamePage))
+              : LoadingLottie();
     });
   }
 
@@ -156,16 +175,14 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                                 physics:
                                                     ClampingScrollPhysics(),
                                                 shrinkWrap: true,
-                                                itemCount:
-                                                    widget.questions.length,
+                                                itemCount: questions.length,
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
                                                   return HartViewicons(
                                                     onweb: onweb,
                                                     istrue: heartbool[index],
-                                                    len:
-                                                        widget.questions.length,
+                                                    len: questions.length,
                                                     onTap: () {},
                                                     controller: controller,
                                                     index: index,
@@ -182,14 +199,13 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                               animationDuration: 1200,
                                               radius: 40.0,
                                               lineWidth: 6,
-                                              percent: ((100 /
-                                                          widget.questions
-                                                              .length) *
-                                                      position) /
-                                                  100.round(),
+                                              percent:
+                                                  ((100 / questions.length) *
+                                                          position) /
+                                                      100.round(),
                                               center: Container(
                                                   child: Text(((100 /
-                                                              widget.questions
+                                                              questions
                                                                   .length) *
                                                           position)
                                                       .round()
@@ -212,15 +228,14 @@ class _QuizGamePageState extends State<QuizGamePage> {
                               physics: new NeverScrollableScrollPhysics(),
                               controller: controller,
                               scrollDirection: Axis.horizontal,
-                              itemCount: widget.questions.length,
+                              itemCount: questions.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     QuestionBox(
-                                      question:
-                                          widget.questions[index].question,
+                                      question: questions[index].question,
                                       onWeb: onweb,
                                     ),
                                     Column(
@@ -230,22 +245,21 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                         InkWell(
                                           onTap: () {
                                             answer = FuntionModel(
-                                                widget.questions[index].game,
-                                                widget.questions[index].id,
+                                                questions[index].game,
+                                                questions[index].id,
                                                 1.toString(),
-                                                widget.questions[index].type
+                                                questions[index]
+                                                    .type
                                                     .toString(),
                                                 widget.playid);
                                             setState(() {
-                                              option = widget
-                                                  .questions[index].option1;
+                                              option = questions[index].option1;
                                               playid = widget.playid;
                                             });
                                           },
                                           child: Questionicons(
                                             option: option,
-                                            answer:
-                                                widget.questions[index].option1,
+                                            answer: questions[index].option1,
                                             index: "A",
                                             onWeb: onweb,
                                           ),
@@ -253,29 +267,28 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                         InkWell(
                                           onTap: () {
                                             answer = FuntionModel(
-                                                widget.questions[index].game,
-                                                widget.questions[index].id,
+                                                questions[index].game,
+                                                questions[index].id,
                                                 2.toString(),
-                                                widget.questions[index].type
+                                                questions[index]
+                                                    .type
                                                     .toString(),
                                                 widget.playid);
                                             setState(() {
-                                              option = widget
-                                                  .questions[index].option2;
+                                              option = questions[index].option2;
                                               playid = widget.playid;
                                             });
                                             // Games().answerquestion(
-                                            //     widget.questions[index].game,
-                                            //     widget.questions[index].id,
+                                            //     questions[index].game,
+                                            //     questions[index].id,
                                             //     2.toString(),
-                                            //     widget.questions[index].type
+                                            //     questions[index].type
                                             //         .toString(),
                                             //     widget.playid);
                                           },
                                           child: Questionicons(
                                             option: option,
-                                            answer:
-                                                widget.questions[index].option2,
+                                            answer: questions[index].option2,
                                             index: "B",
                                             onWeb: onweb,
                                           ),
@@ -283,22 +296,21 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                         InkWell(
                                           onTap: () {
                                             answer = FuntionModel(
-                                                widget.questions[index].game,
-                                                widget.questions[index].id,
+                                                questions[index].game,
+                                                questions[index].id,
                                                 3.toString(),
-                                                widget.questions[index].type
+                                                questions[index]
+                                                    .type
                                                     .toString(),
                                                 widget.playid);
                                             setState(() {
-                                              option = widget
-                                                  .questions[index].option3;
+                                              option = questions[index].option3;
                                               playid = widget.playid;
                                             });
                                           },
                                           child: Questionicons(
                                             option: option,
-                                            answer:
-                                                widget.questions[index].option3,
+                                            answer: questions[index].option3,
                                             index: "C",
                                             onWeb: onweb,
                                           ),
@@ -306,22 +318,21 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                         InkWell(
                                           onTap: () {
                                             answer = FuntionModel(
-                                                widget.questions[index].game,
-                                                widget.questions[index].id,
+                                                questions[index].game,
+                                                questions[index].id,
                                                 4.toString(),
-                                                widget.questions[index].type
+                                                questions[index]
+                                                    .type
                                                     .toString(),
                                                 widget.playid);
                                             setState(() {
-                                              option = widget
-                                                  .questions[index].option4;
+                                              option = questions[index].option4;
                                               playid = widget.playid;
                                             });
                                           },
                                           child: Questionicons(
                                             option: option,
-                                            answer:
-                                                widget.questions[index].option4,
+                                            answer: questions[index].option4,
                                             index: "D",
                                             onWeb: onweb,
                                           ),
@@ -371,7 +382,7 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                   print(e);
                                 }
                               }
-                              if (position == widget.questions.length) {
+                              if (position == questions.length) {
                                 if (widget.istrue) {
                                   showAlertDialog(context);
                                   await Future.delayed(Duration(seconds: 1));
@@ -379,15 +390,10 @@ class _QuizGamePageState extends State<QuizGamePage> {
                                   Navigator.pop(context);
                                 } else {
                                   int score = await Games().getscrore(playid);
-                                  NavigateFunction()
-                                      .withoutquery(Navigate.quizSucessPage, {
-                                    "user1image": widget.user1,
-                                    "user2image": widget.user2,
-                                    "user1name": widget.user1name,
-                                    "user2name": widget.user2name,
-                                    "score": score,
-                                    "length": widget.questions.length,
-                                  });
+                                  NavigateFunction().withquery(
+                                    Navigate.quizSucessPage +
+                                        "?user1image=${widget.user1}&user2image=${widget.user2}&user1name=${widget.user1name}&user2name=${widget.user2name}&score=${score}&length=${questions.length}",
+                                  );
                                 }
                               }
                             },

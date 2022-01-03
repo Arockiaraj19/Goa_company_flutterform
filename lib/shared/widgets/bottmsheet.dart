@@ -23,11 +23,14 @@ class BottomSheetClass {
   showsub(context, {onWeb = false}) {
     showDialog(
         context: context,
+        barrierDismissible: false,
+        useRootNavigator: false,
         builder: (BuildContext context) {
           return AlertDialog(
+            contentPadding: EdgeInsets.all(10),
             content: Container(
               width: 700,
-              height: 500,
+              height: 600,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -39,7 +42,10 @@ class BottomSheetClass {
                           Navigator.pop(context);
                         }
                       },
-                      icon: Icon(Icons.cancel)),
+                      icon: Icon(
+                        Icons.cancel,
+                        color: Colors.black,
+                      )),
                   Expanded(
                     child: Subscription(
                       onboard: false,
@@ -60,7 +66,22 @@ class BottomSheetClass {
         builder: (BuildContext context) {
           return AlertDialog(
             content: Container(
-                width: 400, height: 500, child: NotificationPage(onweb: true)),
+                width: 400,
+                height: 500,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.cancel,
+                          color: Colors.black,
+                        )),
+                    Expanded(child: NotificationPage(onweb: true)),
+                  ],
+                )),
           );
         });
   }
