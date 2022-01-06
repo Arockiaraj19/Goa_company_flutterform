@@ -7,7 +7,7 @@ import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetClass {
-  showplans(context) {
+  showplans(context, onWeb) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -16,7 +16,9 @@ class BottomSheetClass {
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         builder: (BuildContext context) {
-          return BottomsheetWidget();
+          return BottomsheetWidget(
+            onWeb: onWeb,
+          );
         });
   }
 

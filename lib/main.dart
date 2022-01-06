@@ -163,6 +163,7 @@ class _MyAppState extends State<MyApp> {
         .then((RemoteMessage message) {
       print("get message");
       print(message);
+
       // RemoteNotification notification = message.notification;
       // AndroidNotification android = message.notification?.android;
       // if (notification != null && android != null) {

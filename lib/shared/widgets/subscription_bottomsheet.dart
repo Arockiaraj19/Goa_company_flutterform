@@ -12,7 +12,7 @@ import 'no_result.dart';
 
 class BottomsheetWidget extends StatelessWidget {
   final bool onWeb;
-  const BottomsheetWidget({Key key, this.onWeb = true}) : super(key: key);
+  const BottomsheetWidget({Key key, this.onWeb = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class BottomsheetWidget extends StatelessWidget {
                                                           "?swiperIndex= $index");
                                                 },
                                                 child: Container(
-                                                  width: 400,
+                                                  width: onWeb ? 400 : null,
                                                   alignment: Alignment.center,
                                                   decoration: BoxDecoration(
                                                       gradient: index % 2 == 0

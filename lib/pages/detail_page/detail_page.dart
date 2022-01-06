@@ -180,9 +180,11 @@ class _DetailPageState extends State<DetailPage> {
                                   if (subdata.plan == null) {
                                     if (subdata.subscriptionData.length == 0) {
                                       subdata.getdata();
-                                      BottomSheetClass().showplans(context);
+                                      BottomSheetClass()
+                                          .showplans(context, false);
                                     } else {
-                                      BottomSheetClass().showplans(context);
+                                      BottomSheetClass()
+                                          .showplans(context, false);
                                     }
                                   }
                                 }
@@ -201,9 +203,11 @@ class _DetailPageState extends State<DetailPage> {
                                   if (subdata.plan == null) {
                                     if (subdata.subscriptionData.length == 0) {
                                       subdata.getdata();
-                                      BottomSheetClass().showplans(context);
+                                      BottomSheetClass()
+                                          .showplans(context, false);
                                     } else {
-                                      BottomSheetClass().showplans(context);
+                                      BottomSheetClass()
+                                          .showplans(context, false);
                                     }
                                   }
                                 }
@@ -221,9 +225,11 @@ class _DetailPageState extends State<DetailPage> {
                                   if (subdata.plan == null) {
                                     if (subdata.subscriptionData.length == 0) {
                                       subdata.getdata();
-                                      BottomSheetClass().showplans(context);
+                                      BottomSheetClass()
+                                          .showplans(context, false);
                                     } else {
-                                      BottomSheetClass().showplans(context);
+                                      BottomSheetClass()
+                                          .showplans(context, false);
                                     }
                                   }
                                 }

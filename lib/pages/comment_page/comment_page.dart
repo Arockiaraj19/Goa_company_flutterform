@@ -148,7 +148,9 @@ class _CommentPageState extends State<CommentPage>
                   controller: _tabController,
                   physics: ClampingScrollPhysics(),
                   children: <Widget>[
-                    Container(child: MassageCardList()),
+                    Container(child: MassageCardList(
+                      
+                    )),
                     Container(child: DatesCardList()),
                     Container(child: RequestCardList())
                   ]),

@@ -33,12 +33,30 @@ messaging.setBackgroundMessageHandler(function (payload) {
         .then(() => {
             const title = payload.notification.title;
             const options = {
-                body: payload.notification.score
+                body: payload.notification.body
               };
-            return registration.showNotification("hello user", options);
+            return registration.showNotification(title, options);
         });
     return promiseChain;
 });
 self.addEventListener('notificationclick', function (event) {
     console.log('notification received: ', event)
 });
+messaging.onBackgroundMessage(function(payload) {
+    console.log('Received background message ', payload);
+
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+      body: payload.notification.body,
+    };
+
+    self.registration.showNotification(notificationTitle,
+      notificationOptions);
+  });
+//   self.addEventListener('push', async function(event) {
+//     event.waitUntil(
+//         self.registration.showNotification('title', {
+//           body: 'body'
+//         })
+//     );
+// });

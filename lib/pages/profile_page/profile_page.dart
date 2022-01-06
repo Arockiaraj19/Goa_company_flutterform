@@ -698,7 +698,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           element.id !=
                                           subdata.checklistData[5].id)) {
                                         return BottomSheetClass()
-                                            .showplans(context);
+                                            .showplans(context, false);
                                       }
                                     }
 
@@ -720,10 +720,10 @@ class _ProfilePageState extends State<ProfilePage>
                                             0) {
                                           subdata.getdata();
                                           return BottomSheetClass()
-                                              .showplans(context);
+                                              .showplans(context,  false);
                                         } else {
                                           return BottomSheetClass()
-                                              .showplans(context);
+                                              .showplans(context,  false);
                                         }
                                       }
                                     }

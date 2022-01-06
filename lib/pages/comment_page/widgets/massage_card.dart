@@ -30,6 +30,8 @@ class MassageCard extends StatefulWidget {
 
 class _MassageCardState extends State<MassageCard> {
   goToChatPage(groupid, id, image, name) {
+    NavigateFunction().withqueryReplace(Navigate.chattingPage +
+        "?groupid=$groupid&id=$id&image=$image&name=$name");
     // Routes.sailor(Routes.chattingPage,
     //     params: {"groupid": groupid, "id": id, "image": image, "name": name});
   }

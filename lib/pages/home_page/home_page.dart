@@ -226,6 +226,7 @@ class _HomePageState extends State<HomePage> {
                                       ? noResult()
                                       : data.view == 1
                                           ? ImageSwiper(
+                                              onweb: false,
                                               userSuggestionData:
                                                   data.usersSuggestionData,
                                               promos: [
@@ -413,6 +414,7 @@ class _HomePageState extends State<HomePage> {
                                         height: _height - 50,
                                         width: _width * 0.450,
                                         child: ImageSwiper(
+                                          onweb: true,
                                           onChanged: (int index) {
                                             print(
                                                 "initiala home page kku index varutha web la");

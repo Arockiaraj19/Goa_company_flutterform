@@ -62,9 +62,9 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                       } else {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          return BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context,false);
                         } else {
-                          return BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context,false);
                         }
                       }
                     }
@@ -79,7 +79,7 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
 
                       if (sdata.checklists.any((element) =>
                           element.id != subdata.checklistData[6].id)) {
-                        return BottomSheetClass().showplans(context);
+                        return BottomSheetClass().showplans(context,false);
                       }
                     }
                     NavigateFunction().withoutquery(Navigate.detailPage,

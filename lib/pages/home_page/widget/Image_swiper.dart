@@ -24,12 +24,13 @@ class ImageSwiper extends StatefulWidget {
       this.onTap,
       this.promos = const <dynamic>[],
       this.userSuggestionData,
-      this.onChanged})
+      this.onChanged,this.onweb})
       : super(key: key);
   final Function(dynamic) onTap;
   final List<dynamic> promos;
   final UsersSuggestionModel userSuggestionData;
   final Function(int) onChanged;
+  final bool onweb;
 
   @override
   _ImageSwiperState createState() => _ImageSwiperState();
@@ -62,9 +63,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                         } else {
                           if (subdata.subscriptionData.length == 0) {
                             subdata.getdata();
-                            BottomSheetClass().showplans(context);
+                            BottomSheetClass().showplans(context,widget.onweb);
                           } else {
-                            BottomSheetClass().showplans(context);
+                            BottomSheetClass().showplans(context,widget.onweb);
                           }
                         }
                       } else {
@@ -79,7 +80,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
 
                         if (sdata.checklists.any((element) =>
                             element.id != subdata.checklistData[6].id)) {
-                          return BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context,widget.onweb);
                         }
                       }
                     },
@@ -107,9 +108,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                         } else {
                           if (subdata.subscriptionData.length == 0) {
                             subdata.getdata();
-                            BottomSheetClass().showplans(context);
+                            BottomSheetClass().showplans(context,widget.onweb);
                           } else {
-                            BottomSheetClass().showplans(context);
+                            BottomSheetClass().showplans(context,widget.onweb);
                           }
                         }
                       } else {
@@ -124,7 +125,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
 
                         if (sdata.checklists.any(
                             (element) => element.title != checkListData[6])) {
-                          BottomSheetClass().showplans(context);
+                          BottomSheetClass().showplans(context,widget.onweb);
                         }
                       }
                     },
@@ -151,7 +152,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
 
                               if (sdata.checklists.any((element) =>
                                   element.id != subdata.checklistData[6].id)) {
-                                return BottomSheetClass().showplans(context);
+                                return BottomSheetClass().showplans(context,widget.onweb);
                               }
                             }
 
@@ -168,9 +169,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                               } else {
                                 if (subdata.subscriptionData.length == 0) {
                                   subdata.getdata();
-                                  return BottomSheetClass().showplans(context);
+                                  return BottomSheetClass().showplans(context,widget.onweb);
                                 } else {
-                                  return BottomSheetClass().showplans(context);
+                                  return BottomSheetClass().showplans(context,widget.onweb);
                                 }
                               }
                             }
@@ -221,9 +222,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          BottomSheetClass().showplans(context);
+                          BottomSheetClass().showplans(context,widget.onweb);
                         } else {
-                          BottomSheetClass().showplans(context);
+                          BottomSheetClass().showplans(context,widget.onweb);
                         }
                       }
                     }
@@ -243,9 +244,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          return BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context,widget.onweb);
                         } else {
-                          return BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context,widget.onweb);
                         }
                       }
                     }
@@ -263,9 +264,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          return BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context,widget.onweb);
                         } else {
-                          return BottomSheetClass().showplans(context);
+                          return BottomSheetClass().showplans(context,widget.onweb);
                         }
                       }
                     }

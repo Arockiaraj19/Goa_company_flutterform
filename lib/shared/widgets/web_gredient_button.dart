@@ -56,12 +56,11 @@ class _WebGradientButtonState extends State<WebGradientButton> {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {},
-        onHover: (value) {
-          setState(() {
-            isHovered = value;
-            print("lllllllllllllllllllllllllllllllllllllllllll $isHovered");
-          });
-        },
+        // onHover: (value) {
+        //   setState(() {
+        //     isHovered = value;
+        //   });
+        // },
         child: Container(
             height: widget.height,
             width: widget.width,

@@ -26,7 +26,8 @@ class MassageCardList extends StatefulWidget {
       this.mcardHeight,
       this.onWeb = false,
       this.onChanged,
-      this.search,this.selectIndex})
+      this.search,
+      this.selectIndex})
       : super(key: key);
 
   @override
@@ -115,10 +116,10 @@ class _MassageCardListState extends State<MassageCardList> {
                             ? Container()
                             : ListView.builder(
                                 itemBuilder: (context, index) => MassageCard(
-                                  selectIndex: widget.selectIndex,
+                                    selectIndex: widget.selectIndex,
                                     index: index,
                                     onChanged: widget.onChanged,
-                                    onWeb: true,
+                                    onWeb: widget.onWeb,
                                     data: data.chatGroupData[index]),
                                 itemCount: data.chatGroupData.length,
                               )
