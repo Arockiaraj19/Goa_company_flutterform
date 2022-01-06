@@ -379,14 +379,14 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                                           EdgeInsetsDirectional.only(start: 50),
                                       child: CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
+                                          widget.user1.identificationImage,
                                         ),
                                         radius: 40,
                                       )),
                                   Container(
                                       child: CircleAvatar(
                                     backgroundImage: NetworkImage(
-                                      "https://us.123rf.com/450wm/vadymvdrobot/vadymvdrobot1803/vadymvdrobot180303570/97983244-happy-asian-woman-in-t-shirt-bites-eyeglasses-and-looking-at-the-camera-over-grey-background.jpg?ver=6",
+                                      widget.user2.user2.identificationImage,
                                     ),
                                     radius: 40,
                                   ))
@@ -400,7 +400,7 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                               Container(
                                 padding: EdgeInsetsDirectional.only(top: 100),
                                 child: Text(
-                                  "Adrianne Rico, 22",
+                                  widget.user2.user2.firstname,
                                   style: TextStyle(
                                       color: Colors.grey[600],
                                       fontWeight: FontWeight.bold,
@@ -453,22 +453,22 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                           // ),
                         ]),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            GradientButton(
-                              height: 40,
-                              name: "Play match",
-                              gradient: MainTheme.loginBtnGradient,
-                              active: true,
-                              color: Colors.white,
-                              width: _width / 8,
-                              fontWeight: FontWeight.w600,
-                              borderRadius: BorderRadius.circular(5),
-                              fontSize: 12,
-                              onPressed: () {
-                                goToQuizgamePage();
-                              },
-                            ),
+                            // GradientButton(
+                            //   height: 40,
+                            //   name: "Play match",
+                            //   gradient: MainTheme.loginBtnGradient,
+                            //   active: true,
+                            //   color: Colors.white,
+                            //   width: _width / 8,
+                            //   fontWeight: FontWeight.w600,
+                            //   borderRadius: BorderRadius.circular(5),
+                            //   fontSize: 12,
+                            //   onPressed: () {
+                            //     goToQuizgamePage();
+                            //   },
+                            // ),
                             GradientButton(
                               height: 40,
                               name: "Say “Hi”",
@@ -479,7 +479,16 @@ class _PerfectMatchPageState extends State<PerfectMatchPage> {
                               width: _width / 8,
                               borderRadius: BorderRadius.circular(5),
                               fontWeight: FontWeight.w600,
-                              onPressed: () {},
+                              onPressed: () async {
+                                String groupid = await ChatNetwork()
+                                    .createGroup(widget.user2.user2.userid,
+                                        widget.user1);
+                                goToChatPage(
+                                    groupid,
+                                    widget.user2.user2.userid,
+                                    widget.user2.user2.identificationImage,
+                                    widget.user2.user2.firstname);
+                              },
                             ),
                           ],
                         ),

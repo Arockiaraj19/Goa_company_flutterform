@@ -248,8 +248,19 @@ class _ChattingPageState extends State<ChattingPage> {
                 return Consumer<HomeProvider>(builder: (context, data, child) {
                   return InkWell(
                     onTap: () {
-                      gotogame(data.userData.identificationImage, widget.image,
-                          data.userData.firstName);
+                      print("ithla enna data varuthu");
+                      print(snapshot.data.id);
+                      NavigateFunction().withquery(Navigate.quizGamePage +
+                          "?questionid=${snapshot.data.id}&playid=${snapshot.data.playid}&user1=${data.userData.identificationImage}&user2=${widget.image}&istrue=${false}&user1name=${data.userData.firstName}&user2name=${widget.name}");
+                      //  Routes.sailor(Routes.quizGamePage, params: {
+                      //         "questions": snapshot.data.questions,
+                      //         "playid": snapshot.data.playid,
+                      //         "user1": data.userData.identificationImage,
+                      //         "user2": widget.image,
+                      //         "istrue": false,
+                      //         "user1name": data.userData.firstName,
+                      //         "user2name": widget.name,
+                      //       });
                     },
                     child: Container(
                       alignment: Alignment.center,

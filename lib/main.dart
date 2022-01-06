@@ -25,6 +25,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:url_strategy/url_strategy.dart';
 import 'models/question_model.dart';
 import 'providers/countryCode_provider.dart';
 // import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -45,6 +46,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> main() async {
+  setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 

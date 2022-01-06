@@ -17,12 +17,16 @@ class MassageCardList extends StatefulWidget {
   final double mcardHeight;
   final bool onWeb;
   final Function(int) onChanged;
+  final Function(String) search;
+  final int selectIndex;
+
   MassageCardList(
       {Key key,
       this.mCardWidth,
       this.mcardHeight,
       this.onWeb = false,
-      this.onChanged})
+      this.onChanged,
+      this.search,this.selectIndex})
       : super(key: key);
 
   @override
@@ -49,6 +53,9 @@ class _MassageCardListState extends State<MassageCardList> {
           child: TextFormField(
             onChanged: (val) {
               context.read<ChatProvider>().getGroupData(val);
+              if (widget.onWeb) {
+                widget.onChanged(0);
+              }
             },
             decoration: InputDecoration(
               filled: true,
@@ -108,6 +115,7 @@ class _MassageCardListState extends State<MassageCardList> {
                             ? Container()
                             : ListView.builder(
                                 itemBuilder: (context, index) => MassageCard(
+                                  selectIndex: widget.selectIndex,
                                     index: index,
                                     onChanged: widget.onChanged,
                                     onWeb: true,

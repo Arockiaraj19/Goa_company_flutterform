@@ -225,9 +225,9 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
     try {
       var network = UserNetwork();
       var network1 = UploadImage();
-      var userData;
+      var userselectData;
       if (selectedUserAvatar == null) {
-        userData = {
+        userselectData = {
           "partner_type": userData.partnerType != null
               ? userData.partnerType
               : itemGender[selectedMenuIndex]["gender"]
@@ -235,7 +235,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
       } else {
         String result = await network1.uploadImage(
             selectedUserAvatar.path, "verification_image");
-        userData = {
+        userselectData = {
           "partner_type": userData.partnerType != null
               ? userData.partnerType
               : itemGender[selectedMenuIndex]["gender"],
@@ -243,7 +243,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
         };
       }
 
-      UserModel result = await network.patchUserData(userData);
+      UserModel result = await network.patchUserData(userselectData);
       NavigateFunction().withquery(Navigate.subscription + "?onboard=true");
     } catch (e) {
       offLoading();

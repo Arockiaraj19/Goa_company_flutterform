@@ -38,13 +38,12 @@ Future<Dio> apiClient() async {
     // Do something with response data
     return handler.next(response); // continue
   }, onError: (DioError error, handler) async {
-    print(error.response);
+    print("inga status code enna varuthu");
+    print(error.response.statusCode);
     // print(error.response.statusCode);
     showtoast(DioException.fromDioError(error).toString());
     // Do something with response error
     if (error.response != null) {
-      // print(error.response);
-
       // if (error.response.statusCode == 409) {
       //  showtoast(error.response.data["msg"]);
       // }
@@ -85,6 +84,7 @@ Future<Dio> apiClient() async {
           return handler.resolve(cloneReq);
         } catch (e) {
           saveLoginStatus(0);
+          print("inga print aakuthaaaaa");
           Modular.to.navigate(Navigate.loginPage);
         }
       } else {}

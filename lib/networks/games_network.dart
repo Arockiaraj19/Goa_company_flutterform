@@ -131,7 +131,8 @@ class Games {
         CheckRequestModel result = CheckRequestModel.fromMap(response.data);
         List<Getquestion> finaldata =
             await sendrequest(result.gameId, result.questions);
-        User2Question combinedata = User2Question.fromMap(result.id, finaldata);
+        User2Question combinedata =
+            User2Question.fromMap(result.id, finaldata, result.gameId);
         return combinedata;
       });
       return data;

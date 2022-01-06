@@ -243,8 +243,9 @@ class BottomsheetWidget extends StatelessWidget {
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white,
-                                                                    fontSize:
-                                                                        35.sp,
+                                                                    fontSize: onWeb
+                                                                        ? 13
+                                                                        : 35.sp,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w800),
@@ -271,7 +272,9 @@ class BottomsheetWidget extends StatelessWidget {
                             ]),
                           ),
                           Positioned(
-                              right: 0,
+                              right: onWeb
+                                  ? MediaQuery.of(context).size.width / 3.3
+                                  : 0,
                               top: 0,
                               child: Image.asset("assets/images/salyImage.png"))
                         ],

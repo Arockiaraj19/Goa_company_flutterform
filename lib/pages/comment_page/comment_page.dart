@@ -335,87 +335,82 @@ class _CommentPageState extends State<CommentPage>
                             ])))),
                 body: TabBarView(controller: _tabController, children: <Widget>[
                   Consumer<ChatProvider>(builder: (context, data, child) {
-                    return data.chatState == ChatState.Loaded
-                        ? Container(
-                            child: Row(
-                            children: [
-                              Container(
-                                  color: Colors.white,
-                                  height: _height,
-                                  width: _width * 0.333,
-                                  padding: EdgeInsetsDirectional.only(top: 30),
-                                  child: MassageCardList(
-                                    onChanged: (index) {
-                                      onChanged(index, data.chatGroupData);
-                                    },
-                                    onWeb: true,
-                                    mcardHeight: 60,
-                                    mCardWidth: _width / 5.5,
-                                  )),
-                              Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      left: BorderSide(
-                                        width: 1,
-                                        color: Colors.grey[300],
-                                      ),
-                                      top: BorderSide(
-                                        width: 1,
-                                        color: Colors.grey[300],
-                                      ),
-                                    ),
-                                    color: Colors.grey[50],
+                    return Container(
+                        child: Row(
+                      children: [
+                        Container(
+                            color: Colors.white,
+                            height: _height,
+                            width: _width * 0.333,
+                            padding: EdgeInsetsDirectional.only(top: 30),
+                            child: MassageCardList(
+                              selectIndex: cardIndex,
+                              onChanged: (index) {
+                                onChanged(index, data.chatGroupData);
+                              },
+                              search: (val) {},
+                              onWeb: true,
+                              mcardHeight: 60,
+                              mCardWidth: _width / 5.5,
+                            )),
+                        if (data.chatState == ChatState.Loaded)
+                          Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: BorderSide(
+                                    width: 1,
+                                    color: Colors.grey[300],
                                   ),
-                                  height: _height,
-                                  width: _width * 0.570,
-                                  child: data.chatGroupData.length != 0
-                                      ? ChattingPage(
-                                          groupid:
-                                              data.chatGroupData[cardIndex].id,
-                                          id: data
-                                                      .chatGroupData[cardIndex]
-                                                      .user_id_1_details[0]
-                                                      .userid !=
-                                                  userid
-                                              ? data.chatGroupData[cardIndex]
-                                                  .user_id_1_details[0].userid
-                                              : data.chatGroupData[cardIndex]
-                                                  .user_id_2_details[0].userid,
-                                          image: data
-                                                      .chatGroupData[cardIndex]
-                                                      .user_id_1_details[0]
-                                                      .userid !=
-                                                  userid
-                                              ? data
+                                  top: BorderSide(
+                                    width: 1,
+                                    color: Colors.grey[300],
+                                  ),
+                                ),
+                                color: Colors.grey[50],
+                              ),
+                              height: _height,
+                              width: _width * 0.570,
+                              child: data.chatGroupData.length != 0
+                                  ? ChattingPage(
+                                      groupid: data.chatGroupData[cardIndex].id,
+                                      id: data
                                                   .chatGroupData[cardIndex]
                                                   .user_id_1_details[0]
-                                                  .identificationImage
-                                              : data
-                                                  .chatGroupData[cardIndex]
-                                                  .user_id_2_details[0]
-                                                  .identificationImage,
-                                          name: data
-                                                      .chatGroupData[cardIndex]
-                                                      .user_id_1_details[0]
-                                                      .userid !=
-                                                  userid
-                                              ? data
+                                                  .userid !=
+                                              userid
+                                          ? data.chatGroupData[cardIndex]
+                                              .user_id_1_details[0].userid
+                                          : data.chatGroupData[cardIndex]
+                                              .user_id_2_details[0].userid,
+                                      image: data
                                                   .chatGroupData[cardIndex]
                                                   .user_id_1_details[0]
-                                                  .firstname
-                                              : data
+                                                  .userid !=
+                                              userid
+                                          ? data
+                                              .chatGroupData[cardIndex]
+                                              .user_id_1_details[0]
+                                              .identificationImage
+                                          : data
+                                              .chatGroupData[cardIndex]
+                                              .user_id_2_details[0]
+                                              .identificationImage,
+                                      name: data
                                                   .chatGroupData[cardIndex]
-                                                  .user_id_2_details[0]
-                                                  .firstname,
-                                          chatBoxWidth: _width / 3.8,
-                                          floatingActionButtonWidth:
-                                              _width * 0.500,
-                                          onWeb: true,
-                                        )
-                                      : Container()),
-                            ],
-                          ))
-                        : Container();
+                                                  .user_id_1_details[0]
+                                                  .userid !=
+                                              userid
+                                          ? data.chatGroupData[cardIndex]
+                                              .user_id_1_details[0].firstname
+                                          : data.chatGroupData[cardIndex]
+                                              .user_id_2_details[0].firstname,
+                                      chatBoxWidth: _width / 3.8,
+                                      floatingActionButtonWidth: _width * 0.500,
+                                      onWeb: true,
+                                    )
+                                  : Container()),
+                      ],
+                    ));
                   }),
                   Container(
                       decoration: BoxDecoration(

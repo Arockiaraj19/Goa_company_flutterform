@@ -915,9 +915,9 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       }
     }
     var network = UserNetwork();
-    var userData;
+    var userstoreData;
     if (userData.email != null) {
-      userData = {
+      userstoreData = {
         "first_name": _firstNameCtrl.text,
         "last_name": _lastNameCtrl.text,
         "email": _emailCtrl.text,
@@ -929,7 +929,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
         "country": code.id,
       };
     } else {
-      userData = {
+      userstoreData = {
         "first_name": _firstNameCtrl.text,
         "last_name": _lastNameCtrl.text,
         "email": _emailCtrl.text,
@@ -943,9 +943,9 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     }
 
     print("patch user data inga correct a varuthaaaa");
-    print(userData);
+    print(userstoreData);
     try {
-      UserModel result = await network.patchUserData(userData);
+      UserModel result = await network.patchUserData(userstoreData);
       result != null ? onboardingCheck(result) : null;
     } catch (e) {
       offLoading();
