@@ -7,9 +7,9 @@ class Topic {
   Future subscripeToken(token, topic) async {
     try {
       Response response = await Dio().post(
-        'https://iid.googleapis.com/iid/v1/' + token + '/rel/topics/' + topic,
+        'https://iid.googleapis.com/iid/v1/${token}/rel/topics/${topic}',
         options: Options(
-          headers: {'Authorization': 'key=' + fcm_server_key},
+          headers: {'Authorization': 'key=${fcm_server_key}'},
         ),
       );
       print(response.data);

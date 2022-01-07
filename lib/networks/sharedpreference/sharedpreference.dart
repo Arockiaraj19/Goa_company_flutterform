@@ -93,3 +93,15 @@ getRef() async {
   id = prefs.getString('ref');
   return id;
 }
+
+saveFCMToken(id) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('saveFCMToken', id);
+}
+
+getFCMToken() async {
+  String id;
+  final prefs = await SharedPreferences.getInstance();
+  id = prefs.getString('saveFCMToken') ?? "";
+  return id;
+}

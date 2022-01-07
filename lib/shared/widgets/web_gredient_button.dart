@@ -64,28 +64,25 @@ class _WebGradientButtonState extends State<WebGradientButton> {
         child: Container(
             height: widget.height,
             width: widget.width,
-            margin: widget.margin ?? EdgeInsets.all(20),
+            margin: EdgeInsets.all(20),
             decoration: BoxDecoration(
-              border: isHovered == true
-                  ? widget.hoverborder
-                  : widget.border ?? null,
-              boxShadow: widget.boxShadow ??
-                  <BoxShadow>[
-                    BoxShadow(color: Colors.grey.shade300, blurRadius: 1.0)
-                  ],
-              color: widget.buttonColor ?? Colors.black,
-              gradient: isHovered == true ? widget.hoverColor : widget.gradient,
-              borderRadius: widget.borderRadius ?? BorderRadius.circular(10),
+              border: widget.border,
+              boxShadow: <BoxShadow>[
+                BoxShadow(color: Colors.grey.shade300, blurRadius: 1.0)
+              ],
+              color: Colors.black,
+              gradient: widget.gradient,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: ClipRRect(
-                borderRadius: widget.borderRadius ?? BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10),
                 child: MaterialButton(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     focusColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     height: widget.height,
-                    minWidth: widget.width ?? MediaQuery.of(context).size.width,
+                    minWidth: widget.width,
                     onPressed: widget.onPressed,
                     child: Expanded(
                       child: Row(
@@ -96,9 +93,7 @@ class _WebGradientButtonState extends State<WebGradientButton> {
                                     margin: EdgeInsetsDirectional.only(end: 10),
                                     child: Icon(
                                       Icons.mail_outline,
-                                      color: isHovered == true
-                                          ? widget.hoverTextColor
-                                          : Colors.grey,
+                                      color: Colors.grey,
                                     ))
                                 : Container(),
                             Flexible(
@@ -108,14 +103,11 @@ class _WebGradientButtonState extends State<WebGradientButton> {
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color: isHovered == true
-                                                ? widget.hoverTextColor
-                                                : widget.color,
+                                            color: widget.color,
                                             fontFamily: "Inter",
                                             fontSize: widget.fontSize ??
                                                 ScreenUtil().setSp(40),
-                                            fontWeight: widget.fontWeight ??
-                                                FontWeight.w500))))
+                                            fontWeight: FontWeight.w500))))
                           ]),
                     )))));
   }

@@ -35,6 +35,7 @@ messaging.setBackgroundMessageHandler(function (payload) {
             const options = {
                 body: payload.notification.body
               };
+              console.log(payload);
             return registration.showNotification(title, options);
         });
     return promiseChain;

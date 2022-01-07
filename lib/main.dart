@@ -254,6 +254,7 @@ class _MyAppState extends State<MyApp> {
       final _token = await _messaging.getToken();
 
       print('Token: $_token');
+      saveFCMToken(_token);
       Topic().subscripeToken(_token, "broadcast_user");
     });
   }
