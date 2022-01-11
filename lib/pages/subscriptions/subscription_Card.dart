@@ -284,39 +284,37 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (!widget.onWeb)
-                              InkWell(
-                                onTap: () async {
-                                  if (widget.onboard) {
-                                     NavigateFunction().withquery(Navigate.findMatchPage);
-                                 
-                                  } else {
-                                    Navigator.pop(context);
-                                  }
-                                },
-                                child: Container(
-                                  height: widget.onWeb ? 35 : 30.h,
-                                  width: widget.onWeb ? 130 : 300.w,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color: MainTheme.primaryColor,
-                                          width: 1),
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Text(
-                                    "Skip",
-                                    style: TextStyle(
+                            InkWell(
+                              onTap: () async {
+                                if (widget.onboard) {
+                                  NavigateFunction()
+                                      .withquery(Navigate.findMatchPage);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Container(
+                                height: widget.onWeb ? 28 : 30.h,
+                                width: widget.onWeb ? 100 : 300.w,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
                                         color: MainTheme.primaryColor,
-                                        fontSize: widget.onWeb ? 14 : 40.sp,
-                                        fontWeight: FontWeight.w600),
-                                  ),
+                                        width: 1),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Text(
+                                  "Skip",
+                                  style: TextStyle(
+                                      color: MainTheme.primaryColor,
+                                      fontSize: widget.onWeb ? 14 : 40.sp,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
-                            if (!widget.onWeb)
-                              SizedBox(
-                                width: widget.onWeb ? 25 : 100.w,
-                              ),
+                            ),
+                            SizedBox(
+                              width: widget.onWeb ? 25 : 100.w,
+                            ),
                             InkWell(
                               onTap: () async {
                                 try {
@@ -330,8 +328,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                         widget.data.durationType,
                                         widget.data.coins,
                                         widget.data.subscriptionType);
-                                        NavigateFunction().withquery(Navigate.findMatchPage);
-                                 
+                                    NavigateFunction()
+                                        .withquery(Navigate.findMatchPage);
                                   } else {
                                     openCheckout(data.userData);
                                   }
@@ -358,8 +356,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                                 }
                               },
                               child: Container(
-                                height: widget.onWeb ? 35 : 30.h,
-                                width: widget.onWeb ? 130 : 300.w,
+                                height: widget.onWeb ? 28 : 30.h,
+                                width: widget.onWeb ? 100 : 300.w,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                     gradient: MainTheme.backgroundGradient,

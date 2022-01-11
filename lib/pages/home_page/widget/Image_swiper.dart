@@ -24,7 +24,8 @@ class ImageSwiper extends StatefulWidget {
       this.onTap,
       this.promos = const <dynamic>[],
       this.userSuggestionData,
-      this.onChanged,this.onweb})
+      this.onChanged,
+      this.onweb})
       : super(key: key);
   final Function(dynamic) onTap;
   final List<dynamic> promos;
@@ -63,9 +64,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                         } else {
                           if (subdata.subscriptionData.length == 0) {
                             subdata.getdata();
-                            BottomSheetClass().showplans(context,widget.onweb);
+                            BottomSheetClass().showplans(context, widget.onweb);
                           } else {
-                            BottomSheetClass().showplans(context,widget.onweb);
+                            BottomSheetClass().showplans(context, widget.onweb);
                           }
                         }
                       } else {
@@ -80,7 +81,8 @@ class _ImageSwiperState extends State<ImageSwiper> {
 
                         if (sdata.checklists.any((element) =>
                             element.id != subdata.checklistData[6].id)) {
-                          return BottomSheetClass().showplans(context,widget.onweb);
+                          return BottomSheetClass()
+                              .showplans(context, widget.onweb);
                         }
                       }
                     },
@@ -108,9 +110,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                         } else {
                           if (subdata.subscriptionData.length == 0) {
                             subdata.getdata();
-                            BottomSheetClass().showplans(context,widget.onweb);
+                            BottomSheetClass().showplans(context, widget.onweb);
                           } else {
-                            BottomSheetClass().showplans(context,widget.onweb);
+                            BottomSheetClass().showplans(context, widget.onweb);
                           }
                         }
                       } else {
@@ -125,7 +127,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
 
                         if (sdata.checklists.any(
                             (element) => element.title != checkListData[6])) {
-                          BottomSheetClass().showplans(context,widget.onweb);
+                          BottomSheetClass().showplans(context, widget.onweb);
                         }
                       }
                     },
@@ -152,7 +154,8 @@ class _ImageSwiperState extends State<ImageSwiper> {
 
                               if (sdata.checklists.any((element) =>
                                   element.id != subdata.checklistData[6].id)) {
-                                return BottomSheetClass().showplans(context,widget.onweb);
+                                return BottomSheetClass()
+                                    .showplans(context, widget.onweb);
                               }
                             }
 
@@ -169,9 +172,11 @@ class _ImageSwiperState extends State<ImageSwiper> {
                               } else {
                                 if (subdata.subscriptionData.length == 0) {
                                   subdata.getdata();
-                                  return BottomSheetClass().showplans(context,widget.onweb);
+                                  return BottomSheetClass()
+                                      .showplans(context, widget.onweb);
                                 } else {
-                                  return BottomSheetClass().showplans(context,widget.onweb);
+                                  return BottomSheetClass()
+                                      .showplans(context, widget.onweb);
                                 }
                               }
                             }
@@ -222,9 +227,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          BottomSheetClass().showplans(context,widget.onweb);
+                          BottomSheetClass().showplans(context, widget.onweb);
                         } else {
-                          BottomSheetClass().showplans(context,widget.onweb);
+                          BottomSheetClass().showplans(context, widget.onweb);
                         }
                       }
                     }
@@ -244,9 +249,11 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          return BottomSheetClass().showplans(context,widget.onweb);
+                          return BottomSheetClass()
+                              .showplans(context, widget.onweb);
                         } else {
-                          return BottomSheetClass().showplans(context,widget.onweb);
+                          return BottomSheetClass()
+                              .showplans(context, widget.onweb);
                         }
                       }
                     }
@@ -264,9 +271,11 @@ class _ImageSwiperState extends State<ImageSwiper> {
                       if (subdata.plan == null) {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          return BottomSheetClass().showplans(context,widget.onweb);
+                          return BottomSheetClass()
+                              .showplans(context, widget.onweb);
                         } else {
-                          return BottomSheetClass().showplans(context,widget.onweb);
+                          return BottomSheetClass()
+                              .showplans(context, widget.onweb);
                         }
                       }
                     }
@@ -286,8 +295,9 @@ class _ImageSwiperState extends State<ImageSwiper> {
   }
 
   goToDetailPage(Responses userDetails) {
-    NavigateFunction()
-        .withoutquery(Navigate.detailPage, {"userDetails": userDetails});
+    NavigateFunction().withquery(
+      Navigate.detailPage + "?id=${userDetails.id}",
+    );
   }
 
   goToChatPage(groupid, id, image, name) {

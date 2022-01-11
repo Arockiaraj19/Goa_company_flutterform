@@ -140,15 +140,17 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
           Container(
               width: onWeb ? MediaQuery.of(context).size.width / 3.7 : null,
               color: Colors.grey[200],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                          "Hold and drag your photos to change the order",
-                          style: _textForHold)),
-                ],
+              child: FittedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                            "Hold and drag your photos to change the order",
+                            style: _textForHold)),
+                  ],
+                ),
               )),
           Container(
               color: Colors.grey[200],

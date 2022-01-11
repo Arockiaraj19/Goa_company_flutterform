@@ -75,6 +75,9 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
     return i;
   }
 
+  bool showInterestMore = false;
+  bool showHobbiesMore = false;
+
   Widget _buildPhone(onWeb) {
     var _textStyleforHeading = TextStyle(
         color: MainTheme.leadingHeadings,
@@ -91,39 +94,6 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
             : ScreenUtil().setSp(MainTheme.mSecondarySubHeadingfontSize),
         fontFamily: "lato");
     return Scaffold(
-        bottomSheet: Container(
-          height: 100,
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GradientButton(
-                height: onWeb ? 35 : 110.w,
-                fontSize: onWeb ? inputFont : 40.sp,
-                width: onWeb ? 130 : 500.w,
-                name: loading ? "Saving.." : "Continue",
-                gradient: MainTheme.loginBtnGradient,
-                active: true,
-                isLoading: loading,
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
-                fontWeight: FontWeight.w600,
-                onPressed: () {
-                  if (hobbieSelected.length < 2 &&
-                      interestSelected.length < 2) {
-                    showtoast("Please choose minimum 2 interests & hobbies");
-                  } else if (hobbieSelected.length < 2) {
-                    showtoast("Please choose minimum 2 hobbies");
-                  } else if (interestSelected.length < 2) {
-                    showtoast("Please choose minimum 2 interests");
-                  } else {
-                    goToAddYourProfilePicPage();
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
         appBar: AppBar(
           leading: InkWell(
               onTap: () {
@@ -167,7 +137,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
             children: [
               Container(
                   padding:
-                      EdgeInsetsDirectional.only(start: 30, top: 5, bottom: 20),
+                      EdgeInsetsDirectional.only(start: 30, top: 5, bottom: 10),
                   child: Text("Interest", style: _textForsubHeading)),
             ],
           ),
@@ -189,7 +159,8 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                                   crossAxisCount:
                                       onWeb ? 4 : getItemCountPerRow(context),
                                   childAspectRatio: 2.8),
-                          itemCount: snapshot.data.length,
+                          itemCount:
+                              !showInterestMore ? 8 : snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
                             return InterestBox(
                               fontSize: onWeb
@@ -222,6 +193,25 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                               },
                             );
                           },
+                        ),
+                        Container(
+                          height: 30,
+                          width: double.infinity,
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                showInterestMore = !showInterestMore;
+                              });
+                            },
+                            child: Text(
+                              showInterestMore ? "Show Less" : "Show More",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: MainTheme.primaryColor,
+                              ),
+                            ),
+                          ),
                         )
                       ]));
                 } else
@@ -234,8 +224,8 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
           Row(
             children: [
               Container(
-                  padding: EdgeInsetsDirectional.only(
-                      start: 30, top: 10, bottom: 20),
+                  padding:
+                      EdgeInsetsDirectional.only(start: 30, top: 0, bottom: 10),
                   child: Text("Hobbies", style: _textForsubHeading)),
             ],
           ),
@@ -257,7 +247,8 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                                   crossAxisCount:
                                       onWeb ? 4 : getItemCountPerRow(context),
                                   childAspectRatio: 2.8),
-                          itemCount: snapshot.data.length,
+                          itemCount:
+                              !showHobbiesMore ? 8 : snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
                             HobbyModel hoppydata = snapshot.data[index];
                             return InterestBox(
@@ -287,6 +278,25 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                               },
                             );
                           },
+                        ),
+                        Container(
+                          height: 30,
+                          width: double.infinity,
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                showHobbiesMore = !showHobbiesMore;
+                              });
+                            },
+                            child: Text(
+                              showHobbiesMore ? "Show Less" : "Show More",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: MainTheme.primaryColor,
+                              ),
+                            ),
+                          ),
                         )
                       ]));
                 } else
@@ -296,6 +306,39 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                     child: CircularProgressIndicator(),
                   );
               }),
+          Container(
+            height: 100,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GradientButton(
+                  height: onWeb ? 35 : 110.w,
+                  fontSize: onWeb ? inputFont : 40.sp,
+                  width: onWeb ? 130 : 500.w,
+                  name: loading ? "Saving.." : "Continue",
+                  gradient: MainTheme.loginBtnGradient,
+                  active: true,
+                  isLoading: loading,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(onWeb ? 5 : 20.sp),
+                  fontWeight: FontWeight.w600,
+                  onPressed: () {
+                    if (hobbieSelected.length < 2 &&
+                        interestSelected.length < 2) {
+                      showtoast("Please choose minimum 2 interests & hobbies");
+                    } else if (hobbieSelected.length < 2) {
+                      showtoast("Please choose minimum 2 hobbies");
+                    } else if (interestSelected.length < 2) {
+                      showtoast("Please choose minimum 2 interests");
+                    } else {
+                      goToAddYourProfilePicPage();
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
         ])));
   }
 

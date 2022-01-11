@@ -148,9 +148,7 @@ class _CommentPageState extends State<CommentPage>
                   controller: _tabController,
                   physics: ClampingScrollPhysics(),
                   children: <Widget>[
-                    Container(child: MassageCardList(
-                      
-                    )),
+                    Container(child: MassageCardList()),
                     Container(child: DatesCardList()),
                     Container(child: RequestCardList())
                   ]),
@@ -409,6 +407,7 @@ class _CommentPageState extends State<CommentPage>
                                       chatBoxWidth: _width / 3.8,
                                       floatingActionButtonWidth: _width * 0.500,
                                       onWeb: true,
+                                      view: true,
                                     )
                                   : Container()),
                       ],

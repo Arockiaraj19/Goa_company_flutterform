@@ -20,10 +20,15 @@ class _GenderPageState extends State<GenderPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: Color(0xff181725),
-          size: widget.onWeb ? 18 : 60.sp,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xff181725),
+            size: widget.onWeb ? 18 : 60.sp,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,

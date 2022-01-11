@@ -171,8 +171,7 @@ class Navigate extends Module {
             child: (_, args) => CreateProfilePage(), guards: [AuthGuard1()]),
         ChildRoute(detailPage,
             child: (_, args) => DetailPage(
-                userDetails:
-                    args.data["userDetails"]), //itha final la try pannanum
+                id: args.queryParams["id"]), //itha final la try pannanum
             guards: [AuthGuard()]),
         ChildRoute(onboardingPage, child: (_, args) => OnboardingPage()),
         ChildRoute(otpPage,

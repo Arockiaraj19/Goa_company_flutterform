@@ -816,58 +816,74 @@ class _LoginWithState extends State<LoginWith> {
             height: _height,
             width: _width,
             padding: EdgeInsetsDirectional.only(
-              top: _height / 9,
+              top: 0,
               end: _width / 30,
               start: _width / 30,
             ),
-            child: SingleChildScrollView(
-                child: Column(
-              children: [
-                Container(
-                    margin: EdgeInsetsDirectional.only(bottom: 10),
-                    child: Row(
-                      children: [
+            child: Scaffold(
+              appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: Color(0xff181725),
+                      size: 18,
+                    ),
+                  )),
+              body: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  Container(
+                      margin: EdgeInsetsDirectional.only(bottom: 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: _height / 40,
+                            width: _width / 20,
+                          ),
+                          Container(
+                            child: Text(
+                              "Welcome Back !!",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  fontFamily: "lato"),
+                            ),
+                          ),
+                        ],
+                      )),
+                  Container(
+                      margin: EdgeInsetsDirectional.only(bottom: 10),
+                      child: Row(children: [
                         Container(
                           height: _height / 40,
                           width: _width / 20,
                         ),
-                        Container(
+                        Expanded(
                           child: Text(
-                            "Welcome Back !!",
+                            "Hey! Good to see you again",
                             style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                                height: 2,
+                                fontSize: 12,
                                 fontFamily: "lato"),
                           ),
-                        ),
-                      ],
-                    )),
-                Container(
-                    margin: EdgeInsetsDirectional.only(bottom: 10),
-                    child: Row(children: [
-                      Container(
-                        height: _height / 40,
-                        width: _width / 20,
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Hey! Good to see you again",
-                          style: TextStyle(
-                              color: Colors.grey,
-                              // fontWeight: FontWeight.bold,
-                              height: 2,
-                              fontSize: 12,
-                              fontFamily: "lato"),
-                        ),
-                      )
-                    ])),
-                SizedBox(height: ScreenUtil().setHeight(30)),
-                Container(
-                    width: _width / 2,
-                    child: loginItem(widget.name, onWeb, btnWidth: _width / 5)),
-              ],
-            )))
+                        )
+                      ])),
+                  SizedBox(height: ScreenUtil().setHeight(30)),
+                  Container(
+                      width: _width / 2,
+                      child:
+                          loginItem(widget.name, onWeb, btnWidth: _width / 5)),
+                ],
+              )),
+            ))
       ]),
     ));
   }

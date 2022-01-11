@@ -100,6 +100,42 @@ class Persentage {
     return _persentage;
   }
 
+  Future<double> checkSingleSuggestionPresentage(
+      UserModel userdata, UserModel data) async {
+    double _persentage = 0.6;
+    if (userdata.sexualOrientation == data.sexualOrientation) {
+      _persentage += 0.1;
+    }
+    if (userdata.partnerType == data.partnerType) {
+      _persentage += 0.1;
+    }
+
+    if (userdata.hobbies.any((item) => data.hobbies.contains(item))) {
+      print(data.firstName);
+      print("hobbie1");
+      _persentage += 0.08;
+    }
+    if (userdata.interests.any((item) => data.interests.contains(item))) {
+      print(data.firstName);
+      print("interest1");
+      _persentage += 0.08;
+    }
+    if (userdata.interestDetails
+        .any((item) => data.interestDetails.contains(item))) {
+      print(data.firstName);
+      print("match detail ");
+      _persentage += 0.02;
+    }
+    if (userdata.hobbyDetails.any((item) => data.hobbyDetails.contains(item))) {
+      print(data.firstName);
+      print("match detail ");
+      _persentage += 0.02;
+    }
+    print("persentage enna varuthu");
+    print(_persentage.toString());
+    return _persentage;
+  }
+
   Future<int> interestPercentage(UserModel userdata, Responses data) async {
     int persentage = 0;
     await userdata.interests.forEach((element) {
@@ -109,12 +145,22 @@ class Persentage {
     });
     return persentage;
   }
+
+  Future<int> interestSinglePercentage(
+      UserModel userdata, UserModel data) async {
+    int persentage = 0;
+    await userdata.interests.forEach((element) {
+      if (data.interests.contains(element)) {
+        persentage += 1;
+      }
+    });
+    return persentage;
+  }
+
+
 }
-
-
-  Future<String> getdistance(location,location1) async {
+  Future<String> getdistance(location, location1) async {
     print("location");
-
 
     var p = 0.017453292519943295;
     var c = cos;

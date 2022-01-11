@@ -52,6 +52,7 @@ class ChattingPage extends StatefulWidget {
   final bool onWeb;
   final double chatBoxWidth;
   final double floatingActionButtonWidth;
+  final bool view;
   ChattingPage(
       {Key key,
       this.groupid,
@@ -60,7 +61,8 @@ class ChattingPage extends StatefulWidget {
       this.name,
       this.onWeb = false,
       this.chatBoxWidth,
-      this.floatingActionButtonWidth})
+      this.floatingActionButtonWidth,
+      this.view = false})
       : super(key: key);
 
   @override
@@ -185,7 +187,7 @@ class _ChattingPageState extends State<ChattingPage> {
             ? null
             : RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         backgroundColor: Colors.grey[50],
-        leading: widget.onWeb
+        leading: widget.view
             ? null
             : InkWell(
                 onTap: () {

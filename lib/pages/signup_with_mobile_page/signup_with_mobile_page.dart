@@ -644,66 +644,81 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
             height: _height,
             width: _width,
             padding: EdgeInsetsDirectional.only(
-              top: _height / 9,
+              top: 0,
               // bottom: _height / 9,
               end: _width / 30,
               start: _width / 30,
             ),
-            child: Column(
-              children: [
-                // Container(
-                //   height: _height / 20,
-                //   width: _width,
-                // ),
-                Container(
-                    child: Row(
-                  children: [
-                    Container(
-                      height: _height / 40,
-                      width: _width / 20,
+            child: Scaffold(
+              appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: Color(0xff181725),
+                      size: 18,
                     ),
-                    Container(
-                      child: Text("Match. Chat. Date.",
-                          style: _textStyleforMatchText),
-                    ),
-                  ],
-                )),
-                Container(
-                  height: _height / 40,
-                  width: _width,
-                ),
-
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  )),
+              body: Column(
+                children: [
+                  // Container(
+                  //   height: _height / 20,
+                  //   width: _width,
+                  // ),
+                  Container(
+                      child: Row(
                     children: [
                       Container(
                         height: _height / 40,
                         width: _width / 20,
                       ),
                       Container(
-                          width: _width / 1.5,
-                          child: Row(children: [
-                            Expanded(
-                              child: Text(
-                                "Spark is the only dating app that connects people based on interests, beliefs and profession.",
-                                style: _textStyleforSentence,
-                                textAlign: TextAlign.start,
-                              ),
-                            )
-                          ])),
-                    ]),
+                        child: Text("Match. Chat. Date.",
+                            style: _textStyleforMatchText),
+                      ),
+                    ],
+                  )),
+                  Container(
+                    height: _height / 40,
+                    width: _width,
+                  ),
 
-                Container(
-                  height: _height / 8,
-                  width: _width,
-                ),
-                _commonBuild(context, onWeb: true),
-                // Container(
-                //   height: 110,
-                //   width: _width,
-                // ),
-              ],
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: _height / 40,
+                          width: _width / 20,
+                        ),
+                        Container(
+                            width: _width / 1.5,
+                            child: Row(children: [
+                              Expanded(
+                                child: Text(
+                                  "Spark is the only dating app that connects people based on interests, beliefs and profession.",
+                                  style: _textStyleforSentence,
+                                  textAlign: TextAlign.start,
+                                ),
+                              )
+                            ])),
+                      ]),
+
+                  Container(
+                    height: _height / 8,
+                    width: _width,
+                  ),
+                  _commonBuild(context, onWeb: true),
+                  // Container(
+                  //   height: 110,
+                  //   width: _width,
+                  // ),
+                ],
+              ),
             ))
       ]),
     ));

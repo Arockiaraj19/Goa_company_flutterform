@@ -62,6 +62,29 @@ class UserNetwork {
     }
   }
 
+  Future<UserModel> getSingleSuggestionData(String id) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+
+      print("user id correct varuthaa");
+      print(id);
+      var data = await _dio.then((value) async {
+        response = await value.get(userDetailsEndpoint + "/" + id);
+
+        if (response.statusCode == 200) {
+          return (response.data as List)
+              .map((x) => UserModel.fromJson(x))
+              .toList();
+        }
+      });
+      return data[0];
+    } catch (e) {
+      print("front la catch kku data varuthu");
+      throw e;
+    }
+  }
+
   Future<UsersSuggestionModel> getUserSuggestionsData(
       bool apply, String age, distance, lat, lng, type, int skip) async {
     Response response;
@@ -240,8 +263,9 @@ class UserNetwork {
             .map((hobbieData) => Responses.fromJson(hobbieData))
             .toList(growable: false);
 
-        return Modular.to.pushNamed(Navigate.detailPage,
-            arguments: {"userDetails": finaldata[0]});
+        return Modular.to.pushNamed(
+          Navigate.detailPage + "?id=${finaldata[0].id}",
+        );
       });
 
       return data;

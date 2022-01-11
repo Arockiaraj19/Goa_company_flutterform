@@ -115,8 +115,6 @@ Future<Dio> authClient() async {
       // Do something with response data
       return handler.next(response); // continue
     }, onError: (DioError error, handler) async {
-      print("ithu interceptor");
-      print(error);
       showtoast(DioException.fromDioError(error).toString());
       return handler.next(error);
     }));

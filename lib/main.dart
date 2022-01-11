@@ -11,6 +11,7 @@ import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/providers/match_provider.dart';
 import 'package:dating_app/providers/notification_provider.dart';
 import 'package:dating_app/providers/ref_provider.dart';
+import 'package:dating_app/providers/single_user_provider.dart';
 import 'package:dating_app/providers/subscription_provider.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -24,26 +25,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'package:url_strategy/url_strategy.dart';
 import 'models/question_model.dart';
 import 'providers/countryCode_provider.dart';
 // import 'package:google_mobile_ads/google_mobile_ads.dart';
-
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'fun', // id
-    'hello', // title
-    description: 'hello bro', // description
-    importance: Importance.high,
-    playSound: true);
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("background message");
-  print(message);
-}
 
 Future<void> main() async {
   setPathUrlStrategy();
@@ -55,89 +41,7 @@ Future<void> main() async {
     statusBarIconBrightness: Brightness.light,
   ));
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // await flutterLocalNotificationsPlugin
-  //     .resolvePlatformSpecificImplementation<
-  //         AndroidFlutterLocalNotificationsPlugin>()
-  //     ?.createNotificationChannel(channel);
-
-  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-  //   alert: true,
-  //   badge: true,
-  //   sound: true,
-  // );
-
-  // const AndroidInitializationSettings initializationSettingsAndroid =
-  //     AndroidInitializationSettings('@mipmap/ic_launcher');
-  // final InitializationSettings initializationSettings = InitializationSettings(
-  //   android: initializationSettingsAndroid,
-  // );
-
-  // await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-  //     onSelectNotification: onselectnotication);
-  // await MobileAds.instance.initialize();
-
   runApp(ModularApp(module: Navigate(), child: MyApp()));
-}
-
-onselectnotication(String payload) async {
-  // var data = json.decode(payload);
-  // print(data);
-  // if (data["type"] == "1") {
-  //   print("page 1");
-  //   Routes.sailor(
-  //     Routes.chattingPage,
-  //     params: {
-  //       "groupid": data["group_id"],
-  //       "id": data["sender_id"],
-  //       "image": data["identification_image"],
-  //       "name": data["first_name"]
-  //     },
-  //   );
-  // } else if (data["type"] == "2") {
-  //   print("second step kku varuthaa");
-  //   print(data);
-  //   print(json.decode(data["questions"]));
-  //   print(data["user2_identification_image"]);
-  //   print(data["user1_identification_image"]);
-  //   print(data["user2_first_name"]);
-  //   print(data["user1_first_name"]);
-  //   final finaldata = List.from(json.decode(data["questions"]));
-  //   List<Getquestion> result = await finaldata
-  //       .map((codeData) => Getquestion.fromMap(codeData))
-  //       .toList(growable: false);
-  //   print(result);
-  //   Routes.sailor(Routes.quizGamePage, params: {
-  //     "questions": result,
-  //     "playid": data["play_id"],
-  //     "user1": data["user2_identification_image"],
-  //     "user2": data["user1_identification_image"],
-  //     "istrue": false,
-  //     "user1name": data["user2_first_name"],
-  //     "user2name": data["user1_first_name"],
-  //   });
-  // } else if (data["type"] == "4") {
-  //   print("four th step kku varuthaa");
-  //   print(data);
-  //   Routes.sailor(Routes.expertchat, params: {
-  //     "groupid": data["group_id"],
-  //     "id": data["sender_id"],
-  //     "name": data["first_name"],
-  //     "status": int.parse(data["online_status"]),
-  //     "image": List<String>.from([data["identification_image"].toString()]),
-  //   });
-  // } else {
-  //   print("third scenario");
-  //   Routes.sailor(Routes.quizSucessPage, params: {
-  //     "user1image": data["user2_identification_image"] as String,
-  //     "user2image": data["user1_identification_image"] as String,
-  //     "user1name": data["user2_first_name"] as String,
-  //     "user2name": data["user1_first_name"] as String,
-  //     "score": int.parse(data["score"]),
-  //     "length": int.parse(data["questions"]),
-  //   });
-  // }
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -149,96 +53,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
   @override
   void initState() {
     // TODO: implement initState
-    initDynamicLinks();
+    // initDynamicLinks();
     super.initState();
-
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage message) {
-      print("get message");
-      print(message);
-
-      // RemoteNotification notification = message.notification;
-      // AndroidNotification android = message.notification?.android;
-      // if (notification != null && android != null) {
-      //   flutterLocalNotificationsPlugin.show(
-      //       notification.hashCode,
-      //       notification.title,
-      //       notification.body,
-      //       NotificationDetails(
-      //         android: AndroidNotificationDetails(
-      //           channel.id,
-      //           channel.name,
-      //           color: Colors.blue,
-      //           playSound: true,
-      //           icon: '@mipmap/ic_launcher',
-      //         ),
-      //       ),
-      //       payload: json.encode(message.data));
-      //   print("onMessage: $message");
-      //   print(message);
-      // }
-    });
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("on Message message");
-      print(message);
-      // RemoteNotification notification = message.notification;
-      // AndroidNotification android = message.notification?.android;
-      // if (notification != null && android != null) {
-      //   flutterLocalNotificationsPlugin.show(
-      //       notification.hashCode,
-      //       notification.title,P
-      //       notification.body,
-      //       NotificationDetails(
-      //         android: AndroidNotificationDetails(
-      //           channel.id,
-      //           channel.name,
-      //           color: Colors.blue,
-      //           playSound: true,
-      //           icon: '@mipmap/ic_launcher',
-      //         ),
-      //       ),
-      //       payload: json.encode(message.data));
-      //   print("onMessage: $message");
-      //   print(message);
-      // }
-    });
-
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    //   print("onMessage: $message");
-    //   print(message.data);
-    // });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print("onMessageOpenApp message");
-      print(message);
-      // RemoteNotification notification = message.notification;
-      // AndroidNotification android = message.notification?.android;
-      // if (notification != null && android != null) {
-      //   flutterLocalNotificationsPlugin.show(
-      //       notification.hashCode,
-      //       notification.title,
-      //       notification.body,
-      //       NotificationDetails(
-      //         android: AndroidNotificationDetails(
-      //           channel.id,
-      //           channel.name,
-      //           color: Colors.blue,
-      //           playSound: true,
-      //           icon: '@mipmap/ic_launcher',
-      //         ),
-      //       ),
-      //       payload: json.encode(message.data));
-      //   print("onMessage: $message");
-      //   print(message);
-      // }
-    });
 
     _messaging.init().then((value) => request());
     _messaging.stream.listen(
@@ -318,6 +137,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => RefProvider()),
           ChangeNotifierProvider(create: (context) => ExpertChatProvider()),
           ChangeNotifierProvider(create: (context) => GameProvider()),
+           ChangeNotifierProvider(create: (context) => SingleUserProvider()),
         ],
         child: ScreenUtilInit(
             designSize: Size(1000, 690),

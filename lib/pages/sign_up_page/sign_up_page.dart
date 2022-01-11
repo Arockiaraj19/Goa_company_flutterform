@@ -351,23 +351,42 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: _height / 9,
                   width: _width,
                 ),
-                WebGradientButton(
-                  gradient: MainTheme.loginBtnGradientwhite,
-                  hoverColor: MainTheme.loginBtnGradient,
-                  hoverTextColor: Colors.white,
-                  // height: _height / 15,
-                  height: 40,
-                  // fontSize: ScreenUtil().setSp(10),
-                  fontSize: 14,
-                  width: _width / 2,
-                  color: Colors.black,
-                  // buttonColor: Colors.white,
-                  border: Border.all(width: 1, color: Colors.black),
-                  name: "Sign up with Mobile",
-                  active: true,
-                  onPressed: () {
+                InkWell(
+                  onTap: () {
                     goToSignUpWithMobile();
                   },
+                  child: Container(
+                      height: 40,
+                      width: _width / 2,
+                      margin: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.black),
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // !widget.active
+                            //     ? Container(
+                            //         margin: EdgeInsetsDirectional.only(end: 10),
+                            //         child: Icon(
+                            //           Icons.mail_outline,
+                            //           color: Colors.grey,
+                            //         ))
+                            //     : Container(),
+                            Flexible(
+                                child: Container(
+                                    child: Text("Sign up with Mobile",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: "Inter",
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500))))
+                          ])),
                 ),
                 Container(
                     child: Row(
@@ -375,22 +394,40 @@ class _SignUpPageState extends State<SignUpPage> {
                         children: [
                       Text("___  OR  ___", style: _textStyleforOr),
                     ])),
-                WebGradientButton(
-                  gradient: MainTheme.loginBtnGradientwhite,
-                  hoverColor: MainTheme.loginBtnGradient,
-                  hoverTextColor: Colors.white,
-                  onPressed: () {
+                InkWell(
+                  onTap: () {
                     goToSignUpWithEmail();
                   },
-                  // height: _height / 15,
-                  height: 40,
-                  // fontSize: ScreenUtil().setSp(10),
-                  fontSize: 14,
-                  width: _width / 2,
-                  name: "Sign up with email",
-                  color: Colors.black,
-                  // buttonColor: Colors.white,
-                  border: Border.all(width: 1, color: Colors.black),
+                  child: Container(
+                      height: 40,
+                      width: _width / 2,
+                      margin: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.black),
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                margin: EdgeInsetsDirectional.only(end: 10),
+                                child: Icon(
+                                  Icons.mail_outline,
+                                  color: Colors.grey,
+                                )),
+                            Flexible(
+                                child: Container(
+                                    child: Text("Sign up with email",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: "Inter",
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500))))
+                          ])),
                 ),
                 Container(
                   height: _height / 20,

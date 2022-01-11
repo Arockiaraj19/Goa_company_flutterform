@@ -56,15 +56,15 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                         List<UserModel> data =
                             await Subscription().updateCount(1);
                         await context.read<HomeProvider>().replaceData(data[0]);
-                        return NavigateFunction().withoutquery(
-                            Navigate.detailPage,
-                            {"userDetails": widget.usersData.response[index]});
+                        return NavigateFunction().withquery(
+                            Navigate.detailPage +
+                                "?id=${widget.usersData.response[index].id}");
                       } else {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
-                          return BottomSheetClass().showplans(context,false);
+                          return BottomSheetClass().showplans(context, false);
                         } else {
-                          return BottomSheetClass().showplans(context,false);
+                          return BottomSheetClass().showplans(context, false);
                         }
                       }
                     }
@@ -79,11 +79,11 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
 
                       if (sdata.checklists.any((element) =>
                           element.id != subdata.checklistData[6].id)) {
-                        return BottomSheetClass().showplans(context,false);
+                        return BottomSheetClass().showplans(context, false);
                       }
                     }
-                    NavigateFunction().withoutquery(Navigate.detailPage,
-                        {"userDetails": widget.usersData.response[index]});
+                    NavigateFunction().withquery(Navigate.detailPage +
+                        "?id=${widget.usersData.response[index].id}");
                   },
                   child: HomeGridViewcard(
                     userData: widget.usersData.response[index],

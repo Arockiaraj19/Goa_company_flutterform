@@ -487,78 +487,93 @@ class _OtpPageState extends State<OtpPage> {
             height: _height,
             width: _width,
             padding: EdgeInsetsDirectional.only(
-              top: _height / 9,
+              top: 0,
               // bottom: _height / 9,
               end: _width / 30,
               start: _width / 30,
             ),
-            child: SingleChildScrollView(
-                child: Column(
-              children: [
-                // Container(
-                //   height: _height / 20,
-                //   width: _width,
-                // ),
-                Container(
-                    child: Row(
-                  children: [
-                    Container(
-                      height: _height / 40,
-                      width: _width / 20,
+            child: Scaffold(
+              appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: Color(0xff181725),
+                      size: 18,
                     ),
-                    Container(
-                      child: Text("Match. Chat. Date.",
-                          style: _textStyleforMatchText),
-                    ),
-                  ],
-                )),
-                Container(
-                  height: _height / 40,
-                  width: _width,
-                ),
-                Row(
+                  )),
+              body: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  // Container(
+                  //   height: _height / 20,
+                  //   width: _width,
+                  // ),
+                  Container(
+                      child: Row(
+                    children: [
+                      Container(
+                        height: _height / 40,
+                        width: _width / 20,
+                      ),
+                      Container(
+                        child: Text("Match. Chat. Date.",
+                            style: _textStyleforMatchText),
+                      ),
+                    ],
+                  )),
+                  Container(
+                    height: _height / 40,
+                    width: _width,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            width: _width / 1.5,
+                            child: Row(children: [
+                              Container(
+                                height: _height / 40,
+                                width: _width / 20,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "Spark is the only dating app that connects people based on interests, beliefs and profession.",
+                                  style: _textStyleforSentence,
+                                  textAlign: TextAlign.start,
+                                ),
+                              )
+                            ])),
+                      ]),
+                  Container(
+                    height: _height / 12,
+                    width: _width,
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                          width: _width / 1.5,
-                          child: Row(children: [
-                            Container(
-                              height: _height / 40,
-                              width: _width / 20,
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Spark is the only dating app that connects people based on interests, beliefs and profession.",
-                                style: _textStyleforSentence,
-                                textAlign: TextAlign.start,
-                              ),
-                            )
-                          ])),
-                    ]),
-                Container(
-                  height: _height / 12,
-                  width: _width,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        height: _height / 5,
-                        width: _width * 0.2,
-                        child: Image.asset(
-                          "assets/images/mobileImageWithMsg.png",
-                          fit: BoxFit.contain,
-                        )),
-                    Container(
-                        height: _height / 2,
-                        width: _width * 0.72,
-                        child: _commonBuild(context, onWeb: true)),
-                  ],
-                ),
-              ],
-            )))
+                          height: _height / 5,
+                          width: _width * 0.2,
+                          child: Image.asset(
+                            "assets/images/mobileImageWithMsg.png",
+                            fit: BoxFit.contain,
+                          )),
+                      Container(
+                          height: _height / 2,
+                          width: _width * 0.72,
+                          child: _commonBuild(context, onWeb: true)),
+                    ],
+                  ),
+                ],
+              )),
+            ))
       ]),
     ));
   }
