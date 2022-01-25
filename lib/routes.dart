@@ -135,6 +135,7 @@ class Navigate extends Module {
         ChildRoute(likeMatchListPage,
             child: (_, args) => LikeMatchListPage(
                   index: int.parse(args.queryParams["index"]),
+                  onweb: args.queryParams["onWeb"] == "true",
                 ),
             guards: [AuthGuard()]),
         ChildRoute(meetuppage,

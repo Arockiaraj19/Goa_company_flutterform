@@ -9,12 +9,12 @@ Widget adsenseAdsView() {
       'adViewType',
       (int viewID) => IFrameElement()
         ..width = '320'
-        ..height = '100'
-        ..src = './adview.html'
+        ..height = '60'
+        ..src = 'adview.html'
         ..style.border = 'none');
 
   return SizedBox(
-    height: 100.0,
+    height: 250.0,
     width: 320.0,
     child: HtmlElementView(
       viewType: 'adViewType',

@@ -106,7 +106,9 @@ class _NotificationState extends State<NotificationPage> {
                                               });
                                             },
                                             icon: Icon(
-                                                Icons.check_circle_outlined,color: Colors.black,))
+                                              Icons.check_circle_outlined,
+                                              color: Colors.black,
+                                            ))
                                       ],
                                     ),
                                   if (deleteId.length != 0)
@@ -182,20 +184,39 @@ class _NotificationState extends State<NotificationPage> {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               100),
-                                                      child: Image.network(
-                                                        data
-                                                            .notificationData[
-                                                                index]
-                                                            .sender
-                                                            .identificationImage,
-                                                        height: widget.onweb
-                                                            ? 50
-                                                            : 150.r,
-                                                        width: widget.onweb
-                                                            ? 50
-                                                            : 150.r,
-                                                        fit: BoxFit.fill,
-                                                      ),
+                                                      child: data
+                                                                  .notificationData[
+                                                                      index]
+                                                                  .sender ==
+                                                              null
+                                                          ? Image.asset(
+                                                              "assets/images/web_login_image.png",
+                                                              height:
+                                                                  widget.onweb
+                                                                      ? 50
+                                                                      : 150.r,
+                                                              width:
+                                                                  widget.onweb
+                                                                      ? 50
+                                                                      : 150.r,
+                                                              fit: BoxFit.fill,
+                                                            )
+                                                          : Image.network(
+                                                              data
+                                                                  .notificationData[
+                                                                      index]
+                                                                  .sender
+                                                                  .identificationImage,
+                                                              height:
+                                                                  widget.onweb
+                                                                      ? 50
+                                                                      : 150.r,
+                                                              width:
+                                                                  widget.onweb
+                                                                      ? 50
+                                                                      : 150.r,
+                                                              fit: BoxFit.fill,
+                                                            ),
                                                     ),
                                                     SizedBox(
                                                         width: widget.onweb
@@ -222,17 +243,15 @@ class _NotificationState extends State<NotificationPage> {
                                                               children: <
                                                                   TextSpan>[
                                                                 new TextSpan(
-                                                                  text: data
-                                                                          .notificationData[
-                                                                              index]
-                                                                          .sender
-                                                                          .firstname +
-                                                                      " " +
-                                                                      data
-                                                                          .notificationData[
-                                                                              index]
-                                                                          .sender
-                                                                          .lastname,
+                                                                  text: data.notificationData[index].sender ==
+                                                                          null
+                                                                      ? "Sparks"
+                                                                      : data.notificationData[index].sender.firstname +
+                                                                          " " +
+                                                                          data
+                                                                              .notificationData[index]
+                                                                              .sender
+                                                                              .lastname,
                                                                   style: TextStyle(
                                                                       color: Color(
                                                                           0xff1A1F36),

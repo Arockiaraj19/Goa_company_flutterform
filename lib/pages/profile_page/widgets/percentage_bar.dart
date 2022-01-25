@@ -98,8 +98,8 @@ class _PercentageBarState extends State<PercentageBar> {
       ]),
       widget.onEditProfilePage == true
           ? Positioned(
-              top: 40,
-              right: 125,
+              top: 60,
+              right: MediaQuery.of(context).size.width / 5.6,
               child: Center(
                   child: InkWell(
                       onTap: () {

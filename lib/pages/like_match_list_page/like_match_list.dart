@@ -17,7 +17,8 @@ import 'package:provider/src/provider.dart';
 
 class LikeMatchListPage extends StatefulWidget {
   final int index;
-  LikeMatchListPage({Key key, this.index}) : super(key: key);
+  final bool onweb;
+  LikeMatchListPage({Key key, this.index,this.onweb=false}) : super(key: key);
 
   @override
   _LikeMatchListPageState createState() => _LikeMatchListPageState();
@@ -83,7 +84,9 @@ class _LikeMatchListPageState extends State<LikeMatchListPage>
                 Navigator.pop(context);
                 return true;
               },
-              child: BottomsheetWidget());
+              child: BottomsheetWidget(
+                onWeb:widget.onweb,
+              ));
         });
   }
 

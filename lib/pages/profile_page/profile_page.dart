@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dating_app/providers/notification_provider.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
+import 'package:dating_app/shared/widgets/toast_msg.dart';
+import 'package:dio/dio.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:dating_app/models/like_list.dart';
 import 'package:dating_app/models/subscription_model.dart';
@@ -50,9 +52,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:sailor/sailor.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 import '../../routes.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import '../constants.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -85,6 +88,8 @@ class _ProfilePageState extends State<ProfilePage>
     }
     // _createRewardedAd();
   }
+
+  Map _userData;
 
   // static final AdRequest request = AdRequest(
   //   keywords: <String>['Book', 'Game'],
@@ -163,10 +168,62 @@ class _ProfilePageState extends State<ProfilePage>
     });
   }
 
-  getinsta() async {
-    Token data = await getToken(Constants.APP_ID, Constants.APP_SECRET);
-    print("instagram account correct a varuthaa");
-    print(data);
+  // getinsta() async {
+  //   String url =
+  //       "https://api.instagram.com/oauth/authorize?client_id=1141908882883789&redirect_uri=https://sparksuser.com/&scope=user_profile&response_type=code";
+  //   await canLaunch(url)
+  //       ? await launch(
+  //           url,
+  //           forceWebView: true,
+
+  //         )
+  //       : throw 'Could not launch $url';
+  //   // await getToken(Constants.APP_ID, Constants.APP_SECRET);
+  //   // print("instagram account correct a varuthaa");
+  // }
+  Future<void> _loginInstaGetData() async {
+    print("you clicked1");
+    final simpleAuth.InstagramApi _igApi = simpleAuth.InstagramApi(
+      "instagram",
+      Constants.igClientId,
+      Constants.igClientSecret,
+      Constants.igRedirectURI,
+      scopes: [
+        'user_profile', // For getting username, account type, etc.
+        // 'user_media', // For accessing media count & data like posts, videos etc.
+      ],
+    );
+    _igApi.authenticate().then(
+      (simpleAuth.Account _user) async {
+        simpleAuth.OAuthAccount user = _user;
+
+        var igUserResponse =
+            await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
+          '/me',
+          queryParameters: {
+            // Get the fields you need.
+            // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
+            "fields": "username,id,account_type",
+            "access_token": user.token,
+          },
+        );
+        _userData = igUserResponse.data;
+
+        print("ithula user data enna varuthu");
+        print(_userData);
+        UserModel data = await UserNetwork().patchUserData({
+          "instagram_username": _userData["username"],
+          "instagram_link": _userData["id"].toString(),
+        });
+        data != null
+            ? await context.read<HomeProvider>().replaceData(data)
+            : null;
+      },
+    ).catchError(
+      (Object e) {
+        showtoast(e.toString());
+      },
+    );
   }
 
   @override
@@ -439,7 +496,8 @@ class _ProfilePageState extends State<ProfilePage>
                             GestureDetector(
                               onTap: () {
                                 NavigateFunction().withquery(
-                                    Navigate.likeMatchListPage + "?index=0");
+                                    Navigate.likeMatchListPage +
+                                        "?index=0&onWeb=false");
                               },
                               child: Scores(
                                 name:
@@ -452,7 +510,8 @@ class _ProfilePageState extends State<ProfilePage>
                             GestureDetector(
                               onTap: () {
                                 NavigateFunction().withquery(
-                                    Navigate.likeMatchListPage + "?index=1");
+                                    Navigate.likeMatchListPage +
+                                        "?index=1&onWeb=false");
                               },
                               child: Scores(
                                 name: matchCount == -1
@@ -482,7 +541,7 @@ class _ProfilePageState extends State<ProfilePage>
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         InkWell(
-                          onTap: () => getinsta(),
+                          onTap: () => print("hello"),
                           child: SocialMediaBox(
                             name: "Add Instagram",
                             image: "assets/images/Instagram_icon.png",
@@ -720,10 +779,10 @@ class _ProfilePageState extends State<ProfilePage>
                                             0) {
                                           subdata.getdata();
                                           return BottomSheetClass()
-                                              .showplans(context,  false);
+                                              .showplans(context, false);
                                         } else {
                                           return BottomSheetClass()
-                                              .showplans(context,  false);
+                                              .showplans(context, false);
                                         }
                                       }
                                     }
@@ -1187,7 +1246,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                               NavigateFunction()
                                                                   .withquery(Navigate
                                                                           .likeMatchListPage +
-                                                                      "?index=0");
+                                                                      "?index=0&onWeb=true");
                                                             },
                                                             child: Scores(
                                                               name: likeCount ==
@@ -1207,7 +1266,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                               NavigateFunction()
                                                                   .withquery(Navigate
                                                                           .likeMatchListPage +
-                                                                      "?index=1");
+                                                                      "?index=1&onWeb=true");
                                                             },
                                                             child: Scores(
                                                               name: matchCount ==
@@ -1247,7 +1306,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                             children: [
                                                           InkWell(
                                                             onTap: () =>
-                                                                getinsta(),
+                                                                _loginInstaGetData(),
                                                             child:
                                                                 SocialMediaBox(
                                                               name:
@@ -1661,7 +1720,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                                             //     }
                                                                             //   }
                                                                             // }
-                                                                            await context.read<ExpertChatProvider>().getGroupCatoData();
+                                                                            // await context.read<ExpertChatProvider>().getGroupCatoData();
                                                                             NavigateFunction().withquery(Navigate.expertGroup);
                                                                           },
                                                                           child: SettingBox(
@@ -1678,9 +1737,9 @@ class _ProfilePageState extends State<ProfilePage>
                                                                             if (subdata.subscriptionData.length ==
                                                                                 0) {
                                                                               subdata.getdata();
-                                                                              return BottomSheetClass().showsub(context);
+                                                                              return BottomSheetClass().showsub(context, onWeb: false);
                                                                             } else {
-                                                                              return BottomSheetClass().showsub(context);
+                                                                              return BottomSheetClass().showsub(context, onWeb: false);
                                                                             }
                                                                           },
                                                                           child: SettingBox(

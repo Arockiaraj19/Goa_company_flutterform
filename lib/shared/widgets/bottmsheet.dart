@@ -22,7 +22,7 @@ class BottomSheetClass {
         });
   }
 
-  showsub(context, {onWeb = false}) {
+  showsub(context, {onWeb = true}) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -50,7 +50,7 @@ class BottomSheetClass {
                       )),
                   Expanded(
                     child: Subscription(
-                      onboard: false,
+                      onboard: onWeb,
                       swiperIndex: 1,
                       onWeb: true,
                     ),

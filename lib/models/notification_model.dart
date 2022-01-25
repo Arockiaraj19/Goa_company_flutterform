@@ -40,7 +40,9 @@ class NotificationModel {
       id: map['_id'],
       createdAt: DateTime.parse(map['createdAt'].toString()).toLocal(),
       updatedAt: DateTime.parse(map['updatedAt'].toString()).toLocal(),
-      sender: NotificationUserModel.fromMap(map['sender']),
+      sender: map["sender"] == null
+          ? null
+          : NotificationUserModel.fromMap(map['sender']),
     );
   }
 

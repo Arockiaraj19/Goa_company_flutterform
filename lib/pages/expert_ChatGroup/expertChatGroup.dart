@@ -7,6 +7,7 @@ import 'package:dating_app/pages/comment_page/widgets/massage_card_list.dart';
 import 'package:dating_app/pages/comment_page/widgets/request_card_list.dart';
 import 'package:dating_app/pages/expert_ChatGroup/expertGroupList.dart';
 import 'package:dating_app/providers/expertChat_provider.dart';
+import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 
 import 'package:dating_app/shared/layouts/base_layout.dart';
@@ -33,7 +34,11 @@ class _ExpertGroupState extends State<ExpertGroup>
   @override
   void initState() {
     super.initState();
+    getdata();
+  }
 
+  getdata() async {
+    await context.read<ExpertChatProvider>().getGroupCatoData();
     if (context.read<ExpertChatProvider>().chatGroupCato != null) {
       _tabController = TabController(
           length: context.read<ExpertChatProvider>().chatGroupCato.length,
@@ -43,13 +48,17 @@ class _ExpertGroupState extends State<ExpertGroup>
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth < 769) {
-        return _buildPhone(false);
-      } else {
-        return _buildWeb();
-      }
+    return Consumer<ExpertChatProvider>(builder: (context, data, child) {
+      return ExpertChatState.Loading == data.chatState
+          ? LoadingLottie()
+          : LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxWidth < 769) {
+                return _buildPhone(false);
+              } else {
+                return _buildWeb();
+              }
+            });
     });
   }
 

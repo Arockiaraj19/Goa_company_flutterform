@@ -949,6 +949,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   ScrollController _scrollController = ScrollController();
+  ScrollController _iController = ScrollController();
+  ScrollController _hController = ScrollController();
 
   Widget _buildWeb(onWeb) {
     var _leadingHeading = TextStyle(
@@ -1078,8 +1080,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   Container(
                                     margin: EdgeInsetsDirectional.only(top: 5),
                                     child: Text(
-                                      // userData.firstName ??
-                                      "Some thing wrong",
+                                      userData.firstName ?? "Some thing wrong",
                                       style: _textStyleforName,
                                     ),
                                   ),
@@ -1330,57 +1331,63 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           height: 200,
                                           padding: EdgeInsetsDirectional.only(
                                               start: 20, end: 20),
-                                          child: GridView.builder(
-                                            shrinkWrap: true,
-                                            gridDelegate:
-                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisSpacing: 0.0,
-                                                    mainAxisSpacing: 0.0,
-                                                    crossAxisCount: 5,
-                                                    childAspectRatio: 2.8),
-                                            itemCount: snapshot.data.length,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return InterestBox(
-                                                fontSize: ScreenUtil().setSp(
-                                                    MainTheme
-                                                        .mPrimaryContentfontSize),
-                                                fillColor: interestBool[index]
-                                                    ? MainTheme.primaryColor
-                                                    : Colors.white,
-                                                color: MainTheme.primaryColor,
-                                                title:
-                                                    snapshot.data[index].title,
-                                                onTap: () {
-                                                  if (interestBool[index] ==
-                                                      true) {
-                                                    setState(() {
-                                                      interestBool[index] =
-                                                          false;
-                                                    });
-                                                    interestSelected.remove(
-                                                        snapshot.data[index]
-                                                            .interest_id);
+                                          child: Scrollbar(
+                                            controller: _iController,
+                                            isAlwaysShown: true,
+                                            child: GridView.builder(
+                                              shrinkWrap: true,
+                                              controller: _iController,
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisSpacing: 0.0,
+                                                      mainAxisSpacing: 0.0,
+                                                      crossAxisCount: 5,
+                                                      childAspectRatio: 2.8),
+                                              itemCount: snapshot.data.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return InterestBox(
+                                                  fontSize: ScreenUtil().setSp(
+                                                      MainTheme
+                                                          .mPrimaryContentfontSize),
+                                                  fillColor: interestBool[index]
+                                                      ? MainTheme.primaryColor
+                                                      : Colors.white,
+                                                  color: MainTheme.primaryColor,
+                                                  title: snapshot
+                                                      .data[index].title,
+                                                  onTap: () {
+                                                    if (interestBool[index] ==
+                                                        true) {
+                                                      setState(() {
+                                                        interestBool[index] =
+                                                            false;
+                                                      });
+                                                      interestSelected.remove(
+                                                          snapshot.data[index]
+                                                              .interest_id);
 
-                                                    interestSelected1.remove(
-                                                        snapshot.data[index]
-                                                            .toMap());
-                                                  } else {
-                                                    setState(() {
-                                                      interestBool[index] =
-                                                          true;
-                                                    });
-                                                    interestSelected.add(
-                                                        snapshot.data[index]
-                                                            .interest_id);
+                                                      interestSelected1.remove(
+                                                          snapshot.data[index]
+                                                              .toMap());
+                                                    } else {
+                                                      setState(() {
+                                                        interestBool[index] =
+                                                            true;
+                                                      });
+                                                      interestSelected.add(
+                                                          snapshot.data[index]
+                                                              .interest_id);
 
-                                                    interestSelected1.add(
-                                                        snapshot.data[index]
-                                                            .toMap());
-                                                  }
-                                                },
-                                              );
-                                            },
+                                                      interestSelected1.add(
+                                                          snapshot.data[index]
+                                                              .toMap());
+                                                    }
+                                                  },
+                                                );
+                                              },
+                                            ),
                                           ));
                                     } else
                                       return Container(
@@ -1411,60 +1418,72 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           height: 200,
                                           padding: EdgeInsetsDirectional.only(
                                               start: 20, end: 20),
-                                          child: GridView.builder(
-                                            shrinkWrap: true,
-                                            gridDelegate:
-                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisSpacing: 0.0,
-                                                    mainAxisSpacing: 0.0,
-                                                    crossAxisCount: 5,
-                                                    childAspectRatio: 2.8),
-                                            itemCount: snapshot.data.length,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return InterestBox(
-                                                fontSize: ScreenUtil().setSp(
-                                                    MainTheme
-                                                        .mPrimaryContentfontSize),
-                                                fillColor: hobbieBool[index]
-                                                    ? MainTheme.primaryColor
-                                                    : Colors.white,
-                                                color: MainTheme.primaryColor,
-                                                title:
-                                                    snapshot.data[index].title,
-                                                onTap: () {
-                                                  if (hobbieBool[index] ==
-                                                      true) {
-                                                    setState(() {
-                                                      hobbieBool[index] = false;
-                                                    });
-                                                    hobbieSelected.remove(
-                                                        snapshot.data[index]
-                                                            .hobby_id);
-                                                    var val = {
-                                                      "hobby_id": snapshot
-                                                          .data[index].hobby_id,
-                                                      "title": snapshot
-                                                          .data[index].title
-                                                    };
-                                                    hobbieSelected1.remove(val);
-                                                  } else {
-                                                    setState(() {
-                                                      hobbieBool[index] = true;
-                                                    });
-                                                    hobbieSelected.add(snapshot
-                                                        .data[index].hobby_id);
-                                                    var val = {
-                                                      "hobby_id": snapshot
-                                                          .data[index].hobby_id,
-                                                      "title": snapshot
-                                                          .data[index].title
-                                                    };
-                                                    hobbieSelected1.add(val);
-                                                  }
-                                                },
-                                              );
-                                            },
+                                          child: Scrollbar(
+                                            controller: _hController,
+                                            isAlwaysShown: true,
+                                            child: GridView.builder(
+                                              shrinkWrap: true,
+                                              controller: _hController,
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisSpacing: 0.0,
+                                                      mainAxisSpacing: 0.0,
+                                                      crossAxisCount: 5,
+                                                      childAspectRatio: 2.8),
+                                              itemCount: snapshot.data.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return InterestBox(
+                                                  fontSize: ScreenUtil().setSp(
+                                                      MainTheme
+                                                          .mPrimaryContentfontSize),
+                                                  fillColor: hobbieBool[index]
+                                                      ? MainTheme.primaryColor
+                                                      : Colors.white,
+                                                  color: MainTheme.primaryColor,
+                                                  title: snapshot
+                                                      .data[index].title,
+                                                  onTap: () {
+                                                    if (hobbieBool[index] ==
+                                                        true) {
+                                                      setState(() {
+                                                        hobbieBool[index] =
+                                                            false;
+                                                      });
+                                                      hobbieSelected.remove(
+                                                          snapshot.data[index]
+                                                              .hobby_id);
+                                                      var val = {
+                                                        "hobby_id": snapshot
+                                                            .data[index]
+                                                            .hobby_id,
+                                                        "title": snapshot
+                                                            .data[index].title
+                                                      };
+                                                      hobbieSelected1
+                                                          .remove(val);
+                                                    } else {
+                                                      setState(() {
+                                                        hobbieBool[index] =
+                                                            true;
+                                                      });
+                                                      hobbieSelected.add(
+                                                          snapshot.data[index]
+                                                              .hobby_id);
+                                                      var val = {
+                                                        "hobby_id": snapshot
+                                                            .data[index]
+                                                            .hobby_id,
+                                                        "title": snapshot
+                                                            .data[index].title
+                                                      };
+                                                      hobbieSelected1.add(val);
+                                                    }
+                                                  },
+                                                );
+                                              },
+                                            ),
                                           ));
                                     } else
                                       return Container(
