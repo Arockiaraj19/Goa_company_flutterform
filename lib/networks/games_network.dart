@@ -1,3 +1,4 @@
+import 'package:dating_app/models/gameCheckModel.dart';
 import 'package:dating_app/models/game_request_model.dart';
 import 'package:dating_app/models/games.dart';
 import 'package:dating_app/models/question_model.dart';
@@ -7,6 +8,7 @@ import 'package:dating_app/networks/client/apiClient.dart';
 import 'package:dating_app/networks/client/api_list.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 
 class Games {
   Future getallgames() async {
@@ -62,6 +64,33 @@ class Games {
         response = await value.patch(gameaction + id, data: {"action": "2"});
         print("game request");
         print(response.data);
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future checkGame(String user1, String user2) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+      var data = _dio.then((value) async {
+        response = await value.get("/user/games/playstatus", queryParameters: {
+          "user1": user1,
+          "user2": user2,
+        });
+        print("check game");
+        print(response.data);
+        Logger().i(response.data);
+        final results =
+            List<Map<String, dynamic>>.from(response.data["response"]);
+
+        List<GameCheckModel> finaldata = results
+            .map((codeData) => GameCheckModel.fromMap(codeData))
+            .toList(growable: false);
+
+        return finaldata;
       });
       return data;
     } catch (e) {
@@ -131,8 +160,7 @@ class Games {
         CheckRequestModel result = CheckRequestModel.fromMap(response.data);
         List<Getquestion> finaldata =
             await sendrequest(result.gameId, result.questions);
-        User2Question combinedata =
-            User2Question.fromMap(result.id, finaldata, result.gameId);
+        User2Question combinedata = User2Question.fromMap(result.id, finaldata);
         return combinedata;
       });
       return data;

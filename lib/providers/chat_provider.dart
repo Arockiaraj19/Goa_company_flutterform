@@ -7,20 +7,24 @@ import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/shared/widgets/toast_msg.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'package:logger/logger.dart';
 
 enum ChatState { Initial, Loading, Loaded, Error }
 enum ChatMessageState { Initial, Loading, Loaded, Error }
 
 class ChatProvider extends ChangeNotifier {
   ChatState _chatState = ChatState.Initial;
-  ChatState get chatState => _chatState;
-
   ChatMessageState _chatMessageState = ChatMessageState.Initial;
-  ChatMessageState get chatMessageState => _chatMessageState;
 
-  List<ChatGroup> _chatGroupData;
+  List<ChatGroup> _chatGroupData = [];
+
+  ChatState get chatState => _chatState;
+  ChatMessageState get chatMessageState => _chatMessageState;
 
   List<ChatGroup> get chatGroupData => _chatGroupData;
 
@@ -28,40 +32,77 @@ class ChatProvider extends ChangeNotifier {
   List<ChatMessage> get chatMessageData => _chatMessageData;
   String _errorText;
   String get errorText => _errorText;
-  getGroupData(keyWord) async {
-    _chatState = ChatState.Loading;
+  int groupindex = 0;
+  List<ChatGroup> chatgroupdata = [];
+  getGroupData(keyWord, int skip) async {
+    if (groupindex == 0) {
+      _chatState = ChatState.Loading;
+    }
+
+    groupindex++;
     try {
-      _chatGroupData = await ChatNetwork().getGrouplist(keyWord);
+      chatgroupdata = await ChatNetwork().getGrouplist(keyWord, skip);
+      if (skip == 0) {
+        _chatGroupData = chatgroupdata;
+      } else {
+        // _chatGroupData = chatgroupdata;
+        _chatGroupData.addAll(chatgroupdata);
+      }
+      loaded();
     } on DioError catch (e) {
       _errorText = DioException.fromDioError(e).toString();
       print(_errorText);
       return error();
     }
-
-    loaded();
   }
 
-  getMessageData(id) async {
-    _chatMessageState = ChatMessageState.Loading;
-
+  List<ChatMessage> chatData = [];
+  storecache(id, int skip) async {
+    var box = Hive.box<ChatMessage>('chat_$id');
     try {
-      _chatMessageData = await ChatNetwork().getMessagelist(id);
+      if (skip == 0) {
+        chatData = await ChatNetwork().getMessagelist(id, skip);
+      } else {
+        chatData =
+            await ChatNetwork().getMessagelist(id, box.values.toList().length);
+      }
+      if (skip == 0) {
+        await box.clear();
+      }
+      box.addAll(chatData);
+      if (chatData.length != 0) {
+        _chatMessageData = box.values.toList();
+        loaded1();
+      }
     } on DioError catch (e) {
       _errorText = DioException.fromDioError(e).toString();
       print(_errorText);
-      return error();
+      return showtoast(_errorText);
+      // return error1();
     }
+  }
 
-    loaded1();
+  getMessageData(id, skip) async {
+    print(id);
+    _chatMessageState = ChatMessageState.Loading;
+
+    if (Hive.isBoxOpen('chat_$id') == false) {
+      var openbox = await Hive.openBox<ChatMessage>('chat_$id');
+      print("ithu call aakuthaa irukka ...");
+    }
+    var box = Hive.box<ChatMessage>('chat_$id');
+
+    try {
+      _chatMessageData = box.values.toList();
+      loaded1();
+    } on DioError catch (e) {
+      _errorText = DioException.fromDioError(e).toString();
+    }
+    storecache(id, skip);
   }
 
   loaded() {
     _chatState = ChatState.Loaded;
-    notifyListeners();
-  }
-
-  loaded1() {
-    _chatMessageState = ChatMessageState.Loaded;
     notifyListeners();
   }
 
@@ -70,8 +111,28 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addsocketmessage(ChatMessage data) {
-    _chatMessageData = [..._chatMessageData, data];
+  loaded1() {
+    _chatMessageState = ChatMessageState.Loaded;
     notifyListeners();
+  }
+
+  error1() {
+    _chatMessageState = ChatMessageState.Error;
+    notifyListeners();
+  }
+
+  addsocketmessage(ChatMessage data, String id) async {
+    print(id);
+
+    _chatMessageData = [..._chatMessageData, data];
+
+    notifyListeners();
+    if (Hive.isBoxOpen('chat_$id') == false) {
+      var openbox = await Hive.openBox<ChatMessage>('chat_$id');
+      print("ithu call aakuthaa irukka ...");
+    }
+    var box = await Hive.openBox<ChatMessage>('chat_$id');
+
+    box.add(data);
   }
 }

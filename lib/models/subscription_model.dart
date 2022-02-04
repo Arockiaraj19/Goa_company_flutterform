@@ -17,24 +17,25 @@ class SubscriptionModel {
   int referralsCount;
   String subscriptionType;
   int coins;
-  SubscriptionModel({
-    this.checklists,
-    this.isDeleted,
-    this.isDeactivated,
-    this.id,
-    this.title,
-    this.price,
-    this.offerPrice,
-    this.validity,
-    this.currencyType,
-    this.durationType,
-    this.subscriptionNo,
-    this.createdAt,
-    this.updatedAt,
-    this.referralsCount,
-    this.subscriptionType,
-    this.coins,
-  });
+  String description;
+  SubscriptionModel(
+      {this.checklists,
+      this.isDeleted,
+      this.isDeactivated,
+      this.id,
+      this.title,
+      this.price,
+      this.offerPrice,
+      this.validity,
+      this.currencyType,
+      this.durationType,
+      this.subscriptionNo,
+      this.createdAt,
+      this.updatedAt,
+      this.referralsCount,
+      this.subscriptionType,
+      this.coins,
+      this.description});
 
   Map<String, dynamic> toMap() {
     return {
@@ -72,7 +73,8 @@ class SubscriptionModel {
         updatedAt: DateTime.parse(map['updatedAt'].toString()).toLocal(),
         referralsCount: map["referrals_count"],
         subscriptionType: map["subscription_type"],
-        coins: map["payment_by_coins"]);
+        coins: map["payment_by_coins"],
+        description: map["description"]);
   }
 
   String toJson() => json.encode(toMap());

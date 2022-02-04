@@ -3,28 +3,28 @@ import 'package:dating_app/models/user.dart';
 
 import 'interest.dart';
 
-class UsersSuggestionModel {
-  List<Responses> response;
+// class UsersSuggestionModel {
+//   List<Responses> response;
 
-  UsersSuggestionModel({this.response});
+//   UsersSuggestionModel({this.response});
 
-  UsersSuggestionModel.fromJson(Map<String, dynamic> json) {
-    if (json['response'] != null) {
-      response = new List<Responses>();
-      json['response'].forEach((v) {
-        response.add(new Responses.fromJson(v));
-      });
-    }
-  }
+//   UsersSuggestionModel.fromJson(Map<String, dynamic> json) {
+//     if (json['response'] != null) {
+//       response = new List<Responses>();
+//       json['response'].forEach((v) {
+//         response.add(new Responses.fromJson(v));
+//       });
+//     }
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.response != null) {
-      data['response'] = this.response.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     if (this.response != null) {
+//       data['response'] = this.response.map((v) => v.toJson()).toList();
+//     }
+//     return data;
+//   }
+// }
 
 class Responses {
   String id;

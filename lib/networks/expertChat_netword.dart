@@ -6,6 +6,7 @@ import 'package:dating_app/networks/client/apiClient.dart';
 
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 
 class ExpertNetwork {
   Future createGroup(String expertid, UserModel userdata) async {
@@ -66,15 +67,15 @@ class ExpertNetwork {
     }
   }
 
-  Future getGrouplist(String id, String searchKey) async {
+  Future getGrouplist(String id, String searchKey, int skip) async {
     Response response;
     try {
       final _dio = apiClient();
 
       var data = _dio.then((value) async {
         response = await value.get("/user/vendorexpertlists", queryParameters: {
-          "skip": 0,
-          "limit": 200,
+          "skip": skip * 20,
+          "limit": 20,
           "chat_category": id,
           "searchkey": searchKey
         });
@@ -119,7 +120,9 @@ class ExpertNetwork {
     }
   }
 
-  Future getMessagelist(String groupId) async {
+  Future getMessagelist(String groupId, int skip) async {
+    Logger().i("skip id enna varuthu");
+    Logger().i(skip);
     Response response;
     try {
       final _dio = apiClient();
@@ -127,8 +130,8 @@ class ExpertNetwork {
       var data = _dio.then((value) async {
         response =
             await value.get("/user/expertchats/$groupId", queryParameters: {
-          "skip": 0,
-          "limit": 200,
+          "skip": skip,
+          "limit": 20,
         });
         print("response message  list");
         print(response.data);

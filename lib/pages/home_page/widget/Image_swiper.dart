@@ -15,6 +15,7 @@ import 'package:dating_app/shared/widgets/subscription_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 
@@ -29,7 +30,7 @@ class ImageSwiper extends StatefulWidget {
       : super(key: key);
   final Function(dynamic) onTap;
   final List<dynamic> promos;
-  final UsersSuggestionModel userSuggestionData;
+  final List<Responses> userSuggestionData;
   final Function(int) onChanged;
   final bool onweb;
 
@@ -90,6 +91,17 @@ class _ImageSwiperState extends State<ImageSwiper> {
                     loop: false,
                     outer: true,
                     onIndexChanged: (int ind) async {
+                      print("inga enna index varuthu");
+                      print(ind);
+                      print(data.usersSuggestionData.length);
+                      if (data.usersSuggestionData.length == ind + 1) {
+                        Logger().e("triggered");
+                        context.read<HomeProvider>().skip += 1;
+                        print(context.read<HomeProvider>().skip);
+                        context.read<HomeProvider>().getPaginationData(
+                            context.read<HomeProvider>().skip);
+                      }
+
                       widget.onChanged(ind);
                       currentIndex = ind;
                       print("change index enna varuthu");
@@ -168,7 +180,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
                                     .read<HomeProvider>()
                                     .replaceData(data[0]);
                                 return goToDetailPage(
-                                    widget.userSuggestionData.response[index]);
+                                    widget.userSuggestionData[index]);
                               } else {
                                 if (subdata.subscriptionData.length == 0) {
                                   subdata.getdata();
@@ -180,23 +192,21 @@ class _ImageSwiperState extends State<ImageSwiper> {
                                 }
                               }
                             }
-                            goToDetailPage(
-                                widget.userSuggestionData.response[index]);
+                            goToDetailPage(widget.userSuggestionData[index]);
                           },
                           child: ImageCard(
-                            data: widget.userSuggestionData.response[index],
-                            name: widget.userSuggestionData.response[index]
-                                    .firstName ??
+                            data: widget.userSuggestionData[index],
+                            name: widget.userSuggestionData[index].firstName ??
                                 "",
-                            image: widget.userSuggestionData.response[index]
+                            image: widget.userSuggestionData[index]
                                         .identificationImage ==
                                     null
                                 ? ""
-                                : widget.userSuggestionData.response[index]
+                                : widget.userSuggestionData[index]
                                     .identificationImage,
                           ));
                     },
-                    itemCount: widget.userSuggestionData.response.length,
+                    itemCount: widget.userSuggestionData.length,
                   );
                 },
               )),
@@ -213,15 +223,14 @@ class _ImageSwiperState extends State<ImageSwiper> {
                   print("message");
                   try {
                     String groupid = await ChatNetwork().createGroup(
-                        widget.userSuggestionData.response[currentIndex].id,
+                        widget.userSuggestionData[currentIndex].id,
                         data.userData);
                     goToChatPage(
                         groupid,
-                        widget.userSuggestionData.response[currentIndex].id,
-                        widget.userSuggestionData.response[currentIndex]
+                        widget.userSuggestionData[currentIndex].id,
+                        widget.userSuggestionData[currentIndex]
                             .identificationImage,
-                        widget.userSuggestionData.response[currentIndex]
-                            .firstName);
+                        widget.userSuggestionData[currentIndex].firstName);
                   } on DioError catch (e) {
                     if (e.response.statusCode == 408) {
                       if (subdata.plan == null) {
@@ -239,7 +248,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
                 onTapHeart: () async {
                   await context.read<HomeProvider>().changeheart();
                   String confirmedUser =
-                      widget.userSuggestionData.response[currentIndex].id;
+                      widget.userSuggestionData[currentIndex].id;
                   UserModel userData = data.userData;
                   try {
                     await HomeButtonNetwork()
@@ -262,8 +271,7 @@ class _ImageSwiperState extends State<ImageSwiper> {
                 onTapFlash: () async {
                   print("you click star");
                   await context.read<HomeProvider>().changestar();
-                  String likedUser =
-                      widget.userSuggestionData.response[currentIndex].id;
+                  String likedUser = widget.userSuggestionData[currentIndex].id;
                   try {
                     await HomeButtonNetwork().postLikeUnlike(likedUser, "1");
                   } on DioError catch (e) {

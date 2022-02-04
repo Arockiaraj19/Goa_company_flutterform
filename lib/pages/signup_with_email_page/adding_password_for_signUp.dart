@@ -3,6 +3,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
@@ -471,7 +472,7 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),
@@ -517,6 +518,10 @@ class _AddingPasswordForSignUpState extends State<AddingPasswordForSignUp> {
               body: SingleChildScrollView(
                   child: Column(
                 children: [
+                  ImageLogo1(
+                    height: _height,
+                    width: _width,
+                  ),
                   // Container(
                   //   height: _height / 20,
                   //   width: _width,

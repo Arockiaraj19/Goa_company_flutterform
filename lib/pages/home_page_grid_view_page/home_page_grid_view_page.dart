@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePageGridViewPage extends StatefulWidget {
-  final UsersSuggestionModel usersData;
+  final List<Responses> usersData;
   HomePageGridViewPage({Key key, this.usersData}) : super(key: key);
 
   @override

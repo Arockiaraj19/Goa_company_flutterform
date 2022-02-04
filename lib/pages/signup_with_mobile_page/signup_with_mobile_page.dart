@@ -2,6 +2,7 @@ import 'package:dating_app/models/country_code_model.dart';
 import 'package:dating_app/networks/countrycode_network.dart';
 import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/signup_network.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/countryCode_provider.dart';
 import 'package:dating_app/shared/helpers/loadingLottie.dart';
@@ -97,6 +98,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
   void initState() {
     super.initState();
     myFocusNode = FocusNode();
+     codecontroller.text = "+91";
   }
 
   FocusNode myFocusNode;
@@ -224,13 +226,13 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                         return null;
                       },
                       onTap: () {
-                        myFocusNode.requestFocus();
-                        context.read<CodeProvider>().getdata(null);
-                        if (onWeb) {
-                          showsub(context);
-                        } else {
-                          _showbottom();
-                        }
+                        // myFocusNode.requestFocus();
+                        // context.read<CodeProvider>().getdata(null);
+                        // if (onWeb) {
+                        //   showsub(context);
+                        // } else {
+                        //   _showbottom();
+                        // }
                       },
                     ),
                   ),
@@ -550,7 +552,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
     var network = MobileSignUpNetwork();
     try {
       var result = await network.verifyMobileNoForSignup(
-          codecontroller.text + _numberCtrl.text, code.id);
+          codecontroller.text + _numberCtrl.text, COUNTRYID);
       result
           ? registerUser(codecontroller.text + _numberCtrl.text, context, true,
               getcallback)
@@ -620,7 +622,7 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),
@@ -665,10 +667,10 @@ class _SignUpWithMobilePageState extends State<SignUpWithMobilePage> {
                   )),
               body: Column(
                 children: [
-                  // Container(
-                  //   height: _height / 20,
-                  //   width: _width,
-                  // ),
+                  ImageLogo1(
+                    height: _height,
+                    width: _width,
+                  ),
                   Container(
                       child: Row(
                     children: [

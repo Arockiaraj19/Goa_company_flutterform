@@ -82,14 +82,14 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
     super.initState();
     print("enna id varuthu");
     print(widget.id);
-
+    skip = 0;
     socket.onConnect((data) {
       // print('connect' + data);
     });
     print("subscribe varuthaa");
     print("group id correct a varuthuaaa");
     print(widget.groupid);
-    context.read<ExpertChatProvider>().getMessageData(widget.groupid);
+    context.read<ExpertChatProvider>().getMessageData(widget.groupid, skip);
     get();
   }
 
@@ -102,10 +102,13 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
       print(result);
       ExpertChatMessage chatdata = ExpertChatMessage.fromMap(result);
       print(chatdata);
-      return context.read<ExpertChatProvider>().addsocketmessage(chatdata);
+      return context
+          .read<ExpertChatProvider>()
+          .addsocketmessage(chatdata, widget.groupid);
     });
   }
 
+  int skip = 0;
   createGroupEmit() async {
     String userid = await getUserId();
     socket.emit("subscribe", {
@@ -143,6 +146,24 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
 
   String convertime(now) {
     return DateFormat('KK:mm:a').format(now);
+  }
+
+  bool onNotification(ScrollEndNotification t) {
+    if (t.metrics.pixels > 0 && t.metrics.atEdge) {
+      skip += 1;
+      print("at the end");
+      print(skip);
+      pagination();
+    } else {
+      print('I am at the start');
+    }
+    return true;
+  }
+
+  void pagination() async {
+    await context
+        .read<ExpertChatProvider>()
+        .getMessageData(widget.groupid, skip);
   }
 
   @override
@@ -262,212 +283,229 @@ class _ExpertChattingPageState extends State<ExpertChattingPage> {
                             text: data.errorText,
                             ontab: () => context
                                 .read<ExpertChatProvider>()
-                                .getMessageData(widget.groupid))
+                                .getMessageData(widget.groupid, 0))
                         : data.chatState == ExpertChatState.Loaded
                             ? data.chatMessageData.length == 0
                                 ? Container()
-                                : StickyGroupedListView<ExpertChatMessage,
-                                    DateTime>(
-                                    addAutomaticKeepAlives: true,
-                                    reverse: true,
-                                    addSemanticIndexes: true,
-                                    elements: data.chatMessageData,
-                                    order: StickyGroupedListOrder.DESC,
-                                    groupBy: (ExpertChatMessage element) =>
-                                        DateTime(
-                                            element.createdAt.year,
-                                            element.createdAt.month,
-                                            element.createdAt.day),
-                                    groupComparator:
-                                        (DateTime value1, DateTime value2) =>
-                                            value1.compareTo(value2),
-                                    itemComparator: (ExpertChatMessage element1,
-                                            ExpertChatMessage element2) =>
-                                        element1.createdAt
-                                            .compareTo(element2.createdAt),
-                                    floatingHeader: false,
-                                    groupSeparatorBuilder:
-                                        (ExpertChatMessage element) =>
-                                            Container(
-                                      color: Colors.white,
-                                      height: 50,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Container(
-                                          width: 120,
-                                          decoration: BoxDecoration(
-                                            color: MainTheme.chatPageColor,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(20.0)),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              DateFormat('dd-MM-yyyy').format(
-                                                          element.createdAt) ==
-                                                      DateFormat('dd-MM-yyyy')
-                                                          .format(
-                                                              DateTime.now())
-                                                  ? "Today"
-                                                  : DateFormat('dd-MM-yyyy')
-                                                              .format(element
-                                                                  .createdAt) ==
-                                                          DateFormat('dd-MM-yyyy')
-                                                              .format(DateTime
-                                                                      .now()
-                                                                  .subtract(
-                                                                      Duration(
-                                                                          days:
-                                                                              1)))
-                                                      ? "Yesterday"
-                                                      : '${element.createdAt.day}. ${element.createdAt.month}, ${element.createdAt.year}',
-                                              style: TextStyle(
-                                                color: Colors.white,
+                                : NotificationListener(
+                                    onNotification: onNotification,
+                                    child: StickyGroupedListView<
+                                        ExpertChatMessage, DateTime>(
+                                      addAutomaticKeepAlives: true,
+                                      reverse: true,
+                                      addSemanticIndexes: true,
+                                      elements: data.chatMessageData,
+                                      order: StickyGroupedListOrder.DESC,
+                                      groupBy: (ExpertChatMessage element) =>
+                                          DateTime(
+                                              element.createdAt.year,
+                                              element.createdAt.month,
+                                              element.createdAt.day),
+                                      groupComparator:
+                                          (DateTime value1, DateTime value2) =>
+                                              value1.compareTo(value2),
+                                      itemComparator:
+                                          (ExpertChatMessage element1,
+                                                  ExpertChatMessage element2) =>
+                                              element1.createdAt.compareTo(
+                                                  element2.createdAt),
+                                      floatingHeader: false,
+                                      groupSeparatorBuilder:
+                                          (ExpertChatMessage element) =>
+                                              Container(
+                                        color: Colors.white,
+                                        height: 50,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                            width: 120,
+                                            decoration: BoxDecoration(
+                                              color: MainTheme.chatPageColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20.0)),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                DateFormat('dd-MM-yyyy').format(
+                                                            element
+                                                                .createdAt) ==
+                                                        DateFormat('dd-MM-yyyy')
+                                                            .format(
+                                                                DateTime.now())
+                                                    ? "Today"
+                                                    : DateFormat('dd-MM-yyyy')
+                                                                .format(element
+                                                                    .createdAt) ==
+                                                            DateFormat('dd-MM-yyyy')
+                                                                .format(DateTime
+                                                                        .now()
+                                                                    .subtract(
+                                                                        Duration(
+                                                                            days:
+                                                                                1)))
+                                                        ? "Yesterday"
+                                                        : '${element.createdAt.day}. ${element.createdAt.month}, ${element.createdAt.year}',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                                textAlign: TextAlign.center,
                                               ),
-                                              textAlign: TextAlign.center,
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    itemBuilder:
-                                        (_, ExpertChatMessage element) {
-                                      return Align(
-                                        alignment: element.userType == "2"
-                                            ? Alignment.centerRight
-                                            : Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  widget.onWeb ? 22 : 30.w,
-                                              vertical:
-                                                  widget.onWeb ? 5 : 30.w),
-                                          child: Card(
-                                            elevation: widget.onWeb ? 5 : 2,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: element.userType == "2"
-                                                      ? MainTheme.chatPageColor
-                                                      : Colors.white),
-                                              child: Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: widget.onWeb
-                                                        ? 20
-                                                        : 50.w,
-                                                    vertical: widget.onWeb
-                                                        ? inputFont
-                                                        : 15.w,
-                                                  ),
-                                                  child: element
-                                                              .images.length ==
-                                                          0
-                                                      ? Column(
-                                                          crossAxisAlignment: element
-                                                                      .userType ==
-                                                                  "2"
-                                                              ? CrossAxisAlignment
-                                                                  .end
-                                                              : CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              element.message,
-                                                              style: TextStyle(
-                                                                color: element.userType ==
-                                                                        "2"
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Color(
-                                                                        0xff4A4A4A),
-                                                                fontSize: widget
-                                                                        .onWeb
-                                                                    ? inputFont
-                                                                    : 40.sp,
+                                      itemBuilder:
+                                          (_, ExpertChatMessage element) {
+                                        return Align(
+                                          alignment: element.userType == "2"
+                                              ? Alignment.centerRight
+                                              : Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    widget.onWeb ? 22 : 30.w,
+                                                vertical:
+                                                    widget.onWeb ? 5 : 30.w),
+                                            child: Card(
+                                              elevation: widget.onWeb ? 5 : 2,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    color:
+                                                        element.userType == "2"
+                                                            ? MainTheme
+                                                                .chatPageColor
+                                                            : Colors.white),
+                                                child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                      horizontal: widget.onWeb
+                                                          ? 20
+                                                          : 50.w,
+                                                      vertical: widget.onWeb
+                                                          ? inputFont
+                                                          : 15.w,
+                                                    ),
+                                                    child: element.images
+                                                                .length ==
+                                                            0
+                                                        ? Column(
+                                                            crossAxisAlignment: element
+                                                                        .userType ==
+                                                                    "2"
+                                                                ? CrossAxisAlignment
+                                                                    .end
+                                                                : CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                element.message,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: element
+                                                                              .userType ==
+                                                                          "2"
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Color(
+                                                                          0xff4A4A4A),
+                                                                  fontSize: widget
+                                                                          .onWeb
+                                                                      ? inputFont
+                                                                      : 40.sp,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            Text(
-                                                              convertime(element
-                                                                  .createdAt),
-                                                              textAlign: element
-                                                                          .userType ==
-                                                                      "2"
-                                                                  ? TextAlign
-                                                                      .right
-                                                                  : TextAlign
-                                                                      .left,
-                                                              style: TextStyle(
-                                                                color: element.userType ==
+                                                              Text(
+                                                                convertime(element
+                                                                    .createdAt),
+                                                                textAlign: element
+                                                                            .userType ==
                                                                         "2"
-                                                                    ? Colors
-                                                                        .white
-                                                                    : MainTheme
-                                                                        .chatPageColor,
-                                                                fontSize:
+                                                                    ? TextAlign
+                                                                        .right
+                                                                    : TextAlign
+                                                                        .left,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: element
+                                                                              .userType ==
+                                                                          "2"
+                                                                      ? Colors
+                                                                          .white
+                                                                      : MainTheme
+                                                                          .chatPageColor,
+                                                                  fontSize: widget
+                                                                          .onWeb
+                                                                      ? 10
+                                                                      : 25.sp,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : Column(
+                                                            crossAxisAlignment: element
+                                                                        .userType ==
+                                                                    "2"
+                                                                ? CrossAxisAlignment
+                                                                    .end
+                                                                : CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              CachedNetworkImage(
+                                                                height:
                                                                     widget.onWeb
-                                                                        ? 10
-                                                                        : 25.sp,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Column(
-                                                          crossAxisAlignment: element
-                                                                      .userType ==
-                                                                  "2"
-                                                              ? CrossAxisAlignment
-                                                                  .end
-                                                              : CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            CachedNetworkImage(
-                                                              height:
-                                                                  widget.onWeb
-                                                                      ? 250
-                                                                      : 200.h,
-                                                              width:
-                                                                  widget.onWeb
-                                                                      ? 125
-                                                                      : 500.w,
-                                                              imageUrl: element
-                                                                  .images[0],
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                            Text(
-                                                              convertime(element
-                                                                  .createdAt),
-                                                              textAlign: element
-                                                                          .userType ==
-                                                                      "2"
-                                                                  ? TextAlign
-                                                                      .right
-                                                                  : TextAlign
-                                                                      .left,
-                                                              style: TextStyle(
-                                                                color: element.userType ==
-                                                                        "2"
-                                                                    ? Colors
-                                                                        .white
-                                                                    : MainTheme
-                                                                        .chatPageColor,
-                                                                fontSize:
+                                                                        ? 250
+                                                                        : 200.h,
+                                                                width:
                                                                     widget.onWeb
-                                                                        ? 10
-                                                                        : 25.sp,
+                                                                        ? 125
+                                                                        : 500.w,
+                                                                imageUrl: element
+                                                                    .images[0],
+                                                                fit:
+                                                                    BoxFit.fill,
                                                               ),
-                                                            ),
-                                                          ],
-                                                        )),
+                                                              Text(
+                                                                convertime(element
+                                                                    .createdAt),
+                                                                textAlign: element
+                                                                            .userType ==
+                                                                        "2"
+                                                                    ? TextAlign
+                                                                        .right
+                                                                    : TextAlign
+                                                                        .left,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: element
+                                                                              .userType ==
+                                                                          "2"
+                                                                      ? Colors
+                                                                          .white
+                                                                      : MainTheme
+                                                                          .chatPageColor,
+                                                                  fontSize: widget
+                                                                          .onWeb
+                                                                      ? 10
+                                                                      : 25.sp,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    },
+                                        );
+                                      },
+                                    ),
                                   )
                             : LoadingLottie();
                   },

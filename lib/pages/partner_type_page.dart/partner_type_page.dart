@@ -5,6 +5,7 @@ import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/providers/home_provider.dart';
 import 'package:dating_app/shared/helpers/loadingLottie.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
@@ -458,7 +459,7 @@ class _PartnerTypePageState extends State<PartnerTypePage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),

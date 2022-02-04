@@ -1,8 +1,11 @@
 //Main URL_0
-const String baseUrl = "http://65.2.144.252:3000";
+//const String baseUrl = "https://api.life2sparks.com";
 
-//Socket Url
+const String baseUrl = "http://65.2.144.252:3000";
+// //Socket Url
 const String socketUrl = "http://13.126.21.212:3008";
+
+//const String socketUrl = "http://13.126.208.12:3008";
 
 //authentication_email
 const String verifyEmailForSignupEndpoint = "/user/verifyemail"; //1

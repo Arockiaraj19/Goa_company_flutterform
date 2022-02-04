@@ -35,6 +35,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
 
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -196,12 +197,10 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           _showOtpBottomSheet();
                         },
-                        child: FittedBox(
-                          child: Image.asset(
-                            "assets/icons/adjust.png",
-                            color: Colors.grey,
-                            width: 18.h,
-                          ),
+                        child: Image.asset(
+                          "assets/icons/adjust.png",
+                          color: Colors.grey,
+                          width: 18.h,
                         ),
                       )
                     ])),
@@ -221,8 +220,7 @@ class _HomePageState extends State<HomePage> {
                                   ontab: () => NavigateFunction()
                                       .withqueryReplace(Navigate.homePage))
                               : data.homeState == HomeState.Loaded
-                                  ? data.usersSuggestionData.response.length ==
-                                          0
+                                  ? data.usersSuggestionData.length == 0
                                       ? noResult()
                                       : data.view == 1
                                           ? ImageSwiper(
@@ -416,6 +414,27 @@ class _HomePageState extends State<HomePage> {
                                         child: ImageSwiper(
                                           onweb: true,
                                           onChanged: (int index) {
+                                            print("inga enna index varuthu");
+                                            print(index);
+                                            print(data
+                                                .usersSuggestionData.length);
+                                            if (data.usersSuggestionData
+                                                    .length ==
+                                                index + 1) {
+                                              Logger().e("triggered");
+                                              context
+                                                  .read<HomeProvider>()
+                                                  .skip += 1;
+                                              print(context
+                                                  .read<HomeProvider>()
+                                                  .skip);
+                                              context
+                                                  .read<HomeProvider>()
+                                                  .getPaginationData(context
+                                                      .read<HomeProvider>()
+                                                      .skip);
+                                            }
+
                                             print(
                                                 "initiala home page kku index varutha web la");
                                             print(index);
@@ -453,17 +472,16 @@ class _HomePageState extends State<HomePage> {
                                       height: 110,
                                       width: _width * 0.355,
                                       child: Bio(
-                                        bio: data.usersSuggestionData
-                                            .response[cardIndex].bio,
+                                        bio: data
+                                            .usersSuggestionData[cardIndex].bio,
                                       ),
                                     ),
                                     PercentageMatchingBox(
                                       width: _width * 0.355,
                                       height: 80,
                                       onWeb: true,
-                                      userSuggestionData: data
-                                          .usersSuggestionData
-                                          .response[cardIndex],
+                                      userSuggestionData:
+                                          data.usersSuggestionData[cardIndex],
                                     ),
                                     SubHeading(name: "Intersest"),
                                     Container(
@@ -478,8 +496,7 @@ class _HomePageState extends State<HomePage> {
                                                 crossAxisCount: 4,
                                                 childAspectRatio: 2.8),
                                         itemCount: data
-                                            .usersSuggestionData
-                                            .response[cardIndex]
+                                            .usersSuggestionData[cardIndex]
                                             .interestDetails
                                             .length,
                                         itemBuilder:
@@ -491,8 +508,8 @@ class _HomePageState extends State<HomePage> {
                                                     .mSecondaryContentfontSize),
                                             color: MainTheme.primaryColor,
                                             title: data
-                                                    .usersSuggestionData
-                                                    .response[cardIndex]
+                                                    .usersSuggestionData[
+                                                        cardIndex]
                                                     .interestDetails[index]
                                                     .title ??
                                                 "",
@@ -514,8 +531,7 @@ class _HomePageState extends State<HomePage> {
                                                 crossAxisCount: 4,
                                                 childAspectRatio: 2.8),
                                         itemCount: data
-                                            .usersSuggestionData
-                                            .response[cardIndex]
+                                            .usersSuggestionData[cardIndex]
                                             .hobbyDetails
                                             .length,
                                         itemBuilder:
@@ -527,8 +543,8 @@ class _HomePageState extends State<HomePage> {
                                                     .mSecondaryContentfontSize),
                                             color: MainTheme.primaryColor,
                                             title: data
-                                                    .usersSuggestionData
-                                                    .response[cardIndex]
+                                                    .usersSuggestionData[
+                                                        cardIndex]
                                                     .hobbyDetails[index]
                                                     .title ??
                                                 "",

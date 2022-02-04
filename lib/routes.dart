@@ -21,6 +21,7 @@ import 'package:dating_app/pages/find_match_page/find_match_page.dart';
 import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
 import 'package:dating_app/pages/home_page/home_page.dart';
 import 'package:dating_app/pages/home_page_grid_view_page/home_page_grid_view_page.dart';
+import 'package:dating_app/pages/insta.dart';
 import 'package:dating_app/pages/like_match_list_page/like_match_list.dart';
 import 'package:dating_app/pages/login_otp_page/login_otp_page.dart';
 import 'package:dating_app/pages/login_page/login_page.dart';
@@ -99,6 +100,7 @@ class Navigate extends Module {
   static String crypto = "/crypto";
   static String expertGroup = "/expertGroup";
   static String expertchat = "/expertchat";
+  static String insta = "/insta";
 
   @override
   List<ModularRoute> get routes => [
@@ -238,6 +240,8 @@ class Navigate extends Module {
                   length: int.parse(args.queryParams["length"]),
                 ),
             guards: [AuthGuard()]),
+        ChildRoute(insta,
+            child: (_, args) => InstaGram(), guards: [AuthGuard()]),
         WildcardRoute(child: (context, args) => NotFoundPage()),
       ];
 }

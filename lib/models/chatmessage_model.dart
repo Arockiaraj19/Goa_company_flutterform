@@ -1,18 +1,31 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+part 'chatmessage_model.g.dart';
+
+@HiveType(typeId: 1)
 class ChatMessage {
+  @HiveField(0)
   String id;
+  @HiveField(1)
   String groupid;
+  @HiveField(2)
   String message;
+  @HiveField(3)
   List<String> readByRecipients;
+  @HiveField(4)
   List<Details> senderDetails;
+  @HiveField(5)
   List<Details> receiverDetails;
+  @HiveField(6)
   DateTime createdAt;
+  @HiveField(7)
   DateTime updatedAt;
+  @HiveField(8)
   List<String> images;
-
+  @HiveField(9)
   ChatMessage(
       {this.id,
       this.groupid,
@@ -62,10 +75,15 @@ class ChatMessage {
       ChatMessage.fromMap(json.decode(source));
 }
 
+@HiveType(typeId: 2)
 class Details {
+  @HiveField(0)
   String id;
+  @HiveField(1)
   String firstname;
+  @HiveField(2)
   String lastname;
+  @HiveField(3)
   String userId;
   Details({
     this.id,

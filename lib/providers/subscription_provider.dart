@@ -23,6 +23,8 @@ class SubscriptionProvider extends ChangeNotifier {
   String _errorText;
   String get errorText => _errorText;
   getdata() async {
+    print("inga function triggered aakuthaa subscription la");
+
     _subscriptionState = SubscriptionState.Loading;
     _checklistData = await Subscription().getChecklistData();
     _subscriptionData = await Subscription().getSubscriptinPlans();
@@ -31,7 +33,6 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   getprofilecount() async {
-    _subscriptionState = SubscriptionState.Loading;
     try {
       _count = await Subscription().getProfileCount();
     } on DioError catch (e) {
@@ -49,7 +50,7 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   checkplans() async {
-    _subscriptionState = SubscriptionState.Loading;
+    // _subscriptionState = SubscriptionState.Loading;
     try {
       _plan = await Subscription().checkPlans();
     } on DioError catch (e) {

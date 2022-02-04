@@ -36,9 +36,8 @@ class _CommentPageState extends State<CommentPage>
   @override
   void initState() {
     super.initState();
-    if (kIsWeb) {
-      context.read<ChatProvider>().getGroupData("");
-    }
+
+    // context.read<ChatProvider>().getGroupData(value, skip);
 
     getId();
     _tabController = TabController(length: 3, vsync: this);
@@ -169,7 +168,7 @@ class _CommentPageState extends State<CommentPage>
     setState(() {
       cardIndex = index;
     });
-    context.read<ChatProvider>().getMessageData(data[cardIndex].id);
+    context.read<ChatProvider>().getMessageData(data[cardIndex].id, 0);
   }
 
   Widget _buildWeb() {

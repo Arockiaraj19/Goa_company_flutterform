@@ -11,14 +11,16 @@ enum HomeState { Initial, Loading, Loaded, Error }
 
 class HomeProvider extends ChangeNotifier {
   HomeState _homeState = HomeState.Initial;
-  UsersSuggestionModel _usersSuggestionData;
+  List<Responses> _usersSuggestionData;
   UserModel _userData;
   bool _apply = false;
   int _currentpage = 0, _type = 2;
+  int skip = 0;
+
   int view = 1;
   String _age = "", _distance = "", _lat = "", _lng = "";
   HomeState get homeState => _homeState;
-  UsersSuggestionModel get usersSuggestionData => _usersSuggestionData;
+  List<Responses> get usersSuggestionData => _usersSuggestionData;
   UserModel get userData => _userData;
   bool _showstar = true;
   bool _showheart = true;
@@ -31,6 +33,7 @@ class HomeProvider extends ChangeNotifier {
   getData() async {
     _usersSuggestionData = null;
     _currentpage = 0;
+    skip = 0;
     _homeState = HomeState.Loading;
     try {
       _userData = await UserNetwork().getUserData();
@@ -49,6 +52,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   getFilteredData(String age, distance, lat, lng) async {
+    skip = 0;
     _age = age;
     _distance = distance;
     _lat = lat;
@@ -68,6 +72,28 @@ class HomeProvider extends ChangeNotifier {
     }
     print("ll22");
     loaded();
+  }
+
+  List<Responses> sugdata = [];
+
+  getPaginationData(int skip) async {
+    try {
+      sugdata = await UserNetwork().getUserSuggestionsData(
+          _apply, _age, _distance, _lat, _lng, _type, skip);
+      _usersSuggestionData.addAll(sugdata);
+    } on DioError catch (e) {
+      print("error provider kku varuthaa");
+      _errorText = DioException.fromDioError(e).toString();
+      print(_errorText);
+      return error();
+    }
+    print("ll22");
+    loaded();
+  }
+
+  nulldata() {
+    _usersSuggestionData = null;
+    _userData = null;
   }
 
   reload() async {

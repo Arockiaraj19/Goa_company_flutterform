@@ -13,16 +13,20 @@ enum BlindState { Initial, Loading, Loaded, Error }
 
 class BlindProvider extends ChangeNotifier {
   BlindState _blindState = BlindState.Initial;
-  List<ResponseData> _blindData=[];
+  List<ResponseData> _blindData = [];
   int currentpage = 0, totalPage = 1;
 
   BlindState get blindState => _blindState;
   List<ResponseData> get blindData => _blindData;
   String _errorText;
   String get errorText => _errorText;
+  int blindIndex = 0;
   getData() async {
-    _blindState = BlindState.Loading;
+    if (blindIndex == 0) {
+      _blindState = BlindState.Loading;
+    }
 
+    blindIndex++;
     try {
       _blindData = await BlindNetwork().getblindMatches();
     } on DioError catch (e) {

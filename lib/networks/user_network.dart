@@ -9,6 +9,7 @@ import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:logger/logger.dart';
 
 import 'client/apiClient.dart';
 import 'client/api_list.dart';
@@ -38,6 +39,28 @@ class UserNetwork {
       throw e;
     }
   }
+Future<UserModel> getSingleSuggestionData(String id) async {
+    Response response;
+    try {
+      final _dio = apiClient();
+
+      print("user id correct varuthaa");
+      print(id);
+      var data = await _dio.then((value) async {
+        response = await value.get(userDetailsEndpoint + "/" + id);
+
+        if (response.statusCode == 200) {
+          return (response.data as List)
+              .map((x) => UserModel.fromJson(x))
+              .toList();
+        }
+      });
+      return data[0];
+    } catch (e) {
+      print("front la catch kku data varuthu");
+      throw e;
+    }
+  }
 
   Future<UserModel> getUserData() async {
     Response response;
@@ -62,35 +85,12 @@ class UserNetwork {
     }
   }
 
-  Future<UserModel> getSingleSuggestionData(String id) async {
-    Response response;
-    try {
-      final _dio = apiClient();
-
-      print("user id correct varuthaa");
-      print(id);
-      var data = await _dio.then((value) async {
-        response = await value.get(userDetailsEndpoint + "/" + id);
-
-        if (response.statusCode == 200) {
-          return (response.data as List)
-              .map((x) => UserModel.fromJson(x))
-              .toList();
-        }
-      });
-      return data[0];
-    } catch (e) {
-      print("front la catch kku data varuthu");
-      throw e;
-    }
-  }
-
-  Future<UsersSuggestionModel> getUserSuggestionsData(
+  Future<List<Responses>> getUserSuggestionsData(
       bool apply, String age, distance, lat, lng, type, int skip) async {
     Response response;
     try {
       var query;
-      if (apply == true) {
+      if (true) {
         print("ll888888");
         query = {
           "age": age,
@@ -98,9 +98,10 @@ class UserNetwork {
           "longitude": lng,
           "latitude": lat,
           "type": type,
-          "skip": skip
+          "skip": skip * 2,
+          "limit": 2,
         };
-        print(query);
+        Logger().e(query);
       }
       final _dio = apiClient();
       String id = await getUserId();
@@ -110,9 +111,12 @@ class UserNetwork {
             queryParameters: query);
         print(response.requestOptions.queryParameters);
 
-        print("ll88");
+        final results =
+            List<Map<String, dynamic>>.from(response.data["response"]);
+        Logger().v(results);
+
         if (response.statusCode == 200) {
-          return UsersSuggestionModel.fromJson(response.data);
+          return (results as List).map((x) => Responses.fromJson(x)).toList();
         }
       });
       return data;
@@ -183,14 +187,18 @@ class UserNetwork {
     }
   }
 
-  Future<List<LikeListModel>> getUserLikeList() async {
+  Future<List<LikeListModel>> getUserLikeList(int skip) async {
     Response response;
     try {
       final _dio = apiClient();
       String id = await getUserId();
       var data = _dio.then((value) async {
-        response = await value
-            .get(userDetailsEndpoint + "/" + id + userLikeListEndpoint);
+        response = await value.get(
+            userDetailsEndpoint + "/" + id + userLikeListEndpoint,
+            queryParameters: {
+              "skip": skip * 20,
+              "limit": 20,
+            });
         print("oop1");
         print(response.data);
         if (response.statusCode == 200) {
@@ -224,7 +232,7 @@ class UserNetwork {
     }
   }
 
-  Future<List<MatchListModel>> getUserMatchList(searchKey) async {
+  Future<List<MatchListModel>> getUserMatchList(searchKey, int skip) async {
     Response response;
     try {
       final _dio = apiClient();
@@ -233,6 +241,8 @@ class UserNetwork {
         response =
             await value.get(userMatchListEndpoint + "/" + id, queryParameters: {
           "searchkey": searchKey,
+          "skip": skip * 20,
+          "limit": 20,
         });
         print("match list data");
         print(response.data);
@@ -262,10 +272,10 @@ class UserNetwork {
         List<Responses> finaldata = results
             .map((hobbieData) => Responses.fromJson(hobbieData))
             .toList(growable: false);
-
         return Modular.to.pushNamed(
           Navigate.detailPage + "?id=${finaldata[0].id}",
         );
+
       });
 
       return data;

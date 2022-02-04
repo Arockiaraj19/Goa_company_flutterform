@@ -7,6 +7,7 @@ import 'package:dating_app/networks/firebase_auth.dart';
 import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/signup_network.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -463,7 +464,7 @@ class _OtpPageState extends State<OtpPage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),
@@ -509,6 +510,10 @@ class _OtpPageState extends State<OtpPage> {
               body: SingleChildScrollView(
                   child: Column(
                 children: [
+                  ImageLogo1(
+                    height: _height,
+                    width: _width,
+                  ),
                   // Container(
                   //   height: _height / 20,
                   //   width: _width,

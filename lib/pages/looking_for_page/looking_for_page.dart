@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/pages/looking_for_page/widgets/gender_list.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
@@ -229,7 +230,7 @@ class _LookingForPageState extends State<LookingForPage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),

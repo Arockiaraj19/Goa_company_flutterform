@@ -10,15 +10,16 @@ class NotificationModel {
   DateTime createdAt;
   DateTime updatedAt;
   NotificationUserModel sender;
-  NotificationModel({
-    this.receiver,
-    this.content,
-    this.status,
-    this.id,
-    this.createdAt,
-    this.updatedAt,
-    this.sender,
-  });
+  String header;
+  NotificationModel(
+      {this.receiver,
+      this.content,
+      this.status,
+      this.id,
+      this.createdAt,
+      this.updatedAt,
+      this.sender,
+      this.header});
 
   Map<String, dynamic> toMap() {
     return {
@@ -43,6 +44,7 @@ class NotificationModel {
       sender: map["sender"] == null
           ? null
           : NotificationUserModel.fromMap(map['sender']),
+      header: map['header'] ?? "",
     );
   }
 

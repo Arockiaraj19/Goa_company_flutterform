@@ -39,9 +39,9 @@ class DioException implements Exception {
         return 'Internal server error';
       case 410:
         return dioError.response.data["msg"].toString();
-      case 409:
-        return dioError.response.data["msg"].toString();
       case 407:
+        return dioError.response.data["msg"].toString();
+      case 409:
         return dioError.response.data["msg"].toString();
       case 408:
         return dioError.response.data["msg"].toString();

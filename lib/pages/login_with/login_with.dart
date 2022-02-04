@@ -376,6 +376,7 @@ class _LoginWithState extends State<LoginWith> {
   void initState() {
     super.initState();
     myFocusNode = FocusNode();
+    codecontroller.text = "+91";
   }
 
   FocusNode myFocusNode;
@@ -487,13 +488,13 @@ class _LoginWithState extends State<LoginWith> {
                     return null;
                   },
                   onTap: () {
-                    myFocusNode.requestFocus();
-                    context.read<CodeProvider>().getdata(null);
-                    if (onWeb) {
-                      showsub(context);
-                    } else {
-                      _showbottom();
-                    }
+                    // myFocusNode.requestFocus();
+                    // context.read<CodeProvider>().getdata(null);
+                    // if (onWeb) {
+                    //   showsub(context);
+                    // } else {
+                    //   _showbottom();
+                    // }
                   },
                 ),
               ),
@@ -783,11 +784,12 @@ class _LoginWithState extends State<LoginWith> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  margin: EdgeInsetsDirectional.only(
-                    top: 10,
-                    start: 30,
-                  ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                margin: EdgeInsetsDirectional.only(
+                  top: 10,
+                  start: 30,
+                ),
+                child: ImageLogo(),
+              ),
             ],
           ),
         ),
@@ -837,6 +839,7 @@ class _LoginWithState extends State<LoginWith> {
               body: SingleChildScrollView(
                   child: Column(
                 children: [
+                  ImageLogo1(height: _height, width: _width),
                   Container(
                       margin: EdgeInsetsDirectional.only(bottom: 10),
                       child: Row(
@@ -886,6 +889,72 @@ class _LoginWithState extends State<LoginWith> {
             ))
       ]),
     ));
+  }
+}
+
+class ImageLogo1 extends StatelessWidget {
+  const ImageLogo1({
+    Key key,
+    @required double height,
+    @required double width,
+  })  : _height = height,
+        _width = width,
+        super(key: key);
+
+  final double _height;
+  final double _width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        margin: EdgeInsetsDirectional.only(bottom: 10),
+        child: Row(
+          children: [
+            Container(
+              height: _height / 40,
+              width: _width / 20,
+            ),
+            Image.asset("assets/images/sparks_logo_h.png",
+                height: 50.h, width: 200.w),
+          ],
+        ));
+  }
+}
+
+class ImageLogo2 extends StatelessWidget {
+  const ImageLogo2({
+    Key key,
+    @required double height,
+    @required double width,
+  })  : _height = height,
+        _width = width,
+        super(key: key);
+
+  final double _height;
+  final double _width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        margin: EdgeInsetsDirectional.only(bottom: 10),
+        child: Row(
+          children: [
+            Image.asset("assets/images/sparks_logo_h.png",
+                height: 50.h, width: 200.w),
+          ],
+        ));
+  }
+}
+
+class ImageLogo extends StatelessWidget {
+  const ImageLogo({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset("assets/images/sparks_logo_withicon_h.png",
+        height: 50.h, width: 200.w);
   }
 }
 

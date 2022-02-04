@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/image_upload_network.dart';
 import 'package:dating_app/networks/user_network.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 
 import 'package:dating_app/shared/theme/theme.dart';
@@ -350,7 +351,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),
@@ -405,6 +406,7 @@ class _AddAlbumPicPageState extends State<AddAlbumPicPage> {
             ),
             child: Column(
               children: [
+                ImageLogo2(height: _height, width: _width),
                 Row(
                   children: [
                     Expanded(

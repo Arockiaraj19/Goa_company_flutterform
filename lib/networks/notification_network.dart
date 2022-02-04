@@ -1,6 +1,7 @@
 import 'package:dating_app/models/notification_model.dart';
 import 'package:dating_app/networks/client/apiClient.dart';
 import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 
 import 'sharedpreference/sharedpreference.dart';
 
@@ -14,6 +15,7 @@ class NotificationNetwork {
         response = await value.get("/user/notifications/" + id);
         print("notification data varuthaaa");
         print(response.data);
+        Logger().d(response.data);
         final results = List<Map<String, dynamic>>.from(response.data);
 
         List<NotificationModel> finaldata = results
@@ -41,7 +43,7 @@ class NotificationNetwork {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 }

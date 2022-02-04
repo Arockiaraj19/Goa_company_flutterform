@@ -11,8 +11,8 @@ enum MatchState { Initial, Loading, Loaded, Error }
 
 class MatchProvider extends ChangeNotifier {
   MatchState _matchState = MatchState.Initial;
-  List<MatchListModel> _matchListData;
-  List<LikeListModel> _likeListData;
+  List<MatchListModel> _matchListData = [];
+  List<LikeListModel> _likeListData = [];
   int currentpage = 0, totalPage = 1;
 
   MatchState get matchState => _matchState;
@@ -20,11 +20,18 @@ class MatchProvider extends ChangeNotifier {
   List<LikeListModel> get likeListData => _likeListData;
   String _errorText;
   String get errorText => _errorText;
-  getMatchData(String searchKey) async {
-    _matchState = MatchState.Loading;
+  int matchIndex = 0;
+  List<MatchListModel> matchData = [];
+  List<MatchListModel> matchData1 = [];
+  getMatchData(String searchKey, int skip) async {
+    if (matchIndex == 0) {
+      _matchState = MatchState.Loading;
+    }
+    matchIndex++;
 
     try {
-      _matchListData = await UserNetwork().getUserMatchList(searchKey);
+      matchData = await UserNetwork().getUserMatchList(searchKey, skip);
+      _matchListData.addAll(matchData);
     } on DioError catch (e) {
       _errorText = DioException.fromDioError(e).toString();
       print(_errorText);
@@ -36,8 +43,33 @@ class MatchProvider extends ChangeNotifier {
   getMatchLikeData() async {
     _matchState = MatchState.Loading;
     try {
-      _matchListData = await UserNetwork().getUserMatchList("");
-      _likeListData = await UserNetwork().getUserLikeList();
+      _matchListData = await UserNetwork().getUserMatchList("", 0);
+      _likeListData = await UserNetwork().getUserLikeList(0);
+    } on DioError catch (e) {
+      _errorText = DioException.fromDioError(e).toString();
+      print(_errorText);
+      return error();
+    }
+    loaded();
+  }
+
+  getMatchOnlyData(int skip) async {
+    try {
+      matchData1 = await UserNetwork().getUserMatchList("", skip);
+      _matchListData.addAll(matchData1);
+    } on DioError catch (e) {
+      _errorText = DioException.fromDioError(e).toString();
+      print(_errorText);
+      return error();
+    }
+    loaded();
+  }
+
+  List<LikeListModel> likeData = [];
+  getLikesOnlyData(int skip) async {
+    try {
+      likeData = await UserNetwork().getUserLikeList(skip);
+      _likeListData.addAll(likeData);
     } on DioError catch (e) {
       _errorText = DioException.fromDioError(e).toString();
       print(_errorText);

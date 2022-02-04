@@ -33,13 +33,37 @@ class MatchesCardList extends StatefulWidget {
 }
 
 class _MatchesCardListState extends State<MatchesCardList> {
-  @override
+ @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<MatchProvider>().getMatchData("");
+    skip = 0;
+    context.read<MatchProvider>().getMatchData(value, skip);
+    controller.addListener(_scrollListener);
   }
 
+  int skip = 0;
+  int limit = 5;
+  ScrollController controller = ScrollController();
+
+  void _scrollListener() {
+    if (controller.offset >= controller.position.maxScrollExtent &&
+        !controller.position.outOfRange) {
+      print("at the end of list");
+      skip += 1;
+      print(skip);
+      // if (value.isNotEmpty) {
+      //   skip = 1;
+      //   limit = 40;
+      // }
+      context.read<MatchProvider>().getMatchData(value, skip);
+      // setState(() {
+
+      // });
+    }
+  }
+
+  String value = '';
   Future getdata(MatchListModel data) async {
     String userid = await getUserId();
     if (data.user1[0].userId != userid) {
@@ -56,7 +80,9 @@ class _MatchesCardListState extends State<MatchesCardList> {
         children: [
           TextFormField(
             onChanged: (val) {
-              context.read<MatchProvider>().getMatchData(val);
+               skip = 0;
+                  value = val;
+                  context.read<MatchProvider>().getMatchData(val, skip);
             },
             decoration: InputDecoration(
               filled: true,
@@ -106,7 +132,7 @@ class _MatchesCardListState extends State<MatchesCardList> {
                   return ErrorCard(
                     text: data.errorText,
                     ontab: () {
-                      context.read<MatchProvider>().getMatchData("");
+                      context.read<MatchProvider>().getMatchData("",0);
                     },
                   );
                 } else if (data.matchState == MatchState.Loading) {
@@ -115,6 +141,7 @@ class _MatchesCardListState extends State<MatchesCardList> {
                   return data.matchListData.length == 0
                       ? noResult()
                       : ListView.builder(
+                           controller: controller,
                           itemCount: data.matchListData.length,
                           itemBuilder: (context, index) {
                             return InkWell(

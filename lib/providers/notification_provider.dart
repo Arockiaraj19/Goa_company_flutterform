@@ -22,8 +22,12 @@ class NotificationProvider extends ChangeNotifier {
   List<NotificationModel> get notificationData => _notificationData;
   String _errorText;
   String get errorText => _errorText;
+  int index = 0;
   getData() async {
-    _notificationState = NotificationState.Loading;
+    if (index == 0) {
+      _notificationState = NotificationState.Loading;
+    }
+    index++;
 
     try {
       _notificationData = await NotificationNetwork().getData();
@@ -38,6 +42,10 @@ class NotificationProvider extends ChangeNotifier {
   loaded() {
     _notificationState = NotificationState.Loaded;
     notifyListeners();
+  }
+
+  empty() {
+    _notificationData = [];
   }
 
   error() {

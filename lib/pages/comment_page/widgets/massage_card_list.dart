@@ -37,12 +37,40 @@ class MassageCardList extends StatefulWidget {
 class _MassageCardListState extends State<MassageCardList> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    if (!kIsWeb) {
-      context.read<ChatProvider>().getGroupData("");
+    skip = 0;
+    context.read<ChatProvider>().getGroupData(value, skip);
+    controller.addListener(_scrollListener);
+  }
+
+  int skip = 0;
+  int limit = 5;
+  ScrollController controller = ScrollController();
+
+  void _scrollListener() {
+    if (controller.offset >= controller.position.maxScrollExtent &&
+        !controller.position.outOfRange) {
+      print("at the end of list");
+      skip += 1;
+      print(skip);
+      // if (value.isNotEmpty) {
+      //   skip = 1;
+      //   limit = 40;
+      // }
+      context.read<ChatProvider>().getGroupData(value, skip);
+      // setState(() {
+
+      // });
     }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  String value = '';
 
   //
   @override
@@ -53,7 +81,9 @@ class _MassageCardListState extends State<MassageCardList> {
           padding: const EdgeInsets.all(8.0),
           child: TextFormField(
             onChanged: (val) {
-              context.read<ChatProvider>().getGroupData(val);
+              value = val;
+              skip = 0;
+              context.read<ChatProvider>().getGroupData(val, skip);
               if (widget.onWeb) {
                 widget.onChanged(0);
               }
@@ -108,13 +138,14 @@ class _MassageCardListState extends State<MassageCardList> {
                     ? ErrorCard(
                         text: data.errorText,
                         ontab: () {
-                          context.read<ChatProvider>().getGroupData("");
+                          context.read<ChatProvider>().getGroupData("", 0);
                         },
                       )
                     : data.chatState == ChatState.Loaded
                         ? data.chatGroupData.length == 0
                             ? Container()
                             : ListView.builder(
+                                controller: controller,
                                 itemBuilder: (context, index) => MassageCard(
                                     selectIndex: widget.selectIndex,
                                     index: index,

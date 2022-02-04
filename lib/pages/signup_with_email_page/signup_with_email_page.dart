@@ -3,6 +3,7 @@ import 'package:dating_app/models/otp_model.dart';
 import 'package:dating_app/models/response_model.dart';
 import 'package:dating_app/networks/forgetpassword_network.dart';
 import 'package:dating_app/networks/signup_network.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/shared/helpers/regex_pattern.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -304,7 +305,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child:  ImageLogo()),
             ],
           ),
         ),
@@ -350,10 +351,7 @@ class _SignUpWithEmailPageState extends State<SignUpWithEmailPage> {
               body: SingleChildScrollView(
                   child: Column(
                 children: [
-                  // Container(
-                  //   height: _height / 20,
-                  //   width: _width,
-                  // ),
+                 ImageLogo1(height:_height ,width:_width ,),
                   Container(
                       child: Row(
                     children: [

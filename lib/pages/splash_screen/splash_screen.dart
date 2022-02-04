@@ -52,18 +52,13 @@ class _SplashScreenState extends State<SplashScreen> {
             body: Center(
                 child: SizedBox(
           width: double.infinity,
-          child: TextLiquidFill(
-            boxHeight: 200.h,
-            boxWidth: double.infinity,
-            text: 'SPARKS', loadDuration: Duration(seconds: 2),
-            textAlign: TextAlign.center,
-            waveColor: MainTheme.primaryColor,
-            boxBackgroundColor: Colors.white,
-            textStyle: TextStyle(
-              fontSize: 150.sp,
-              fontWeight: FontWeight.w900,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Image.asset(
+              "assets/images/sparks_logo.png",
+              height: double.infinity,
+              width: double.infinity,
             ),
-            // boxHeight: 300.0,
           ),
         )
                 //     Text("SPARKS",
@@ -84,18 +79,10 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Center(
             child: SizedBox(
       width: double.infinity,
-      child: TextLiquidFill(
-        boxHeight: 200.h,
-        boxWidth: double.infinity,
-        text: 'SPARKS', loadDuration: Duration(seconds: 2),
-        textAlign: TextAlign.center,
-        waveColor: MainTheme.primaryColor,
-        boxBackgroundColor: Colors.white,
-        textStyle: TextStyle(
-          fontSize: 230.sp,
-          fontWeight: FontWeight.w900,
-        ),
-        // boxHeight: 300.0,
+      child: Image.asset(
+        "assets/images/sparks_logo.png",
+        height: double.infinity,
+        width: double.infinity,
       ),
     )
             //     Text("SPARKS",

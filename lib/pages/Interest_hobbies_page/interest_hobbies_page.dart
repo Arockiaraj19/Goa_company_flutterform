@@ -4,6 +4,7 @@ import 'package:dating_app/models/interest.dart';
 import 'package:dating_app/models/user.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/home_page/widget/interest_box.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/routes.dart';
 import 'package:dating_app/shared/helpers/websize.dart';
 import 'package:dating_app/shared/theme/theme.dart';
@@ -414,7 +415,7 @@ class _InterestHobbiesPageState extends State<InterestHobbiesPage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),

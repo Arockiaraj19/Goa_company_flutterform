@@ -7,16 +7,18 @@ import 'package:dating_app/models/expertchatmessage_model.dart';
 import 'package:dating_app/networks/chat_network.dart';
 import 'package:dating_app/networks/dio_exception.dart';
 import 'package:dating_app/networks/expertChat_netword.dart';
+import 'package:dating_app/shared/widgets/toast_msg.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 enum ExpertChatState { Initial, Loading, Loaded, Error }
 
 class ExpertChatProvider extends ChangeNotifier {
   ExpertChatState _chatState = ExpertChatState.Initial;
 
-  List<ExpertGroup> _chatGroupData;
+  List<ExpertGroup> _chatGroupData = [];
 
   ExpertChatState get chatState => _chatState;
 
@@ -43,10 +45,21 @@ class ExpertChatProvider extends ChangeNotifier {
     loaded();
   }
 
-  getGroupData(id,searchKey) async {
+  List<String> ids = [];
+  int groupIndex = 0;
+  List<ExpertGroup> chatgroupdatas;
+  getGroupData(id, searchKey, int skip) async {
     _chatState = ExpertChatState.Loading;
+
     try {
-      _chatGroupData = await ExpertNetwork().getGrouplist(id,searchKey);
+      chatgroupdatas = await ExpertNetwork().getGrouplist(id, searchKey, skip);
+
+      if (skip == 0) {
+        _chatGroupData = chatgroupdatas;
+      } else {
+        // _chatGroupData = chatgroupdata;
+        _chatGroupData.addAll(chatgroupdatas);
+      }
     } on DioError catch (e) {
       _errorText = DioException.fromDioError(e).toString();
       print(_errorText);
@@ -56,18 +69,50 @@ class ExpertChatProvider extends ChangeNotifier {
     loaded();
   }
 
-  getMessageData(id) async {
+  List<ExpertChatMessage> chatData = [];
+  getCacheMessageData(id, int skip) async {
+    var box = Hive.box<ExpertChatMessage>('expertchat_$id');
+    try {
+      if (skip == 0) {
+        chatData = await ExpertNetwork().getMessagelist(id, skip);
+      } else {
+        chatData = await ExpertNetwork()
+            .getMessagelist(id, box.values.toList().length);
+      }
+      if (skip == 0) {
+        await box.clear();
+      }
+      box.addAll(chatData);
+      if (chatData.length != 0) {
+        _chatMessageData = box.values.toList();
+        loaded();
+      }
+    } on DioError catch (e) {
+      _errorText = DioException.fromDioError(e).toString();
+      print(_errorText);
+      return showtoast(_errorText);
+      // return error1();
+    }
+  }
+
+  getMessageData(id, int skip) async {
     _chatState = ExpertChatState.Loading;
+    if (Hive.isBoxOpen('expertchat_$id') == false) {
+      var openbox = await Hive.openBox<ExpertChatMessage>('expertchat_$id');
+      print("ithu call aakuthaa irukka ...");
+    }
+    var box = Hive.box<ExpertChatMessage>('expertchat_$id');
 
     try {
-      _chatMessageData = await ExpertNetwork().getMessagelist(id);
+      _chatMessageData = box.values.toList();
+      loaded();
     } on DioError catch (e) {
       _errorText = DioException.fromDioError(e).toString();
       print(_errorText);
       return error();
     }
 
-    loaded();
+    getCacheMessageData(id, skip);
   }
 
   loaded() {
@@ -80,8 +125,15 @@ class ExpertChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addsocketmessage(ExpertChatMessage data) {
+  addsocketmessage(ExpertChatMessage data, String id) async {
+    print(id);
+
     _chatMessageData = [..._chatMessageData, data];
+
     notifyListeners();
+
+    var box = await Hive.openBox<ExpertChatMessage>('expertchat_$id');
+
+    box.add(data);
   }
 }

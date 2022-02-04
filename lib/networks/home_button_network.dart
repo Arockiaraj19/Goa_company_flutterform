@@ -26,7 +26,7 @@ class HomeButtonNetwork {
       });
       return data;
     } catch (e) {
-      throw e;
+     throw e;
     }
   }
 
@@ -56,7 +56,7 @@ class HomeButtonNetwork {
             MatchUser matchdata = MatchUser.fromMap(userdata);
             Modular.to.pushNamed(Navigate.perfectMatchPage,
                 arguments: {"user1": userData, "user2": matchdata});
-           
+
             return true;
           }
         }

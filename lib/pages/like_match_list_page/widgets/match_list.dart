@@ -18,6 +18,36 @@ class MatchList extends StatefulWidget {
 }
 
 class _MatchListState extends State<MatchList> {
+  @override
+  void initState() {
+    super.initState();
+
+    skip = 0;
+
+    controller.addListener(_scrollListener);
+  }
+
+  int skip = 0;
+  int limit = 5;
+  ScrollController controller = ScrollController();
+
+  void _scrollListener() {
+    if (controller.offset >= controller.position.maxScrollExtent &&
+        !controller.position.outOfRange) {
+      print("at the end of list");
+      skip += 1;
+      print(skip);
+      // if (value.isNotEmpty) {
+      //   skip = 1;
+      //   limit = 40;
+      // }
+      context.read<MatchProvider>().getMatchOnlyData(skip);
+      // setState(() {
+
+      // });
+    }
+  }
+
   Future<String> getimage(MatchListModel userData) async {
     String userid = await getUserId();
     if (userData.user1[0].userId != userid) {
@@ -60,6 +90,7 @@ class _MatchListState extends State<MatchList> {
       body: widget.matchList.length == 0
           ? noResult()
           : ListView.builder(
+              controller: controller,
               itemCount: widget.matchList.length,
               itemBuilder: (context, index) {
                 return InkWell(

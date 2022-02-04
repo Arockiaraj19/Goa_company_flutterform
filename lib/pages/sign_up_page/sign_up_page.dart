@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/shared/theme/theme.dart';
 import 'package:dating_app/shared/widgets/gradient_button.dart';
 import 'package:dating_app/shared/widgets/web_gredient_button.dart';
@@ -278,7 +279,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),
@@ -310,6 +311,10 @@ class _SignUpPageState extends State<SignUpPage> {
             child: SingleChildScrollView(
                 child: Column(
               children: [
+                ImageLogo1(
+                  height: _height,
+                  width: _width,
+                ),
                 Container(
                     child: Row(
                   children: [
@@ -448,7 +453,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: Text("Log In", style: _textStyleforLogin)),
                     ])),
                 Container(
-                  height: 150,
+                  height: 70,
                   width: _width,
                 ),
                 Container(

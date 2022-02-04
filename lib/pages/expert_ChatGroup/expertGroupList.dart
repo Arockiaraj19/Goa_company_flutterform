@@ -24,10 +24,46 @@ class ExpertGroupList extends StatefulWidget {
 class _ExpertGroupListState extends State<ExpertGroupList> {
   @override
   void initState() {
+    skip = 0;
     // TODO: implement initState
     super.initState();
-    context.read<ExpertChatProvider>().getGroupData(widget.groupdata.id, "");
+    context
+        .read<ExpertChatProvider>()
+        .getGroupData(widget.groupdata.id, value, skip);
+
+    controller.addListener(_scrollListener);
   }
+
+  int skip = 0;
+
+  ScrollController controller = ScrollController();
+
+  void _scrollListener() {
+    if (controller.offset >= controller.position.maxScrollExtent &&
+        !controller.position.outOfRange) {
+      print("at the end of list");
+      skip += 1;
+      print(skip);
+      // if (value.isNotEmpty) {
+      //   skip = 1;
+      //   limit = 40;
+      // }
+      context
+          .read<ExpertChatProvider>()
+          .getGroupData(widget.groupdata.id, value, skip);
+      // setState(() {
+
+      // });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  String value = '';
 
   //
   @override
@@ -39,9 +75,11 @@ class _ExpertGroupListState extends State<ExpertGroupList> {
           child: Container(
             child: TextFormField(
               onChanged: (val) {
+                skip = 0;
+                value = val;
                 context
                     .read<ExpertChatProvider>()
-                    .getGroupData(widget.groupdata.id, val);
+                    .getGroupData(widget.groupdata.id, val, skip);
               },
               decoration: InputDecoration(
                 filled: true,
@@ -98,13 +136,14 @@ class _ExpertGroupListState extends State<ExpertGroupList> {
                         ontab: () {
                           context
                               .read<ExpertChatProvider>()
-                              .getGroupData(widget.groupdata.id, "");
+                              .getGroupData(widget.groupdata.id, value, skip);
                         },
                       )
                     : data.chatState == ExpertChatState.Loaded
                         ? data.chatGroupData.length == 0
                             ? Container()
                             : ListView.builder(
+                                controller: controller,
                                 itemBuilder: (context, index) => ExpertCard(
                                   data: data.chatGroupData[index],
                                   onWeb: widget.onWeb,

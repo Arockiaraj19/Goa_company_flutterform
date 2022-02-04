@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dating_app/models/expertGroup_model.dart';
 import 'package:dating_app/networks/messaging.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/topic_network.dart';
@@ -23,10 +24,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:url_strategy/url_strategy.dart';
+import 'models/chatmessage_model.dart';
+import 'models/expertGroup_model.dart';
+import 'models/expertGroup_model.dart';
+import 'models/expertGroup_model.dart';
+import 'models/expertchatmessage_model.dart';
 import 'models/question_model.dart';
 import 'providers/countryCode_provider.dart';
 // import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -40,6 +49,11 @@ Future<void> main() async {
     statusBarColor: Colors.transparent, // transparent status bar
     statusBarIconBrightness: Brightness.light,
   ));
+  // final appDocumentDir = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter();
+  Hive.registerAdapter(ChatMessageAdapter());
+  Hive.registerAdapter(DetailsAdapter());
+  Hive.registerAdapter(ExpertChatMessageAdapter());
 
   runApp(ModularApp(module: Navigate(), child: MyApp()));
 }
@@ -137,7 +151,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => RefProvider()),
           ChangeNotifierProvider(create: (context) => ExpertChatProvider()),
           ChangeNotifierProvider(create: (context) => GameProvider()),
-           ChangeNotifierProvider(create: (context) => SingleUserProvider()),
+          ChangeNotifierProvider(create: (context) => SingleUserProvider()),
         ],
         child: ScreenUtilInit(
             designSize: Size(1000, 690),

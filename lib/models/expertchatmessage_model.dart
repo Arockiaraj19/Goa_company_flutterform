@@ -1,19 +1,35 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+
+import 'chatmessage_model.dart';
+part 'expertchatmessage_model.g.dart';
+
+@HiveType(typeId: 3)
 class ExpertChatMessage {
+  @HiveField(0)
   String id;
+  @HiveField(1)
   String userid;
+  @HiveField(2)
   String expertid;
+  @HiveField(3)
   String groupid;
+  @HiveField(4)
   String message;
+  @HiveField(5)
   List<String> readByRecipients;
-
+  @HiveField(6)
   List<Details> venderDetails;
+  @HiveField(7)
   DateTime createdAt;
+  @HiveField(8)
   DateTime updatedAt;
+  @HiveField(9)
   List<String> images;
+  @HiveField(10)
   String userType;
   ExpertChatMessage(
       {this.id,
@@ -62,40 +78,4 @@ class ExpertChatMessage {
 
   factory ExpertChatMessage.fromJson(String source) =>
       ExpertChatMessage.fromMap(json.decode(source));
-}
-
-class Details {
-  String id;
-  String firstname;
-  String lastname;
-  String userId;
-  Details({
-    this.id,
-    this.firstname,
-    this.lastname,
-    this.userId,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'firstname': firstname,
-      'lastname': lastname,
-      'userId': userId,
-    };
-  }
-
-  factory Details.fromMap(Map<String, dynamic> map) {
-    return Details(
-      id: map['_id'],
-      firstname: map['first_name'],
-      lastname: map['last_name'],
-      userId: map['vender_id'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Details.fromJson(String source) =>
-      Details.fromMap(json.decode(source));
 }

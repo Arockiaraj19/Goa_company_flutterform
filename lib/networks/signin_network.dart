@@ -40,14 +40,11 @@ class SignInNetwork {
         response = await value
             .post(signInMobileEndpoint, data: {"mobile_number": mobile});
         print(response.data);
-        if (response.statusCode == 200) {
-          saveUser(response.data["user_id"]);
-          saveLoginStatus(1);
-          saveToken(response.data["accessToken"], response.data["accessToken"]);
-          return true;
-        } else {
-          return false;
-        }
+
+        saveUser(response.data["user_id"]);
+        saveLoginStatus(1);
+        saveToken(response.data["accessToken"], response.data["accessToken"]);
+        return true;
       });
       return data;
     } catch (e) {

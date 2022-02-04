@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dating_app/models/interest.dart';
 
 import 'hobby.dart';
@@ -40,6 +38,8 @@ class UserModel {
   int score;
   String facebookName;
   String facebookId;
+  String instagramName;
+  String instagramId;
   String coin;
   bool isVerified;
   int subCount;
@@ -82,6 +82,8 @@ class UserModel {
     this.score,
     this.facebookName,
     this.facebookId,
+    this.instagramName,
+    this.instagramId,
     this.coin,
     this.isVerified,
     this.subCount,
@@ -137,6 +139,8 @@ class UserModel {
     score = json['score'];
     facebookName = json["facebook_username"];
     facebookId = json["facebook_link"];
+    instagramName = json["instagram_username"];
+    instagramId = json["instagram_link"];
     coin = json["coin_value"].toString();
     isVerified = json["is_user_verified"];
     subCount = json["profile_visit_count"];
@@ -145,7 +149,6 @@ class UserModel {
     verificationImage = json['verification_image'];
   }
 
- 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.id;
@@ -189,16 +192,6 @@ class UserModel {
     data['age'] = this.age;
     data['like_count'] = this.likeCount;
     data['score'] = this.score;
-    data["facebook_username"] = this.facebookName;
-    data["facebook_link"] = this.facebookId;
-    data["coin_value"] = this.coin;
-
-    data["is_user_verified"] = this.isVerified;
-
-    data["profile_visit_count"] = this.subCount;
-    data['chat_count_update'] = this.chatCountUpdate.millisecondsSinceEpoch;
-    data['verification_image'] = this.verificationImage;
-
     return data;
   }
 }

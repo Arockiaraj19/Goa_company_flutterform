@@ -58,17 +58,18 @@ class ChatNetwork {
     }
   }
 
-  Future getGrouplist(String searchKeyWord) async {
+  Future getGrouplist(String searchKeyWord, int skip) async {
     Response response;
     try {
       final _dio = apiClient();
       String id = await getUserId();
       print("user id");
       print(id);
+      print(skip.toString());
       var data = _dio.then((value) async {
         response = await value.get("/chats/$id/grouplists", queryParameters: {
-          "skip": 0,
-          "limit": 200,
+          "skip": skip * 20,
+          "limit": 20,
           "searchkey": searchKeyWord,
         });
         final results = List<Map<String, dynamic>>.from(response.data);
@@ -86,15 +87,17 @@ class ChatNetwork {
     }
   }
 
-  Future getMessagelist(String groupId) async {
+  Future getMessagelist(String groupId, int skip) async {
     Response response;
+    print(" skip id enna varuthu");
+    print(skip);
     try {
       final _dio = apiClient();
 
       var data = _dio.then((value) async {
         response = await value.get("/chats/$groupId", queryParameters: {
-          "skip": 0,
-          "limit": 200,
+          "skip": skip,
+          "limit": 20,
         });
         print("response message  list");
         print(response.data);

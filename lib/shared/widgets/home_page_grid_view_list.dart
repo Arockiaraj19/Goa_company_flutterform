@@ -18,7 +18,7 @@ class HomePageGridViewList extends StatefulWidget {
   final double mainAxisSpacing;
   final double crossAxisSpacing;
   final int crossAxisCount;
-  final UsersSuggestionModel usersData;
+  final List<Responses> usersData;
   final double childAspectRatio;
   HomePageGridViewList(
       {Key key,
@@ -47,7 +47,7 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                 mainAxisSpacing: widget.mainAxisSpacing ?? 10,
                 crossAxisCount: widget.crossAxisCount ?? 2,
                 childAspectRatio: widget.childAspectRatio ?? 0.7),
-            itemCount: widget.usersData.response.length ?? 0,
+            itemCount: widget.usersData.length ?? 0,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                   onTap: () async {
@@ -58,7 +58,7 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                         await context.read<HomeProvider>().replaceData(data[0]);
                         return NavigateFunction().withquery(
                             Navigate.detailPage +
-                                "?id=${widget.usersData.response[index].id}");
+                                "?id=${widget.usersData[index].id}");
                       } else {
                         if (subdata.subscriptionData.length == 0) {
                           subdata.getdata();
@@ -83,10 +83,10 @@ class _HomePageGridViewListState extends State<HomePageGridViewList> {
                       }
                     }
                     NavigateFunction().withquery(Navigate.detailPage +
-                        "?id=${widget.usersData.response[index].id}");
+                        "?id=${widget.usersData[index].id}");
                   },
                   child: HomeGridViewcard(
-                    userData: widget.usersData.response[index],
+                    userData: widget.usersData[index],
                   ));
             },
           ),

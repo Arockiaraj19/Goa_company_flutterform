@@ -9,6 +9,7 @@ import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dating_app/networks/user_network.dart';
 import 'package:dating_app/pages/create_profile_page/widget/gender_card.dart';
 import 'package:dating_app/pages/gender_select_page/gender_select_page.dart';
+import 'package:dating_app/pages/login_with/login_with.dart';
 import 'package:dating_app/providers/chat_provider.dart';
 import 'package:dating_app/providers/countryCode_provider.dart';
 import 'package:dating_app/providers/home_provider.dart';
@@ -88,6 +89,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     fill();
     _future = GenderNetwork().getGenderData();
     myFocusNode = FocusNode();
+    codecontroller.text = "+91";
   }
 
   FocusNode myFocusNode;
@@ -350,13 +352,13 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                                     return null;
                                   },
                                   onTap: () {
-                                    myFocusNode.requestFocus();
-                                    context.read<CodeProvider>().getdata(null);
-                                    if (onWeb) {
-                                      showsub(context);
-                                    } else {
-                                      _showbottom();
-                                    }
+                                    // myFocusNode.requestFocus();
+                                    // context.read<CodeProvider>().getdata(null);
+                                    // if (onWeb) {
+                                    //   showsub(context);
+                                    // } else {
+                                    //   _showbottom();
+                                    // }
                                   },
                                 ),
                               ),
@@ -926,7 +928,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
         "gender_id": _selectedGenderid.toString(),
         "gender_details": [genderdetail.toMap()],
         "mobile_number": codecontroller.text + _numberCtrl.text,
-        "country": code.id,
+        "country": COUNTRYID,
       };
     } else {
       userstoreData = {
@@ -999,7 +1001,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                     top: 30,
                     start: 30,
                   ),
-                  child: Text("Spark", style: _textStyleforSpark)),
+                  child: ImageLogo()),
             ],
           ),
         ),

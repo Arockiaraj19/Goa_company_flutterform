@@ -23,7 +23,7 @@ class BlindNetwork {
       });
       return data;
     } catch (e) {
-     throw e;
+      throw e;
     }
   }
 

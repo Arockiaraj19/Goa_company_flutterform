@@ -1,10 +1,21 @@
 import 'dart:convert';
 
+import 'package:hive_flutter/hive_flutter.dart';
+
+
+part 'expertGroup_model.g.dart';
+
+@HiveType(typeId: 4)
 class ExpertGroup {
+  @HiveField(0)
   String id;
+  @HiveField(1)
   String firstname;
+  @HiveField(2)
   String lastname;
+  @HiveField(3)
   int onlinestatus;
+  @HiveField(4)
   List<String> profileImage;
   ExpertGroup(
       {this.id,

@@ -2,16 +2,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dating_app/models/image_model.dart';
-import 'package:dating_app/models/response_model.dart';
-import 'package:dating_app/models/interest.dart';
-import 'package:dating_app/models/user.dart';
-import 'package:dating_app/models/user_suggestion.dart';
+
 // import 'package:dating_app/models/user_suggestion.dart';
 import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:html' as html;
+
 import 'client/apiClient.dart';
 import 'client/api_list.dart';
 

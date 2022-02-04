@@ -5,6 +5,7 @@ import 'package:dating_app/networks/sharedpreference/sharedpreference.dart';
 import 'package:dio/dio.dart';
 
 import 'client/apiClient.dart';
+import 'package:logger/logger.dart';
 
 class Subscription {
   Future getSubscriptinPlans() async {
@@ -16,6 +17,7 @@ class Subscription {
         response = await value.get(subscription_plan);
         print("response get all subscription plan   list");
         print(response.data);
+        Logger().i(response.data);
         final results = List<Map<String, dynamic>>.from(response.data);
 
         List<SubscriptionModel> finaldata = results
